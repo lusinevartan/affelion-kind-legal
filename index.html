@@ -3,62 +3,145 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Affelion Kind — Privacy Policy</title>
+<title>Affelion Kind — Privacy</title>
 <style>
-  body { max-width: 640px; margin: 0 auto; padding: 48px 24px 80px; font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #1F1D1A; background: #F6F3E3; }
-  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
-  h2 { font-size: 1.1rem; margin-top: 2rem; }
-  .updated { color: #6E675C; font-size: 0.9rem; margin-bottom: 2rem; }
-  a { color: #1F1D1A; }
+@font-face {
+  font-family: "Fraunces";
+  src: url("fonts/fraunces-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/inter-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+:root {
+  --night: #1D2A21;
+  --black: #0E100F;
+  --bone: #F6F3E3;
+  --bone-60: #9FA395;
+  --clay: #C4714B;
+  --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --sans: "Inter", -apple-system, "Helvetica Neue", sans-serif;
+  --rule-quiet: rgba(246, 243, 227, 0.22);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 100%; }
+body {
+  background: var(--night);
+  color: var(--bone);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+.wrap { max-width: 34rem; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone-60);
+}
+h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin-top: 0.75rem;
+}
+.updated {
+  font-size: 0.875rem;
+  color: var(--bone-60);
+  margin: 0.75rem 0 2.5rem;
+}
+hr { border: none; border-top: 1px solid var(--rule-quiet); margin: 2.5rem 0; }
+h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+p { font-size: 1rem; line-height: 1.65; color: var(--bone); max-width: 32rem; }
+p + p { margin-top: 1rem; }
+section + section { margin-top: 2.25rem; }
+a { color: var(--clay); text-decoration: underline; text-decoration-color: rgba(196,113,75,0.4); }
+a:hover { text-decoration-color: var(--clay); }
+footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule-quiet);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bone-60);
+}
 </style>
 </head>
 <body>
-<h1>Affelion Kind — Privacy Policy</h1>
-<p class="updated">Last updated 16 August 2026</p>
+<div class="wrap">
+  <p class="eyebrow">Affelion Kind</p>
+  <h1>What stays on your phone, stated plainly.</h1>
+  <p class="updated">Last updated 16 August 2026</p>
 
-<h2>The short version</h2>
-<p>Affelion Kind is built to be used with nothing to sign up for and nothing tracked. We do
-not collect, store, transmit, or sell any personal information, and we do not use analytics
-or advertising SDKs of any kind.</p>
+  <section>
+    <h2>The short version</h2>
+    <p>Kind runs fully offline. Nothing you type or select is sent anywhere.
+    There is no account, no analytics, and no advertising SDK in this app.</p>
+  </section>
 
-<h2>What the app does with what you type or select</h2>
-<p>Affelion Kind runs fully offline. Every situation, principle, and pre-written message
-lives inside the app itself. Anything you type to personalize a message, or any message you
-copy, stays on your device only. Nothing is sent to a server, logged, or shared.</p>
+  <hr />
 
-<h2>Purchases</h2>
-<p>Affelion Kind offers one optional one-time in-app purchase ("The alternates"), handled
-entirely through Apple's App Store (StoreKit) or Google Play Billing. We never see your
-payment details — Apple and Google process purchases directly, under their own privacy
-policies. We do not operate a payment server and do not store purchase records ourselves.</p>
+  <section>
+    <h2>What Kind does with what you type</h2>
+    <p>Every situation, principle, and pre-written message lives inside the app.
+    Anything you personalize, or copy to send, stays on your device only.
+    Nothing is logged, transmitted, or shared.</p>
+  </section>
 
-<h2>Data we do not collect</h2>
-<p>We do not require or request your name, email, location, contacts, photos, microphone,
-camera, or any device identifiers. We do not use cookies, local storage for tracking, or any
-persistent tracking technology beyond what is needed to remember your own in-app purchase
-entitlement on your own device. We do not build user profiles or share data with third
-parties, because none is collected in the first place.</p>
+  <section>
+    <h2>Purchases</h2>
+    <p>The one optional in-app purchase runs through Apple's App Store or
+    Google Play. We never see your payment details, and we keep no purchase
+    records of our own.</p>
+  </section>
 
-<h2>The safety floor</h2>
-<p>If you use the in-app link to a crisis helpline directory, that opens a third-party
-website (findahelpline.com) outside of Affelion Kind, which has its own privacy practices.
-Affelion Kind does not record that you used this link, does not know your location, and
-does not store which country you selected — that choice is held only in memory during your
-session and is gone the moment you close the app.</p>
+  <section>
+    <h2>What we do not collect</h2>
+    <p>No name, email, location, contacts, photos, microphone, camera, or
+    device identifiers. No cookies. No tracking. No profile of you exists,
+    because none is built.</p>
+  </section>
 
-<h2>Children's privacy</h2>
-<p>Affelion Kind is not directed at children and is rated for ages 12 and up. Because the
-app collects no personal information from any user, regardless of age, it does not knowingly
-collect personal information from children, consistent with COPPA and similar regulations.</p>
+  <section>
+    <h2>The safety floor</h2>
+    <p>The in-app helpline link opens findahelpline.com, outside Kind, under
+    its own privacy practices. Kind does not record that you opened it and
+    does not know where you are. Your selected country is held in memory
+    only, gone the moment you close the app.</p>
+  </section>
 
-<h2>Changes to this policy</h2>
-<p>If this policy ever changes — for example, if we introduce optional account or analytics
-features in the future — we will update this page and the app's App Store listing before
-that change takes effect.</p>
+  <section>
+    <h2>Children's privacy</h2>
+    <p>Kind is rated 12+ and is not directed at children. Because no personal
+    information is collected from any user, none is knowingly collected from
+    a child either, consistent with COPPA.</p>
+  </section>
 
-<h2>Contact</h2>
-<p>Questions about this policy can be sent to
-<a href="mailto:hello@affelion.com">hello@affelion.com</a>.</p>
+  <section>
+    <h2>If this changes</h2>
+    <p>Any future change, such as an account or an analytics feature, gets
+    this page updated first and the App Store listing updated after.</p>
+  </section>
 
+  <section>
+    <h2>Reach us</h2>
+    <p><a href="mailto:hello@affelion.com">hello@affelion.com</a></p>
+  </section>
+
+  <footer>Your dignity. Their clarity. &middot; An Affelion product</footer>
+</div>
 </body>
 </html>
