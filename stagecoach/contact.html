@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact | Stagecoach</title>
+<meta name="description" content="Call Stagecoach 24/7 or email our team in Washington, DC.">
+<meta name="theme-color" content="#1E2A3E">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="cur" aria-hidden="true"><span></span></div>
+<header class="hdr on-dark" id="hdr">
+  <div class="hdr-in">
+    <a class="brand" href="index.html" aria-label="Stagecoach, home"><span class="wm">STAGECOACH</span></a>
+    <nav class="nav" aria-label="Primary"><a href="services.html">Services</a><a href="membership.html">Membership</a><a href="events.html">Events</a><a href="kids.html">Stagecoach Kids</a><a href="team.html">Team</a><a href="contact.html" aria-current="page">Contact</a></nav>
+    <div style="display:flex;align-items:center;gap:20px">
+      <a class="call-link pill-call" href="tel:+12028399439" data-cur="Call"><span class="pulse" aria-hidden="true"></span><span class="num"><span class="lbl">24/7 · </span>202.839.9439</span><span class="short">Call 24/7</span></a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="sheet">Menu</button>
+    </div>
+  </div>
+  <div class="progress" aria-hidden="true"></div>
+</header>
+<div class="sheet" id="sheet" aria-label="Menu">
+  <nav aria-label="Mobile"><a href="index.html">Home</a><a href="services.html">Services</a><a href="membership.html">Membership</a><a href="events.html">Events</a><a href="kids.html">Stagecoach Kids</a><a href="team.html">Team</a><a href="contact.html">Contact</a><a href="careers.html">Join us</a><a href="partners.html">Partners</a></nav>
+  <p>24/7 · <a href="tel:+12028399439">202.839.9439</a><br>Life-threatening emergency? Call 911&nbsp;first.</p>
+</div>
+
+<main id="main" tabindex="-1">
+<section class="dark page-hero" aria-label="Introduction">
+  <img class="ph-sym" src="assets/symbol-cream.svg" alt="" aria-hidden="true">
+  <div class="ph-copy"><p class="eyebrow rise">Contact</p>
+    <h1 class="split">Talk to&nbsp;us.</h1>
+    <p class="lead rise">Call or email. A clinician answers the phone, day or&nbsp;night.</p>
+    </div>
+  
+</section>
+<section class="sec" aria-labelledby="ct1">
+  <ul class="cards" style="--cols:2">
+    <li class="card rise"><span class="tag">Call 24/7</span><h3 id="ct1"><a href="tel:+12028399439" style="text-decoration:none;font-size:clamp(32px,3.6vw,56px);letter-spacing:-.03em">202.839.9439</a></h3><p>A clinician answers. If it’s life-threatening, call 911 right away.</p><p>medical@thestagecoachgroup.com<br>3299 K St NW #210, Washington, DC 20007</p></li>
+    <li class="card rise"><span class="tag">Questions</span><h3>Email our team</h3><p>Tell us what you need: membership, event coverage or a partnership. A real person will write back.</p><p><a class="btn btn-dark" href="mailto:medical@thestagecoachgroup.com">Email us <span class="arr" aria-hidden="true">→</span></a></p><p style="font-size:15px">Please don’t send medical details by email. For anything urgent, call 202.839.9439.</p></li>
+  </ul>
+</section>
+<!-- JOIN: membership waitlist -->
+<section class="sec join" id="join" aria-labelledby="join-h">
+  <div class="join-in">
+    <div>
+      <p class="eyebrow rise">Membership · Launching soon</p>
+      <h2 id="join-h" class="split">Join the&nbsp;waitlist.</h2>
+      <p class="lead rise">Membership is small on purpose, so every member gets our best. Add your email to hear first when spots&nbsp;open.</p>
+    </div>
+    <form id="join-form" class="rise" novalidate data-endpoint="">
+      <label for="join-email">Email address</label>
+      <div class="field">
+        <input id="join-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="name@example.com" aria-describedby="join-msg join-fine">
+        <button class="btn btn-dark" type="submit">Join the waitlist <span class="arr" aria-hidden="true">→</span></button>
+      </div>
+      <fieldset class="chips-in"><legend>I’m interested in (optional)</legend>
+        <label><input type="checkbox" name="interest" value="individual"><span>Just me</span></label>
+        <label><input type="checkbox" name="interest" value="family"><span>My family</span></label>
+        <label><input type="checkbox" name="interest" value="kids"><span>My kids</span></label>
+        <label><input type="checkbox" name="interest" value="executive"><span>Executive care</span></label>
+        <label><input type="checkbox" name="interest" value="employer"><span>My company</span></label>
+        <label><input type="checkbox" name="interest" value="events"><span>Events</span></label>
+      </fieldset>
+      <label class="hp" aria-hidden="true">Company<input name="company" tabindex="-1" autocomplete="off"></label>
+      <p class="msg" id="join-msg" role="status" aria-live="polite"></p>
+      <p class="fine" id="join-fine">News only. Unsubscribe anytime. To get care now, call 202.839.9439. Not a substitute for&nbsp;911.</p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-brand"><span class="wm">STAGECOACH</span><span class="tag">Concierge Emergency Medical Services</span><span>White-glove care, emergency-ready, wherever you are. Doctor-led and based in Washington,&nbsp;DC.</span></div>
+  <nav aria-label="Explore"><strong>Explore</strong><a href="services.html">Services</a><a href="membership.html">Membership</a><a href="events.html">Events</a><a href="kids.html">Stagecoach Kids</a><a href="team.html">Team</a></nav>
+  <nav aria-label="Company"><strong>Company</strong><a href="careers.html">Join us</a><a href="careers.html#internships">Internships</a><a href="partners.html">Partners</a><a href="contact.html">Contact</a></nav>
+  <div><strong>Reach us</strong><br><a href="tel:+12028399439">202.839.9439</a>, 24/7<br><a href="mailto:medical@thestagecoachgroup.com">medical@thestagecoachgroup.com</a><br>3299 K St NW #210<br>Washington, DC 20007</div>
+  <div class="fine"><span>© 2026 Stagecoach Concierge EMS PC. Not a substitute for 911. In a life-threatening emergency, call 911.</span><span>Stagecoach Concierge EMS PC is pending EMS Agency approval by the District of&nbsp;Columbia.</span></div>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
