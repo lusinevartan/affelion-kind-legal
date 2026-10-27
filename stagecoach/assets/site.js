@@ -62,7 +62,7 @@
   const how = $('.how'), hDot = $('#h-dot'), hRings = $$('.h-ring'), hS = $('#h-s'), hGuide = $('#h-guide'), opts = $$('.opt'), steps = $$('.step');
   const jS = $('#j-s'), jArt = $('.journey-art'), jDot = $('#j-dot');
   const prog = $('.progress');
-  const darkZones = () => $$('.hero, .dark');
+  const darkZones = () => $$('.dark');
   const AX = .333, AY = .335; // a point on the S stroke (33.3, 33.5 in the 100-unit symbol)
 
   let vw = innerWidth, vh = innerHeight;
@@ -114,6 +114,7 @@
     win.style.setProperty('--scrim', (clamp((hp - .4) / .15) * .66).toFixed(3));
     const hold = clamp((hp - .6) / .4);
     win.style.transform = `scale(${1 + .08 * hold})`;
+    win.style.filter = `brightness(${(.68 + .32 * z).toFixed(3)}) saturate(${(1.3 - .3 * z).toFixed(3)}) contrast(${(1.15 - .15 * z).toFixed(3)})`;
     const fade = 1 - clamp((hp - .03) / .09);
     clock.style.opacity = fade; clock.style.transform = `translateY(${-(1 - fade) * 60}px)`;
     meta.style.opacity = fade; side.style.opacity = fade; cue.style.opacity = fade;
@@ -154,7 +155,7 @@
     const loop = () => {
       cx += (mx - cx) * .22; cy += (my - cy) * .22;
       cur.style.transform = `translate3d(${cx}px,${cy}px,0)`;
-      const el = document.elementFromPoint(cx, cy); cur.classList.toggle('light', !!(el && el.closest('.hero, .dark, .sheet')));
+      const el = document.elementFromPoint(cx, cy); cur.classList.toggle('light', !!(el && el.closest('.dark, .sheet')));
       requestAnimationFrame(loop);
     };
     loop();

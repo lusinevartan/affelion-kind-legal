@@ -1,0 +1,17 @@
+/* Stagecoach loader — self-contained. Drop this CSS anywhere (index.css or a <style> tag). */
+.sc-loader{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#10192B;color:#F4F1E9;font-family:'Montserrat',system-ui,sans-serif;clip-path:inset(0 0 0 0);transition:clip-path 1s cubic-bezier(.2,.9,.2,1)}
+.sc-loader.is-out{clip-path:inset(0 0 100% 0);pointer-events:none}
+.sc-loader__stage{display:grid;justify-items:center;gap:clamp(22px,3.5vw,36px);width:min(86vw,720px)}
+.sc-loader svg{width:clamp(110px,16vw,180px);overflow:visible}
+.sc-loader__dot{transform-origin:50px 50px;animation:sc-dot 3.2s cubic-bezier(.2,.9,.2,1) both}
+.sc-loader__ring{transform-origin:50px 50px;animation:sc-ring 3.2s cubic-bezier(.2,.9,.2,1) both}
+.sc-loader__s{stroke-dasharray:1 1;animation:sc-draw 3.2s cubic-bezier(.2,.9,.2,1) both}
+.sc-loader__name{font-weight:500;font-size:clamp(26px,5.6vw,64px);line-height:1;letter-spacing:.32em;padding-left:.32em;animation:sc-name 3.2s cubic-bezier(.2,.9,.2,1) both}
+.sc-loader__tag{font-weight:500;font-size:clamp(10px,1.1vw,13px);letter-spacing:.3em;text-transform:uppercase;color:#D3CEC5;text-align:center;animation:sc-tag 3.2s cubic-bezier(.2,.9,.2,1) both}
+.sc-loader__skip{position:absolute;right:24px;bottom:24px;background:none;border:0;color:#D3CEC5;font:500 12px/1 inherit;font-family:inherit;letter-spacing:.22em;text-transform:uppercase;padding:14px 0;cursor:pointer}
+@keyframes sc-name{0%{opacity:0;transform:translateY(-6vh) scale(1.04)}12%,30%{opacity:1;transform:translateY(-6vh) scale(1.04)}38%{opacity:0;transform:translateY(-6vh) scale(1.02)}72%{opacity:0;transform:none}88%,100%{opacity:1;transform:none}}
+@keyframes sc-dot{0%,34%{opacity:0;transform:scale(.2)}44%{opacity:1;transform:scale(1.18)}50%,100%{opacity:1;transform:scale(1)}}
+@keyframes sc-ring{0%,44%{opacity:0;transform:scale(1)}48%{opacity:.6;transform:scale(1)}74%,100%{opacity:0;transform:scale(5.4)}}
+@keyframes sc-draw{0%,48%{stroke-dashoffset:1}84%,100%{stroke-dashoffset:0}}
+@keyframes sc-tag{0%,82%{opacity:0;transform:translateY(8px)}96%,100%{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.sc-loader{display:none}}
