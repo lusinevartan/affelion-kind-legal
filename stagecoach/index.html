@@ -195,16 +195,16 @@ a{color:inherit}
 .journey p{margin:0;color:var(--ink2);max-width:40ch;font-size:clamp(19px,1.5vw,23px)}
 .journey .stack{display:grid;gap:22px}
 
-/* ---------- clients marquee ---------- */
-.clients{padding:clamp(80px,10vw,140px) 0;background:var(--deep);overflow:hidden}
-.clients .eyebrow{padding:0 var(--gut);margin-bottom:28px}
-.marq{display:flex;width:max-content;animation:marq 60s linear infinite}
-.marq.rev{animation-direction:reverse;animation-duration:72s}
-.marq span{font:500 clamp(40px,6vw,96px)/1.15 var(--serif);letter-spacing:-.01em;white-space:nowrap;padding-right:.6em}
-.marq span i{font-style:normal;color:var(--wine);padding:0 .35em;font-size:.5em;vertical-align:.35em}
-.marq.rev span{color:transparent;-webkit-text-stroke:1px var(--navy)}
-.clients:hover .marq{animation-play-state:paused}
-@keyframes marq{to{transform:translateX(-50%)}}
+/* ---------- clients: proof points ---------- */
+.clients{background:var(--deep);padding-block:clamp(90px,11vw,170px)}
+.c-head{display:grid;gap:18px;margin-bottom:clamp(36px,4vw,64px)}
+.c-head h2{margin:0;font:600 clamp(50px,7vw,120px)/.98 var(--serif);letter-spacing:-.02em}
+.logos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--mist);border-left:1px solid var(--mist)}
+.logos li{aspect-ratio:16/9;display:grid;place-items:center;border-right:1px solid var(--mist);border-bottom:1px solid var(--mist);transition:background-color .5s var(--ease)}
+.logos li:hover{background:var(--porcelain)}
+.logo{display:block;width:var(--w);height:var(--h);background:var(--navy);-webkit-mask:var(--u) center/contain no-repeat;mask:var(--u) center/contain no-repeat;opacity:.86;transition:opacity .5s var(--ease)}
+.logos li:hover .logo{opacity:1}
+.wordlogo{font:600 clamp(14px,1.25vw,19px)/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;text-align:center;opacity:.86}
 
 /* ---------- team ---------- */
 .f-head{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:24px;align-items:end;margin-bottom:clamp(44px,5vw,80px)}
@@ -289,6 +289,8 @@ figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--in
   .journey{grid-template-columns:1fr}
   .journey-art{width:min(80%,360px)}
   .f-head{grid-template-columns:1fr}
+  .logos{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .logos li{aspect-ratio:2/1}
   .row a{grid-template-columns:minmax(0,1fr) 44px;gap:18px}
   .row .thumb{grid-column:1/-1;aspect-ratio:16/10}
   .t-grid.four,.t-grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -472,12 +474,24 @@ figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--in
   </div>
 </section>
 
-<!-- CLIENTS -->
-<section class="clients" aria-labelledby="c-h">
-  <p class="eyebrow" id="c-h">Previous event clients include</p>
-  <div class="marq" aria-hidden="true"><span>Meta<i>●</i>Google<i>●</i>JP Morgan<i>●</i>The Atlantic<i>●</i>Emerson Collective<i>●</i></span><span>Meta<i>●</i>Google<i>●</i>JP Morgan<i>●</i>The Atlantic<i>●</i>Emerson Collective<i>●</i></span></div>
-  <div class="marq rev" aria-hidden="true"><span>YPO · Edens · Hargrove · Union Market · Autoshop ·</span><span>YPO · Edens · Hargrove · Union Market · Autoshop ·</span></div>
-  <ul class="sr"><li>Meta</li><li>Google</li><li>JP Morgan</li><li>The Atlantic</li><li>Emerson Collective</li><li>YPO</li><li>Edens</li><li>Hargrove</li><li>Union Market</li><li>Autoshop</li></ul>
+<!-- CLIENTS: proof points -->
+<section class="sec clients" aria-labelledby="c-h">
+  <div class="c-head">
+    <p class="eyebrow rise">Previous event clients include</p>
+    <h2 id="c-h" class="split">In the room&nbsp;for</h2>
+  </div>
+  <ul class="logos">
+      <li><span class="logo" role="img" aria-label="Meta" style="--u:url(assets/clients/meta.svg);--w:70%;--h:44%"></span></li>
+      <li><span class="logo" role="img" aria-label="Google" style="--u:url(assets/clients/google.svg);--w:60%;--h:46%"></span></li>
+      <li><span class="logo" role="img" aria-label="J.P. Morgan" style="--u:url(assets/clients/jpmorgan.svg);--w:72%;--h:44%"></span></li>
+      <li><span class="logo" role="img" aria-label="The Atlantic" style="--u:url(assets/clients/atlantic.svg);--w:64%;--h:76%"></span></li>
+      <li><span class="logo" role="img" aria-label="Emerson Collective" style="--u:url(assets/clients/emerson.png);--w:68%;--h:50%"></span></li>
+      <li><span class="logo" role="img" aria-label="YPO" style="--u:url(assets/clients/ypo.png);--w:56%;--h:48%"></span></li>
+      <li><span class="logo" role="img" aria-label="Edens" style="--u:url(assets/clients/edens.png);--w:58%;--h:58%"></span></li>
+      <li><span class="logo" role="img" aria-label="Hargrove" style="--u:url(assets/clients/hargrove.svg);--w:70%;--h:54%"></span></li>
+      <li><span class="wordlogo">Union Market</span></li>
+      <li><span class="wordlogo">Autoshop</span></li>
+  </ul>
 </section>
 
 <!-- TEAM -->
