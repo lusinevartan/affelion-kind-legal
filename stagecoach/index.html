@@ -3,22 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>The Stagecoach Group — Emergency medicine that comes to you</title>
+<title>Stagecoach — Concierge Emergency Medical Services</title>
 <meta name="description" content="Physician-led private emergency, ER and urgent care medicine in Washington, DC. One 24/7 line answered by a clinician. Not a substitute for 911.">
-<meta name="theme-color" content="#14213D">
+<meta name="theme-color" content="#1E2A3E">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32">
 <script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Montserrat:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
 <style>
 :root{
-  --navy:#14213D;--night:#0E1830;--porcelain:#F5F0EC;--deep:#EDE6DF;--wine:#34121C;--slate:#4A5A70;--ink2:#26344F;--line:#E6DFD8;--mist:#CFC6BE;
-  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Montserrat',system-ui,sans-serif;
+  --navy:#1E2A3E;--night:#10192B;--porcelain:#F4F1E9;--deep:#F7E6DC;--peach:#DC8E73;--coral:#E37970;--coral-ink:#A9473B;--wine:var(--coral-ink);--slate:#4A5568;--ink2:#2B384D;--line:#E5DFD5;--mist:#D3CEC5;
+  --glow:radial-gradient(60% 60% at 75% 20%,rgba(227,121,112,.32),transparent 70%),radial-gradient(50% 50% at 10% 90%,rgba(220,142,115,.22),transparent 70%);
+  --serif:'Montserrat',system-ui,sans-serif;--sans:'Montserrat',system-ui,sans-serif;
   --ease:cubic-bezier(.2,.9,.2,1);--gut:max(clamp(20px,5vw,80px),calc((100vw - 1600px) / 2));
 }
 *{box-sizing:border-box;text-wrap:pretty}
 h1,h2,h3{text-wrap:balance}
+h1,h2,.place,.tel,.clock,.step h3{letter-spacing:-.035em!important}
+em{font-style:normal}
+.dark em,.hero-copy em{color:var(--peach)}
+main h2 em{color:var(--coral-ink)}
+.dark h2 em{color:var(--peach)}
 html{-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 section[id]{scroll-margin-top:72px}
@@ -51,7 +57,7 @@ a{color:inherit}
 .intro .i-dot{transform-origin:50px 50px;animation:i-dot 3.6s var(--ease) both}
 .intro .i-ring{transform-origin:50px 50px;animation:i-ring 3.6s var(--ease) both}
 .intro .i-s{stroke-dasharray:1 1;animation:i-draw 3.6s var(--ease) both}
-.intro .i-word{width:100%;animation:i-word 3.6s var(--ease) both}
+.intro .i-word{font:500 clamp(30px,6.4vw,78px)/1 var(--sans);letter-spacing:.32em;padding-left:.32em;text-align:center;color:var(--porcelain);animation:i-word 3.6s var(--ease) both}
 .intro .i-tag{font:500 clamp(11px,1.2vw,14px)/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;color:var(--mist);text-align:center;animation:i-tag 3.6s var(--ease) both}
 .intro-skip{position:absolute;right:var(--gut);bottom:28px;background:none;border:0;color:var(--mist);font:500 12px var(--sans);letter-spacing:.22em;text-transform:uppercase;padding:14px 0;cursor:pointer}
 .intro-skip:hover{color:var(--porcelain)}
@@ -63,14 +69,11 @@ a{color:inherit}
 
 /* ---------- header ---------- */
 .hdr{position:fixed;top:0;left:0;right:0;z-index:80;color:var(--navy);transition:color .5s var(--ease),background-color .5s var(--ease),border-color .5s var(--ease);border-bottom:1px solid transparent}
-.hdr.solid{background:rgba(245,240,236,.84);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border-color:var(--line)}
+.hdr.solid{background:rgba(244,241,233,.84);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border-color:var(--line)}
 .hdr.on-dark{color:var(--porcelain)}
-.hdr.on-dark.solid{background:rgba(14,24,48,.55);border-color:rgba(245,240,236,.12)}
+.hdr.on-dark.solid{background:rgba(16,25,43,.55);border-color:rgba(244,241,233,.12)}
 .hdr-in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:72px;padding:0 var(--gut)}
 .brand{display:flex;align-items:center;min-height:44px;position:relative}
-.brand img{height:28px;width:auto;transition:opacity .5s var(--ease)}
-.brand .b-cream{position:absolute;left:0;opacity:0}
-.hdr.on-dark .brand .b-cream{opacity:1}.hdr.on-dark .brand .b-navy{opacity:0}
 .nav{display:flex;gap:34px;font:600 15px var(--sans);letter-spacing:.02em}
 .nav a,.call-link{text-decoration:none;padding:12px 0;position:relative}
 .nav a::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
@@ -88,7 +91,7 @@ a{color:inherit}
 .sheet{position:fixed;inset:0;z-index:79;background:var(--navy);color:var(--porcelain);padding:110px var(--gut) 40px;display:grid;align-content:space-between;clip-path:inset(0 0 100% 0);transition:clip-path .8s var(--ease);visibility:hidden}
 .sheet.open{clip-path:inset(0 0 0 0);visibility:visible}
 .sheet nav{display:grid;gap:6px}
-.sheet nav a{font:600 clamp(44px,12vw,72px)/1.05 var(--serif);text-decoration:none}
+.sheet nav a{font:600 clamp(35px,9.6vw,58px)/1.15 var(--serif);text-decoration:none}
 .sheet p{margin:0;color:var(--porcelain);font-size:17px}
 
 /* ---------- hero: zoom through the S ---------- */
@@ -99,15 +102,15 @@ a{color:inherit}
 .hero-ghost{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
 .hero-meta{position:absolute;left:var(--gut);right:var(--gut);top:104px;display:flex;justify-content:space-between;gap:16px;align-items:center}
 .hero-meta .eyebrow{color:var(--porcelain);display:flex;gap:12px;align-items:center}
-.clock{position:absolute;left:var(--gut);bottom:clamp(28px,6vh,72px);font:500 clamp(72px,11.5vw,180px)/.86 var(--serif);letter-spacing:-.02em;font-variant-numeric:tabular-nums;will-change:transform,opacity}
+.clock{position:absolute;left:var(--gut);bottom:clamp(28px,6vh,72px);font:500 clamp(58px,9.2vw,144px)/1.0 var(--serif);letter-spacing:-.02em;font-variant-numeric:tabular-nums;will-change:transform,opacity}
 .hero-side{position:absolute;right:var(--gut);bottom:clamp(36px,7vh,84px);max-width:32ch;text-align:right;font:500 18px/1.5 var(--sans);color:var(--mist)}
-.hero-side strong{display:block;font:600 clamp(30px,2.8vw,44px)/1.05 var(--serif);color:var(--porcelain);margin-bottom:10px}
+.hero-side strong{display:block;font:600 clamp(27px,2.5vw,40px)/1.15 var(--serif);color:var(--porcelain);margin-bottom:10px}
 .scroll-cue{position:absolute;right:var(--gut);top:50%;transform:translateY(-50%);display:grid;justify-items:center;gap:10px;font:500 10px var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--mist)}
 .scroll-cue i{width:1px;height:40px;background:linear-gradient(var(--mist),transparent);animation:cue 2.4s var(--ease) infinite;transform-origin:top}
 @keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 .hero-copy{position:absolute;inset:0;display:grid;align-content:center;justify-items:center;text-align:center;padding:88px var(--gut) 24px;gap:clamp(22px,3vw,36px);opacity:0;pointer-events:none}
 .hero-copy.live{pointer-events:auto}
-.hero-copy h1{margin:0;font:600 min(clamp(60px,10.5vw,190px),14vh) / .92 var(--serif);letter-spacing:-.02em;max-width:13ch}
+.hero-copy h1{margin:0;font:500 min(clamp(46px,8.4vw,150px),11vh) / 1.02 var(--serif);letter-spacing:-.02em;max-width:13ch}
 .hero-copy h1 em{font-style:italic}
 .hero-copy .ctas{display:flex;flex-wrap:wrap;gap:14px 30px;justify-content:center;align-items:center}
 .hero-copy small{font:500 16px/1.6 var(--sans);color:var(--porcelain)}
@@ -116,8 +119,8 @@ a{color:inherit}
 .btn{display:inline-flex;align-items:center;gap:14px;min-height:60px;padding:0 32px;text-decoration:none;font:600 17px var(--sans);letter-spacing:.02em;border-radius:999px;position:relative;overflow:hidden;isolation:isolate;transition:color .5s var(--ease)}
 .btn::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;transform:translateY(101%);transition:transform .6s var(--ease)}
 .btn:hover::before{transform:none}
-.btn-light{background:var(--porcelain);color:var(--navy)}.btn-light::before{background:#fff}
-.btn-dark{background:var(--navy);color:var(--porcelain)}.btn-dark::before{background:var(--wine)}
+.btn-light{background:linear-gradient(135deg,var(--peach),var(--coral));color:var(--night);box-shadow:0 18px 40px -16px rgba(227,121,112,.75),inset 0 1px 0 rgba(255,255,255,.35)}.btn-light::before{background:var(--porcelain)}
+.btn-dark{background:var(--night);color:var(--porcelain);box-shadow:0 18px 40px -18px rgba(16,25,43,.7)}.btn-dark::before{background:var(--navy)}
 .btn .arr{transition:transform .5s var(--ease)}.btn:hover .arr{transform:translateX(4px)}
 .tlink{font:600 17px var(--sans);text-decoration:underline;text-underline-offset:7px;text-decoration-thickness:1px;padding:14px 0}
 .tlink:hover{text-decoration-thickness:2px}
@@ -134,10 +137,10 @@ a{color:inherit}
 .rise.in{opacity:1;transform:none}
 
 /* ---------- mission ---------- */
-.mission h2{margin:28px 0 0;font:600 clamp(52px,8.8vw,156px)/.98 var(--serif);letter-spacing:-.02em;max-width:15ch}
+.mission h2{margin:28px 0 0;font:500 clamp(42px,7.0vw,125px)/1.08 var(--serif);letter-spacing:-.02em;max-width:15ch}
 .mission .mw{opacity:.2;transition:opacity .6s var(--ease)}
 .mission .mw.lit{opacity:1}
-.mission .mw.accent{font-style:italic;color:var(--wine)}
+.mission .mw.accent{color:var(--coral-ink)}
 .mission-foot{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;margin-top:clamp(40px,5vw,72px);align-items:end}
 .mission-foot p{margin:0;font:500 clamp(21px,1.9vw,28px)/1.5 var(--sans);max-width:44ch}
 
@@ -152,7 +155,7 @@ a{color:inherit}
 .how-head{position:absolute;top:0;left:0;right:0}
 .step{position:absolute;inset:44px 0 0;display:grid;align-content:start;gap:18px;opacity:0;transform:translateY(20px);transition:opacity .9s var(--ease),transform .9s var(--ease);pointer-events:none}
 .step.on{opacity:1;transform:none;pointer-events:auto}
-.step h3{margin:0;font:600 clamp(48px,6.2vw,104px)/.98 var(--serif);letter-spacing:-.015em}
+.step h3{margin:0;font:500 clamp(38px,5.0vw,83px)/1.08 var(--serif);letter-spacing:-.015em}
 .step p{margin:0;max-width:40ch;color:var(--ink2);font-size:clamp(19px,1.5vw,23px);line-height:1.5}
 .step .opts{font:600 15px/1.9 var(--sans);letter-spacing:.04em;color:var(--navy)}
 .stepper{position:absolute;left:var(--gut);bottom:32px;width:min(560px,calc(100% - 2 * var(--gut)));display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;z-index:2}
@@ -171,7 +174,7 @@ a{color:inherit}
 
 /* ---------- services list ---------- */
 .svc-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:clamp(36px,4vw,56px)}
-.svc-head h2{margin:0;font:600 clamp(54px,8.4vw,148px)/.96 var(--serif);letter-spacing:-.02em}
+.svc-head h2{margin:0;font:500 clamp(43px,6.7vw,118px)/1.06 var(--serif);letter-spacing:-.02em}
 .svc{list-style:none;margin:0;padding:0;border-top:1px solid var(--navy)}
 .row{border-bottom:1px solid var(--line)}
 .row a{display:grid;grid-template-columns:clamp(200px,22vw,380px) minmax(0,1fr) 44px;gap:clamp(24px,3.5vw,56px);align-items:center;padding:clamp(24px,2.6vw,36px) 0;text-decoration:none}
@@ -180,26 +183,26 @@ a{color:inherit}
 .row .thumb img.dome{object-position:50% 0;transform:scale(1.7);transform-origin:50% 0}
 .row a:hover .thumb img:not(.dome),.row a:focus-visible .thumb img:not(.dome){transform:scale(1.04)}
 .row .txt{display:grid;gap:14px;min-width:0}
-.row .place{font:600 clamp(48px,6.6vw,116px)/.94 var(--serif);letter-spacing:-.02em}
-.row .txt strong{font:600 clamp(26px,2.3vw,36px)/1.12 var(--serif)}
+.row .place{font:500 clamp(38px,5.3vw,93px)/1.04 var(--serif);letter-spacing:-.02em}
+.row .txt strong{font:600 clamp(23px,2.1vw,32px)/1.15 var(--serif)}
 .row .txt span.body{font-size:clamp(18px,1.3vw,20px);line-height:1.5;color:var(--ink2);max-width:52ch}
 .row .go{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--navy);display:grid;place-items:center;transition:background .5s var(--ease),color .5s var(--ease)}
 .row a:hover .go,.row a:focus-visible .go{background:var(--navy);color:var(--porcelain)}
-.svc-aside{margin:0 0 .6em;font:600 clamp(20px,1.7vw,26px)/1.3 var(--serif);font-style:italic;color:var(--wine);max-width:22ch;text-align:right}
+.svc-aside{margin:0 0 .6em;font:600 clamp(17px,1.4vw,21px)/1.35 var(--serif);color:var(--wine);max-width:22ch;text-align:right}
 .svc-more{margin:28px 0 0;font:500 18px/1.6 var(--sans);color:var(--ink2)}
 
 /* ---------- journey: big S draws on scroll ---------- */
 .journey{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,96px);align-items:center}
 .journey-art{position:relative;width:min(100%,560px);aspect-ratio:1;justify-self:center}
 .journey-art svg{width:100%;height:100%;overflow:visible}
-.journey h2{margin:0;font:600 clamp(46px,6vw,100px)/1.0 var(--serif);letter-spacing:-.015em}
+.journey h2{margin:0;font:500 clamp(37px,4.8vw,80px)/1.1 var(--serif);letter-spacing:-.015em}
 .journey p{margin:0;color:var(--ink2);max-width:40ch;font-size:clamp(19px,1.5vw,23px)}
 .journey .stack{display:grid;gap:22px}
 
 /* ---------- clients: proof points ---------- */
 .clients{background:var(--deep);padding-block:clamp(90px,11vw,170px)}
 .c-head{display:grid;gap:18px;margin-bottom:clamp(36px,4vw,64px)}
-.c-head h2{margin:0;font:600 clamp(50px,7vw,120px)/.98 var(--serif);letter-spacing:-.02em}
+.c-head h2{margin:0;font:500 clamp(40px,5.6vw,96px)/1.08 var(--serif);letter-spacing:-.02em}
 .logos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--mist);border-left:1px solid var(--mist)}
 .logos li{aspect-ratio:16/9;display:grid;place-items:center;border-right:1px solid var(--mist);border-bottom:1px solid var(--mist);transition:background-color .5s var(--ease)}
 .logos li:hover{background:var(--porcelain)}
@@ -209,7 +212,7 @@ a{color:inherit}
 
 /* ---------- team ---------- */
 .f-head{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:24px;align-items:end;margin-bottom:clamp(44px,5vw,80px)}
-.f-head h2{margin:0;font:600 clamp(50px,7vw,120px)/.98 var(--serif);letter-spacing:-.02em}
+.f-head h2{margin:0;font:500 clamp(40px,5.6vw,96px)/1.08 var(--serif);letter-spacing:-.02em}
 .f-head p{margin:0;color:var(--ink2);font-size:clamp(19px,1.5vw,23px);max-width:40ch}
 .t-group{display:grid;gap:28px;margin-top:clamp(56px,6vw,96px)}
 .t-group:first-of-type{margin-top:0}
@@ -224,24 +227,24 @@ figure{margin:0}
 .portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%;filter:grayscale(1) contrast(1.12) brightness(1.04);mix-blend-mode:screen;opacity:.92;transition:filter .9s var(--ease),opacity .9s var(--ease)}
 .portrait:hover img,.portrait:focus-visible img,.portrait.color img{filter:none;mix-blend-mode:normal;opacity:1}
 figcaption{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin-top:16px}
-figcaption .name{font:600 clamp(28px,2.5vw,40px)/1.08 var(--serif)}
+figcaption .name{font:600 clamp(25px,2.2vw,36px)/1.15 var(--serif)}
 figcaption .fig{color:var(--wine)}
 figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--ink2)}
 
 /* ---------- CTA ---------- */
 .cta{min-height:100vh;display:grid;align-content:center;gap:clamp(26px,3vw,44px);overflow:hidden}
 .cta-sym{position:absolute;right:calc(var(--gut) * -1);top:50%;width:min(64vw,760px);transform:translateY(-50%);opacity:.07;pointer-events:none}
-.cta h2{margin:0;font:600 clamp(68px,12.5vw,220px)/.9 var(--serif);letter-spacing:-.025em}
+.cta h2{margin:0;font:500 clamp(54px,10.0vw,176px)/1.0 var(--serif);letter-spacing:-.025em}
 .cta h2 em{font-style:italic}
-.tel{color:var(--porcelain);text-decoration:none;font:500 clamp(46px,9.6vw,172px)/1 var(--serif);letter-spacing:-.01em;font-variant-numeric:tabular-nums;width:max-content;max-width:100%;display:inline-block;white-space:nowrap;position:relative;padding-bottom:.08em}
-.tel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:rgba(245,240,236,.3)}
+.tel{color:var(--porcelain);text-decoration:none;font:500 clamp(37px,7.7vw,138px)/1.1 var(--serif);letter-spacing:-.01em;font-variant-numeric:tabular-nums;width:max-content;max-width:100%;display:inline-block;white-space:nowrap;position:relative;padding-bottom:.08em}
+.tel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:rgba(244,241,233,.3)}
 .tel::before{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--porcelain);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ease);z-index:1}
 .tel:hover::before{transform:scaleX(1)}
 .tel .ch{display:inline-block;transform:translateY(110%);opacity:0;transition:transform 1s var(--ease),opacity 1s var(--ease);transition-delay:calc(var(--i)*45ms)}
 .tel-wrap{overflow:hidden}
 .in .tel .ch{transform:none;opacity:1}
 .cta-row{display:flex;flex-wrap:wrap;gap:16px 36px;align-items:center}
-.cta .must{margin:0;font-size:18px;color:var(--porcelain);border-top:1px solid rgba(245,240,236,.16);padding-top:22px;max-width:60ch}
+.cta .must{margin:0;font-size:18px;color:var(--porcelain);border-top:1px solid rgba(244,241,233,.16);padding-top:22px;max-width:60ch}
 
 /* ---------- footer ---------- */
 .foot{padding:56px var(--gut) 40px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px;font-size:17px;line-height:1.7;color:var(--ink2)}
@@ -258,6 +261,47 @@ figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--in
 .cur span{opacity:0;transition:opacity .3s}.cur.big span{opacity:1}
 @media (hover:none),(pointer:coarse){.cur{display:none!important}}
 
+/* ---------- name, depth and light ---------- */
+.brand{text-decoration:none}
+.wm{font:600 17px/1 var(--sans);letter-spacing:.34em;white-space:nowrap}
+.foot-brand{display:grid;gap:12px;align-content:start}
+.foot-brand .wm{font-size:22px;color:var(--navy)}
+.foot-brand .tag{font:500 12px/1.5 var(--sans);letter-spacing:.18em;text-transform:uppercase}
+.dark{background:var(--glow),linear-gradient(165deg,var(--navy),var(--night) 70%)}
+.hero{background:linear-gradient(165deg,var(--navy),var(--night))}
+.hero-copy::before{content:"";position:absolute;left:50%;top:50%;width:min(80vw,900px);height:min(60vh,520px);transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(227,121,112,.34),rgba(220,142,115,.12) 55%,transparent);filter:blur(30px);z-index:-1;pointer-events:none}
+.hero-copy{isolation:isolate}
+.row .thumb{box-shadow:0 26px 50px -30px rgba(16,25,43,.55);transition:transform .7s var(--ease),box-shadow .7s var(--ease)}
+.row a:hover .thumb{transform:translateY(-6px);box-shadow:0 34px 60px -28px rgba(227,121,112,.55)}
+.portrait{box-shadow:0 30px 60px -34px rgba(16,25,43,.6);transition:transform .7s var(--ease),box-shadow .7s var(--ease)}
+.portrait:hover,.portrait:focus-visible{transform:translateY(-6px);box-shadow:0 40px 70px -30px rgba(227,121,112,.5)}
+.logos li:hover{background:#fff;box-shadow:0 24px 50px -30px rgba(227,121,112,.55);position:relative;z-index:1}
+.stepper em{background:linear-gradient(90deg,var(--peach),var(--coral))}
+.progress{background:linear-gradient(90deg,var(--peach),var(--coral))!important;height:2px}
+.pulse::before{background:var(--coral)!important}.pulse::after{border-color:var(--coral)!important}
+#h-dot{fill:var(--coral)}
+.row .go{transition:background .5s var(--ease),color .5s var(--ease),border-color .5s var(--ease)}
+.row a:hover .go,.row a:focus-visible .go{background:var(--coral);border-color:var(--coral);color:var(--night)}
+
+/* ---------- join the list ---------- */
+.join{background:radial-gradient(70% 90% at 85% 10%,rgba(255,255,255,.28),transparent 60%),linear-gradient(120deg,var(--peach),var(--coral));color:var(--night);padding-block:clamp(90px,10vw,150px)}
+.join-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,96px);align-items:end}
+.join .eyebrow{color:var(--night)}
+.join h2{margin:14px 0 18px;font:500 clamp(40px,5.6vw,96px)/1.04 var(--sans);letter-spacing:-.035em}
+.join p.lead{margin:0;max-width:40ch;font-size:clamp(18px,1.4vw,22px)}
+.join form{display:grid;gap:12px}
+.join label{font:600 14px var(--sans);letter-spacing:.16em;text-transform:uppercase}
+.field{display:flex;gap:10px;flex-wrap:wrap;background:rgba(255,255,255,.55);padding:8px;border-radius:999px;box-shadow:0 24px 50px -26px rgba(16,25,43,.55),inset 0 1px 0 rgba(255,255,255,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.field input{flex:1 1 220px;min-width:0;min-height:56px;border:0;background:transparent;padding:0 20px;font:500 18px var(--sans);color:var(--night);border-radius:999px}
+.field input::placeholder{color:#5A5550}
+.field input:focus-visible{outline:2px solid var(--night);outline-offset:2px}
+.field input[aria-invalid="true"]{outline:2px solid var(--night)}
+.join .btn-dark{flex:0 0 auto}
+.join .msg{margin:4px 0 0;min-height:1.5em;font:600 16px/1.5 var(--sans)}
+.join .fine{margin:0;font-size:15px;opacity:.85}
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media (max-width:860px){.join-in{grid-template-columns:1fr}.field{border-radius:22px}.field .btn{width:100%;justify-content:center}}
+
 /* ---------- desktop rhythm ---------- */
 @media (min-width:861px){
   .mission-foot{padding-left:clamp(0px,30vw,520px)}
@@ -272,8 +316,8 @@ figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--in
   .nav{display:none}.menu-btn{display:block}
   .call-link .lbl{display:none}
   .hero-side{display:none}
-  .clock{font-size:clamp(64px,22vw,120px)}
-  .hero-copy h1{font-size:clamp(50px,14.5vw,88px)}
+  .clock{font-size:clamp(52px,17vw,96px)}
+  .hero-copy h1{font-size:clamp(38px,11vw,64px)}
   .mission-foot{grid-template-columns:1fr}  .how{height:440vh}
   .how-pin{grid-template-columns:1fr;grid-template-rows:auto 1fr;align-items:start;padding-top:96px;gap:8px}
   .how-art{width:min(70vw,38vh)}
@@ -286,7 +330,7 @@ figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--in
   .next{bottom:22px;font-size:15px}
   .step{top:34px}
   .hero-meta .eyebrow+.eyebrow{display:none}
-  .step h3{font-size:clamp(38px,10.5vw,56px)}
+  .step h3{font-size:clamp(30px,8.4vw,44px)}
   .journey{grid-template-columns:1fr}
   .journey-art{width:min(80%,360px)}
   .f-head{grid-template-columns:1fr}
@@ -297,9 +341,9 @@ figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--in
   .t-grid.four,.t-grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}
   .foot{grid-template-columns:1fr 1fr}
 }
-@media (max-width:600px){.t-grid.four,.t-grid.three{grid-template-columns:1fr;gap:28px}.t-grid figure{display:grid;grid-template-columns:minmax(0,38%) minmax(0,1fr);gap:18px;align-items:start}.t-grid figcaption{margin-top:0}figcaption .name{font-size:28px}figcaption .role{font-size:17px}}
-@media (max-width:860px) and (max-height:720px){.how-art{width:min(56vw,28vh)}.how-text{min-height:260px}.step p{font-size:17px}.step h3{font-size:clamp(32px,9vw,42px)}}
-@media (max-width:520px){.foot{grid-template-columns:1fr}.brand img{height:22px}}
+@media (max-width:600px){.t-grid.four,.t-grid.three{grid-template-columns:1fr;gap:28px}.t-grid figure{display:grid;grid-template-columns:minmax(0,38%) minmax(0,1fr);gap:18px;align-items:start}.t-grid figcaption{margin-top:0}figcaption .name{font-size:22px}figcaption .role{font-size:17px}}
+@media (max-width:860px) and (max-height:720px){.how-art{width:min(56vw,28vh)}.how-text{min-height:260px}.step p{font-size:17px}.step h3{font-size:clamp(26px,7.4vw,36px)}}
+@media (max-width:520px){.foot{grid-template-columns:1fr}.brand .wm{font-size:13px;letter-spacing:.26em}}
 
 /* ---------- no JavaScript (some phone previews): show every scene in its final state ---------- */
 html:not(.js) .intro,html:not(.js) .clock,html:not(.js) .hero-meta,html:not(.js) .hero-side,html:not(.js) .scroll-cue,html:not(.js) .next,html:not(.js) .stepper,html:not(.js) .menu-btn{display:none}
@@ -315,8 +359,7 @@ html:not(.js) .how-head{position:static;margin-bottom:24px}
 html:not(.js) #h-s,html:not(.js) #j-s{stroke-dashoffset:0}
 html:not(.js) #h-dot{transform:none!important}
 html:not(.js) .rise{opacity:1;transform:none}
-html:not(.js) .hdr{color:var(--porcelain);background:rgba(14,24,48,.92)}
-html:not(.js) .hdr .brand .b-cream{opacity:1}html:not(.js) .hdr .brand .b-navy{opacity:0}
+html:not(.js) .hdr{color:var(--porcelain);background:rgba(16,25,43,.92)}
 
 /* ---------- reduced motion: final frames, no pinning ---------- */
 @media (prefers-reduced-motion:reduce){
@@ -341,11 +384,11 @@ html:not(.js) .hdr .brand .b-cream{opacity:1}html:not(.js) .hdr .brand .b-navy{o
   <div class="intro-stage">
     <svg viewBox="0 0 100 100">
       <defs><mask id="i-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs>
-      <circle class="i-ring" cx="50" cy="50" r="6.5" fill="none" stroke="#F5F0EC" stroke-width="1.2"/>
-      <circle class="i-dot" cx="50" cy="50" r="6.5" fill="#F5F0EC"/>
-      <path class="i-s" d="M65.76 26.63 L65.52 26.07 L65.26 25.51 L64.98 24.97 L64.68 24.43 L64.36 23.91 L64.03 23.40 L63.67 22.90 L63.30 22.41 L62.91 21.94 L62.50 21.48 L62.08 21.04 L61.64 20.61 L61.18 20.20 L60.71 19.80 L60.23 19.42 L59.73 19.06 L59.23 18.72 L58.70 18.40 L58.17 18.09 L57.63 17.81 L57.08 17.54 L56.51 17.30 L55.94 17.07 L55.37 16.87 L54.78 16.69 L54.19 16.52 L53.59 16.38 L52.99 16.27 L52.39 16.17 L51.78 16.09 L51.17 16.04 L50.55 16.01 L49.94 16.00 L49.33 16.01 L48.72 16.05 L48.11 16.11 L47.50 16.19 L46.89 16.29 L46.29 16.41 L45.70 16.55 L45.11 16.72 L44.52 16.91 L43.94 17.11 L43.38 17.34 L42.82 17.59 L42.26 17.86 L41.72 18.15 L41.19 18.46 L40.67 18.79 L40.17 19.13 L39.67 19.49 L39.19 19.88 L38.73 20.27 L38.28 20.69 L37.84 21.12 L37.42 21.57 L37.02 22.03 L36.63 22.50 L36.26 22.99 L35.91 23.49 L35.57 24.01 L35.26 24.53 L34.96 25.07 L34.69 25.62 L34.43 26.18 L34.19 26.74 L33.98 27.32 L33.78 27.90 L33.61 28.49 L33.46 29.08 L33.33 29.68 L33.22 30.28 L33.13 30.89 L33.07 31.50 L33.02 32.11 L33.00 32.72 L33.00 33.34 L33.03 33.95 L33.07 34.56 L33.14 35.17 L33.23 35.78 L33.34 36.38 L33.47 36.98 L33.63 37.57 L33.80 38.16 L34.00 38.74 L34.22 39.31 L34.45 39.88 L34.71 40.43 L34.99 40.98 L35.29 41.52 L35.60 42.04 L35.94 42.56 L36.29 43.06 L36.66 43.54 L37.05 44.02 L37.46 44.48 L37.88 44.92 L38.32 45.35 L38.77 45.76 L39.24 46.16 L39.72 46.54 L40.22 46.90 L40.72 47.25 L41.24 47.57 L41.78 47.88 L42.32 48.17 L42.87 48.43 L43.43 48.68 L44.00 48.91 L44.58 49.11 L45.16 49.30 L45.75 49.46 L46.35 49.60 L46.95 49.72 L47.56 49.82 L48.16 49.90 L48.77 49.96 L49.39 49.99 L50.00 50.00 L50.00 50.00 L50.61 50.01 L51.23 50.04 L51.84 50.10 L52.44 50.18 L53.05 50.28 L53.65 50.40 L54.25 50.54 L54.84 50.70 L55.42 50.89 L56.00 51.09 L56.57 51.32 L57.13 51.57 L57.68 51.83 L58.22 52.12 L58.76 52.43 L59.28 52.75 L59.78 53.10 L60.28 53.46 L60.76 53.84 L61.23 54.24 L61.68 54.65 L62.12 55.08 L62.54 55.52 L62.95 55.98 L63.34 56.46 L63.71 56.94 L64.06 57.44 L64.40 57.96 L64.71 58.48 L65.01 59.02 L65.29 59.57 L65.55 60.12 L65.78 60.69 L66.00 61.26 L66.20 61.84 L66.37 62.43 L66.53 63.02 L66.66 63.62 L66.77 64.22 L66.86 64.83 L66.93 65.44 L66.97 66.05 L67.00 66.66 L67.00 67.28 L66.98 67.89 L66.93 68.50 L66.87 69.11 L66.78 69.72 L66.67 70.32 L66.54 70.92 L66.39 71.51 L66.22 72.10 L66.02 72.68 L65.81 73.26 L65.57 73.82 L65.31 74.38 L65.04 74.93 L64.74 75.47 L64.43 75.99 L64.09 76.51 L63.74 77.01 L63.37 77.50 L62.98 77.97 L62.58 78.43 L62.16 78.88 L61.72 79.31 L61.27 79.73 L60.81 80.12 L60.33 80.51 L59.83 80.87 L59.33 81.21 L58.81 81.54 L58.28 81.85 L57.74 82.14 L57.18 82.41 L56.62 82.66 L56.06 82.89 L55.48 83.09 L54.89 83.28 L54.30 83.45 L53.71 83.59 L53.11 83.71 L52.50 83.81 L51.89 83.89 L51.28 83.95 L50.67 83.99 L50.06 84.00 L49.45 83.99 L48.83 83.96 L48.22 83.91 L47.61 83.83 L47.01 83.73 L46.41 83.62 L45.81 83.48 L45.22 83.31 L44.63 83.13 L44.06 82.93 L43.49 82.70 L42.92 82.46 L42.37 82.19 L41.83 81.91 L41.30 81.60 L40.77 81.28 L40.27 80.94 L39.77 80.58 L39.29 80.20 L38.82 79.80 L38.36 79.39 L37.92 78.96 L37.50 78.52 L37.09 78.06 L36.70 77.59 L36.33 77.10 L35.97 76.60 L35.64 76.09 L35.32 75.57 L35.02 75.03 L34.74 74.49 L34.48 73.93 L34.24 73.37" pathLength="1" fill="none" stroke="#F5F0EC" stroke-width="14.5" stroke-linecap="round" mask="url(#i-m)"/>
+      <circle class="i-ring" cx="50" cy="50" r="6.5" fill="none" stroke="#F4F1E9" stroke-width="1.2"/>
+      <circle class="i-dot" cx="50" cy="50" r="6.5" fill="#F4F1E9"/>
+      <path class="i-s" d="M65.76 26.63 L65.52 26.07 L65.26 25.51 L64.98 24.97 L64.68 24.43 L64.36 23.91 L64.03 23.40 L63.67 22.90 L63.30 22.41 L62.91 21.94 L62.50 21.48 L62.08 21.04 L61.64 20.61 L61.18 20.20 L60.71 19.80 L60.23 19.42 L59.73 19.06 L59.23 18.72 L58.70 18.40 L58.17 18.09 L57.63 17.81 L57.08 17.54 L56.51 17.30 L55.94 17.07 L55.37 16.87 L54.78 16.69 L54.19 16.52 L53.59 16.38 L52.99 16.27 L52.39 16.17 L51.78 16.09 L51.17 16.04 L50.55 16.01 L49.94 16.00 L49.33 16.01 L48.72 16.05 L48.11 16.11 L47.50 16.19 L46.89 16.29 L46.29 16.41 L45.70 16.55 L45.11 16.72 L44.52 16.91 L43.94 17.11 L43.38 17.34 L42.82 17.59 L42.26 17.86 L41.72 18.15 L41.19 18.46 L40.67 18.79 L40.17 19.13 L39.67 19.49 L39.19 19.88 L38.73 20.27 L38.28 20.69 L37.84 21.12 L37.42 21.57 L37.02 22.03 L36.63 22.50 L36.26 22.99 L35.91 23.49 L35.57 24.01 L35.26 24.53 L34.96 25.07 L34.69 25.62 L34.43 26.18 L34.19 26.74 L33.98 27.32 L33.78 27.90 L33.61 28.49 L33.46 29.08 L33.33 29.68 L33.22 30.28 L33.13 30.89 L33.07 31.50 L33.02 32.11 L33.00 32.72 L33.00 33.34 L33.03 33.95 L33.07 34.56 L33.14 35.17 L33.23 35.78 L33.34 36.38 L33.47 36.98 L33.63 37.57 L33.80 38.16 L34.00 38.74 L34.22 39.31 L34.45 39.88 L34.71 40.43 L34.99 40.98 L35.29 41.52 L35.60 42.04 L35.94 42.56 L36.29 43.06 L36.66 43.54 L37.05 44.02 L37.46 44.48 L37.88 44.92 L38.32 45.35 L38.77 45.76 L39.24 46.16 L39.72 46.54 L40.22 46.90 L40.72 47.25 L41.24 47.57 L41.78 47.88 L42.32 48.17 L42.87 48.43 L43.43 48.68 L44.00 48.91 L44.58 49.11 L45.16 49.30 L45.75 49.46 L46.35 49.60 L46.95 49.72 L47.56 49.82 L48.16 49.90 L48.77 49.96 L49.39 49.99 L50.00 50.00 L50.00 50.00 L50.61 50.01 L51.23 50.04 L51.84 50.10 L52.44 50.18 L53.05 50.28 L53.65 50.40 L54.25 50.54 L54.84 50.70 L55.42 50.89 L56.00 51.09 L56.57 51.32 L57.13 51.57 L57.68 51.83 L58.22 52.12 L58.76 52.43 L59.28 52.75 L59.78 53.10 L60.28 53.46 L60.76 53.84 L61.23 54.24 L61.68 54.65 L62.12 55.08 L62.54 55.52 L62.95 55.98 L63.34 56.46 L63.71 56.94 L64.06 57.44 L64.40 57.96 L64.71 58.48 L65.01 59.02 L65.29 59.57 L65.55 60.12 L65.78 60.69 L66.00 61.26 L66.20 61.84 L66.37 62.43 L66.53 63.02 L66.66 63.62 L66.77 64.22 L66.86 64.83 L66.93 65.44 L66.97 66.05 L67.00 66.66 L67.00 67.28 L66.98 67.89 L66.93 68.50 L66.87 69.11 L66.78 69.72 L66.67 70.32 L66.54 70.92 L66.39 71.51 L66.22 72.10 L66.02 72.68 L65.81 73.26 L65.57 73.82 L65.31 74.38 L65.04 74.93 L64.74 75.47 L64.43 75.99 L64.09 76.51 L63.74 77.01 L63.37 77.50 L62.98 77.97 L62.58 78.43 L62.16 78.88 L61.72 79.31 L61.27 79.73 L60.81 80.12 L60.33 80.51 L59.83 80.87 L59.33 81.21 L58.81 81.54 L58.28 81.85 L57.74 82.14 L57.18 82.41 L56.62 82.66 L56.06 82.89 L55.48 83.09 L54.89 83.28 L54.30 83.45 L53.71 83.59 L53.11 83.71 L52.50 83.81 L51.89 83.89 L51.28 83.95 L50.67 83.99 L50.06 84.00 L49.45 83.99 L48.83 83.96 L48.22 83.91 L47.61 83.83 L47.01 83.73 L46.41 83.62 L45.81 83.48 L45.22 83.31 L44.63 83.13 L44.06 82.93 L43.49 82.70 L42.92 82.46 L42.37 82.19 L41.83 81.91 L41.30 81.60 L40.77 81.28 L40.27 80.94 L39.77 80.58 L39.29 80.20 L38.82 79.80 L38.36 79.39 L37.92 78.96 L37.50 78.52 L37.09 78.06 L36.70 77.59 L36.33 77.10 L35.97 76.60 L35.64 76.09 L35.32 75.57 L35.02 75.03 L34.74 74.49 L34.48 73.93 L34.24 73.37" pathLength="1" fill="none" stroke="#F4F1E9" stroke-width="14.5" stroke-linecap="round" mask="url(#i-m)"/>
     </svg>
-    <img class="i-word" src="assets/wordmark-cream.svg" alt="">
+    <div class="i-word">STAGECOACH</div>
     <div class="i-tag">Concierge Emergency Medical Services</div>
   </div>
   <button class="intro-skip" type="button" tabindex="-1">Skip</button>
@@ -353,12 +396,9 @@ html:not(.js) .hdr .brand .b-cream{opacity:1}html:not(.js) .hdr .brand .b-navy{o
 
 <header class="hdr on-dark" id="hdr">
   <div class="hdr-in">
-    <a class="brand" href="#top" aria-label="The Stagecoach Group, home">
-      <img class="b-navy" src="assets/lockup-horizontal-navy.svg" alt="">
-      <img class="b-cream" src="assets/lockup-horizontal-cream.svg" alt="">
-    </a>
+    <a class="brand" href="#top" aria-label="Stagecoach, home"><span class="wm">STAGECOACH</span></a>
     <nav class="nav" aria-label="Primary">
-      <a href="#services">Services</a><a href="#how">How it works</a><a href="#team">Team</a>
+      <a href="#services">Services</a><a href="#how">How it works</a><a href="#team">Team</a><a href="#join">Join the list</a>
     </nav>
     <div style="display:flex;align-items:center;gap:24px">
       <a class="call-link" href="tel:+12028399439" data-cur="Call"><span class="pulse" aria-hidden="true"></span><span><span class="lbl">24/7 · </span>202.839.9439</span></a>
@@ -369,7 +409,7 @@ html:not(.js) .hdr .brand .b-cream{opacity:1}html:not(.js) .hdr .brand .b-navy{o
 </header>
 <div class="sheet" id="sheet" aria-label="Menu">
   <nav aria-label="Mobile">
-    <a href="#services">Services</a><a href="#how">How it works</a><a href="#team">Team</a><a href="#request">Request care</a>
+    <a href="#services">Services</a><a href="#how">How it works</a><a href="#team">Team</a><a href="#join">Join the list</a><a href="#request">Request care</a>
   </nav>
   <p>24/7 · <a href="tel:+12028399439">202.839.9439</a><br>Not a substitute for 911. In a life‑threatening emergency, call&nbsp;911.</p>
 </div>
@@ -381,7 +421,7 @@ html:not(.js) .hdr .brand .b-cream{opacity:1}html:not(.js) .hdr .brand .b-navy{o
   <div class="hero-pin">
     <div class="hero-win" role="img" aria-label="The Capitol at night, seen through the Stagecoach S"></div>
     <div class="hero-meta">
-      <p class="eyebrow"><span class="pulse" aria-hidden="true" style="--c:#F5F0EC"></span>Washington, DC · Now</p>
+      <p class="eyebrow"><span class="pulse" aria-hidden="true" style="--c:#F4F1E9"></span>Washington, DC · Now</p>
     </div>
     <div class="clock" aria-label="Current time in Washington, DC"><span id="clock">3:03 a.m.</span></div>
     <div class="hero-side"><strong>One line. A clinician answers.</strong>Physician‑led emergency medicine for Washington, DC, at any hour.</div>
@@ -390,7 +430,7 @@ html:not(.js) .hdr .brand .b-cream{opacity:1}html:not(.js) .hdr .brand .b-navy{o
       <h1>Emergency medicine that <em>comes to&nbsp;you.</em></h1>
       <div class="ctas">
         <a class="btn btn-light" href="tel:+12028399439" data-cur="Call">Call 202.839.9439 <span class="arr" aria-hidden="true">→</span></a>
-        <a class="tlink" href="#request">Request care</a>
+        <a class="tlink" href="#join">Launching soon · Join the list</a>
       </div>
       <small>Not a substitute for 911. In a life‑threatening emergency, call&nbsp;911.</small>
     </div>
@@ -412,12 +452,12 @@ html:not(.js) .hdr .brand .b-cream{opacity:1}html:not(.js) .hdr .brand .b-navy{o
     <div class="how-art" aria-hidden="true">
       <svg viewBox="0 0 100 100">
         <defs><mask id="h-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs>
-        <circle id="h-guide" cx="50" cy="50" r="34" fill="none" stroke="#14213D" stroke-width=".25" stroke-dasharray=".6 1.4" opacity="0"/>
-        <circle class="h-ring" cx="50" cy="50" r="6.5" fill="none" stroke="#14213D" stroke-width=".7" opacity="0"/>
-        <circle class="h-ring" cx="50" cy="50" r="6.5" fill="none" stroke="#14213D" stroke-width=".5" opacity="0"/>
-        <circle class="h-ring" cx="50" cy="50" r="6.5" fill="none" stroke="#14213D" stroke-width=".35" opacity="0"/>
-        <path id="h-s" d="M65.76 26.63 L65.52 26.07 L65.26 25.51 L64.98 24.97 L64.68 24.43 L64.36 23.91 L64.03 23.40 L63.67 22.90 L63.30 22.41 L62.91 21.94 L62.50 21.48 L62.08 21.04 L61.64 20.61 L61.18 20.20 L60.71 19.80 L60.23 19.42 L59.73 19.06 L59.23 18.72 L58.70 18.40 L58.17 18.09 L57.63 17.81 L57.08 17.54 L56.51 17.30 L55.94 17.07 L55.37 16.87 L54.78 16.69 L54.19 16.52 L53.59 16.38 L52.99 16.27 L52.39 16.17 L51.78 16.09 L51.17 16.04 L50.55 16.01 L49.94 16.00 L49.33 16.01 L48.72 16.05 L48.11 16.11 L47.50 16.19 L46.89 16.29 L46.29 16.41 L45.70 16.55 L45.11 16.72 L44.52 16.91 L43.94 17.11 L43.38 17.34 L42.82 17.59 L42.26 17.86 L41.72 18.15 L41.19 18.46 L40.67 18.79 L40.17 19.13 L39.67 19.49 L39.19 19.88 L38.73 20.27 L38.28 20.69 L37.84 21.12 L37.42 21.57 L37.02 22.03 L36.63 22.50 L36.26 22.99 L35.91 23.49 L35.57 24.01 L35.26 24.53 L34.96 25.07 L34.69 25.62 L34.43 26.18 L34.19 26.74 L33.98 27.32 L33.78 27.90 L33.61 28.49 L33.46 29.08 L33.33 29.68 L33.22 30.28 L33.13 30.89 L33.07 31.50 L33.02 32.11 L33.00 32.72 L33.00 33.34 L33.03 33.95 L33.07 34.56 L33.14 35.17 L33.23 35.78 L33.34 36.38 L33.47 36.98 L33.63 37.57 L33.80 38.16 L34.00 38.74 L34.22 39.31 L34.45 39.88 L34.71 40.43 L34.99 40.98 L35.29 41.52 L35.60 42.04 L35.94 42.56 L36.29 43.06 L36.66 43.54 L37.05 44.02 L37.46 44.48 L37.88 44.92 L38.32 45.35 L38.77 45.76 L39.24 46.16 L39.72 46.54 L40.22 46.90 L40.72 47.25 L41.24 47.57 L41.78 47.88 L42.32 48.17 L42.87 48.43 L43.43 48.68 L44.00 48.91 L44.58 49.11 L45.16 49.30 L45.75 49.46 L46.35 49.60 L46.95 49.72 L47.56 49.82 L48.16 49.90 L48.77 49.96 L49.39 49.99 L50.00 50.00 L50.00 50.00 L50.61 50.01 L51.23 50.04 L51.84 50.10 L52.44 50.18 L53.05 50.28 L53.65 50.40 L54.25 50.54 L54.84 50.70 L55.42 50.89 L56.00 51.09 L56.57 51.32 L57.13 51.57 L57.68 51.83 L58.22 52.12 L58.76 52.43 L59.28 52.75 L59.78 53.10 L60.28 53.46 L60.76 53.84 L61.23 54.24 L61.68 54.65 L62.12 55.08 L62.54 55.52 L62.95 55.98 L63.34 56.46 L63.71 56.94 L64.06 57.44 L64.40 57.96 L64.71 58.48 L65.01 59.02 L65.29 59.57 L65.55 60.12 L65.78 60.69 L66.00 61.26 L66.20 61.84 L66.37 62.43 L66.53 63.02 L66.66 63.62 L66.77 64.22 L66.86 64.83 L66.93 65.44 L66.97 66.05 L67.00 66.66 L67.00 67.28 L66.98 67.89 L66.93 68.50 L66.87 69.11 L66.78 69.72 L66.67 70.32 L66.54 70.92 L66.39 71.51 L66.22 72.10 L66.02 72.68 L65.81 73.26 L65.57 73.82 L65.31 74.38 L65.04 74.93 L64.74 75.47 L64.43 75.99 L64.09 76.51 L63.74 77.01 L63.37 77.50 L62.98 77.97 L62.58 78.43 L62.16 78.88 L61.72 79.31 L61.27 79.73 L60.81 80.12 L60.33 80.51 L59.83 80.87 L59.33 81.21 L58.81 81.54 L58.28 81.85 L57.74 82.14 L57.18 82.41 L56.62 82.66 L56.06 82.89 L55.48 83.09 L54.89 83.28 L54.30 83.45 L53.71 83.59 L53.11 83.71 L52.50 83.81 L51.89 83.89 L51.28 83.95 L50.67 83.99 L50.06 84.00 L49.45 83.99 L48.83 83.96 L48.22 83.91 L47.61 83.83 L47.01 83.73 L46.41 83.62 L45.81 83.48 L45.22 83.31 L44.63 83.13 L44.06 82.93 L43.49 82.70 L42.92 82.46 L42.37 82.19 L41.83 81.91 L41.30 81.60 L40.77 81.28 L40.27 80.94 L39.77 80.58 L39.29 80.20 L38.82 79.80 L38.36 79.39 L37.92 78.96 L37.50 78.52 L37.09 78.06 L36.70 77.59 L36.33 77.10 L35.97 76.60 L35.64 76.09 L35.32 75.57 L35.02 75.03 L34.74 74.49 L34.48 73.93 L34.24 73.37" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" fill="none" stroke="#14213D" stroke-width="14.5" stroke-linecap="round" mask="url(#h-m)"/>
-        <circle id="h-dot" cx="50" cy="50" r="6.5" fill="#34121C" style="transform-origin:50px 50px;transform:scale(0)"/>
+        <circle id="h-guide" cx="50" cy="50" r="34" fill="none" stroke="#1E2A3E" stroke-width=".25" stroke-dasharray=".6 1.4" opacity="0"/>
+        <circle class="h-ring" cx="50" cy="50" r="6.5" fill="none" stroke="#1E2A3E" stroke-width=".7" opacity="0"/>
+        <circle class="h-ring" cx="50" cy="50" r="6.5" fill="none" stroke="#1E2A3E" stroke-width=".5" opacity="0"/>
+        <circle class="h-ring" cx="50" cy="50" r="6.5" fill="none" stroke="#1E2A3E" stroke-width=".35" opacity="0"/>
+        <path id="h-s" d="M65.76 26.63 L65.52 26.07 L65.26 25.51 L64.98 24.97 L64.68 24.43 L64.36 23.91 L64.03 23.40 L63.67 22.90 L63.30 22.41 L62.91 21.94 L62.50 21.48 L62.08 21.04 L61.64 20.61 L61.18 20.20 L60.71 19.80 L60.23 19.42 L59.73 19.06 L59.23 18.72 L58.70 18.40 L58.17 18.09 L57.63 17.81 L57.08 17.54 L56.51 17.30 L55.94 17.07 L55.37 16.87 L54.78 16.69 L54.19 16.52 L53.59 16.38 L52.99 16.27 L52.39 16.17 L51.78 16.09 L51.17 16.04 L50.55 16.01 L49.94 16.00 L49.33 16.01 L48.72 16.05 L48.11 16.11 L47.50 16.19 L46.89 16.29 L46.29 16.41 L45.70 16.55 L45.11 16.72 L44.52 16.91 L43.94 17.11 L43.38 17.34 L42.82 17.59 L42.26 17.86 L41.72 18.15 L41.19 18.46 L40.67 18.79 L40.17 19.13 L39.67 19.49 L39.19 19.88 L38.73 20.27 L38.28 20.69 L37.84 21.12 L37.42 21.57 L37.02 22.03 L36.63 22.50 L36.26 22.99 L35.91 23.49 L35.57 24.01 L35.26 24.53 L34.96 25.07 L34.69 25.62 L34.43 26.18 L34.19 26.74 L33.98 27.32 L33.78 27.90 L33.61 28.49 L33.46 29.08 L33.33 29.68 L33.22 30.28 L33.13 30.89 L33.07 31.50 L33.02 32.11 L33.00 32.72 L33.00 33.34 L33.03 33.95 L33.07 34.56 L33.14 35.17 L33.23 35.78 L33.34 36.38 L33.47 36.98 L33.63 37.57 L33.80 38.16 L34.00 38.74 L34.22 39.31 L34.45 39.88 L34.71 40.43 L34.99 40.98 L35.29 41.52 L35.60 42.04 L35.94 42.56 L36.29 43.06 L36.66 43.54 L37.05 44.02 L37.46 44.48 L37.88 44.92 L38.32 45.35 L38.77 45.76 L39.24 46.16 L39.72 46.54 L40.22 46.90 L40.72 47.25 L41.24 47.57 L41.78 47.88 L42.32 48.17 L42.87 48.43 L43.43 48.68 L44.00 48.91 L44.58 49.11 L45.16 49.30 L45.75 49.46 L46.35 49.60 L46.95 49.72 L47.56 49.82 L48.16 49.90 L48.77 49.96 L49.39 49.99 L50.00 50.00 L50.00 50.00 L50.61 50.01 L51.23 50.04 L51.84 50.10 L52.44 50.18 L53.05 50.28 L53.65 50.40 L54.25 50.54 L54.84 50.70 L55.42 50.89 L56.00 51.09 L56.57 51.32 L57.13 51.57 L57.68 51.83 L58.22 52.12 L58.76 52.43 L59.28 52.75 L59.78 53.10 L60.28 53.46 L60.76 53.84 L61.23 54.24 L61.68 54.65 L62.12 55.08 L62.54 55.52 L62.95 55.98 L63.34 56.46 L63.71 56.94 L64.06 57.44 L64.40 57.96 L64.71 58.48 L65.01 59.02 L65.29 59.57 L65.55 60.12 L65.78 60.69 L66.00 61.26 L66.20 61.84 L66.37 62.43 L66.53 63.02 L66.66 63.62 L66.77 64.22 L66.86 64.83 L66.93 65.44 L66.97 66.05 L67.00 66.66 L67.00 67.28 L66.98 67.89 L66.93 68.50 L66.87 69.11 L66.78 69.72 L66.67 70.32 L66.54 70.92 L66.39 71.51 L66.22 72.10 L66.02 72.68 L65.81 73.26 L65.57 73.82 L65.31 74.38 L65.04 74.93 L64.74 75.47 L64.43 75.99 L64.09 76.51 L63.74 77.01 L63.37 77.50 L62.98 77.97 L62.58 78.43 L62.16 78.88 L61.72 79.31 L61.27 79.73 L60.81 80.12 L60.33 80.51 L59.83 80.87 L59.33 81.21 L58.81 81.54 L58.28 81.85 L57.74 82.14 L57.18 82.41 L56.62 82.66 L56.06 82.89 L55.48 83.09 L54.89 83.28 L54.30 83.45 L53.71 83.59 L53.11 83.71 L52.50 83.81 L51.89 83.89 L51.28 83.95 L50.67 83.99 L50.06 84.00 L49.45 83.99 L48.83 83.96 L48.22 83.91 L47.61 83.83 L47.01 83.73 L46.41 83.62 L45.81 83.48 L45.22 83.31 L44.63 83.13 L44.06 82.93 L43.49 82.70 L42.92 82.46 L42.37 82.19 L41.83 81.91 L41.30 81.60 L40.77 81.28 L40.27 80.94 L39.77 80.58 L39.29 80.20 L38.82 79.80 L38.36 79.39 L37.92 78.96 L37.50 78.52 L37.09 78.06 L36.70 77.59 L36.33 77.10 L35.97 76.60 L35.64 76.09 L35.32 75.57 L35.02 75.03 L34.74 74.49 L34.48 73.93 L34.24 73.37" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" fill="none" stroke="#1E2A3E" stroke-width="14.5" stroke-linecap="round" mask="url(#h-m)"/>
+        <circle id="h-dot" cx="50" cy="50" r="6.5" fill="#E37970" style="transform-origin:50px 50px;transform:scale(0)"/>
       </svg>
       <span class="opt">911</span><span class="opt">The ER</span><span class="opt">Telehealth</span><span class="opt">A home visit</span><span class="opt">Safe to wait</span>
     </div>
@@ -480,9 +520,9 @@ html:not(.js) .hdr .brand .b-cream{opacity:1}html:not(.js) .hdr .brand .b-navy{o
   <div class="journey-art" aria-hidden="true">
     <svg viewBox="0 0 100 100">
       <defs><mask id="j-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs>
-      <path d="M65.76 26.63 L65.52 26.07 L65.26 25.51 L64.98 24.97 L64.68 24.43 L64.36 23.91 L64.03 23.40 L63.67 22.90 L63.30 22.41 L62.91 21.94 L62.50 21.48 L62.08 21.04 L61.64 20.61 L61.18 20.20 L60.71 19.80 L60.23 19.42 L59.73 19.06 L59.23 18.72 L58.70 18.40 L58.17 18.09 L57.63 17.81 L57.08 17.54 L56.51 17.30 L55.94 17.07 L55.37 16.87 L54.78 16.69 L54.19 16.52 L53.59 16.38 L52.99 16.27 L52.39 16.17 L51.78 16.09 L51.17 16.04 L50.55 16.01 L49.94 16.00 L49.33 16.01 L48.72 16.05 L48.11 16.11 L47.50 16.19 L46.89 16.29 L46.29 16.41 L45.70 16.55 L45.11 16.72 L44.52 16.91 L43.94 17.11 L43.38 17.34 L42.82 17.59 L42.26 17.86 L41.72 18.15 L41.19 18.46 L40.67 18.79 L40.17 19.13 L39.67 19.49 L39.19 19.88 L38.73 20.27 L38.28 20.69 L37.84 21.12 L37.42 21.57 L37.02 22.03 L36.63 22.50 L36.26 22.99 L35.91 23.49 L35.57 24.01 L35.26 24.53 L34.96 25.07 L34.69 25.62 L34.43 26.18 L34.19 26.74 L33.98 27.32 L33.78 27.90 L33.61 28.49 L33.46 29.08 L33.33 29.68 L33.22 30.28 L33.13 30.89 L33.07 31.50 L33.02 32.11 L33.00 32.72 L33.00 33.34 L33.03 33.95 L33.07 34.56 L33.14 35.17 L33.23 35.78 L33.34 36.38 L33.47 36.98 L33.63 37.57 L33.80 38.16 L34.00 38.74 L34.22 39.31 L34.45 39.88 L34.71 40.43 L34.99 40.98 L35.29 41.52 L35.60 42.04 L35.94 42.56 L36.29 43.06 L36.66 43.54 L37.05 44.02 L37.46 44.48 L37.88 44.92 L38.32 45.35 L38.77 45.76 L39.24 46.16 L39.72 46.54 L40.22 46.90 L40.72 47.25 L41.24 47.57 L41.78 47.88 L42.32 48.17 L42.87 48.43 L43.43 48.68 L44.00 48.91 L44.58 49.11 L45.16 49.30 L45.75 49.46 L46.35 49.60 L46.95 49.72 L47.56 49.82 L48.16 49.90 L48.77 49.96 L49.39 49.99 L50.00 50.00 L50.00 50.00 L50.61 50.01 L51.23 50.04 L51.84 50.10 L52.44 50.18 L53.05 50.28 L53.65 50.40 L54.25 50.54 L54.84 50.70 L55.42 50.89 L56.00 51.09 L56.57 51.32 L57.13 51.57 L57.68 51.83 L58.22 52.12 L58.76 52.43 L59.28 52.75 L59.78 53.10 L60.28 53.46 L60.76 53.84 L61.23 54.24 L61.68 54.65 L62.12 55.08 L62.54 55.52 L62.95 55.98 L63.34 56.46 L63.71 56.94 L64.06 57.44 L64.40 57.96 L64.71 58.48 L65.01 59.02 L65.29 59.57 L65.55 60.12 L65.78 60.69 L66.00 61.26 L66.20 61.84 L66.37 62.43 L66.53 63.02 L66.66 63.62 L66.77 64.22 L66.86 64.83 L66.93 65.44 L66.97 66.05 L67.00 66.66 L67.00 67.28 L66.98 67.89 L66.93 68.50 L66.87 69.11 L66.78 69.72 L66.67 70.32 L66.54 70.92 L66.39 71.51 L66.22 72.10 L66.02 72.68 L65.81 73.26 L65.57 73.82 L65.31 74.38 L65.04 74.93 L64.74 75.47 L64.43 75.99 L64.09 76.51 L63.74 77.01 L63.37 77.50 L62.98 77.97 L62.58 78.43 L62.16 78.88 L61.72 79.31 L61.27 79.73 L60.81 80.12 L60.33 80.51 L59.83 80.87 L59.33 81.21 L58.81 81.54 L58.28 81.85 L57.74 82.14 L57.18 82.41 L56.62 82.66 L56.06 82.89 L55.48 83.09 L54.89 83.28 L54.30 83.45 L53.71 83.59 L53.11 83.71 L52.50 83.81 L51.89 83.89 L51.28 83.95 L50.67 83.99 L50.06 84.00 L49.45 83.99 L48.83 83.96 L48.22 83.91 L47.61 83.83 L47.01 83.73 L46.41 83.62 L45.81 83.48 L45.22 83.31 L44.63 83.13 L44.06 82.93 L43.49 82.70 L42.92 82.46 L42.37 82.19 L41.83 81.91 L41.30 81.60 L40.77 81.28 L40.27 80.94 L39.77 80.58 L39.29 80.20 L38.82 79.80 L38.36 79.39 L37.92 78.96 L37.50 78.52 L37.09 78.06 L36.70 77.59 L36.33 77.10 L35.97 76.60 L35.64 76.09 L35.32 75.57 L35.02 75.03 L34.74 74.49 L34.48 73.93 L34.24 73.37" fill="none" stroke="#E6DFD8" stroke-width="14.5" stroke-linecap="round" mask="url(#j-m)"/>
-      <path id="j-s" d="M65.76 26.63 L65.52 26.07 L65.26 25.51 L64.98 24.97 L64.68 24.43 L64.36 23.91 L64.03 23.40 L63.67 22.90 L63.30 22.41 L62.91 21.94 L62.50 21.48 L62.08 21.04 L61.64 20.61 L61.18 20.20 L60.71 19.80 L60.23 19.42 L59.73 19.06 L59.23 18.72 L58.70 18.40 L58.17 18.09 L57.63 17.81 L57.08 17.54 L56.51 17.30 L55.94 17.07 L55.37 16.87 L54.78 16.69 L54.19 16.52 L53.59 16.38 L52.99 16.27 L52.39 16.17 L51.78 16.09 L51.17 16.04 L50.55 16.01 L49.94 16.00 L49.33 16.01 L48.72 16.05 L48.11 16.11 L47.50 16.19 L46.89 16.29 L46.29 16.41 L45.70 16.55 L45.11 16.72 L44.52 16.91 L43.94 17.11 L43.38 17.34 L42.82 17.59 L42.26 17.86 L41.72 18.15 L41.19 18.46 L40.67 18.79 L40.17 19.13 L39.67 19.49 L39.19 19.88 L38.73 20.27 L38.28 20.69 L37.84 21.12 L37.42 21.57 L37.02 22.03 L36.63 22.50 L36.26 22.99 L35.91 23.49 L35.57 24.01 L35.26 24.53 L34.96 25.07 L34.69 25.62 L34.43 26.18 L34.19 26.74 L33.98 27.32 L33.78 27.90 L33.61 28.49 L33.46 29.08 L33.33 29.68 L33.22 30.28 L33.13 30.89 L33.07 31.50 L33.02 32.11 L33.00 32.72 L33.00 33.34 L33.03 33.95 L33.07 34.56 L33.14 35.17 L33.23 35.78 L33.34 36.38 L33.47 36.98 L33.63 37.57 L33.80 38.16 L34.00 38.74 L34.22 39.31 L34.45 39.88 L34.71 40.43 L34.99 40.98 L35.29 41.52 L35.60 42.04 L35.94 42.56 L36.29 43.06 L36.66 43.54 L37.05 44.02 L37.46 44.48 L37.88 44.92 L38.32 45.35 L38.77 45.76 L39.24 46.16 L39.72 46.54 L40.22 46.90 L40.72 47.25 L41.24 47.57 L41.78 47.88 L42.32 48.17 L42.87 48.43 L43.43 48.68 L44.00 48.91 L44.58 49.11 L45.16 49.30 L45.75 49.46 L46.35 49.60 L46.95 49.72 L47.56 49.82 L48.16 49.90 L48.77 49.96 L49.39 49.99 L50.00 50.00 L50.00 50.00 L50.61 50.01 L51.23 50.04 L51.84 50.10 L52.44 50.18 L53.05 50.28 L53.65 50.40 L54.25 50.54 L54.84 50.70 L55.42 50.89 L56.00 51.09 L56.57 51.32 L57.13 51.57 L57.68 51.83 L58.22 52.12 L58.76 52.43 L59.28 52.75 L59.78 53.10 L60.28 53.46 L60.76 53.84 L61.23 54.24 L61.68 54.65 L62.12 55.08 L62.54 55.52 L62.95 55.98 L63.34 56.46 L63.71 56.94 L64.06 57.44 L64.40 57.96 L64.71 58.48 L65.01 59.02 L65.29 59.57 L65.55 60.12 L65.78 60.69 L66.00 61.26 L66.20 61.84 L66.37 62.43 L66.53 63.02 L66.66 63.62 L66.77 64.22 L66.86 64.83 L66.93 65.44 L66.97 66.05 L67.00 66.66 L67.00 67.28 L66.98 67.89 L66.93 68.50 L66.87 69.11 L66.78 69.72 L66.67 70.32 L66.54 70.92 L66.39 71.51 L66.22 72.10 L66.02 72.68 L65.81 73.26 L65.57 73.82 L65.31 74.38 L65.04 74.93 L64.74 75.47 L64.43 75.99 L64.09 76.51 L63.74 77.01 L63.37 77.50 L62.98 77.97 L62.58 78.43 L62.16 78.88 L61.72 79.31 L61.27 79.73 L60.81 80.12 L60.33 80.51 L59.83 80.87 L59.33 81.21 L58.81 81.54 L58.28 81.85 L57.74 82.14 L57.18 82.41 L56.62 82.66 L56.06 82.89 L55.48 83.09 L54.89 83.28 L54.30 83.45 L53.71 83.59 L53.11 83.71 L52.50 83.81 L51.89 83.89 L51.28 83.95 L50.67 83.99 L50.06 84.00 L49.45 83.99 L48.83 83.96 L48.22 83.91 L47.61 83.83 L47.01 83.73 L46.41 83.62 L45.81 83.48 L45.22 83.31 L44.63 83.13 L44.06 82.93 L43.49 82.70 L42.92 82.46 L42.37 82.19 L41.83 81.91 L41.30 81.60 L40.77 81.28 L40.27 80.94 L39.77 80.58 L39.29 80.20 L38.82 79.80 L38.36 79.39 L37.92 78.96 L37.50 78.52 L37.09 78.06 L36.70 77.59 L36.33 77.10 L35.97 76.60 L35.64 76.09 L35.32 75.57 L35.02 75.03 L34.74 74.49 L34.48 73.93 L34.24 73.37" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" fill="none" stroke="#14213D" stroke-width="14.5" stroke-linecap="round" mask="url(#j-m)"/>
-      <circle id="j-dot" cx="50" cy="50" r="6.5" fill="#14213D"/>
+      <path d="M65.76 26.63 L65.52 26.07 L65.26 25.51 L64.98 24.97 L64.68 24.43 L64.36 23.91 L64.03 23.40 L63.67 22.90 L63.30 22.41 L62.91 21.94 L62.50 21.48 L62.08 21.04 L61.64 20.61 L61.18 20.20 L60.71 19.80 L60.23 19.42 L59.73 19.06 L59.23 18.72 L58.70 18.40 L58.17 18.09 L57.63 17.81 L57.08 17.54 L56.51 17.30 L55.94 17.07 L55.37 16.87 L54.78 16.69 L54.19 16.52 L53.59 16.38 L52.99 16.27 L52.39 16.17 L51.78 16.09 L51.17 16.04 L50.55 16.01 L49.94 16.00 L49.33 16.01 L48.72 16.05 L48.11 16.11 L47.50 16.19 L46.89 16.29 L46.29 16.41 L45.70 16.55 L45.11 16.72 L44.52 16.91 L43.94 17.11 L43.38 17.34 L42.82 17.59 L42.26 17.86 L41.72 18.15 L41.19 18.46 L40.67 18.79 L40.17 19.13 L39.67 19.49 L39.19 19.88 L38.73 20.27 L38.28 20.69 L37.84 21.12 L37.42 21.57 L37.02 22.03 L36.63 22.50 L36.26 22.99 L35.91 23.49 L35.57 24.01 L35.26 24.53 L34.96 25.07 L34.69 25.62 L34.43 26.18 L34.19 26.74 L33.98 27.32 L33.78 27.90 L33.61 28.49 L33.46 29.08 L33.33 29.68 L33.22 30.28 L33.13 30.89 L33.07 31.50 L33.02 32.11 L33.00 32.72 L33.00 33.34 L33.03 33.95 L33.07 34.56 L33.14 35.17 L33.23 35.78 L33.34 36.38 L33.47 36.98 L33.63 37.57 L33.80 38.16 L34.00 38.74 L34.22 39.31 L34.45 39.88 L34.71 40.43 L34.99 40.98 L35.29 41.52 L35.60 42.04 L35.94 42.56 L36.29 43.06 L36.66 43.54 L37.05 44.02 L37.46 44.48 L37.88 44.92 L38.32 45.35 L38.77 45.76 L39.24 46.16 L39.72 46.54 L40.22 46.90 L40.72 47.25 L41.24 47.57 L41.78 47.88 L42.32 48.17 L42.87 48.43 L43.43 48.68 L44.00 48.91 L44.58 49.11 L45.16 49.30 L45.75 49.46 L46.35 49.60 L46.95 49.72 L47.56 49.82 L48.16 49.90 L48.77 49.96 L49.39 49.99 L50.00 50.00 L50.00 50.00 L50.61 50.01 L51.23 50.04 L51.84 50.10 L52.44 50.18 L53.05 50.28 L53.65 50.40 L54.25 50.54 L54.84 50.70 L55.42 50.89 L56.00 51.09 L56.57 51.32 L57.13 51.57 L57.68 51.83 L58.22 52.12 L58.76 52.43 L59.28 52.75 L59.78 53.10 L60.28 53.46 L60.76 53.84 L61.23 54.24 L61.68 54.65 L62.12 55.08 L62.54 55.52 L62.95 55.98 L63.34 56.46 L63.71 56.94 L64.06 57.44 L64.40 57.96 L64.71 58.48 L65.01 59.02 L65.29 59.57 L65.55 60.12 L65.78 60.69 L66.00 61.26 L66.20 61.84 L66.37 62.43 L66.53 63.02 L66.66 63.62 L66.77 64.22 L66.86 64.83 L66.93 65.44 L66.97 66.05 L67.00 66.66 L67.00 67.28 L66.98 67.89 L66.93 68.50 L66.87 69.11 L66.78 69.72 L66.67 70.32 L66.54 70.92 L66.39 71.51 L66.22 72.10 L66.02 72.68 L65.81 73.26 L65.57 73.82 L65.31 74.38 L65.04 74.93 L64.74 75.47 L64.43 75.99 L64.09 76.51 L63.74 77.01 L63.37 77.50 L62.98 77.97 L62.58 78.43 L62.16 78.88 L61.72 79.31 L61.27 79.73 L60.81 80.12 L60.33 80.51 L59.83 80.87 L59.33 81.21 L58.81 81.54 L58.28 81.85 L57.74 82.14 L57.18 82.41 L56.62 82.66 L56.06 82.89 L55.48 83.09 L54.89 83.28 L54.30 83.45 L53.71 83.59 L53.11 83.71 L52.50 83.81 L51.89 83.89 L51.28 83.95 L50.67 83.99 L50.06 84.00 L49.45 83.99 L48.83 83.96 L48.22 83.91 L47.61 83.83 L47.01 83.73 L46.41 83.62 L45.81 83.48 L45.22 83.31 L44.63 83.13 L44.06 82.93 L43.49 82.70 L42.92 82.46 L42.37 82.19 L41.83 81.91 L41.30 81.60 L40.77 81.28 L40.27 80.94 L39.77 80.58 L39.29 80.20 L38.82 79.80 L38.36 79.39 L37.92 78.96 L37.50 78.52 L37.09 78.06 L36.70 77.59 L36.33 77.10 L35.97 76.60 L35.64 76.09 L35.32 75.57 L35.02 75.03 L34.74 74.49 L34.48 73.93 L34.24 73.37" fill="none" stroke="#E5DFD5" stroke-width="14.5" stroke-linecap="round" mask="url(#j-m)"/>
+      <path id="j-s" d="M65.76 26.63 L65.52 26.07 L65.26 25.51 L64.98 24.97 L64.68 24.43 L64.36 23.91 L64.03 23.40 L63.67 22.90 L63.30 22.41 L62.91 21.94 L62.50 21.48 L62.08 21.04 L61.64 20.61 L61.18 20.20 L60.71 19.80 L60.23 19.42 L59.73 19.06 L59.23 18.72 L58.70 18.40 L58.17 18.09 L57.63 17.81 L57.08 17.54 L56.51 17.30 L55.94 17.07 L55.37 16.87 L54.78 16.69 L54.19 16.52 L53.59 16.38 L52.99 16.27 L52.39 16.17 L51.78 16.09 L51.17 16.04 L50.55 16.01 L49.94 16.00 L49.33 16.01 L48.72 16.05 L48.11 16.11 L47.50 16.19 L46.89 16.29 L46.29 16.41 L45.70 16.55 L45.11 16.72 L44.52 16.91 L43.94 17.11 L43.38 17.34 L42.82 17.59 L42.26 17.86 L41.72 18.15 L41.19 18.46 L40.67 18.79 L40.17 19.13 L39.67 19.49 L39.19 19.88 L38.73 20.27 L38.28 20.69 L37.84 21.12 L37.42 21.57 L37.02 22.03 L36.63 22.50 L36.26 22.99 L35.91 23.49 L35.57 24.01 L35.26 24.53 L34.96 25.07 L34.69 25.62 L34.43 26.18 L34.19 26.74 L33.98 27.32 L33.78 27.90 L33.61 28.49 L33.46 29.08 L33.33 29.68 L33.22 30.28 L33.13 30.89 L33.07 31.50 L33.02 32.11 L33.00 32.72 L33.00 33.34 L33.03 33.95 L33.07 34.56 L33.14 35.17 L33.23 35.78 L33.34 36.38 L33.47 36.98 L33.63 37.57 L33.80 38.16 L34.00 38.74 L34.22 39.31 L34.45 39.88 L34.71 40.43 L34.99 40.98 L35.29 41.52 L35.60 42.04 L35.94 42.56 L36.29 43.06 L36.66 43.54 L37.05 44.02 L37.46 44.48 L37.88 44.92 L38.32 45.35 L38.77 45.76 L39.24 46.16 L39.72 46.54 L40.22 46.90 L40.72 47.25 L41.24 47.57 L41.78 47.88 L42.32 48.17 L42.87 48.43 L43.43 48.68 L44.00 48.91 L44.58 49.11 L45.16 49.30 L45.75 49.46 L46.35 49.60 L46.95 49.72 L47.56 49.82 L48.16 49.90 L48.77 49.96 L49.39 49.99 L50.00 50.00 L50.00 50.00 L50.61 50.01 L51.23 50.04 L51.84 50.10 L52.44 50.18 L53.05 50.28 L53.65 50.40 L54.25 50.54 L54.84 50.70 L55.42 50.89 L56.00 51.09 L56.57 51.32 L57.13 51.57 L57.68 51.83 L58.22 52.12 L58.76 52.43 L59.28 52.75 L59.78 53.10 L60.28 53.46 L60.76 53.84 L61.23 54.24 L61.68 54.65 L62.12 55.08 L62.54 55.52 L62.95 55.98 L63.34 56.46 L63.71 56.94 L64.06 57.44 L64.40 57.96 L64.71 58.48 L65.01 59.02 L65.29 59.57 L65.55 60.12 L65.78 60.69 L66.00 61.26 L66.20 61.84 L66.37 62.43 L66.53 63.02 L66.66 63.62 L66.77 64.22 L66.86 64.83 L66.93 65.44 L66.97 66.05 L67.00 66.66 L67.00 67.28 L66.98 67.89 L66.93 68.50 L66.87 69.11 L66.78 69.72 L66.67 70.32 L66.54 70.92 L66.39 71.51 L66.22 72.10 L66.02 72.68 L65.81 73.26 L65.57 73.82 L65.31 74.38 L65.04 74.93 L64.74 75.47 L64.43 75.99 L64.09 76.51 L63.74 77.01 L63.37 77.50 L62.98 77.97 L62.58 78.43 L62.16 78.88 L61.72 79.31 L61.27 79.73 L60.81 80.12 L60.33 80.51 L59.83 80.87 L59.33 81.21 L58.81 81.54 L58.28 81.85 L57.74 82.14 L57.18 82.41 L56.62 82.66 L56.06 82.89 L55.48 83.09 L54.89 83.28 L54.30 83.45 L53.71 83.59 L53.11 83.71 L52.50 83.81 L51.89 83.89 L51.28 83.95 L50.67 83.99 L50.06 84.00 L49.45 83.99 L48.83 83.96 L48.22 83.91 L47.61 83.83 L47.01 83.73 L46.41 83.62 L45.81 83.48 L45.22 83.31 L44.63 83.13 L44.06 82.93 L43.49 82.70 L42.92 82.46 L42.37 82.19 L41.83 81.91 L41.30 81.60 L40.77 81.28 L40.27 80.94 L39.77 80.58 L39.29 80.20 L38.82 79.80 L38.36 79.39 L37.92 78.96 L37.50 78.52 L37.09 78.06 L36.70 77.59 L36.33 77.10 L35.97 76.60 L35.64 76.09 L35.32 75.57 L35.02 75.03 L34.74 74.49 L34.48 73.93 L34.24 73.37" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" fill="none" stroke="#1E2A3E" stroke-width="14.5" stroke-linecap="round" mask="url(#j-m)"/>
+      <circle id="j-dot" cx="50" cy="50" r="6.5" fill="#1E2A3E"/>
     </svg>
   </div>
   <div class="stack">
@@ -570,6 +610,27 @@ html:not(.js) .hdr .brand .b-cream{opacity:1}html:not(.js) .hdr .brand .b-navy{o
   </div>
 </section>
 
+<!-- JOIN: launch mailing list -->
+<section class="sec join" id="join" aria-labelledby="join-h">
+  <div class="join-in">
+    <div>
+      <p class="eyebrow rise">Launching soon</p>
+      <h2 id="join-h" class="split">Be the first to&nbsp;know.</h2>
+      <p class="lead rise">Launch news and new services from Stagecoach in Washington, DC. Occasional emails. Unsubscribe&nbsp;anytime.</p>
+    </div>
+    <form id="join-form" class="rise" novalidate data-endpoint="">
+      <label for="join-email">Email address</label>
+      <div class="field">
+        <input id="join-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="name@example.com" aria-describedby="join-msg join-fine">
+        <button class="btn btn-dark" type="submit">Join the list <span class="arr" aria-hidden="true">→</span></button>
+      </div>
+      <label class="hp" aria-hidden="true">Company<input name="company" tabindex="-1" autocomplete="off"></label>
+      <p class="msg" id="join-msg" role="status" aria-live="polite"></p>
+      <p class="fine" id="join-fine">For news only. To request care, call 202.839.9439. Not a substitute for&nbsp;911.</p>
+    </form>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="sec dark cta" id="request" aria-labelledby="r-h">
   <img class="cta-sym" src="assets/symbol-cream.svg" alt="" aria-hidden="true">
@@ -584,11 +645,11 @@ html:not(.js) .hdr .brand .b-cream{opacity:1}html:not(.js) .hdr .brand .b-navy{o
 </main>
 
 <footer class="foot">
-  <div style="display:grid;gap:16px;align-content:start"><img src="assets/lockup-stacked-navy.svg" alt="The Stagecoach Group" style="width:170px"><span>Concierge Emergency Medical Services</span></div>
+  <div class="foot-brand"><span class="wm">STAGECOACH</span><span class="tag">Concierge Emergency Medical Services</span></div>
   <div><strong>Office</strong><br>3299 K St NW #210<br>Washington, DC 20007<br>Not a walk‑in clinic.</div>
   <div><strong>24/7 line</strong><br><a href="tel:+12028399439">202.839.9439</a><br>Not a substitute for&nbsp;911.</div>
-  <nav aria-label="Footer"><a href="#services">Services</a><a href="#how">How it works</a><a href="#team">Team</a><a href="#request">Request care</a></nav>
-  <p class="fine"><span>© The Stagecoach Group</span><span>Washington, DC</span></p>
+  <nav aria-label="Footer"><a href="#services">Services</a><a href="#how">How it works</a><a href="#team">Team</a><a href="#join">Join the list</a><a href="#request">Request care</a></nav>
+  <p class="fine"><span>© Stagecoach</span><span>Washington, DC</span></p>
 </footer>
 
 <script>
@@ -749,6 +810,25 @@ html:not(.js) .hdr .brand .b-cream{opacity:1}html:not(.js) .hdr .brand .b-navy{o
     loop();
     /* magnetic buttons */
     $$('.btn').forEach(b => { b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px, ${(e.clientY - r.top - r.height / 2) * .3}px)`; }); b.addEventListener('pointerleave', () => { b.style.transform = ''; }); b.style.transition = 'color .5s cubic-bezier(.2,.9,.2,1), transform .6s cubic-bezier(.2,.9,.2,1)'; });
+  }
+
+  /* mailing list: one field, inline validation, honest status until a provider is connected */
+  const jf = $('#join-form');
+  if (jf) {
+    const ji = $('#join-email', jf), jm = $('#join-msg');
+    jf.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (jf.company.value) return;
+      const v = ji.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { ji.setAttribute('aria-invalid', 'true'); jm.textContent = 'Enter an email address like name@example.com.'; ji.focus(); return; }
+      ji.removeAttribute('aria-invalid');
+      const ep = jf.dataset.endpoint;
+      if (!ep) { jm.textContent = 'Preview only: this form is not connected to a mailing list yet, so nothing was sent.'; return; }
+      jm.textContent = 'Sending…';
+      try { const r = await fetch(ep, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: v }) }); if (!r.ok) throw 0; jf.reset(); jm.textContent = 'Thanks. Check your inbox to confirm your subscription.'; }
+      catch (err) { jm.textContent = 'That did not go through. Please try again in a moment.'; }
+    });
+    ji.addEventListener('input', () => { if (ji.getAttribute('aria-invalid')) { ji.removeAttribute('aria-invalid'); jm.textContent = ''; } });
   }
   /* touch: tap a portrait to see it in colour */
   $$('.portrait').forEach(p => { p.addEventListener('click', () => p.classList.toggle('color')); p.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); p.classList.toggle('color'); } }); });
