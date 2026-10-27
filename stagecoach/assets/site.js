@@ -129,7 +129,14 @@
     hRings.forEach((c, i) => { const t = clamp(s2 * 1.4 - i * .2); const r = 6.5 + t * (34 - 6.5) * (1 - i * .18); c.setAttribute('r', r.toFixed(2)); c.setAttribute('opacity', (RM ? .3 : (t > 0 ? (1 - s3) * .55 * (1 - i * .25) : 0)).toFixed(3)); });
     hGuide.setAttribute('opacity', (RM ? .5 : clamp(s2 * 2) * (1 - s3) * .9).toFixed(3));
     const box = $('.how-art').getBoundingClientRect().width;
-    opts.forEach((o, i) => { const a = angles[i] * Math.PI / 180, R = box * .44 * (vw < 860 ? .92 : 1); const t = box < 300 ? 0 : RM ? 1 : clamp(s2 * 1.6 - i * .12) * (1 - s3); o.style.opacity = t.toFixed(3); o.style.transform = `translate(calc(-50% + ${Math.cos(a) * R * (.7 + .3 * t)}px), calc(-50% + ${Math.sin(a) * R * (.7 + .3 * t)}px))`; });
+    opts.forEach((o, i) => {
+      const a = angles[i] * Math.PI / 180, R = box * .36 + 14, c = Math.cos(a), sn = Math.sin(a);
+      const t = box < 300 ? 0 : RM ? 1 : clamp(s2 * 1.6 - i * .12) * (1 - s3);
+      const x = c * R * (.85 + .15 * t), y = sn * R * (.85 + .15 * t);
+      /* anchor the label's near edge to the ring so the text always grows outward */
+      const ax = c < -.3 ? '-100%' : c > .3 ? '0%' : '-50%', ay = Math.abs(c) <= .3 ? (sn < 0 ? '-100%' : '0%') : '-50%';
+      o.style.opacity = t.toFixed(3); o.style.transform = `translate(calc(${ax} + ${x}px), calc(${ay} + ${y}px))`;
+    });
     hS.style.strokeDashoffset = RM ? 0 : (1 - ease(s3)).toFixed(4);
     const active = p < .3 ? 0 : p < .62 ? 1 : 2;
     steps.forEach((s, i) => s.classList.toggle('on', RM || i === active));
