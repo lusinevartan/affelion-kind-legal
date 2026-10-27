@@ -9,26 +9,29 @@
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Montserrat:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Montserrat:wght@400;500;600;700&display=swap">
 <style>
 :root{
-  --navy:#14213D;--night:#0E1830;--porcelain:#F5F0EC;--deep:#EDE6DF;--wine:#34121C;--slate:#4A5A70;--line:#E6DFD8;--mist:#CFC6BE;
+  --navy:#14213D;--night:#0E1830;--porcelain:#F5F0EC;--deep:#EDE6DF;--wine:#34121C;--slate:#4A5A70;--ink2:#26344F;--line:#E6DFD8;--mist:#CFC6BE;
   --serif:'Cormorant Garamond',Georgia,serif;--sans:'Montserrat',system-ui,sans-serif;
   --ease:cubic-bezier(.2,.9,.2,1);--gut:clamp(20px,5vw,72px);
 }
 *{box-sizing:border-box;text-wrap:pretty}
 h1,h2,h3{text-wrap:balance}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--porcelain);color:var(--navy);font:400 17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+section[id]{scroll-margin-top:72px}
+main:focus{outline:none}
+body{margin:0;background:var(--porcelain);color:var(--navy);font:500 18px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
 img{display:block;max-width:100%}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--wine);outline-offset:4px}
 .on-dark :focus-visible,.dark :focus-visible{outline-color:var(--porcelain)}
 ::selection{background:var(--navy);color:var(--porcelain)}
 .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.eyebrow{margin:0;font:500 12px/1.4 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--slate)}
-.fig{font:500 11px/1.4 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--wine)}
-.dark .eyebrow{color:var(--mist)}
+.eyebrow{margin:0;font:600 13px/1.4 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--navy)}
+.fig{font:600 12px/1.4 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--wine)}
+.dark .eyebrow{color:var(--porcelain)}
 .dark .fig{color:var(--mist)}
 
 /* grain */
@@ -84,29 +87,29 @@ a{color:inherit}
 .sheet{position:fixed;inset:0;z-index:79;background:var(--navy);color:var(--porcelain);padding:110px var(--gut) 40px;display:grid;align-content:space-between;clip-path:inset(0 0 100% 0);transition:clip-path .8s var(--ease);visibility:hidden}
 .sheet.open{clip-path:inset(0 0 0 0);visibility:visible}
 .sheet nav{display:grid;gap:6px}
-.sheet nav a{font:400 clamp(44px,12vw,72px)/1.05 var(--serif);text-decoration:none}
+.sheet nav a{font:600 clamp(44px,12vw,72px)/1.05 var(--serif);text-decoration:none}
 .sheet p{margin:0;color:var(--mist);font-size:14px}
 
 /* ---------- hero: zoom through the S ---------- */
-.hero{position:relative;height:300vh;background:var(--night)}
+.hero{position:relative;height:440vh;background:var(--night)}
 .hero-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;color:var(--porcelain)}
 .hero-win{position:absolute;inset:0;background:var(--night) url("https://stagecoachmedical.com/__l5e/assets-v1/c641f78a-cbf0-4b65-9ca2-aa0f0a64ad36/fleet.png") 50% 0%/auto 220% no-repeat;-webkit-mask-image:url(assets/symbol-mask.svg);mask-image:url(assets/symbol-mask.svg);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;will-change:mask-size,mask-position}
 .hero-win::after{content:"";position:absolute;inset:0;background:var(--night);opacity:var(--scrim,0)}
 .hero-ghost{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
 .hero-meta{position:absolute;left:var(--gut);right:var(--gut);top:104px;display:flex;justify-content:space-between;gap:16px;align-items:center}
-.hero-meta .eyebrow{color:var(--mist);display:flex;gap:12px;align-items:center}
-.clock{position:absolute;left:var(--gut);bottom:clamp(28px,6vh,72px);font:400 clamp(72px,11.5vw,180px)/.86 var(--serif);letter-spacing:-.02em;font-variant-numeric:tabular-nums;will-change:transform,opacity}
-.hero-side{position:absolute;right:var(--gut);bottom:clamp(36px,7vh,84px);max-width:30ch;text-align:right;font:400 15px/1.6 var(--sans);color:var(--mist)}
-.hero-side strong{display:block;font:400 clamp(26px,2.4vw,36px)/1.1 var(--serif);color:var(--porcelain);margin-bottom:10px}
+.hero-meta .eyebrow{color:var(--porcelain);display:flex;gap:12px;align-items:center}
+.clock{position:absolute;left:var(--gut);bottom:clamp(28px,6vh,72px);font:500 clamp(72px,11.5vw,180px)/.86 var(--serif);letter-spacing:-.02em;font-variant-numeric:tabular-nums;will-change:transform,opacity}
+.hero-side{position:absolute;right:var(--gut);bottom:clamp(36px,7vh,84px);max-width:30ch;text-align:right;font:500 16px/1.55 var(--sans);color:var(--mist)}
+.hero-side strong{display:block;font:600 clamp(26px,2.4vw,36px)/1.1 var(--serif);color:var(--porcelain);margin-bottom:10px}
 .scroll-cue{position:absolute;right:var(--gut);top:50%;transform:translateY(-50%);display:grid;justify-items:center;gap:10px;font:500 10px var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--mist)}
 .scroll-cue i{width:1px;height:40px;background:linear-gradient(var(--mist),transparent);animation:cue 2.4s var(--ease) infinite;transform-origin:top}
 @keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 .hero-copy{position:absolute;inset:0;display:grid;align-content:center;justify-items:center;text-align:center;padding:0 var(--gut);gap:clamp(22px,3vw,36px);opacity:0;pointer-events:none}
 .hero-copy.live{pointer-events:auto}
-.hero-copy h1{margin:0;font:400 clamp(52px,8.6vw,148px)/.96 var(--serif);letter-spacing:-.02em;max-width:13ch}
+.hero-copy h1{margin:0;font:600 clamp(56px,9.4vw,164px)/.94 var(--serif);letter-spacing:-.02em;max-width:13ch}
 .hero-copy h1 em{font-style:italic}
 .hero-copy .ctas{display:flex;flex-wrap:wrap;gap:14px 30px;justify-content:center;align-items:center}
-.hero-copy small{font:400 13px/1.6 var(--sans);color:var(--mist)}
+.hero-copy small{font:500 14px/1.6 var(--sans);color:var(--porcelain)}
 
 /* buttons */
 .btn{display:inline-flex;align-items:center;gap:14px;min-height:56px;padding:0 30px;text-decoration:none;font:600 15px var(--sans);letter-spacing:.02em;border-radius:999px;position:relative;overflow:hidden;isolation:isolate;transition:color .5s var(--ease)}
@@ -124,23 +127,21 @@ a{color:inherit}
 
 /* split reveal */
 .split .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
-.split .w>span{display:inline-block;transform:translateY(105%);transition:transform 1s var(--ease);transition-delay:calc(var(--i)*38ms)}
+.split .w>span{display:inline-block;transform:translateY(105%);transition:transform 1.2s var(--ease);transition-delay:calc(var(--i)*55ms)}
 .split.in .w>span{transform:none}
-.rise{opacity:0;transform:translateY(24px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:var(--d,0ms)}
+.rise{opacity:0;transform:translateY(20px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease);transition-delay:var(--d,0ms)}
 .rise.in{opacity:1;transform:none}
 
 /* ---------- mission ---------- */
-.mission h2{margin:28px 0 0;font:400 clamp(46px,7.6vw,132px)/1.0 var(--serif);letter-spacing:-.02em;max-width:15ch}
-.mission .mw{opacity:.16;transition:opacity .4s linear}
+.mission h2{margin:28px 0 0;font:600 clamp(46px,7.6vw,132px)/1.0 var(--serif);letter-spacing:-.02em;max-width:15ch}
+.mission .mw{opacity:.2;transition:opacity .6s var(--ease)}
 .mission .mw.lit{opacity:1}
 .mission .mw.accent{font-style:italic;color:var(--wine)}
-.mission-foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:clamp(40px,5vw,72px);align-items:end}
-.mission-foot p{margin:0;font:400 clamp(18px,1.5vw,22px)/1.6 var(--sans);max-width:44ch}
-.note{font:italic 500 clamp(20px,1.8vw,26px)/1.2 var(--serif);color:var(--wine);justify-self:end;display:flex;align-items:center;gap:12px}
-.note svg{width:70px;height:20px}
+.mission-foot{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;margin-top:clamp(40px,5vw,72px);align-items:end}
+.mission-foot p{margin:0;font:500 clamp(19px,1.6vw,24px)/1.55 var(--sans);max-width:44ch}
 
 /* ---------- how: the symbol builds itself ---------- */
-.how{position:relative;height:340vh}
+.how{position:relative;height:520vh}
 .how-pin{position:sticky;top:0;height:100vh;height:100svh;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:center;gap:clamp(24px,5vw,96px);padding:96px var(--gut) 48px;overflow:hidden}
 .how-art{position:relative;justify-self:center;width:min(42vw,62vh,560px);aspect-ratio:1}
 .how-art svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
@@ -148,32 +149,31 @@ a{color:inherit}
 .opt::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--wine);margin-right:8px;vertical-align:1px}
 .how-text{position:relative;min-height:340px}
 .how-head{position:absolute;top:-8vh;left:0;right:0}
-.step{position:absolute;inset:0;display:grid;align-content:center;gap:18px;opacity:0;transform:translateY(30px);transition:opacity .7s var(--ease),transform .7s var(--ease);pointer-events:none}
+.step{position:absolute;inset:0;display:grid;align-content:center;gap:18px;opacity:0;transform:translateY(20px);transition:opacity .9s var(--ease),transform .9s var(--ease);pointer-events:none}
 .step.on{opacity:1;transform:none;pointer-events:auto}
-.step h3{margin:0;font:400 clamp(40px,4.8vw,80px)/1.02 var(--serif);letter-spacing:-.015em}
-.step p{margin:0;max-width:42ch;color:var(--slate)}
+.step h3{margin:0;font:600 clamp(44px,5.4vw,88px)/1.0 var(--serif);letter-spacing:-.015em}
+.step p{margin:0;max-width:42ch;color:var(--ink2);font-size:19px}
 .step .opts{font:500 13px/1.9 var(--sans);letter-spacing:.04em;color:var(--navy)}
-.how-count{position:absolute;left:var(--gut);bottom:40px;display:flex;gap:18px;align-items:center;font:500 12px var(--sans);letter-spacing:.2em;color:var(--slate)}
+.how-count{position:absolute;left:var(--gut);bottom:40px;display:flex;gap:18px;align-items:center;font:600 13px var(--sans);letter-spacing:.2em;color:var(--slate)}
 .how-count .bar{width:120px;height:1px;background:var(--line);position:relative;overflow:hidden}
 .how-count .bar i{position:absolute;inset:0;background:var(--navy);transform-origin:left;transform:scaleX(0)}
-.how-foot{position:absolute;right:var(--gut);bottom:40px;max-width:44ch;font:400 13px/1.6 var(--sans);color:var(--slate);text-align:right}
 
 /* ---------- services list ---------- */
 .svc-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:clamp(36px,4vw,56px)}
-.svc-head h2{margin:0;font:400 clamp(48px,7vw,120px)/.98 var(--serif);letter-spacing:-.02em}
+.svc-head h2{margin:0;font:600 clamp(48px,7vw,120px)/.98 var(--serif);letter-spacing:-.02em}
 .svc{list-style:none;margin:0;padding:0;border-top:1px solid var(--navy)}
 .row{position:relative;border-bottom:1px solid var(--line)}
 .row a{display:grid;grid-template-columns:120px minmax(0,1fr) minmax(0,1.1fr) 40px;gap:24px;align-items:center;padding:clamp(22px,2.6vw,36px) 0;text-decoration:none}
 .row .fig{align-self:start;padding-top:1.1em}
-.row .place{font:400 clamp(44px,6.4vw,108px)/.95 var(--serif);letter-spacing:-.02em;transition:transform .7s var(--ease),font-style 0s}
+.row .place{font:600 clamp(44px,6.4vw,108px)/.95 var(--serif);letter-spacing:-.02em;transition:transform .7s var(--ease),font-style 0s}
 .row .what{display:grid;gap:6px}
-.row .what strong{font:500 clamp(22px,1.9vw,30px)/1.15 var(--serif)}
-.row .what span{font-size:15px;line-height:1.6;color:var(--slate);max-width:46ch}
+.row .what strong{font:600 clamp(22px,1.9vw,30px)/1.15 var(--serif)}
+.row .what span{font-size:16px;line-height:1.55;color:var(--ink2);max-width:46ch}
 .row .go{width:40px;height:40px;border-radius:50%;border:1px solid var(--navy);display:grid;place-items:center;transition:background .5s var(--ease),color .5s var(--ease),transform .5s var(--ease)}
 .row a:hover .place,.row a:focus-visible .place{transform:translateX(18px);font-style:italic}
 .row a:hover .go,.row a:focus-visible .go{background:var(--navy);color:var(--porcelain);transform:rotate(-45deg)}
 .row .thumb{display:none}
-.svc-more{margin:28px 0 0;font:400 15px/1.6 var(--sans);color:var(--slate)}
+.svc-more{margin:28px 0 0;font:500 16px/1.6 var(--sans);color:var(--ink2)}
 .float{position:fixed;left:0;top:0;z-index:60;width:clamp(240px,22vw,340px);aspect-ratio:4/5;pointer-events:none;opacity:0;transform:translate3d(-50%,-50%,0) scale(.85) rotate(-3deg);transition:opacity .45s var(--ease);overflow:hidden;box-shadow:0 40px 80px -40px rgba(20,33,61,.5)}
 .float.on{opacity:1}
 .float img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);transition:opacity .5s var(--ease),transform .9s var(--ease);filter:sepia(.14) saturate(.9)}
@@ -185,27 +185,25 @@ a{color:inherit}
 .journey{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,96px);align-items:center}
 .journey-art{position:relative;width:min(100%,560px);aspect-ratio:1;justify-self:center}
 .journey-art svg{width:100%;height:100%;overflow:visible}
-.journey h2{margin:0;font:400 clamp(40px,4.8vw,80px)/1.04 var(--serif);letter-spacing:-.015em}
-.journey p{margin:0;color:var(--slate);max-width:44ch}
+.journey h2{margin:0;font:600 clamp(40px,4.8vw,80px)/1.04 var(--serif);letter-spacing:-.015em}
+.journey p{margin:0;color:var(--ink2);max-width:44ch;font-size:19px}
 .journey .stack{display:grid;gap:22px}
-.journey .tag{display:flex;gap:28px;flex-wrap:wrap;font:500 12px var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--navy);padding-top:18px;border-top:1px solid var(--line)}
 
 /* ---------- clients marquee ---------- */
 .clients{padding:clamp(80px,10vw,140px) 0;background:var(--deep);overflow:hidden}
 .clients .eyebrow{padding:0 var(--gut);margin-bottom:28px}
 .marq{display:flex;width:max-content;animation:marq 60s linear infinite}
 .marq.rev{animation-direction:reverse;animation-duration:72s}
-.marq span{font:400 clamp(40px,6vw,96px)/1.15 var(--serif);letter-spacing:-.01em;white-space:nowrap;padding-right:.6em}
+.marq span{font:500 clamp(40px,6vw,96px)/1.15 var(--serif);letter-spacing:-.01em;white-space:nowrap;padding-right:.6em}
 .marq span i{font-style:normal;color:var(--wine);padding:0 .35em;font-size:.5em;vertical-align:.35em}
 .marq.rev span{color:transparent;-webkit-text-stroke:1px var(--navy)}
 .clients:hover .marq{animation-play-state:paused}
-.clients .small{padding:24px var(--gut) 0;margin:0;font-size:13px;color:var(--slate)}
 @keyframes marq{to{transform:translateX(-50%)}}
 
 /* ---------- founders ---------- */
 .f-head{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:24px;align-items:end;margin-bottom:clamp(44px,5vw,80px)}
-.f-head h2{margin:0;font:400 clamp(44px,5.8vw,96px)/1.0 var(--serif);letter-spacing:-.02em}
-.f-head p{margin:0;color:var(--slate)}
+.f-head h2{margin:0;font:600 clamp(44px,5.8vw,96px)/1.0 var(--serif);letter-spacing:-.02em}
+.f-head p{margin:0;color:var(--ink2);font-size:19px}
 .f-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,4vw,64px)}
 .f-grid figure:nth-child(2){margin-top:clamp(0px,10vw,160px)}
 figure{margin:0}
@@ -215,15 +213,15 @@ figure{margin:0}
 .portrait .sym{position:absolute;width:62%;right:-24%;bottom:-20%;opacity:.95;transition:transform 1.2s var(--ease)}
 .portrait:hover .sym{transform:translate(-6%,-6%)}
 figcaption{display:grid;gap:4px;margin-top:18px}
-figcaption .name{font:500 clamp(28px,2.6vw,40px)/1.1 var(--serif)}
-figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
+figcaption .name{font:600 clamp(28px,2.6vw,40px)/1.1 var(--serif)}
+figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
 
 /* ---------- CTA ---------- */
 .cta{min-height:100vh;display:grid;align-content:center;gap:clamp(26px,3vw,44px);overflow:hidden}
 .cta-sym{position:absolute;right:calc(var(--gut) * -1);top:50%;width:min(64vw,760px);transform:translateY(-50%);opacity:.07;pointer-events:none}
-.cta h2{margin:0;font:400 clamp(64px,11vw,190px)/.92 var(--serif);letter-spacing:-.025em}
+.cta h2{margin:0;font:600 clamp(64px,11vw,190px)/.92 var(--serif);letter-spacing:-.025em}
 .cta h2 em{font-style:italic}
-.tel{color:var(--porcelain);text-decoration:none;font:400 clamp(48px,8.4vw,150px)/1 var(--serif);letter-spacing:-.01em;font-variant-numeric:tabular-nums;width:max-content;max-width:100%;display:inline-block;white-space:nowrap;position:relative;padding-bottom:.08em}
+.tel{color:var(--porcelain);text-decoration:none;font:500 clamp(48px,8.4vw,150px)/1 var(--serif);letter-spacing:-.01em;font-variant-numeric:tabular-nums;width:max-content;max-width:100%;display:inline-block;white-space:nowrap;position:relative;padding-bottom:.08em}
 .tel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:rgba(245,240,236,.3)}
 .tel::before{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--porcelain);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ease);z-index:1}
 .tel:hover::before{transform:scaleX(1)}
@@ -231,11 +229,10 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
 .tel-wrap{overflow:hidden}
 .in .tel .ch{transform:none;opacity:1}
 .cta-row{display:flex;flex-wrap:wrap;gap:16px 36px;align-items:center}
-.cta-row span{font-size:14px;color:var(--mist);max-width:42ch}
-.cta .must{margin:0;font-size:15px;color:#E6E0D8;border-top:1px solid rgba(245,240,236,.16);padding-top:22px;max-width:60ch}
+.cta .must{margin:0;font-size:16px;color:var(--porcelain);border-top:1px solid rgba(245,240,236,.16);padding-top:22px;max-width:60ch}
 
 /* ---------- footer ---------- */
-.foot{padding:56px var(--gut) 40px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px;font-size:14px;line-height:1.7;color:var(--slate)}
+.foot{padding:56px var(--gut) 40px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px;font-size:15px;line-height:1.7;color:var(--ink2)}
 .foot strong{color:var(--navy);font-weight:600}
 .foot nav{display:grid;gap:4px;align-content:start}
 .foot .fine{grid-column:1/-1;font-size:12px;margin:16px 0 0;border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -256,8 +253,7 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
   .hero-side{display:none}
   .clock{font-size:clamp(64px,22vw,120px)}
   .hero-copy h1{font-size:clamp(46px,13vw,80px)}
-  .mission-foot{grid-template-columns:1fr}.note{justify-self:start}
-  .how{height:300vh}
+  .mission-foot{grid-template-columns:1fr}  .how{height:460vh}
   .how-pin{grid-template-columns:1fr;grid-template-rows:auto 1fr;align-items:start;padding-top:96px;gap:8px}
   .how-art{width:min(70vw,38vh)}
   .how-head{position:static;margin-bottom:8px}
@@ -265,8 +261,7 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
   .step{align-content:start;top:34px}
   .hero-meta .eyebrow+.eyebrow{display:none}
   .step h3{font-size:clamp(34px,9vw,48px)}
-  .how-foot{display:none}
-  .row a{grid-template-columns:1fr 40px;gap:14px}
+    .row a{grid-template-columns:1fr 40px;gap:14px}
   .row .fig{grid-column:1/-1;padding:0}
   .row .what{grid-column:1/-1}
   .row .thumb{display:block;grid-column:1/-1;aspect-ratio:16/10;overflow:hidden}
@@ -286,8 +281,7 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
   .hero{height:auto}.hero-pin{position:relative;height:100svh}
   .how{height:auto}.how-pin{position:relative;height:auto;padding:clamp(110px,15vw,220px) var(--gut)}
   .step{position:static;opacity:1;transform:none;margin-bottom:40px}.how-text{min-height:0}.how-head{position:static;margin-bottom:24px}
-  .how-count{display:none}.how-foot{position:static;text-align:left;grid-column:1/-1}
-  .opt{opacity:1}
+  .how-count{display:none}  .opt{opacity:1}
   .split .w>span,.rise,.tel .ch{transform:none;opacity:1}
   .mission .mw{opacity:1}
 }
@@ -336,7 +330,7 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
   <p>24/7 · <a href="tel:+12028399439">202.839.9439</a><br>Not a substitute for 911. In a life‑threatening emergency, call&nbsp;911.</p>
 </div>
 
-<main id="main">
+<main id="main" tabindex="-1">
 
 <!-- HERO: the S is a window onto the city at night. Scroll travels through it. -->
 <section class="hero" id="top" aria-label="Introduction">
@@ -344,7 +338,6 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
     <div class="hero-win" role="img" aria-label="The Capitol at night, seen through the Stagecoach S"></div>
     <div class="hero-meta">
       <p class="eyebrow"><span class="pulse" aria-hidden="true" style="--c:#F5F0EC"></span>Washington, DC · Now</p>
-      <p class="eyebrow">Fig 00 · The line is open</p>
     </div>
     <div class="clock" aria-label="Current time in Washington, DC"><span id="clock">3:03 a.m.</span></div>
     <div class="hero-side"><strong>One line. A clinician answers.</strong>Physician‑led emergency medicine for Washington, DC, at any hour.</div>
@@ -365,11 +358,7 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
   <p class="eyebrow rise">Why we exist</p>
   <h2 id="m-h" data-words>We exist to bridge the gap between primary care and&nbsp;911.</h2>
   <div class="mission-foot">
-    <p class="rise">Rapid, physician‑led medical care, delivered directly to where our patients need it&nbsp;most.</p>
-    <span class="note rise" style="--d:200ms">between your doctor and 911
-      <svg viewBox="0 0 70 20" aria-hidden="true"><path d="M2 12 C 20 4, 40 18, 64 9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M57 5 L65 9 L58 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </span>
-  </div>
+    <p class="rise">Rapid, physician‑led medical care, delivered directly to where our patients need it&nbsp;most.</p>  </div>
 </section>
 
 <!-- HOW: the symbol is the process. Point = the call. Ring = the options. S = we come to you. -->
@@ -390,24 +379,23 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
     <div class="how-text">
       <div class="how-head"><p class="eyebrow" id="how-h">How a call works</p></div>
       <div class="step" data-step="0">
-        <span class="fig">Fig 01 · Intake</span>
+        <span class="fig">Intake</span>
         <h3>You call. A clinician answers.</h3>
         <p>One 24/7 line. A person who can make decisions picks up. That call is the point everything starts&nbsp;from.</p>
       </div>
       <div class="step" data-step="1">
-        <span class="fig">Fig 02 · Triage</span>
+        <span class="fig">Triage</span>
         <h3>Together, you decide the next&nbsp;step.</h3>
         <p>Not every call becomes a visit. The right response is chosen with&nbsp;you:</p>
         <p class="opts">911 · the ER · telehealth · a home visit · safe to&nbsp;wait</p>
       </div>
       <div class="step" data-step="2">
-        <span class="fig">Fig 03 · Response</span>
+        <span class="fig">Response</span>
         <h3>When it makes sense, we come to&nbsp;you.</h3>
         <p>An EMT, paramedic, NP, PA or physician, under the medical direction of a triple board‑certified&nbsp;physician.</p>
       </div>
     </div>
     <div class="how-count" aria-hidden="true"><span id="how-n">01</span><span class="bar"><i id="how-bar"></i></span><span>03</span></div>
-    <p class="how-foot">The symbol is the process: one point of contact, a considered circle of options, and a single line to your&nbsp;door. No response times are promised&nbsp;here.</p>
   </div>
 </section>
 
@@ -415,26 +403,25 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
 <section class="sec" id="services" aria-labelledby="svc-h" style="padding-top:clamp(80px,10vw,160px)">
   <div class="svc-head">
     <h2 id="svc-h" class="split">Where we&nbsp;come.</h2>
-    <p class="eyebrow rise">Scenes are illustrative</p>
   </div>
   <ul class="svc">
     <li class="row rise" data-img="0"><a href="#request" data-cur="View">
-      <span class="fig">Fig 05 · Stagecoach Kids</span><span class="place">Nursery</span>
+      <span class="fig">Stagecoach Kids</span><span class="place">Nursery</span>
       <span class="what"><strong>Pediatric care, at home, at night.</strong><span>A pediatric home response for families, under the direction of a board‑certified pediatric emergency physician.</span></span>
       <span class="go" aria-hidden="true">→</span>
       <span class="thumb"><img src="https://stagecoachmedical.com/__l5e/assets-v1/d69fe3ed-2b99-4dd4-8527-f7204c29ae31/stagecoach-kids-3.jpg" alt="" loading="lazy"></span></a></li>
     <li class="row rise" data-img="1"><a href="#request" data-cur="View">
-      <span class="fig">Fig 06 · Events</span><span class="place">Gala</span>
+      <span class="fig">Events</span><span class="place">Gala</span>
       <span class="what"><strong>A medical team no one notices.</strong><span>On‑site clinicians for galas, productions and conferences, planned in advance with your staff and security.</span></span>
       <span class="go" aria-hidden="true">→</span>
       <span class="thumb"><img src="https://stagecoachmedical.com/__l5e/assets-v1/4e83799b-d5a1-43d0-9ba3-8f9d9aad5a64/team-field.jpg" alt="" loading="lazy"></span></a></li>
     <li class="row rise" data-img="2"><a href="#request" data-cur="View">
-      <span class="fig">Fig 07 · Executive</span><span class="place">Hotel suite</span>
+      <span class="fig">Executive</span><span class="place">Hotel suite</span>
       <span class="what"><strong>Care that meets the schedule.</strong><span>Executive medicine for leaders and the organizations that depend on them, wherever the day is.</span></span>
       <span class="go" aria-hidden="true">→</span>
       <span class="thumb"><img class="dome" src="https://stagecoachmedical.com/__l5e/assets-v1/c641f78a-cbf0-4b65-9ca2-aa0f0a64ad36/fleet.png" alt="" loading="lazy"></span></a></li>
     <li class="row rise" data-img="3"><a href="#request" data-cur="View">
-      <span class="fig">Fig 08 · Dental</span><span class="place">Home</span>
+      <span class="fig">Dental</span><span class="place">Home</span>
       <span class="what"><strong>A dentist, around the clock.</strong><span>24/7 emergency dental care with our partner White32 Dental, through the same line.</span></span>
       <span class="go" aria-hidden="true">→</span>
       <span class="thumb"><img src="https://stagecoachmedical.com/__l5e/assets-v1/48a8e1f1-a0a6-43e8-8552-5d478a5e7539/stagecoach-kids-2.png" alt="" loading="lazy"></span></a></li>
@@ -461,18 +448,16 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
   <div class="stack">
     <p class="eyebrow rise">Discretion</p>
     <h2 id="j-h" class="split">A protected journey, drawn in one&nbsp;letter.</h2>
-    <p class="rise">Clinicians dressed for the room. Planned with your staff and security. No scene. The S holds a single point at its centre: you, with everything we do drawn around&nbsp;you.</p>
-    <div class="tag rise"><span>Judgment</span><span>Discretion</span><span>Presence</span></div>
+    <p class="rise">Clinicians dressed for the room. Planned with your staff and security. No&nbsp;scene.</p>
   </div>
 </section>
 
 <!-- CLIENTS -->
 <section class="clients" aria-labelledby="c-h">
-  <p class="eyebrow" id="c-h">Fig 04 · Previous event clients include</p>
+  <p class="eyebrow" id="c-h">Previous event clients include</p>
   <div class="marq" aria-hidden="true"><span>Meta<i>●</i>Google<i>●</i>JP Morgan<i>●</i>The Atlantic<i>●</i>Emerson Collective<i>●</i></span><span>Meta<i>●</i>Google<i>●</i>JP Morgan<i>●</i>The Atlantic<i>●</i>Emerson Collective<i>●</i></span></div>
   <div class="marq rev" aria-hidden="true"><span>YPO · Edens · Hargrove · Union Market · Autoshop ·</span><span>YPO · Edens · Hargrove · Union Market · Autoshop ·</span></div>
   <ul class="sr"><li>Meta</li><li>Google</li><li>JP Morgan</li><li>The Atlantic</li><li>Emerson Collective</li><li>YPO</li><li>Edens</li><li>Hargrove</li><li>Union Market</li><li>Autoshop</li></ul>
-  <p class="small">Names as listed on the current site. Permission to display: to confirm with&nbsp;client.</p>
 </section>
 
 <!-- FOUNDERS -->
@@ -487,14 +472,14 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
         <img class="ph" src="https://stagecoachmedical.com/__l5e/assets-v1/46556dab-0929-47be-a3df-644ae030b889/noah-gray.jpg" alt="Noah Gray" loading="lazy">
         <img class="sym" src="assets/symbol-cream.svg" alt="">
       </div>
-      <figcaption><span class="fig">Fig 09 · Co‑founder &amp; CEO</span><span class="name">Noah Gray, EMT</span><span class="role">Former Chief Communications Officer, DC Fire &amp; EMS</span></figcaption>
+      <figcaption><span class="fig">Co‑founder &amp; CEO</span><span class="name">Noah Gray, EMT</span><span class="role">Former Chief Communications Officer, DC Fire &amp; EMS</span></figcaption>
     </figure>
     <figure class="rise" style="--d:120ms">
       <div class="portrait" tabindex="0" data-cur="View">
         <img class="ph" src="https://stagecoachmedical.com/__l5e/assets-v1/23074c25-8945-4654-89e2-a5d66747596d/david-vitberg.jpg" alt="Dr. David Vitberg" loading="lazy">
         <img class="sym" src="assets/symbol-cream.svg" alt="">
       </div>
-      <figcaption><span class="fig">Fig 10 · Co‑founder &amp; CMO</span><span class="name">Dr. David Vitberg, MD</span><span class="role">Triple board‑certified emergency and critical care physician; former Medical Director, DC Fire &amp; EMS</span></figcaption>
+      <figcaption><span class="fig">Co‑founder &amp; CMO</span><span class="name">Dr. David Vitberg, MD</span><span class="role">Triple board‑certified emergency and critical care physician; former Medical Director, DC Fire &amp; EMS</span></figcaption>
     </figure>
   </div>
 </section>
@@ -507,7 +492,6 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
   <div class="tel-wrap"><a class="tel" href="tel:+12028399439" data-cur="Call" aria-label="Call 202.839.9439">202.839.9439</a></div>
   <div class="cta-row rise">
     <a class="btn btn-light" href="mailto:medical@thestagecoachgroup.com?subject=Request%20care" data-cur="Write">Request care <span class="arr" aria-hidden="true">→</span></a>
-    <span>Not for emergencies. A short request form will replace this email link: to confirm with&nbsp;client.</span>
   </div>
   <p class="must rise">Not a substitute for 911. In a life‑threatening emergency, call&nbsp;911.</p>
 </section>
@@ -518,7 +502,7 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
   <div><strong>Office</strong><br>3299 K St NW #210<br>Washington, DC 20007<br>Not a walk‑in clinic.</div>
   <div><strong>24/7 line</strong><br><a href="tel:+12028399439">202.839.9439</a><br>Not a substitute for&nbsp;911.</div>
   <nav aria-label="Footer"><a href="#services">Services</a><a href="#how">How it works</a><a href="#about">About</a><a href="#request">Request care</a></nav>
-  <p class="fine"><span>© The Stagecoach Group. Licensing wording: to confirm with client.</span><span>Washington, DC</span></p>
+  <p class="fine"><span>© The Stagecoach Group</span><span>Washington, DC</span></p>
 </footer>
 
 <script>
@@ -561,8 +545,8 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
     });
     walk(h);
   });
-  io($$('.split'), el => el.classList.add('in'), { threshold: .3 });
-  io($$('.rise'), el => el.classList.add('in'), { threshold: .15 });
+  io($$('.split'), el => el.classList.add('in'), { threshold: .3, rootMargin: '0px 0px -8% 0px' });
+  io($$('.rise'), el => el.classList.add('in'), { threshold: .15, rootMargin: '0px 0px -8% 0px' });
   io($$('.cta'), el => el.classList.add('in'), { threshold: .3 });
 
   /* phone number: digit-by-digit rise */
@@ -574,7 +558,7 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
 
   /* mobile menu */
   const mb = $('.menu-btn'), sheet = $('#sheet'), hdr = $('#hdr');
-  const setMenu = open => { mb.setAttribute('aria-expanded', open); mb.textContent = open ? 'Close' : 'Menu'; sheet.classList.toggle('open', open); hdr.classList.toggle('menu-open', open); document.documentElement.style.overflow = open ? 'hidden' : ''; };
+  const setMenu = open => { mb.setAttribute('aria-expanded', open); mb.textContent = open ? 'Close' : 'Menu'; sheet.classList.toggle('open', open); hdr.classList.toggle('menu-open', open); document.documentElement.style.overflow = open ? 'hidden' : ''; frame(); if (open) $('a', sheet).focus(); };
   mb.addEventListener('click', () => setMenu(mb.getAttribute('aria-expanded') !== 'true'));
   $$('a', sheet).forEach(a => a.addEventListener('click', () => setMenu(false)));
   addEventListener('keydown', e => { if (e.key === 'Escape' && sheet.classList.contains('open')) { setMenu(false); mb.focus(); } });
@@ -601,24 +585,24 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
     const max = document.documentElement.scrollHeight - vh; prog.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
 
     /* hero */
-    const hr = hero.getBoundingClientRect(); const hp = RM ? 0 : clamp(-hr.top / (hr.height - vh));
-    const m = Math.min(vw, vh) * (vw < 860 ? .74 : .6);
-    const z = ease(clamp(hp / .62));
+    const hr = hero.getBoundingClientRect(); const hp = RM ? 1 : clamp(-hr.top / (hr.height - vh));
+    const m = Math.min(vw, vh) * (vw < 860 ? .7 : .56);
+    const z = ease(clamp((hp - .1) / .4));
     const size = m * Math.pow(34, z);
-    const sx0 = (vw - m) / 2 + AX * m, sy0 = (vh - m) / 2 + AY * m;
+    const sx0 = (vw - m) / 2 + AX * m, sy0 = vh * .44 - m / 2 + AY * m;
     const ax = sx0 + (vw / 2 - sx0) * z, ay = sy0 + (vh / 2 - sy0) * z;
     const pos = `${ax - AX * size}px ${ay - AY * size}px`, sz = `${size}px ${size}px`;
     win.style.webkitMaskSize = sz; win.style.maskSize = sz; win.style.webkitMaskPosition = pos; win.style.maskPosition = pos;
-    win.style.setProperty('--scrim', (clamp((hp - .45) / .3) * .55).toFixed(3));
-    const fade = 1 - clamp(hp / .25);
-    clock.style.opacity = fade; clock.style.transform = `translateY(${-hp * 120}px)`;
+    win.style.setProperty('--scrim', (clamp((hp - .4) / .15) * .66).toFixed(3));
+    const fade = 1 - clamp((hp - .03) / .09);
+    clock.style.opacity = fade; clock.style.transform = `translateY(${-(1 - fade) * 60}px)`;
     meta.style.opacity = fade; side.style.opacity = fade; cue.style.opacity = fade;
-    const cp = RM ? 1 : clamp((hp - .55) / .25);
+    const cp = RM ? 1 : clamp((hp - .5) / .1);
     copy.style.opacity = cp; copy.style.transform = `translateY(${(1 - ease(cp)) * 40}px)`; copy.classList.toggle('live', cp > .6);
 
     /* how: point → ring → S */
     const wr = how.getBoundingClientRect(); const p = RM ? 1 : clamp(-wr.top / (wr.height - vh));
-    const s1 = clamp(p / .18), s2 = clamp((p - .3) / .25), s3 = clamp((p - .62) / .28);
+    const s1 = clamp(p / .08), s2 = clamp((p - .3) / .14), s3 = clamp((p - .62) / .14);
     hDot.style.transform = `scale(${RM ? 1 : ease(s1) * (1 + .25 * Math.sin(Math.PI * s1))})`;
     hRings.forEach((c, i) => { const t = clamp(s2 * 1.4 - i * .2); const r = 6.5 + t * (34 - 6.5) * (1 - i * .18); c.setAttribute('r', r.toFixed(2)); c.setAttribute('opacity', (RM ? .3 : (t > 0 ? (1 - s3) * .55 * (1 - i * .25) : 0)).toFixed(3)); });
     hGuide.setAttribute('opacity', (RM ? .5 : clamp(s2 * 2) * (1 - s3) * .9).toFixed(3));
@@ -635,11 +619,14 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
     jDot.style.transform = `scale(${clamp(jp * 3)})`; jDot.style.transformOrigin = '50px 50px';
 
     /* mission words */
-    if (mh) { const r = mh.getBoundingClientRect(); const mp = RM ? 1 : clamp((vh * .82 - r.top) / (r.height + vh * .3)); const n = Math.round(mp * (mws.length + 1)); mws.forEach((w, i) => w.classList.toggle('lit', i < n)); }
+    if (mh) { const r = mh.getBoundingClientRect(); const mp = RM ? 1 : clamp((vh * .9 - r.top) / (vh * .55)); const n = Math.round(mp * (mws.length + 1)); mws.forEach((w, i) => w.classList.toggle('lit', i < n)); }
   }
   let ticking = false;
   addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { frame(); ticking = false; }); } }, { passive: true });
   frame();
+
+  /* keyboard: tabbing into the hidden hero buttons scrolls to where they are shown */
+  copy.addEventListener('focusin', () => { if (!copy.classList.contains('live') && !RM) scrollTo({ top: hero.offsetTop + (hero.offsetHeight - vh) * .66, behavior: 'instant' }); });
 
   /* desktop cursor + floating service image */
   if (fine && !RM) {
@@ -659,7 +646,7 @@ figcaption .role{font-size:15px;color:var(--slate);max-width:44ch}
     };
     loop();
     /* magnetic buttons */
-    $$('.btn').forEach(b => { b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px, ${(e.clientY - r.top - r.height / 2) * .3}px)`; }); b.addEventListener('pointerleave', () => { b.style.transform = ''; }); b.style.transition += ',transform .6s cubic-bezier(.2,.9,.2,1)'; });
+    $$('.btn').forEach(b => { b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px, ${(e.clientY - r.top - r.height / 2) * .3}px)`; }); b.addEventListener('pointerleave', () => { b.style.transform = ''; }); b.style.transition = 'color .5s cubic-bezier(.2,.9,.2,1), transform .6s cubic-bezier(.2,.9,.2,1)'; });
   }
   /* touch: tap a portrait to see it in colour */
   $$('.portrait').forEach(p => p.addEventListener('click', () => p.classList.toggle('color')));
