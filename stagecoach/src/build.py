@@ -4,6 +4,7 @@ Run from the stagecoach/ folder:  python3 src/build.py
 Edit copy here (inside pages) or in src/home.html (home), never in the generated .html files.
 """
 import os
+import re
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from icons import icon
@@ -21,6 +22,43 @@ IMG = {
 PHONE = '202.839.9439'
 TEL = 'tel:+12028399439'
 EMAIL = 'medical@thestagecoachgroup.com'
+
+SMALL = {'a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 'nor', 'of', 'on', 'or', 'the', 'to', 'up', 'vs', 'via', 'per'}
+
+
+def title_case(text):
+    """Title Case for headings: every word capitalised except short joining words, which stay lower unless first or last."""
+    parts = re.split(r'(\s+|&[a-z]+;)', text)
+    words = [i for i, p in enumerate(parts) if p and not re.fullmatch(r'\s+|&[a-z]+;', p)]
+    for n, i in enumerate(words):
+        w = parts[i]
+        m = re.match(r'^([^A-Za-z]*)([A-Za-z][A-Za-z\u2019\'.]*)(.*)$', w)
+        if not m:
+            continue
+        pre, core, post = m.groups()
+        if core.isupper() or re.fullmatch(r'[ap]\.m\.', core):
+            continue
+        low = core.lower()
+        first_or_last = n == 0 or n == len(words) - 1
+        after_colon = n > 0 and parts[words[n - 1]].endswith(':')
+        if low in SMALL and not first_or_last and not after_colon:
+            parts[i] = pre + low + post
+        else:
+            parts[i] = pre + core[0].upper() + core[1:] + post
+    return ''.join(parts)
+
+
+def title_case_headings(html):
+    def fix(m):
+        open_, inner, close = m.group(1), m.group(2), m.group(3)
+        segs = re.split(r'(<[^>]+>)', inner)
+        segs = [title_case(x) if not x.startswith('<') else x for x in segs]
+        return open_ + ''.join(segs) + close
+    html = re.sub(r'(<h[1-3]\b[^>]*>)(.*?)(</h[1-3]>)', fix, html, flags=re.S)
+    html = re.sub(r'(<span class="txt">(?:(?!<strong>).)*<strong>)(.*?)(</strong>)', fix, html, flags=re.S)
+    html = re.sub(r'(<li class="rise"[^>]*>(?:<span class="ic-wrap">.*?</span>)?<b>)(.*?)(</b>)', fix, html, flags=re.S)
+    return html
+
 
 NAV = [('services.html', 'Services'), ('membership.html', 'Membership'), ('events.html', 'Events'),
        ('kids.html', 'Stagecoach Kids'), ('team.html', 'Team'), ('contact.html', 'Contact')]
@@ -49,15 +87,16 @@ def head(title, desc):
 '''
 
 
-def header(current):
+def header(current, has_join=True):
     links = ''.join(f'<a href="{h}"{" aria-current=\"page\"" if h == current else ""}>{t}</a>' for h, t in NAV)
     sheet = ''.join(f'<a href="{h}">{t}</a>' for h, t in [('index.html', 'Home')] + NAV + [('careers.html', 'Join us'), ('partners.html', 'Partners')])
     return f'''<header class="hdr on-dark" id="hdr">
   <div class="hdr-in">
-    <a class="brand" href="index.html" aria-label="Stagecoach Concierge Emergency Medical Services, home"><span class="wm">STAGECOACH</span><span class="wm-tag">CONCIERGE EMERGENCY MEDICAL SERVICES</span></a>
+    <a class="brand" href="index.html" aria-label="Stagecoach Concierge Emergency Medical Services, home"><svg class="s" viewBox="0 0 100 100" aria-hidden="true"><defs><mask id="hb-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs><path d="{S}" fill="none" stroke="currentColor" stroke-width="14.5" stroke-linecap="round" mask="url(#hb-m)"/><circle cx="50" cy="50" r="6.5" fill="#E37970"/></svg><span class="wm-text"><span class="wm">STAGECOACH</span><span class="wm-tag">CONCIERGE EMERGENCY MEDICAL SERVICES</span></span></a>
     <nav class="nav" aria-label="Primary">{links}</nav>
     <div style="display:flex;align-items:center;gap:20px">
-      <a class="call-link pill-call" href="{TEL}" data-cur="Call"><span class="pulse" aria-hidden="true"></span><span class="num"><span class="lbl">24/7 · </span>{PHONE}</span><span class="short">Call 24/7</span></a>
+      <a class="call-link" href="{TEL}" data-cur="Call"><span class="pulse" aria-hidden="true"></span><span class="num"><span class="lbl">24/7 · </span>{PHONE}</span></a>
+      <a class="btn-join pill-call" href="{'#join' if has_join else 'membership.html#join'}">Join the Waitlist</a>
       <button class="menu-btn" type="button" aria-expanded="false" aria-controls="sheet">Menu</button>
     </div>
   </div>
@@ -71,13 +110,13 @@ def header(current):
 
 
 FOOTER = f'''<footer class="foot">
-  <div class="foot-brand"><span class="wm">STAGECOACH</span><span class="tag">Concierge Emergency Medical Services</span><span>White-glove care, emergency-ready, wherever you are. Doctor-led and based in Washington,&nbsp;DC.</span></div>
+  <div class="foot-brand"><svg class="s" viewBox="0 0 100 100" aria-hidden="true"><defs><mask id="fb-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs><path d="{S}" fill="none" stroke="currentColor" stroke-width="14.5" stroke-linecap="round" mask="url(#fb-m)"/><circle cx="50" cy="50" r="6.5" fill="#E37970"/></svg><span class="wm">STAGECOACH</span><span class="tag">Concierge Emergency Medical Services</span><span>White glove care, ready for emergencies, wherever you are. Led by doctors and based in Washington,&nbsp;DC.</span></div>
   <nav aria-label="Explore"><strong>Explore</strong><a href="services.html">Services</a><a href="membership.html">Membership</a><a href="events.html">Events</a><a href="kids.html">Stagecoach Kids</a><a href="team.html">Team</a></nav>
   <nav aria-label="Company"><strong>Company</strong><a href="careers.html">Join us</a><a href="careers.html#internships">Internships</a><a href="partners.html">Partners</a><a href="contact.html">Contact</a></nav>
   <div><strong>Reach us</strong><br><a href="{TEL}">{PHONE}</a>, 24/7<br><a href="mailto:{EMAIL}">{EMAIL}</a><br>3299 K St NW #210<br>Washington, DC 20007</div>
   <div class="fine"><span>© 2026 Stagecoach Concierge Emergency Medical Services. Not a substitute for 911. In a life-threatening emergency, call 911.</span><span>Stagecoach Concierge EMS PC is pending EMS Agency approval by the District of&nbsp;Columbia.</span></div>
 </footer>
-<a class="callbar" href="{TEL}"><span class="pulse" aria-hidden="true"></span>Call 24/7 · {PHONE}</a>
+<div class="callbar"><a class="cb-call" href="{TEL}"><span class="pulse" aria-hidden="true"></span>Call 24/7</a><a class="cb-join" href="{{JOINHREF}}">Join the Waitlist</a></div>
 <script src="assets/site.js"></script>
 </body>
 </html>
@@ -85,30 +124,41 @@ FOOTER = f'''<footer class="foot">
 
 JOIN = f'''<!-- JOIN: membership waitlist -->
 <section class="sec join" id="join" aria-labelledby="join-h">
+  <img class="join-sym" src="assets/symbol-cream.svg" alt="" aria-hidden="true">
   <div class="join-in">
-    <div>
-      <p class="eyebrow rise">Membership · Launching soon</p>
-      <h2 id="join-h" class="split">Join the&nbsp;waitlist.</h2>
-      <p class="lead rise">Membership is small on purpose, so every member gets our best. Add your email to hear first when spots&nbsp;open.</p>
+    <div class="join-copy">
+      <p class="eyebrow rise"><span class="live-dot" aria-hidden="true"></span>Launching soon</p>
+      <h2 id="join-h" class="split">Join the&nbsp;Waitlist.</h2>
+      <p class="lead rise">Membership is small on purpose. Add your email and you’ll hear first when spots&nbsp;open.</p>
+      <ul class="join-why rise">
+        <li>Takes 10 seconds</li><li>No spam, ever</li><li>Unsubscribe anytime</li>
+      </ul>
     </div>
-    <form id="join-form" class="rise" novalidate data-endpoint="">
-      <label for="join-email">Email address</label>
-      <div class="field">
-        <input id="join-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="name@example.com" aria-describedby="join-msg join-fine">
-        <button class="btn btn-dark" type="submit">Join the waitlist <span class="arr" aria-hidden="true">→</span></button>
+    <div class="join-card rise">
+      <form id="join-form" novalidate data-endpoint="">
+        <label for="join-email">Your email</label>
+        <div class="field">
+          <input id="join-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="name@example.com" aria-describedby="join-msg join-fine" enterkeyhint="go">
+          <button class="btn btn-dark" type="submit">Join the Waitlist <span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <label class="hp" aria-hidden="true">Company<input name="company" tabindex="-1" autocomplete="off"></label>
+        <p class="msg" id="join-msg" role="status" aria-live="polite"></p>
+        <fieldset class="chips-in" hidden><legend>One more thing, if you like: who is this for?</legend>
+          <label><input type="checkbox" name="interest" value="individual"><span>Just me</span></label>
+          <label><input type="checkbox" name="interest" value="family"><span>My family</span></label>
+          <label><input type="checkbox" name="interest" value="kids"><span>My kids</span></label>
+          <label><input type="checkbox" name="interest" value="executive"><span>Executive care</span></label>
+          <label><input type="checkbox" name="interest" value="employer"><span>My company</span></label>
+          <label><input type="checkbox" name="interest" value="events"><span>Events</span></label>
+        </fieldset>
+      </form>
+      <div class="join-done" hidden>
+        <svg viewBox="0 0 100 100" aria-hidden="true"><defs><mask id="jd-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs><path class="jd-s" d="{S}" pathLength="1" fill="none" stroke="#10192B" stroke-width="14.5" stroke-linecap="round" mask="url(#jd-m)"/><circle class="jd-dot" cx="50" cy="50" r="6.5" fill="#E37970"/></svg>
+        <h3>You’re on the list.</h3>
+        <p>We’ll email you the moment membership opens. Check your inbox to confirm.</p>
       </div>
-      <fieldset class="chips-in"><legend>I’m interested in (optional)</legend>
-        <label><input type="checkbox" name="interest" value="individual"><span>Just me</span></label>
-        <label><input type="checkbox" name="interest" value="family"><span>My family</span></label>
-        <label><input type="checkbox" name="interest" value="kids"><span>My kids</span></label>
-        <label><input type="checkbox" name="interest" value="executive"><span>Executive care</span></label>
-        <label><input type="checkbox" name="interest" value="employer"><span>My company</span></label>
-        <label><input type="checkbox" name="interest" value="events"><span>Events</span></label>
-      </fieldset>
-      <label class="hp" aria-hidden="true">Company<input name="company" tabindex="-1" autocomplete="off"></label>
-      <p class="msg" id="join-msg" role="status" aria-live="polite"></p>
-      <p class="fine" id="join-fine">News only. Unsubscribe anytime. To get care now, call {PHONE}. Not a substitute for&nbsp;911.</p>
-    </form>
+      <p class="fine" id="join-fine">For news only. To get care now, call <a href="{TEL}">{PHONE}</a>. Not a substitute for&nbsp;911.</p>
+    </div>
   </div>
 </section>'''
 
@@ -122,34 +172,34 @@ LOGOS = '''<ul class="logos">
 TEAM = {
     'noah': ('Noah Gray, EMT', 'Co-Founder & CEO', 'Former Chief Communications Officer, DC Fire & EMS. Volunteer EMT.',
              'Former Chief Communications Officer for DC Fire & EMS, volunteer EMT with Montgomery County, Maryland, and White House producer for CNN. UVA Darden MBA candidate.',
-             B + '46556dab-0929-47be-a3df-644ae030b889/noah-gray.jpg', 'center 18%'),
-    'david': ('Dr. David Vitberg, MD', 'Co-Founder & Chief Medical Officer', 'Triple board-certified ER and critical care doctor. Former Medical Director, DC Fire & EMS.',
-              'Triple board-certified emergency and critical care physician and former Medical Director of DC Fire & EMS, where he built its prehospital whole blood program. Practices in the MedStar and Johns Hopkins systems.',
-              B + '23074c25-8945-4654-89e2-a5d66747596d/david-vitberg.jpg', 'center 18%'),
+             'assets/team/' + 'noah' + '.jpg', 'center 50%'),
+    'david': ('Dr. David Vitberg, MD', 'Co-Founder & Chief Medical Officer', 'Triple board certified ER and critical care doctor. Former Medical Director, DC Fire & EMS.',
+              'Triple board certified emergency and critical care physician and former Medical Director of DC Fire & EMS, where he built its prehospital whole blood program. Practices in the MedStar and Johns Hopkins systems.',
+              'assets/team/' + 'david' + '.jpg', 'center 50%'),
     'waleed': ('Waleed Haleem, PMP', 'Co-Founder & Chief Operating Officer', 'Ten years running hospital operations, including VIP care at Walter Reed.',
                'Ten years of executive experience in hospital operations, program and project management, IT, and VIP care delivery at Walter Reed; now focused on leading teams and keeping complex operations moving. UVA Darden MBA candidate.',
-               B + '55a82406-f357-4506-ad40-94aba5f09a61/waleed-haleem.jpg', 'center 18%'),
+               'assets/team/' + 'waleed' + '.jpg', 'center 50%'),
     'scott': ('Scott Sehon, MBA', 'Co-Founder & Chief Financial Officer', 'Finance leader who helped grow Social Tables to a $100M sale to Cvent.',
-              'Led finance at Crystal Clear Technologies from pre-revenue to No. 5 on the 2011 Inc. 500, then directed finance at Social Tables through 5× ARR growth, a $13M Series B, and a $100M acquisition by Cvent.',
-              B + '87df245f-32bf-40c8-8ce7-d63d97e188ee/scott-sehon.jpg', 'center 18%'),
+              'Led finance at Crystal Clear Technologies from before it had revenue to No. 5 on the 2011 Inc. 500, then directed finance at Social Tables through 5× ARR growth, a $13M Series B, and a $100M acquisition by Cvent.',
+              'assets/team/' + 'scott' + '.jpg', 'center 50%'),
     'liza': ('Liza White', 'VP of Strategy & Partnerships', 'Runs White32 Dental. Former communications director to Secretary of State Madeleine Albright.',
              'Owner and manager of White32 Dental, and former Director of Communications to U.S. Secretary of State Madeleine Albright. Former Chief of Staff at Subversive Capital and communications lead for the CEO of Ralph Lauren.',
-             B + '50a5a59b-7571-4946-bd3e-435c424e393c/liza-white.jpg', 'center 20%'),
+             'assets/team/' + 'liza' + '.jpg', 'center 50%'),
     'ameen': ('Ameen Elhamdani, NRP', 'EMS Operations Manager', 'Runs our crews, vehicles and schedules, so a team is ready the moment you call.',
-              'Leads day-to-day EMS operations, crews, vehicles, scheduling, and readiness, so a Stagecoach team is staffed, equipped, and moving the moment a call comes in.',
-              B + '030ff342-e677-42cc-b973-cd8f8a0aa136/ameen-elhamdani-new.png', 'center 20%'),
+              'Leads daily EMS operations, crews, vehicles, scheduling, and readiness, so a Stagecoach team is staffed, equipped, and moving the moment a call comes in.',
+              'assets/team/' + 'ameen' + '.jpg', 'center 50%'),
     'gupi': ('Gupi D. Howie, PA-C', 'Director of Advanced Practice Providers', 'Leads our PAs and nurse practitioners, so every visit meets the same high bar.',
              'Leads our advanced practice providers, hiring, credentialing, and clinical standards, so every physician assistant and nurse practitioner on a Stagecoach response meets the same bar.',
-             B + '4825dfa2-7531-43d7-b0b5-bee26c6d4e36/gurpreet-howie.jpg', 'center 25%'),
-    'yaffa': ('Dr. Yaffa Vitberg, MD', 'Pediatric Medical Director', 'Board-certified children’s ER doctor at Weill Cornell Medicine / NewYork-Presbyterian.',
+             'assets/team/' + 'gupi' + '.jpg', 'center 50%'),
+    'yaffa': ('Dr. Yaffa Vitberg, MD', 'Pediatric Medical Director', 'Board certified children’s ER doctor at Weill Cornell Medicine / NewYork-Presbyterian.',
               'Board certified in Pediatrics and Pediatric Emergency Medicine, she is an Assistant Professor of Clinical Emergency Medicine and Pediatrics and a pediatric emergency medicine physician at Weill Cornell Medicine/NewYork-Presbyterian in New York City. She is an accomplished clinician, educator, and leader with a strong commitment to medical education, mentorship, and advancing pediatric emergency care.',
-              B + '169d521d-b66a-4801-92e8-874686895a91/yaffa-vitberg-new.png', 'center 8%'),
+              'assets/team/' + 'yaffa' + '.jpg', 'center 50%'),
     'eve': ('Eve Hill, RN, NRP', 'Quality Improvement Officer', 'Nurse and paramedic at the R Adams Cowley Shock Trauma Center.',
             'Registered nurse and nationally registered paramedic in the Multi-Trauma Critical Care Unit at R Adams Cowley Shock Trauma Center, formerly in intensive care at MedStar Washington Hospital Center. Eight years in a 911-based EMS system, progressing from EMT to paramedic in charge and field training officer.',
-            B + 'b58255d0-f619-4df1-adee-19316900f229/eve-hill.png', 'center 20%'),
+            'assets/team/' + 'eve' + '.jpg', 'center 50%'),
     'charles': ('Dr. Charles White, DDS', 'Emergency Dental Response Partner', 'Founder and lead dentist at White32 Dental, our dental partner.',
                 'Founder and Principal Dentist at White32 Dental, Stagecoach’s emergency dental response partner. He completed his undergraduate and dental education at UNC Chapel Hill, followed by a clinical residency at the VA Medical Center in Washington, DC.',
-                B + '011c9f57-8350-44ea-8455-af4bdbb27207/charles-white.jpeg', 'center 6%'),
+                'assets/team/' + 'charles' + '.jpg', 'center 50%'),
 }
 
 
@@ -158,7 +208,7 @@ def person(key, full=False):
     first = name.split(',')[0]
     more = f'<details class="bio-more"><summary>Read more</summary><p>{bio}</p></details>' if full else ''
     return f'''      <li><figure>
-        <div class="portrait" tabindex="0" role="button" aria-label="Show {first} in colour"><img src="{img}" alt="{first}" loading="lazy" style="object-position:{pos}"></div>
+        <div class="portrait" tabindex="0" role="button" aria-label="Show {first} in colour"><img src="{img}" alt="{first}" loading="lazy" style="object-position:{pos}"><img class="sym" src="assets/symbol-cream.svg" alt=""></div>
         <figcaption><span class="name">{name}</span><span class="fig">{role}</span><span class="role">{short}</span>{more}</figcaption>
       </figure></li>
 '''
@@ -221,20 +271,20 @@ LINK_JOIN = '<a class="tlink" href="#join">Join the waitlist</a>'
 LINK_CONTACT = '<a class="tlink" href="contact.html">Contact us</a>'
 CALL_STEPS = [('You call. A real clinician answers.', 'Call or reach us online, any time. No phone tree.'),
               ('We figure out what you need.', '911, the ER, a telehealth call, a home visit, or safe to wait. We decide together.'),
-              ('If you need us, we come to you.', 'An EMT, paramedic, NP, PA, doctor or dentist comes to you. A triple board-certified doctor oversees every visit.')]
+              ('If you need us, we come to you.', 'An EMT, paramedic, NP, PA, doctor or dentist comes to you. A triple board certified doctor oversees every visit.')]
 
 # ---------------------------------------------------------------- pages
 PAGES = {}
 
-PAGES['services.html'] = ('Services | Stagecoach Concierge Emergency Medical Services', 'Emergency care, private medicine and fast help from a doctor-led team in Washington, DC, 24/7.',
-hero('Services', 'What we&nbsp;do.', 'Emergency care, private medicine and fast help from a doctor-led team. Day or night, all&nbsp;year.', BTN_CALL + LINK_CONTACT) +
+PAGES['services.html'] = ('Services | Stagecoach Concierge Emergency Medical Services', 'Emergency care, private medicine and fast help from a team led by doctors in Washington, DC, 24/7.',
+hero('Services', 'What we&nbsp;do.', 'Emergency care, private medicine and fast help from a team led by doctors. Day or night, all&nbsp;year.', BTN_CALL + LINK_CONTACT) +
 f'''<section class="sec" aria-labelledby="s1">
-  {head2('For emergencies', 'Emergency and critical&nbsp;care', 'When something is wrong, we bring hospital-trained care to you.', 's1')}
+  {head2('For emergencies', 'Emergency and critical&nbsp;care', 'When something is wrong, we bring hospital trained care to you.', 's1')}
   {cards([('Basic life support (BLS)', 'Emergency care from trained EMTs.', '', 'heart-pulse'),
-          ('Advanced life support (ALS)', 'Paramedic-level emergency care, wherever you are.', '', 'bolt'),
+          ('Advanced life support (ALS)', 'Paramedic level emergency care, wherever you are.', '', 'bolt'),
           ('Urgent care at your door', 'We treat you where you are, at home or on the go.', '', 'home'),
-          ('Critical care and transport', 'ICU-level care, and a safe ride to the hospital if you need one.', '', 'truck'),
-          ('Blood products on scene', 'We can give life-saving blood before you reach a hospital.', '', 'drop'),
+          ('Critical care and transport', 'ICU level care, and a safe ride to the hospital if you need one.', '', 'truck'),
+          ('Blood products on scene', 'We can give lifesaving blood before you reach a hospital.', '', 'drop'),
           ('Emergency care for kids', 'A pediatric team for babies, kids and teens.', '<a class="more" href="kids.html">About Stagecoach Kids →</a>', 'child')])}
 </section>
 <section class="sec alt" id="dental" aria-labelledby="s2">
@@ -256,17 +306,17 @@ f'''<section class="sec" aria-labelledby="s1">
   {head2('For groups', 'For organizations and&nbsp;agencies', '', 's4')}
   {cards([('Event medical teams', 'Coverage for galas, sets, conferences and big crowds.', '<a class="more" href="events.html">About events →</a>', 'calendar'),
           ('Medical direction and consulting', 'Doctor oversight and advice for EMS teams and programs.', '', 'stetho'),
-          ('CPR and EMS training', 'Hands-on training for your staff.', '', 'graduation'),
+          ('CPR and EMS training', 'Practical training for your staff.', '', 'graduation'),
           ('Nurse triage line', 'Experienced clinicians who answer and sort calls.', '<a class="more" href="partners.html">Partner with us →</a>', 'dispatch')], 4)}
 </section>
 <section class="sec" aria-labelledby="s5">
   {head2('Why Stagecoach', 'What makes us&nbsp;different', '', 's5')}
-  {checks(['Care from ER- and ICU-trained clinicians.', 'Life-saving blood products we can bring to you.', 'Proven steps for time-critical emergencies.', 'Medical care that works with your security team.', 'Emergency dental care the ER can’t give.', 'If you need a hospital, you choose which.'])}
+  {checks(['Care from clinicians trained in the ER and ICU.', 'Lifesaving blood products we can bring to you.', 'Proven steps for emergencies where minutes matter.', 'Medical care that works with your security team.', 'Emergency dental care the ER can’t give.', 'If you need a hospital, you choose which.'])}
 </section>
 ''' + band('Ready when you need&nbsp;us.', 'One number for everything on this page. A clinician answers, day or night.', BTN_CALL + LINK_CONTACT))
 
-PAGES['membership.html'] = ('Membership | Stagecoach Concierge Emergency Medical Services', 'Individual, family, employer and executive membership: 24/7 access to a doctor-led emergency team in Washington, DC.',
-hero('Membership · Launching soon', 'Skip the ER wait. We come to&nbsp;you.', 'Members get 24/7 access to a doctor-led emergency team for the whole family, including dental&nbsp;care.',
+PAGES['membership.html'] = ('Membership | Stagecoach Concierge Emergency Medical Services', 'Individual, family, employer and executive membership: 24/7 access to a team led by doctors in Washington, DC.',
+hero('Membership · Launching soon', 'Skip the ER wait. We come to&nbsp;you.', 'Members get 24/7 access to a team led by doctors for the whole family, including dental&nbsp;care.',
      '<a class="btn btn-light" href="#join">Join the waitlist <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="#tiers">See membership options</a>', IMG['kids2'], 'A parent comforting a young child') +
 f'''<section class="sec dark" aria-labelledby="m1" style="padding-top:0">
   {head2('Why it matters', 'The ER is not built for&nbsp;you.', 'In DC, a trip to the ER takes hours and costs a lot. There are few beds for a very big city.', 'm1')}
@@ -295,7 +345,7 @@ f'''<section class="sec dark" aria-labelledby="m1" style="padding-top:0">
   </div>
 </section>
 <section class="sec" aria-labelledby="m4">
-  {head2('The value', 'You already pay for the&nbsp;upgrade.', 'First-class seats. A car service. A concierge. You pay for time, comfort and control. Your health deserves the same. The best time to join is before you need us.', 'm4')}
+  {head2('The value', 'You already pay for the&nbsp;upgrade.', 'First class seats. A car service. A concierge. You pay for time, comfort and control. Your health deserves the same. The best time to join is before you need us.', 'm4')}
 </section>
 <section class="sec alt" id="tiers" aria-labelledby="m5">
   {head2('Ways to join', 'Pick your&nbsp;membership', '', 'm5')}
@@ -318,21 +368,21 @@ f'''<section class="sec dark" aria-labelledby="m1" style="padding-top:0">
 </section>
 ''')
 
-PAGES['events.html'] = ('Events | Stagecoach Concierge Emergency Medical Services', 'Doctor-led medical coverage for galas, productions, conferences and big crowds in Washington, DC.',
-hero('Events', 'A medical team at your&nbsp;event.', 'Doctor-led coverage for galas, film sets, conferences and big crowds. Ready to act, and dressed for the&nbsp;room.',
+PAGES['events.html'] = ('Events | Stagecoach Concierge Emergency Medical Services', 'Medical coverage led by doctors for galas, productions, conferences and big crowds in Washington, DC.',
+hero('Events', 'A medical team at your&nbsp;event.', 'Coverage led by doctors for galas, film sets, conferences and big crowds. Ready to act, and dressed for the&nbsp;room.',
      f'<a class="btn btn-light" href="mailto:{EMAIL}?subject=Event%20coverage">Plan your event <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="{TEL}">Call {PHONE}</a>', IMG['field'], 'Stagecoach clinicians at an overnight field operation') +
 f'''<section class="sec" aria-labelledby="e1">
   {head2('Who we cover', 'Every kind of&nbsp;event', '', 'e1')}
   {cards([('Galas and private events', 'Quiet clinicians on site, dressed for the room, ready to act without spoiling the evening.', '', 'star'),
           ('Film, TV and campaigns', 'Medical coverage for cast, crew and leaders, on location and on schedule.', '', 'spark'),
-          ('Conferences and big crowds', 'Basic and advanced life support, planning and on-site care for crowds of any size.', '', 'users')])}
+          ('Conferences and big crowds', 'Basic and advanced life support, planning and on site care for crowds of any size.', '', 'users')])}
 </section>
 <section class="sec alt" aria-labelledby="e2">
   {head2('What’s included', 'Everything your event&nbsp;needs', '', 'e2')}
-  {checks(['EMTs, paramedics, nurses, PAs, NPs and doctors on standby.', 'Oversight from a triple board-certified doctor.', 'A medical plan, site visit and emergency plan before the event.', 'On-site care, so fewer guests need 911.', 'We work with your venue, your security and local EMS.', 'Critical care transport and hospital help if needed.'])}
+  {checks(['EMTs, paramedics, nurses, PAs, NPs and doctors on standby.', 'Oversight from a triple board certified doctor.', 'A medical plan, site visit and emergency plan before the event.', 'On site care, so fewer guests need 911.', 'We work with your venue, your security and local EMS.', 'Critical care transport and hospital help if needed.'])}
 </section>
 <section class="sec clients" aria-labelledby="e3">
-  <div class="c-head"><p class="eyebrow rise">Previous event clients include</p><h2 id="e3" class="split">Trusted at events&nbsp;by</h2></div>
+  <div class="c-head"><p class="eyebrow rise">Previous event clients include</p><h2 id="e3" class="split">Clients we’ve&nbsp;covered</h2></div>
   {LOGOS}
 </section>
 ''' + band('Planning an&nbsp;event?', 'Tell us the place, the dates and how many guests. We’ll build the right plan and team.',
@@ -367,8 +417,8 @@ f'''<section class="sec dark" aria-labelledby="k1" style="padding-top:0">
 <section class="sec alt" aria-labelledby="k5">
   {head2('Working with your pediatrician', 'We work with your child’s doctor, not instead of&nbsp;them.', '', 'k5')}
   {cards([('Alongside your doctor', 'We extend your pediatrician’s office into your home after hours. Your child’s story doesn’t start over.', '', 'handshake'),
-          ('Led by kids’ ER experts', 'Care is directed by our own pediatric and pediatric ER doctors and ER-trained nurses.', '', 'child'),
-          ('A full report back', 'Everything we find and do goes to your pediatrician, so the follow-up picks up where we left off.', '', 'file')])}
+          ('Led by kids’ ER experts', 'Care is directed by our own pediatric and pediatric ER doctors and trained in the ER nurses.', '', 'child'),
+          ('A full report back', 'Everything we find and do goes to your pediatrician, so the follow up picks up where we left off.', '', 'file')])}
 </section>
 {JOIN}
 ''')
@@ -390,21 +440,21 @@ f'''<section class="sec" aria-labelledby="t0">
 </section>
 ''' + band('Want to join&nbsp;them?', 'We’re hiring our first clinical team in Washington, DC.', '<a class="btn btn-light" href="careers.html">See open roles <span class="arr" aria-hidden="true">→</span></a>' + LINK_CONTACT))
 
-INTERN_COMMON = '''<h4>Pay and credit</h4><p>This internship is unpaid by Stagecoach Concierge Emergency Medical Services and is built for academic credit. You may get a stipend, grant, scholarship, work-study or other funding from your school or another approved source. We’ll help with any paperwork your school or funder needs.</p>'''
-APPLY = f'''<h4>How to apply</h4><p>Email <a href="mailto:{EMAIL}">{EMAIL}</a> with:</p><ul><li>Your résumé</li><li>A short note on why you’re interested</li><li>Your program and expected graduation date</li><li>Any EMS or healthcare experience</li><li>Your school-credit or funding needs</li><li>When you’re available</li></ul>'''
+INTERN_COMMON = '''<h4>Pay and credit</h4><p>This internship is unpaid by Stagecoach Concierge Emergency Medical Services and is built for academic credit. You may get a stipend, grant, scholarship, work study or other funding from your school or another approved source. We’ll help with any paperwork your school or funder needs.</p>'''
+APPLY = f'''<h4>How to apply</h4><p>Email <a href="mailto:{EMAIL}">{EMAIL}</a> with:</p><ul><li>Your résumé</li><li>A short note on why you’re interested</li><li>Your program and expected graduation date</li><li>Any EMS or healthcare experience</li><li>Your school credit or funding needs</li><li>When you’re available</li></ul>'''
 
-PAGES['careers.html'] = ('Join us | Stagecoach Concierge Emergency Medical Services', 'Careers at Stagecoach Concierge Emergency Medical Services in Washington, DC: doctors, nurses, paramedics, EMTs, NPs, PAs, dispatch and operations, plus academic-credit internships.',
-hero('Join us', 'Help us build something&nbsp;new.', 'Stagecoach Concierge Emergency Medical Services is a doctor-led practice launching in Washington, DC. We’re hiring our first clinical&nbsp;team.',
+PAGES['careers.html'] = ('Join us | Stagecoach Concierge Emergency Medical Services', 'Careers at Stagecoach Concierge Emergency Medical Services in Washington, DC: doctors, nurses, paramedics, EMTs, NPs, PAs, dispatch and operations, plus academic credit internships.',
+hero('Join us', 'Help us build something&nbsp;new.', 'Stagecoach Concierge Emergency Medical Services is a practice led by doctors launching in Washington, DC. We’re hiring our first clinical&nbsp;team.',
      f'<a class="btn btn-light" href="mailto:{EMAIL}?subject=Careers%20at%20Stagecoach">Email your CV <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="#internships">Internships</a>') +
 f'''<section class="sec" aria-labelledby="c1">
   {head2('Who we look for', 'Great medicine is just the&nbsp;start.', 'We want kind, calm and discreet people who notice what a patient needs before they ask. How care feels matters as much as the care itself.', 'c1')}
 </section>
 <section class="sec alt" aria-labelledby="c2">
   {head2('Roles we hire', 'Open&nbsp;roles', '', 'c2')}
-  {cards([('Doctors', 'ER and critical care doctors for on-scene care and telehealth triage.', '', 'stetho'),
-          ('Registered nurses', 'ER-trained nurses for home visits, treatment and follow-up.', '', 'heart-pulse'),
+  {cards([('Doctors', 'ER and critical care doctors for on the scene care and telehealth triage.', '', 'stetho'),
+          ('Registered nurses', 'trained in the ER nurses for home visits, treatment and follow up.', '', 'heart-pulse'),
           ('Paramedics and EMTs', 'Field crews for urgent care, critical care transport and event standby.', '', 'truck'),
-          ('Nurse practitioners and PAs', 'For home visits, on-site lab work and ongoing care.', '', 'flask'),
+          ('Nurse practitioners and PAs', 'For home visits, on site lab work and ongoing care.', '', 'flask'),
           ('Dispatch and operations center', 'The first voice a member hears, any hour.', '', 'dispatch'),
           ('Management and operations', 'Vehicles, schedules, supplies and member experience behind every visit.', '', 'wrench')])}
 </section>
@@ -415,14 +465,14 @@ f'''<section class="sec" aria-labelledby="c1">
           ('Build it from day one', 'We’re launching now. Our first team shapes our protocols, our culture and our standard of care.', '', 'spark')])}
 </section>
 <section class="sec alt" id="internships" aria-labelledby="c4">
-  {head2('Internships', 'Academic-credit internships in&nbsp;DC', 'For students in medical and health programs. Hybrid, about 10 to 15 hours a week, with regular supervision and a real semester project. At our Georgetown office, 3299 K St NW #210.', 'c4')}
+  {head2('Internships', 'Internships for academic credit in&nbsp;DC', 'For students in medical and health programs. Hybrid, about 10 to 15 hours a week, with regular supervision and a real semester project. At our Georgetown office, 3299 K St NW #210.', 'c4')}
   <details class="fold rise" id="medical-operations"><summary><div><h3>Medical Operations Intern</h3><p>Help build and run a new medical service, with our CEO and operations team.</p></div><i aria-hidden="true">+</i></summary>
     <div class="fold-body">
-      <dl class="facts"><dt>Where</dt><dd>Georgetown office, hybrid, with some in-person work</dd><dt>Time</dt><dd>About 10 to 15 hours a week</dd><dt>Term</dt><dd>Semester and dates to be confirmed</dd><dt>Reports to</dt><dd>CEO and operations leaders</dd></dl>
+      <dl class="facts"><dt>Where</dt><dd>Georgetown office, hybrid, with some in person work</dd><dt>Time</dt><dd>About 10 to 15 hours a week</dd><dt>Term</dt><dd>Semester and dates to be confirmed</dd><dt>Reports to</dt><dd>CEO and operations leaders</dd></dl>
       {INTERN_COMMON}
       <h4>What you’ll do</h4><ul><li>Help build operations and office workflows</li><li>Help plan concierge, mobile, executive and event services</li><li>Check equipment, medicine, vehicles and supplies</li><li>Track inventory and research equipment and vendors</li><li>Help with staffing, schedules, credentials and logistics</li><li>Write checklists, procedures and training materials</li><li>Research care models, rules, competitors and partners</li><li>Support event medical plans and reviews afterward</li><li>Organize information on clients, vendors and partners</li><li>Make presentations, proposals and reports</li><li>Join operations and leadership meetings</li><li>Finish a semester project and present it to leadership</li></ul>
-      <h4>What you’ll learn</h4><ul><li>How a doctor-led mobile medical service runs</li><li>What concierge, mobile and event care need to work</li><li>Readiness, logistics and quality checks</li><li>How to write clear plans, procedures and briefings</li><li>How medicine, operations, rules and business fit together</li><li>How to work well with doctors and leaders</li><li>How to study a problem and suggest real fixes</li></ul>
-      <h4>Who should apply</h4><ul><li>Students in a medical or health program, such as medicine, nursing, PA studies, paramedicine, EMS, public health or healthcare administration</li><li>EMS experience preferred</li><li>EMT, AEMT, paramedic, nursing assistant or other certification preferred, not required</li><li>Strong organizing, research, writing and communication skills</li><li>Good judgment, reliable and detail-minded</li><li>Can work on your own and meet deadlines</li><li>Can keep things private and follow privacy rules</li><li>Comfortable with Microsoft Office or Google Workspace</li><li>A driver’s license is a plus</li></ul>
+      <h4>What you’ll learn</h4><ul><li>How a mobile medical service led by doctors runs</li><li>What concierge, mobile and event care need to work</li><li>Readiness, logistics and quality checks</li><li>How to write clear plans, procedures and briefings</li><li>How medicine, operations, rules and business fit together</li><li>How to work well with doctors and leaders</li><li>How to study a problem and suggest real fixes</li></ul>
+      <h4>Who should apply</h4><ul><li>Students in a medical or health program, such as medicine, nursing, PA studies, paramedicine, EMS, public health or healthcare administration</li><li>EMS experience preferred</li><li>EMT, AEMT, paramedic, nursing assistant or other certification preferred, not required</li><li>Strong organizing, research, writing and communication skills</li><li>Good judgment, reliable and careful with details</li><li>Can work on your own and meet deadlines</li><li>Can keep things private and follow privacy rules</li><li>Comfortable with Microsoft Office or Google Workspace</li><li>A driver’s license is a plus</li></ul>
       <p>This is an educational role. Interns don’t give unsupervised patient care or medical advice, or do anything beyond a license they already hold. We’ll work with your school on goals, supervision and paperwork. You’re responsible for getting credit approved before you start. The internship doesn’t promise a future job.</p>
       {APPLY}
       <p><a class="btn btn-dark" href="mailto:{EMAIL}?subject=Medical%20Operations%20Intern">Apply for this internship <span class="arr" aria-hidden="true">→</span></a></p>
@@ -430,18 +480,18 @@ f'''<section class="sec" aria-labelledby="c1">
   </details>
   <details class="fold rise" id="medical-director"><summary><div><h3>Office of the Medical Director Intern</h3><p>Research, protocols and quality work with our Medical Director.</p></div><i aria-hidden="true">+</i></summary>
     <div class="fold-body">
-      <dl class="facts"><dt>Where</dt><dd>Georgetown office, hybrid, with possible in-person observation</dd><dt>Time</dt><dd>About 10 to 15 hours a week</dd><dt>Term</dt><dd>Semester and dates to be confirmed</dd><dt>Reports to</dt><dd>Medical Director and clinical leaders</dd></dl>
+      <dl class="facts"><dt>Where</dt><dd>Georgetown office, hybrid, with possible in person observation</dd><dt>Time</dt><dd>About 10 to 15 hours a week</dd><dt>Term</dt><dd>Semester and dates to be confirmed</dd><dt>Reports to</dt><dd>Medical Director and clinical leaders</dd></dl>
       {INTERN_COMMON}
-      <h4>What you’ll do</h4><ul><li>Review research on emergency medicine, EMS and mobile and concierge care</li><li>Research best practices and professional guidelines</li><li>Help draft clinical protocols, policies and checklists</li><li>Support quality, patient safety and clinical oversight work</li><li>Help build performance measures, audits and case reviews</li><li>Look at de-identified data for trends and fixes</li><li>Help with training, skills sessions and simulations</li><li>Research medicines, equipment, lab tools and new tech</li><li>Help set clinical standards for concierge, mobile, executive and event care</li><li>Join clinical meetings, case talks and reviews</li><li>Observe some training or care, when the law, our policies and the patient allow it</li><li>Finish a research or quality project and present it to the Medical Director</li></ul>
+      <h4>What you’ll do</h4><ul><li>Review research on emergency medicine, EMS and mobile and concierge care</li><li>Research best practices and professional guidelines</li><li>Help draft clinical protocols, policies and checklists</li><li>Support quality, patient safety and clinical oversight work</li><li>Help build performance measures, audits and case reviews</li><li>Look at anonymous data for trends and fixes</li><li>Help with training, skills sessions and simulations</li><li>Research medicines, equipment, lab tools and new tech</li><li>Help set clinical standards for concierge, mobile, executive and event care</li><li>Join clinical meetings, case talks and reviews</li><li>Observe some training or care, when the law, our policies and the patient allow it</li><li>Finish a research or quality project and present it to the Medical Director</li></ul>
       <h4>Possible projects</h4><ul><li>Review the evidence for a new protocol</li><li>Build a quality plan for mobile medical care</li><li>Create a training or simulation exercise</li><li>Set standards for equipment and medicine readiness</li><li>Research best practice for event or executive care</li><li>Design ways to measure results for a new program</li><li>Study patient safety in concierge and mobile medicine</li></ul>
       <h4>What you’ll learn</h4><ul><li>What a medical director does</li><li>How protocols are researched, written, approved and checked</li><li>How to use research to answer a real question</li><li>The basics of oversight, patient safety and quality</li><li>How care, rules, operations and admin connect</li><li>How to explain medical ideas to any audience</li><li>How to present a project to clinical leaders</li></ul>
-      <h4>Who should apply</h4><ul><li>Students in a medical or health program, such as medicine, nursing, PA studies, paramedicine, EMS, public health or clinical research</li><li>EMS experience preferred</li><li>EMT, AEMT, paramedic, nursing assistant or other certification preferred, not required</li><li>Strong research, analysis, writing and organizing skills</li><li>Can understand and sum up medical information</li><li>Good judgment, reliable and detail-minded</li><li>Can keep things private and follow privacy rules</li><li>Comfortable with Microsoft Office or Google Workspace</li></ul>
-      <p>This is an educational role. Interns don’t diagnose, treat, give medical advice, give medicine, or do anything that needs a license unless separately credentialed, allowed and supervised. You may need to complete privacy (HIPAA), infection-control and safety training. Patient information is limited to what the law allows and the work needs, and we use de-identified data whenever we can. The internship doesn’t promise admission to a program or a future job.</p>
+      <h4>Who should apply</h4><ul><li>Students in a medical or health program, such as medicine, nursing, PA studies, paramedicine, EMS, public health or clinical research</li><li>EMS experience preferred</li><li>EMT, AEMT, paramedic, nursing assistant or other certification preferred, not required</li><li>Strong research, analysis, writing and organizing skills</li><li>Can understand and sum up medical information</li><li>Good judgment, reliable and careful with details</li><li>Can keep things private and follow privacy rules</li><li>Comfortable with Microsoft Office or Google Workspace</li></ul>
+      <p>This is an educational role. Interns don’t diagnose, treat, give medical advice, give medicine, or do anything that needs a license unless separately credentialed, allowed and supervised. You may need to complete privacy (HIPAA), infection control and safety training. Patient information is limited to what the law allows and the work needs, and we use anonymous data whenever we can. The internship doesn’t promise admission to a program or a future job.</p>
       {APPLY.replace('A short note on why you’re interested', 'A short note on why you’re interested in the Office of the Medical Director')}
       <p><a class="btn btn-dark" href="mailto:{EMAIL}?subject=Office%20of%20the%20Medical%20Director%20Intern">Apply for this internship <span class="arr" aria-hidden="true">→</span></a></p>
     </div>
   </details>
-  <p class="note rise">Stagecoach Concierge Emergency Medical Services is an equal-opportunity organization. We consider qualified applicants without regard to any status protected by law.</p>
+  <p class="note rise">Stagecoach Concierge Emergency Medical Services is an equal opportunity organization. We consider qualified applicants without regard to any status protected by law.</p>
 </section>
 ''' + band('Send us your&nbsp;CV.', 'We’re building our first team now. Email your CV, licenses and certifications, and tell us the role you want. We read every one.',
            f'<a class="btn btn-light" href="mailto:{EMAIL}?subject=Careers%20at%20Stagecoach">Email us <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="team.html">Meet the team</a>'))
@@ -451,10 +501,10 @@ hero('Partners', 'Emergency care for the people you look&nbsp;after.', 'We work 
      f'<a class="btn btn-light" href="mailto:{EMAIL}?subject=Partnership">Start a conversation <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="membership.html">For individuals and families</a>') +
 f'''<section class="sec" aria-labelledby="p1">
   {head2('Who we work with', 'How we can&nbsp;help', '', 'p1')}
-  {cards([('Cities and government', 'A 24/7 EMS triage line. Nearly 60% of 911 calls are low-urgency. DC pays about $1M a year for its triage line and diverts just 2% of calls, against a 5–15% benchmark. Nearby counties have none.<span class="src" style="display:block">Figures from Stagecoach’s research. Sources to be added before launch.</span>', '', 'building'),
+  {cards([('Cities and government', 'A 24/7 EMS triage line. Nearly 60% of 911 calls are low urgency. DC pays about $1M a year for its triage line and diverts just 2% of calls, against a 5–15% benchmark. Nearby counties have none.<span class="src" style="display:block">Figures from Stagecoach’s research. Sources to be added before launch.</span>', '', 'building'),
           ('EMS agencies and doctors', 'Medical direction and EMS consulting: protocols, credentialing and quality review, led by a former Medical Director of DC Fire & EMS.', '', 'stetho'),
-          ('Companies and leaders', 'Private executive medicine and security-aware care, with retainers and seats for staff. Includes blood products for high-risk clients.', '', 'briefcase'),
-          ('Hotels', 'A doctor-led team on call for your guests, with five-star discretion.', '', 'map-pin'),
+          ('Companies and leaders', 'Private executive medicine and care that works with your security team, with retainers and seats for staff. Includes blood products for high risk clients.', '', 'briefcase'),
+          ('Hotels', 'A team led by doctors on call for your guests, with five star discretion.', '', 'map-pin'),
           ('Events and productions', 'Medical teams for galas, sets, campaigns and big crowds.', '<a class="more" href="events.html">About events →</a>', 'calendar'),
           ('Embassies and institutions', 'Dedicated, discreet emergency coverage on contract.', '', 'globe')])}
 </section>
@@ -479,12 +529,13 @@ def build():
             .replace('{{S}}', S).replace('{{B}}', B).replace('{{JOIN}}', JOIN)
             .replace('{{COFOUNDERS}}', COFOUNDERS).replace('{{LOGOS}}', LOGOS))
     pages = {'index.html': ('Stagecoach Concierge Emergency Medical Services | Emergency care that comes to you',
-                            'A doctor-led emergency team that comes to your home, office or event in Washington, DC, 24/7. Not a substitute for 911.',
+                            'A team led by doctors that comes to your home, office or event in Washington, DC, 24/7. Not a substitute for 911.',
                             home, intro)}
     for name, (title, desc, body) in PAGES.items():
         pages[name] = (title, desc, body, '')
     for name, (title, desc, body, pre) in pages.items():
-        html = head(title, desc) + pre + (header(name).replace('hdr on-dark', 'hdr') if name == 'index.html' else header(name)) + '\n<main id="main" tabindex="-1">\n' + body + '\n</main>\n\n' + FOOTER
+        has_join = 'id="join"' in body
+        html = title_case_headings(head(title, desc) + pre + (header(name, has_join).replace('hdr on-dark', 'hdr') if name == 'index.html' else header(name, has_join)) + '\n<main id="main" tabindex="-1">\n' + body + '\n</main>\n\n' + FOOTER.replace('{JOINHREF}', '#join' if has_join else 'membership.html#join'))
         open(os.path.join(ROOT, name), 'w').write(html)
         print('wrote', name, len(html) // 1024, 'KB')
 

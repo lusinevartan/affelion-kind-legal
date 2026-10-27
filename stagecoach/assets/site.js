@@ -163,22 +163,29 @@
     $$('.btn').forEach(b => { b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px, ${(e.clientY - r.top - r.height / 2) * .3}px)`; }); b.addEventListener('pointerleave', () => { b.style.transform = ''; }); b.style.transition = 'color .5s cubic-bezier(.2,.9,.2,1), transform .6s cubic-bezier(.2,.9,.2,1)'; });
   }
 
-  /* mailing list: one field, inline validation, honest status until a provider is connected */
+  /* waitlist: one field, one button, a satisfying finish; honest until a provider is connected */
   const jf = $('#join-form');
   if (jf) {
-    const ji = $('#join-email', jf), jm = $('#join-msg');
+    const ji = $('#join-email', jf), jm = $('#join-msg'), chips = $('.chips-in', jf), done = $('.join-done'), sec = $('#join');
+    const finish = preview => {
+      $('.field', jf).hidden = true; $('label[for="join-email"]', jf).hidden = true; jm.textContent = '';
+      done.hidden = false; chips.hidden = false; sec.classList.add('done');
+      if (preview) $('p', done).textContent = 'Preview: this form is not connected to a mailing list yet, so nothing was sent.';
+      done.scrollIntoView({ block: 'nearest', behavior: RM ? 'auto' : 'smooth' });
+    };
     jf.addEventListener('submit', async e => {
       e.preventDefault();
       if (jf.company.value) return;
       const v = ji.value.trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { ji.setAttribute('aria-invalid', 'true'); jm.textContent = 'Enter an email address like name@example.com.'; ji.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { ji.setAttribute('aria-invalid', 'true'); jm.textContent = 'Please enter an email like name@example.com.'; ji.focus(); return; }
       ji.removeAttribute('aria-invalid');
       const ep = jf.dataset.endpoint;
-      if (!ep) { jm.textContent = 'Preview only: this form is not connected to a mailing list yet, so nothing was sent.'; return; }
-      jm.textContent = 'Sending…';
-      try { const r = await fetch(ep, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: v, interests: $$('input[name="interest"]:checked', jf).map(c => c.value) }) }); if (!r.ok) throw 0; jf.reset(); jm.textContent = 'Thanks. Check your inbox to confirm your subscription.'; }
-      catch (err) { jm.textContent = 'That did not go through. Please try again in a moment.'; }
+      if (!ep) { finish(true); return; }
+      const btn = $('button', jf); btn.disabled = true; jm.textContent = 'Adding you…';
+      try { const r = await fetch(ep, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: v }) }); if (!r.ok) throw 0; finish(false); }
+      catch (err) { jm.textContent = 'That did not go through. Please try again in a moment.'; btn.disabled = false; }
     });
+    chips.addEventListener('change', () => { const ep = jf.dataset.endpoint; if (!ep) return; fetch(ep, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: ji.value.trim(), interests: $$('input[name="interest"]:checked', jf).map(c => c.value) }) }).catch(() => {}); });
     ji.addEventListener('input', () => { if (ji.getAttribute('aria-invalid')) { ji.removeAttribute('aria-invalid'); jm.textContent = ''; } });
   }
   /* touch: tap a portrait to see it in colour */
