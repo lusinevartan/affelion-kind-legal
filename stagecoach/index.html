@@ -162,24 +162,19 @@ a{color:inherit}
 .svc-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:clamp(36px,4vw,56px)}
 .svc-head h2{margin:0;font:600 clamp(48px,7vw,120px)/.98 var(--serif);letter-spacing:-.02em}
 .svc{list-style:none;margin:0;padding:0;border-top:1px solid var(--navy)}
-.row{position:relative;border-bottom:1px solid var(--line)}
-.row a{display:grid;grid-template-columns:120px minmax(0,1fr) minmax(0,1.1fr) 40px;gap:24px;align-items:center;padding:clamp(22px,2.6vw,36px) 0;text-decoration:none}
-.row .fig{align-self:start;padding-top:1.1em}
-.row .place{font:600 clamp(44px,6.4vw,108px)/.95 var(--serif);letter-spacing:-.02em;transition:transform .7s var(--ease),font-style 0s}
-.row .what{display:grid;gap:6px}
-.row .what strong{font:600 clamp(22px,1.9vw,30px)/1.15 var(--serif)}
-.row .what span{font-size:16px;line-height:1.55;color:var(--ink2);max-width:46ch}
-.row .go{width:40px;height:40px;border-radius:50%;border:1px solid var(--navy);display:grid;place-items:center;transition:background .5s var(--ease),color .5s var(--ease),transform .5s var(--ease)}
-.row a:hover .place,.row a:focus-visible .place{transform:translateX(18px);font-style:italic}
-.row a:hover .go,.row a:focus-visible .go{background:var(--navy);color:var(--porcelain);transform:rotate(-45deg)}
-.row .thumb{display:none}
+.row{border-bottom:1px solid var(--line)}
+.row a{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr) 44px;gap:clamp(24px,3.5vw,56px);align-items:center;padding:clamp(24px,2.6vw,36px) 0;text-decoration:none}
+.row .thumb{aspect-ratio:4/3;overflow:hidden;background:var(--deep)}
+.row .thumb img{width:100%;height:100%;object-fit:cover;filter:sepia(.14) saturate(.9);transition:transform 1.2s var(--ease)}
+.row .thumb img.dome{object-position:50% 0;transform:scale(1.7);transform-origin:50% 0}
+.row a:hover .thumb img:not(.dome),.row a:focus-visible .thumb img:not(.dome){transform:scale(1.04)}
+.row .txt{display:grid;gap:10px;min-width:0}
+.row .place{font:600 clamp(44px,5.6vw,96px)/.95 var(--serif);letter-spacing:-.02em}
+.row .txt strong{font:600 clamp(22px,1.9vw,30px)/1.15 var(--serif)}
+.row .txt span.body{font-size:17px;line-height:1.55;color:var(--ink2);max-width:52ch}
+.row .go{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--navy);display:grid;place-items:center;transition:background .5s var(--ease),color .5s var(--ease)}
+.row a:hover .go,.row a:focus-visible .go{background:var(--navy);color:var(--porcelain)}
 .svc-more{margin:28px 0 0;font:500 16px/1.6 var(--sans);color:var(--ink2)}
-.float{position:fixed;left:0;top:0;z-index:60;width:clamp(240px,22vw,340px);aspect-ratio:4/5;pointer-events:none;opacity:0;transform:translate3d(-50%,-50%,0) scale(.85) rotate(-3deg);transition:opacity .45s var(--ease);overflow:hidden;box-shadow:0 40px 80px -40px rgba(20,33,61,.5)}
-.float.on{opacity:1}
-.float img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);transition:opacity .5s var(--ease),transform .9s var(--ease);filter:sepia(.14) saturate(.9)}
-.float img.on{opacity:1;transform:none}
-.float img.dome,.float img.dome.on{transform:scale(2.1);transform-origin:50% 0;object-position:50% 0}
-.row .thumb img.dome{transform:scale(1.9);transform-origin:50% 0;object-position:50% 0}
 
 /* ---------- journey: big S draws on scroll ---------- */
 .journey{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,96px);align-items:center}
@@ -200,21 +195,24 @@ a{color:inherit}
 .clients:hover .marq{animation-play-state:paused}
 @keyframes marq{to{transform:translateX(-50%)}}
 
-/* ---------- founders ---------- */
-.f-head{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:24px;align-items:end;margin-bottom:clamp(44px,5vw,80px)}
+/* ---------- team ---------- */
+.f-head{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:24px;align-items:end;margin-bottom:clamp(44px,5vw,80px)}
 .f-head h2{margin:0;font:600 clamp(44px,5.8vw,96px)/1.0 var(--serif);letter-spacing:-.02em}
-.f-head p{margin:0;color:var(--ink2);font-size:19px}
-.f-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,4vw,64px)}
-.f-grid figure:nth-child(2){margin-top:clamp(0px,10vw,160px)}
+.f-head p{margin:0;color:var(--ink2);font-size:19px;max-width:44ch}
+.t-group{display:grid;gap:28px;margin-top:clamp(56px,6vw,96px)}
+.t-group:first-of-type{margin-top:0}
+.t-group h3{margin:0;padding-top:16px;border-top:1px solid var(--navy);font:600 13px/1.4 var(--sans);letter-spacing:.2em;text-transform:uppercase}
+.t-grid{display:grid;gap:clamp(32px,3vw,48px) clamp(20px,2.4vw,36px);list-style:none;margin:0;padding:0}
+.t-grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.t-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 figure{margin:0}
-.portrait{position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--navy);outline:0}
-.portrait img.ph{position:absolute;inset:-4% 0;width:100%;height:108%;object-fit:cover;object-position:center 15%;filter:grayscale(1) contrast(1.15) brightness(1.05);mix-blend-mode:screen;opacity:.9;transition:filter 1s var(--ease),opacity 1s var(--ease),transform 1.2s var(--ease)}
-.portrait:hover img.ph,.portrait:focus-visible img.ph,.portrait.color img.ph{filter:none;mix-blend-mode:normal;opacity:1;transform:scale(1.03)}
-.portrait .sym{position:absolute;width:62%;right:-24%;bottom:-20%;opacity:.95;transition:transform 1.2s var(--ease)}
-.portrait:hover .sym{transform:translate(-6%,-6%)}
-figcaption{display:grid;gap:4px;margin-top:18px}
-figcaption .name{font:600 clamp(28px,2.6vw,40px)/1.1 var(--serif)}
-figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
+.portrait{position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--navy);outline:0;cursor:pointer}
+.portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%;filter:grayscale(1) contrast(1.12) brightness(1.04);mix-blend-mode:screen;opacity:.92;transition:filter .9s var(--ease),opacity .9s var(--ease)}
+.portrait:hover img,.portrait:focus-visible img,.portrait.color img{filter:none;mix-blend-mode:normal;opacity:1}
+figcaption{display:grid;gap:6px;margin-top:16px}
+figcaption .name{font:600 clamp(26px,2.2vw,34px)/1.1 var(--serif)}
+figcaption .fig{color:var(--wine)}
+figcaption .role{font-size:16px;line-height:1.5;color:var(--ink2)}
 
 /* ---------- CTA ---------- */
 .cta{min-height:100vh;display:grid;align-content:center;gap:clamp(26px,3vw,44px);overflow:hidden}
@@ -244,7 +242,7 @@ figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
 .cur.big{width:78px;height:78px;margin:-39px 0 0 -39px;background:var(--navy);border-color:var(--navy)}
 .cur.big.light{background:var(--porcelain);color:var(--navy);border-color:var(--porcelain)}
 .cur span{opacity:0;transition:opacity .3s}.cur.big span{opacity:1}
-@media (hover:none),(pointer:coarse){.cur,.float{display:none!important}}
+@media (hover:none),(pointer:coarse){.cur{display:none!important}}
 
 /* ---------- responsive ---------- */
 @media (max-width:860px){
@@ -261,17 +259,15 @@ figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
   .step{align-content:start;top:34px}
   .hero-meta .eyebrow+.eyebrow{display:none}
   .step h3{font-size:clamp(34px,9vw,48px)}
-    .row a{grid-template-columns:1fr 40px;gap:14px}
-  .row .fig{grid-column:1/-1;padding:0}
-  .row .what{grid-column:1/-1}
-  .row .thumb{display:block;grid-column:1/-1;aspect-ratio:16/10;overflow:hidden}
-  .row .thumb img{width:100%;height:100%;object-fit:cover;filter:sepia(.14) saturate(.9)}
   .journey{grid-template-columns:1fr}
   .journey-art{width:min(80%,360px)}
-  .f-head,.f-grid{grid-template-columns:1fr}
-  .f-grid figure:nth-child(2){margin-top:0}
+  .f-head{grid-template-columns:1fr}
+  .row a{grid-template-columns:minmax(0,1fr) 44px;gap:18px}
+  .row .thumb{grid-column:1/-1;aspect-ratio:16/10}
+  .t-grid.four,.t-grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}
   .foot{grid-template-columns:1fr 1fr}
 }
+@media (max-width:600px){.t-grid.four,.t-grid.three{grid-template-columns:1fr;gap:28px}.t-grid figure{display:grid;grid-template-columns:minmax(0,38%) minmax(0,1fr);gap:18px;align-items:start}.t-grid figcaption{margin-top:0}figcaption .name{font-size:26px}figcaption .role{font-size:15px}}
 @media (max-width:520px){.foot{grid-template-columns:1fr}.brand img{height:22px}}
 
 /* ---------- reduced motion: final frames, no pinning ---------- */
@@ -314,7 +310,7 @@ figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
       <img class="b-cream" src="assets/lockup-horizontal-cream.svg" alt="">
     </a>
     <nav class="nav" aria-label="Primary">
-      <a href="#services">Services</a><a href="#how">How it works</a><a href="#about">About</a>
+      <a href="#services">Services</a><a href="#how">How it works</a><a href="#team">Team</a>
     </nav>
     <div style="display:flex;align-items:center;gap:24px">
       <a class="call-link" href="tel:+12028399439" data-cur="Call"><span class="pulse" aria-hidden="true"></span><span><span class="lbl">24/7 · </span>202.839.9439</span></a>
@@ -325,7 +321,7 @@ figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
 </header>
 <div class="sheet" id="sheet" aria-label="Menu">
   <nav aria-label="Mobile">
-    <a href="#services">Services</a><a href="#how">How it works</a><a href="#about">About</a><a href="#request">Request care</a>
+    <a href="#services">Services</a><a href="#how">How it works</a><a href="#team">Team</a><a href="#request">Request care</a>
   </nav>
   <p>24/7 · <a href="tel:+12028399439">202.839.9439</a><br>Not a substitute for 911. In a life‑threatening emergency, call&nbsp;911.</p>
 </div>
@@ -405,36 +401,25 @@ figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
     <h2 id="svc-h" class="split">Where we&nbsp;come.</h2>
   </div>
   <ul class="svc">
-    <li class="row rise" data-img="0"><a href="#request" data-cur="View">
-      <span class="fig">Stagecoach Kids</span><span class="place">Nursery</span>
-      <span class="what"><strong>Pediatric care, at home, at night.</strong><span>A pediatric home response for families, under the direction of a board‑certified pediatric emergency physician.</span></span>
-      <span class="go" aria-hidden="true">→</span>
-      <span class="thumb"><img src="https://stagecoachmedical.com/__l5e/assets-v1/d69fe3ed-2b99-4dd4-8527-f7204c29ae31/stagecoach-kids-3.jpg" alt="" loading="lazy"></span></a></li>
-    <li class="row rise" data-img="1"><a href="#request" data-cur="View">
-      <span class="fig">Events</span><span class="place">Gala</span>
-      <span class="what"><strong>A medical team no one notices.</strong><span>On‑site clinicians for galas, productions and conferences, planned in advance with your staff and security.</span></span>
-      <span class="go" aria-hidden="true">→</span>
-      <span class="thumb"><img src="https://stagecoachmedical.com/__l5e/assets-v1/4e83799b-d5a1-43d0-9ba3-8f9d9aad5a64/team-field.jpg" alt="" loading="lazy"></span></a></li>
-    <li class="row rise" data-img="2"><a href="#request" data-cur="View">
-      <span class="fig">Executive</span><span class="place">Hotel suite</span>
-      <span class="what"><strong>Care that meets the schedule.</strong><span>Executive medicine for leaders and the organizations that depend on them, wherever the day is.</span></span>
-      <span class="go" aria-hidden="true">→</span>
-      <span class="thumb"><img class="dome" src="https://stagecoachmedical.com/__l5e/assets-v1/c641f78a-cbf0-4b65-9ca2-aa0f0a64ad36/fleet.png" alt="" loading="lazy"></span></a></li>
-    <li class="row rise" data-img="3"><a href="#request" data-cur="View">
-      <span class="fig">Dental</span><span class="place">Home</span>
-      <span class="what"><strong>A dentist, around the clock.</strong><span>24/7 emergency dental care with our partner White32 Dental, through the same line.</span></span>
-      <span class="go" aria-hidden="true">→</span>
-      <span class="thumb"><img src="https://stagecoachmedical.com/__l5e/assets-v1/48a8e1f1-a0a6-43e8-8552-5d478a5e7539/stagecoach-kids-2.png" alt="" loading="lazy"></span></a></li>
+    <li class="row rise"><a href="#request">
+      <span class="thumb"><img src="https://stagecoachmedical.com/__l5e/assets-v1/d69fe3ed-2b99-4dd4-8527-f7204c29ae31/stagecoach-kids-3.jpg" alt="" loading="lazy"></span>
+      <span class="txt"><span class="fig">Stagecoach Kids</span><span class="place">Nursery</span><strong>Pediatric care, at home, at night.</strong><span class="body">A pediatric home response for families, under the direction of a board‑certified pediatric emergency physician.</span></span>
+      <span class="go" aria-hidden="true">→</span></a></li>
+    <li class="row rise"><a href="#request">
+      <span class="thumb"><img src="https://stagecoachmedical.com/__l5e/assets-v1/4e83799b-d5a1-43d0-9ba3-8f9d9aad5a64/team-field.jpg" alt="" loading="lazy"></span>
+      <span class="txt"><span class="fig">Events</span><span class="place">Gala</span><strong>A medical team no one notices.</strong><span class="body">On‑site clinicians for galas, productions and conferences, planned in advance with your staff and security.</span></span>
+      <span class="go" aria-hidden="true">→</span></a></li>
+    <li class="row rise"><a href="#request">
+      <span class="thumb"><img class="dome" src="https://stagecoachmedical.com/__l5e/assets-v1/c641f78a-cbf0-4b65-9ca2-aa0f0a64ad36/fleet.png" alt="" loading="lazy"></span>
+      <span class="txt"><span class="fig">Executive</span><span class="place">Hotel suite</span><strong>Care that meets the schedule.</strong><span class="body">Executive medicine for leaders and the organizations that depend on them, wherever the day is.</span></span>
+      <span class="go" aria-hidden="true">→</span></a></li>
+    <li class="row rise"><a href="#request">
+      <span class="thumb"><img src="https://stagecoachmedical.com/__l5e/assets-v1/48a8e1f1-a0a6-43e8-8552-5d478a5e7539/stagecoach-kids-2.png" alt="" loading="lazy"></span>
+      <span class="txt"><span class="fig">Dental</span><span class="place">Home</span><strong>A dentist, around the clock.</strong><span class="body">24/7 emergency dental care with our partner White32 Dental, through the same line.</span></span>
+      <span class="go" aria-hidden="true">→</span></a></li>
   </ul>
   <p class="svc-more rise">For medical practices and agencies: medical direction, EMS consulting, CPR and EMS training, a nurse triage line and critical care transport. <a href="#request" style="font-weight:600">Partner with us</a></p>
 </section>
-<div class="float" aria-hidden="true">
-  <img src="https://stagecoachmedical.com/__l5e/assets-v1/d69fe3ed-2b99-4dd4-8527-f7204c29ae31/stagecoach-kids-3.jpg" alt="" style="object-position:center 25%">
-  <img src="https://stagecoachmedical.com/__l5e/assets-v1/4e83799b-d5a1-43d0-9ba3-8f9d9aad5a64/team-field.jpg" alt="" style="object-position:40% 50%">
-  <img src="https://stagecoachmedical.com/__l5e/assets-v1/c641f78a-cbf0-4b65-9ca2-aa0f0a64ad36/fleet.png" alt="" class="dome">
-  <img src="https://stagecoachmedical.com/__l5e/assets-v1/48a8e1f1-a0a6-43e8-8552-5d478a5e7539/stagecoach-kids-2.png" alt="" style="object-position:center 30%">
-</div>
-
 <!-- JOURNEY: the S draws as you read -->
 <section class="sec journey" aria-labelledby="j-h" style="padding-top:clamp(60px,8vw,120px)">
   <div class="journey-art" aria-hidden="true">
@@ -460,27 +445,61 @@ figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
   <ul class="sr"><li>Meta</li><li>Google</li><li>JP Morgan</li><li>The Atlantic</li><li>Emerson Collective</li><li>YPO</li><li>Edens</li><li>Hargrove</li><li>Union Market</li><li>Autoshop</li></ul>
 </section>
 
-<!-- FOUNDERS -->
-<section class="sec" id="about" aria-labelledby="f-h">
+<!-- TEAM -->
+<section class="sec" id="team" aria-labelledby="f-h">
   <div class="f-head">
-    <h2 id="f-h" class="split">The people who ran emergency care for the capital now run&nbsp;ours.</h2>
-    <p class="rise">Physician‑led, and built by people who have answered the city’s hardest&nbsp;calls.</p>
+    <h2 id="f-h" class="split">Physicians, clinicians, operators and&nbsp;leaders.</h2>
+    <p class="rise">Built by people who ran emergency care for the capital, united by one belief: not every urgent medical problem needs to end in an emergency&nbsp;room.</p>
   </div>
-  <div class="f-grid">
-    <figure class="rise">
-      <div class="portrait" tabindex="0" data-cur="View">
-        <img class="ph" src="https://stagecoachmedical.com/__l5e/assets-v1/46556dab-0929-47be-a3df-644ae030b889/noah-gray.jpg" alt="Noah Gray" loading="lazy">
-        <img class="sym" src="assets/symbol-cream.svg" alt="">
-      </div>
-      <figcaption><span class="fig">Co‑founder &amp; CEO</span><span class="name">Noah Gray, EMT</span><span class="role">Former Chief Communications Officer, DC Fire &amp; EMS</span></figcaption>
-    </figure>
-    <figure class="rise" style="--d:120ms">
-      <div class="portrait" tabindex="0" data-cur="View">
-        <img class="ph" src="https://stagecoachmedical.com/__l5e/assets-v1/23074c25-8945-4654-89e2-a5d66747596d/david-vitberg.jpg" alt="Dr. David Vitberg" loading="lazy">
-        <img class="sym" src="assets/symbol-cream.svg" alt="">
-      </div>
-      <figcaption><span class="fig">Co‑founder &amp; CMO</span><span class="name">Dr. David Vitberg, MD</span><span class="role">Triple board‑certified emergency and critical care physician; former Medical Director, DC Fire &amp; EMS</span></figcaption>
-    </figure>
+  <div class="t-group">
+    <h3>Co‑founders</h3>
+    <ul class="t-grid four">
+      <li><figure>
+        <div class="portrait" tabindex="0" role="button" aria-label="Show Noah Gray in colour"><img src="https://stagecoachmedical.com/__l5e/assets-v1/46556dab-0929-47be-a3df-644ae030b889/noah-gray.jpg" alt="Noah Gray" loading="lazy" style="object-position:center 18%"></div>
+        <figcaption><span class="name">Noah Gray, EMT</span><span class="fig">Co‑Founder &amp; Chief Executive Officer</span><span class="role">Former Chief Communications Officer for DC Fire &amp; EMS, volunteer EMT with Montgomery County, Maryland, and White House producer for&nbsp;CNN.</span></figcaption>
+      </figure></li>
+      <li><figure>
+        <div class="portrait" tabindex="0" role="button" aria-label="Show Dr. David Vitberg in colour"><img src="https://stagecoachmedical.com/__l5e/assets-v1/23074c25-8945-4654-89e2-a5d66747596d/david-vitberg.jpg" alt="Dr. David Vitberg" loading="lazy" style="object-position:center 18%"></div>
+        <figcaption><span class="name">Dr. David Vitberg, MD</span><span class="fig">Co‑Founder &amp; Chief Medical Officer</span><span class="role">Triple board‑certified emergency and critical care physician and former Medical Director of DC Fire &amp; EMS. Practices in the MedStar and Johns Hopkins&nbsp;systems.</span></figcaption>
+      </figure></li>
+      <li><figure>
+        <div class="portrait" tabindex="0" role="button" aria-label="Show Waleed Haleem in colour"><img src="https://stagecoachmedical.com/__l5e/assets-v1/55a82406-f357-4506-ad40-94aba5f09a61/waleed-haleem.jpg" alt="Waleed Haleem" loading="lazy" style="object-position:center 18%"></div>
+        <figcaption><span class="name">Waleed Haleem, PMP</span><span class="fig">Co‑Founder &amp; Chief Operating Officer</span><span class="role">Ten years of executive experience in hospital operations, program management, IT and VIP care delivery at Walter&nbsp;Reed.</span></figcaption>
+      </figure></li>
+      <li><figure>
+        <div class="portrait" tabindex="0" role="button" aria-label="Show Scott Sehon in colour"><img src="https://stagecoachmedical.com/__l5e/assets-v1/87df245f-32bf-40c8-8ce7-d63d97e188ee/scott-sehon.jpg" alt="Scott Sehon" loading="lazy" style="object-position:center 18%"></div>
+        <figcaption><span class="name">Scott Sehon, MBA</span><span class="fig">Co‑Founder &amp; Chief Financial Officer</span><span class="role">Led finance at Crystal Clear Technologies and Social Tables, through a $13M Series B and a $100M acquisition by&nbsp;Cvent.</span></figcaption>
+      </figure></li>
+    </ul>
+  </div>
+  <div class="t-group">
+    <h3>Clinical &amp; operations leadership</h3>
+    <ul class="t-grid three">
+      <li><figure>
+        <div class="portrait" tabindex="0" role="button" aria-label="Show Liza White in colour"><img src="https://stagecoachmedical.com/__l5e/assets-v1/50a5a59b-7571-4946-bd3e-435c424e393c/liza-white.jpg" alt="Liza White" loading="lazy" style="object-position:center 20%"></div>
+        <figcaption><span class="name">Liza White</span><span class="fig">VP of Strategy &amp; Partnerships</span><span class="role">Owner and manager of White32 Dental, and former Director of Communications to U.S. Secretary of State Madeleine&nbsp;Albright.</span></figcaption>
+      </figure></li>
+      <li><figure>
+        <div class="portrait" tabindex="0" role="button" aria-label="Show Ameen Elhamdani in colour"><img src="https://stagecoachmedical.com/__l5e/assets-v1/030ff342-e677-42cc-b973-cd8f8a0aa136/ameen-elhamdani-new.png" alt="Ameen Elhamdani" loading="lazy" style="object-position:center 20%"></div>
+        <figcaption><span class="name">Ameen Elhamdani, NRP</span><span class="fig">EMS Operations Manager</span><span class="role">Leads day‑to‑day EMS operations, crews, vehicles, scheduling and readiness, so a team is moving the moment a call comes&nbsp;in.</span></figcaption>
+      </figure></li>
+      <li><figure>
+        <div class="portrait" tabindex="0" role="button" aria-label="Show Gupi D. Howie in colour"><img src="https://stagecoachmedical.com/__l5e/assets-v1/4825dfa2-7531-43d7-b0b5-bee26c6d4e36/gurpreet-howie.jpg" alt="Gupi D. Howie" loading="lazy" style="object-position:center 25%"></div>
+        <figcaption><span class="name">Gupi D. Howie, PA‑C</span><span class="fig">Director of Advanced Practice Providers</span><span class="role">Leads hiring, credentialing and clinical standards for every physician assistant and nurse practitioner on a Stagecoach&nbsp;response.</span></figcaption>
+      </figure></li>
+      <li><figure>
+        <div class="portrait" tabindex="0" role="button" aria-label="Show Dr. Yaffa Vitberg in colour"><img src="https://stagecoachmedical.com/__l5e/assets-v1/169d521d-b66a-4801-92e8-874686895a91/yaffa-vitberg-new.png" alt="Dr. Yaffa Vitberg" loading="lazy" style="object-position:center 8%"></div>
+        <figcaption><span class="name">Dr. Yaffa Vitberg, MD</span><span class="fig">Pediatric Medical Director</span><span class="role">Board certified in Pediatrics and Pediatric Emergency Medicine; pediatric emergency physician at Weill Cornell Medicine/NewYork‑Presbyterian.</span></figcaption>
+      </figure></li>
+      <li><figure>
+        <div class="portrait" tabindex="0" role="button" aria-label="Show Eve Hill in colour"><img src="https://stagecoachmedical.com/__l5e/assets-v1/b58255d0-f619-4df1-adee-19316900f229/eve-hill.png" alt="Eve Hill" loading="lazy" style="object-position:center 20%"></div>
+        <figcaption><span class="name">Eve Hill, RN, NRP</span><span class="fig">Quality Improvement Officer</span><span class="role">Registered nurse and paramedic in the Multi‑Trauma Critical Care Unit at R Adams Cowley Shock Trauma&nbsp;Center.</span></figcaption>
+      </figure></li>
+      <li><figure>
+        <div class="portrait" tabindex="0" role="button" aria-label="Show Dr. Charles White in colour"><img src="https://stagecoachmedical.com/__l5e/assets-v1/011c9f57-8350-44ea-8455-af4bdbb27207/charles-white.jpeg" alt="Dr. Charles White" loading="lazy" style="object-position:center 6%"></div>
+        <figcaption><span class="name">Dr. Charles White, DDS</span><span class="fig">Emergency Dental Response Partner</span><span class="role">Founder and Principal Dentist at White32 Dental, our emergency dental response&nbsp;partner.</span></figcaption>
+      </figure></li>
+    </ul>
   </div>
 </section>
 
@@ -491,7 +510,7 @@ figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
   <h2 id="r-h" class="split">Quietly <em>ready.</em></h2>
   <div class="tel-wrap"><a class="tel" href="tel:+12028399439" data-cur="Call" aria-label="Call 202.839.9439">202.839.9439</a></div>
   <div class="cta-row rise">
-    <a class="btn btn-light" href="mailto:medical@thestagecoachgroup.com?subject=Request%20care" data-cur="Write">Request care <span class="arr" aria-hidden="true">→</span></a>
+    <a class="btn btn-light" href="mailto:medical@thestagecoachgroup.com?subject=Request%20care">Request care <span class="arr" aria-hidden="true">→</span></a>
   </div>
   <p class="must rise">Not a substitute for 911. In a life‑threatening emergency, call&nbsp;911.</p>
 </section>
@@ -501,7 +520,7 @@ figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
   <div style="display:grid;gap:16px;align-content:start"><img src="assets/lockup-stacked-navy.svg" alt="The Stagecoach Group" style="width:170px"><span>Concierge Emergency Medical Services</span></div>
   <div><strong>Office</strong><br>3299 K St NW #210<br>Washington, DC 20007<br>Not a walk‑in clinic.</div>
   <div><strong>24/7 line</strong><br><a href="tel:+12028399439">202.839.9439</a><br>Not a substitute for&nbsp;911.</div>
-  <nav aria-label="Footer"><a href="#services">Services</a><a href="#how">How it works</a><a href="#about">About</a><a href="#request">Request care</a></nav>
+  <nav aria-label="Footer"><a href="#services">Services</a><a href="#how">How it works</a><a href="#team">Team</a><a href="#request">Request care</a></nav>
   <p class="fine"><span>© The Stagecoach Group</span><span>Washington, DC</span></p>
 </footer>
 
@@ -628,19 +647,16 @@ figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
   /* keyboard: tabbing into the hidden hero buttons scrolls to where they are shown */
   copy.addEventListener('focusin', () => { if (!copy.classList.contains('live') && !RM) scrollTo({ top: hero.offsetTop + (hero.offsetHeight - vh) * .66, behavior: 'instant' }); });
 
-  /* desktop cursor + floating service image */
+  /* desktop cursor */
   if (fine && !RM) {
-    const cur = $('.cur'), lbl = $('span', cur), fl = $('.float'), fimgs = $$('img', fl);
-    let mx = vw / 2, my = vh / 2, cx = mx, cy = my, fx = mx, fy = my, rot = 0, lastX = mx;
+    const cur = $('.cur'), lbl = $('span', cur);
+    let mx = vw / 2, my = vh / 2, cx = mx, cy = my;
     addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; cur.classList.add('show'); });
     document.addEventListener('pointerleave', () => cur.classList.remove('show'));
     $$('[data-cur]').forEach(el => { el.addEventListener('pointerenter', () => { lbl.textContent = el.dataset.cur; cur.classList.add('big'); }); el.addEventListener('pointerleave', () => cur.classList.remove('big')); });
-    $$('.row').forEach(r => { r.addEventListener('pointerenter', () => { fl.classList.add('on'); fimgs.forEach((im, i) => im.classList.toggle('on', i === +r.dataset.img)); }); r.addEventListener('pointerleave', () => fl.classList.remove('on')); });
     const loop = () => {
-      cx += (mx - cx) * .22; cy += (my - cy) * .22; fx += (mx - fx) * .09; fy += (my - fy) * .09;
-      rot += (clamp((mx - lastX) * .25, -8, 8) - rot) * .12; lastX += (mx - lastX) * .2;
+      cx += (mx - cx) * .22; cy += (my - cy) * .22;
       cur.style.transform = `translate3d(${cx}px,${cy}px,0)`;
-      fl.style.transform = `translate3d(calc(${fx}px - 50%),calc(${fy}px - 50%),0) rotate(${-3 + rot}deg) scale(${fl.classList.contains('on') ? 1 : .85})`;
       const el = document.elementFromPoint(cx, cy); cur.classList.toggle('light', !!(el && el.closest('.hero, .dark, .sheet')));
       requestAnimationFrame(loop);
     };
@@ -649,7 +665,7 @@ figcaption .role{font-size:16px;color:var(--ink2);max-width:44ch}
     $$('.btn').forEach(b => { b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px, ${(e.clientY - r.top - r.height / 2) * .3}px)`; }); b.addEventListener('pointerleave', () => { b.style.transform = ''; }); b.style.transition = 'color .5s cubic-bezier(.2,.9,.2,1), transform .6s cubic-bezier(.2,.9,.2,1)'; });
   }
   /* touch: tap a portrait to see it in colour */
-  $$('.portrait').forEach(p => p.addEventListener('click', () => p.classList.toggle('color')));
+  $$('.portrait').forEach(p => { p.addEventListener('click', () => p.classList.toggle('color')); p.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); p.classList.toggle('color'); } }); });
 })();
 </script>
 </body>
