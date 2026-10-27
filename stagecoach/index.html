@@ -14,7 +14,7 @@
 :root{
   --navy:#14213D;--night:#0E1830;--porcelain:#F5F0EC;--deep:#EDE6DF;--wine:#34121C;--slate:#4A5A70;--ink2:#26344F;--line:#E6DFD8;--mist:#CFC6BE;
   --serif:'Cormorant Garamond',Georgia,serif;--sans:'Montserrat',system-ui,sans-serif;
-  --ease:cubic-bezier(.2,.9,.2,1);--gut:clamp(20px,5vw,72px);
+  --ease:cubic-bezier(.2,.9,.2,1);--gut:max(clamp(20px,5vw,80px),calc((100vw - 1600px) / 2));
 }
 *{box-sizing:border-box;text-wrap:pretty}
 h1,h2,h3{text-wrap:balance}
@@ -173,17 +173,18 @@ a{color:inherit}
 .svc-head h2{margin:0;font:600 clamp(54px,8.4vw,148px)/.96 var(--serif);letter-spacing:-.02em}
 .svc{list-style:none;margin:0;padding:0;border-top:1px solid var(--navy)}
 .row{border-bottom:1px solid var(--line)}
-.row a{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr) 44px;gap:clamp(24px,3.5vw,56px);align-items:center;padding:clamp(24px,2.6vw,36px) 0;text-decoration:none}
+.row a{display:grid;grid-template-columns:clamp(200px,22vw,380px) minmax(0,1fr) 44px;gap:clamp(24px,3.5vw,56px);align-items:center;padding:clamp(24px,2.6vw,36px) 0;text-decoration:none}
 .row .thumb{aspect-ratio:4/3;overflow:hidden;background:var(--deep)}
 .row .thumb img{width:100%;height:100%;object-fit:cover;filter:sepia(.14) saturate(.9);transition:transform 1.2s var(--ease)}
 .row .thumb img.dome{object-position:50% 0;transform:scale(1.7);transform-origin:50% 0}
 .row a:hover .thumb img:not(.dome),.row a:focus-visible .thumb img:not(.dome){transform:scale(1.04)}
-.row .txt{display:grid;gap:10px;min-width:0}
+.row .txt{display:grid;gap:14px;min-width:0}
 .row .place{font:600 clamp(48px,6.6vw,116px)/.94 var(--serif);letter-spacing:-.02em}
 .row .txt strong{font:600 clamp(26px,2.3vw,36px)/1.12 var(--serif)}
 .row .txt span.body{font-size:clamp(18px,1.3vw,20px);line-height:1.5;color:var(--ink2);max-width:52ch}
 .row .go{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--navy);display:grid;place-items:center;transition:background .5s var(--ease),color .5s var(--ease)}
 .row a:hover .go,.row a:focus-visible .go{background:var(--navy);color:var(--porcelain)}
+.svc-aside{margin:0 0 .6em;font:600 clamp(20px,1.7vw,26px)/1.3 var(--serif);font-style:italic;color:var(--wine);max-width:22ch;text-align:right}
 .svc-more{margin:28px 0 0;font:500 18px/1.6 var(--sans);color:var(--ink2)}
 
 /* ---------- journey: big S draws on scroll ---------- */
@@ -256,6 +257,15 @@ figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--in
 .cur span{opacity:0;transition:opacity .3s}.cur.big span{opacity:1}
 @media (hover:none),(pointer:coarse){.cur{display:none!important}}
 
+/* ---------- desktop rhythm ---------- */
+@media (min-width:861px){
+  .mission-foot{padding-left:clamp(0px,30vw,520px)}
+  .t-grid.four>li:nth-child(even){margin-top:clamp(32px,4vw,72px)}
+  .t-grid.three>li:nth-child(3n+2){margin-top:clamp(36px,4.5vw,84px)}
+  .journey-art{width:min(100%,620px);justify-self:start;margin-left:-2vw}
+  .f-head p{justify-self:end}
+}
+
 /* ---------- responsive ---------- */
 @media (max-width:860px){
   .nav{display:none}.menu-btn{display:block}
@@ -268,7 +278,9 @@ figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--in
   .how-art{width:min(70vw,38vh)}
   .how-head{position:static;margin-bottom:8px}
   .how-text{min-height:300px}
-  .stepper{bottom:20px;gap:12px}.stepper button{font-size:12px;letter-spacing:.12em}
+  .stepper{bottom:auto;top:84px;gap:12px}.stepper button{font-size:12px;letter-spacing:.12em}
+  .how-pin{padding-top:150px}
+  .svc-aside{text-align:left}
   #how-next{display:none}
   .next{bottom:22px;font-size:15px}
   .step{top:34px}
@@ -283,6 +295,7 @@ figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--in
   .foot{grid-template-columns:1fr 1fr}
 }
 @media (max-width:600px){.t-grid.four,.t-grid.three{grid-template-columns:1fr;gap:28px}.t-grid figure{display:grid;grid-template-columns:minmax(0,38%) minmax(0,1fr);gap:18px;align-items:start}.t-grid figcaption{margin-top:0}figcaption .name{font-size:28px}figcaption .role{font-size:17px}}
+@media (max-width:860px) and (max-height:720px){.how-art{width:min(56vw,28vh)}.how-text{min-height:260px}.step p{font-size:17px}.step h3{font-size:clamp(32px,9vw,42px)}}
 @media (max-width:520px){.foot{grid-template-columns:1fr}.brand img{height:22px}}
 
 /* ---------- reduced motion: final frames, no pinning ---------- */
@@ -420,6 +433,7 @@ figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--in
 <section class="sec" id="services" aria-labelledby="svc-h" style="padding-top:clamp(80px,10vw,160px)">
   <div class="svc-head">
     <h2 id="svc-h" class="split">Where we&nbsp;come.</h2>
+    <p class="svc-aside rise">Four kinds of care, one 24/7&nbsp;line.</p>
   </div>
   <ul class="svc">
     <li class="row rise"><a href="#request">
@@ -670,7 +684,7 @@ figcaption .role{font-size:clamp(17px,1.2vw,19px);line-height:1.5;color:var(--in
     hRings.forEach((c, i) => { const t = clamp(s2 * 1.4 - i * .2); const r = 6.5 + t * (34 - 6.5) * (1 - i * .18); c.setAttribute('r', r.toFixed(2)); c.setAttribute('opacity', (RM ? .3 : (t > 0 ? (1 - s3) * .55 * (1 - i * .25) : 0)).toFixed(3)); });
     hGuide.setAttribute('opacity', (RM ? .5 : clamp(s2 * 2) * (1 - s3) * .9).toFixed(3));
     const box = $('.how-art').getBoundingClientRect().width;
-    opts.forEach((o, i) => { const a = angles[i] * Math.PI / 180, R = box * .44 * (vw < 860 ? .92 : 1); const t = RM ? 1 : clamp(s2 * 1.6 - i * .12) * (1 - s3); o.style.opacity = t.toFixed(3); o.style.transform = `translate(calc(-50% + ${Math.cos(a) * R * (.7 + .3 * t)}px), calc(-50% + ${Math.sin(a) * R * (.7 + .3 * t)}px))`; });
+    opts.forEach((o, i) => { const a = angles[i] * Math.PI / 180, R = box * .44 * (vw < 860 ? .92 : 1); const t = box < 300 ? 0 : RM ? 1 : clamp(s2 * 1.6 - i * .12) * (1 - s3); o.style.opacity = t.toFixed(3); o.style.transform = `translate(calc(-50% + ${Math.cos(a) * R * (.7 + .3 * t)}px), calc(-50% + ${Math.sin(a) * R * (.7 + .3 * t)}px))`; });
     hS.style.strokeDashoffset = RM ? 0 : (1 - ease(s3)).toFixed(4);
     const active = p < .3 ? 0 : p < .62 ? 1 : 2;
     steps.forEach((s, i) => s.classList.toggle('on', RM || i === active));
