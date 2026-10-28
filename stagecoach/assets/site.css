@@ -749,3 +749,10 @@ html:not(.js) .mission .mw.accent{color:var(--coral-ink)}
 .hero-copy::before{left:0;top:0;width:auto;height:auto;transform:none}
 @media (max-width:860px){.hero-copy::before{background:linear-gradient(to bottom,rgba(244,241,233,.1),rgba(244,241,233,.62) 35%,rgba(244,241,233,.72) 75%,rgba(244,241,233,.5))}}
 .mission .mw.accent:not(.lit){color:var(--navy)}
+
+/* a vector mark beside a typeset name, sized to the other logos */
+.logo-mix{display:inline-flex;align-items:center;gap:.55em;font-size:clamp(14px,4vw,24px)}
+@media (min-width:861px){.logo-mix{font-size:clamp(16px,1.7vw,24px)}}
+.logo-mix .logo.mark{width:1.9em;height:1.7em}
+.logo-mix .wordlogo{font-size:1.25em;letter-spacing:.12em;opacity:1}
+.logos li:hover .logo-mix .logo{opacity:1}
