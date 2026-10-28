@@ -140,15 +140,19 @@
     hDot.style.transform = `scale(${RM ? 1 : ease(s1) * (1 + .25 * Math.sin(Math.PI * s1))})`;
     hRings.forEach((c, i) => { const t = clamp(s2 * 1.4 - i * .2); const r = 6.5 + t * (34 - 6.5) * (1 - i * .18); c.setAttribute('r', r.toFixed(2)); c.setAttribute('opacity', (RM ? .3 : (t > 0 ? (1 - s3) * .55 * (1 - i * .25) : 0)).toFixed(3)); });
     hGuide.setAttribute('opacity', (RM ? .5 : clamp(s2 * 2) * (1 - s3) * .9).toFixed(3));
-    const box = $('.how-art').getBoundingClientRect().width;
+    const artBox = $('.how-art').getBoundingClientRect(), box = artBox.width; const textBox = $('.how-text').getBoundingClientRect();
     opts.forEach((o, i) => {
       const small = box < 420, ang = small ? [-90, -34, 34, 146, 214] : angles;
       const a = ang[i] * Math.PI / 180, R = box * .36 + (small ? 8 : 14), c = Math.cos(a), sn = Math.sin(a);
       const t = box < 240 ? 0 : RM ? 1 : clamp(s2 * 1.6 - i * .12) * (1 - s3);
-      const x = c * R * (.85 + .15 * t), y = sn * R * (.85 + .15 * t);
+      let x = c * R * (.85 + .15 * t); const y = sn * R * (.85 + .15 * t);
       /* anchor the label's near edge to the ring so the text always grows outward */
-      const ax = c < -.3 ? '-100%' : c > .3 ? '0%' : '-50%', ay = Math.abs(c) <= .3 ? (sn < 0 ? '-100%' : '0%') : '-50%';
-      o.style.opacity = t.toFixed(3); o.style.transform = `translate(calc(${ax} + ${x}px), calc(${ay} + ${y}px))`;
+      const fx = c < -.3 ? -1 : c > .3 ? 0 : -.5, ay = Math.abs(c) <= .3 ? (sn < 0 ? '-100%' : '0%') : '-50%';
+      /* keep every label inside the screen, with the page gutter */
+      const lw = o.offsetWidth, gut = Math.max(16, vw * .04), cx = artBox.left + artBox.width / 2;
+      const left = cx + x + fx * lw, rightLim = vw > 860 ? Math.min(vw - gut, textBox.left - 20) : vw - gut;
+      if (left < gut) x += gut - left; if (left + lw > rightLim) x -= left + lw - rightLim;
+      o.style.opacity = t.toFixed(3); o.style.transform = `translate(calc(${fx * 100}% + ${x}px), calc(${ay} + ${y}px))`;
     });
     hS.style.strokeDashoffset = RM ? 0 : (1 - ease(s3)).toFixed(4);
     const active = p < .3 ? 0 : p < .62 ? 1 : 2;

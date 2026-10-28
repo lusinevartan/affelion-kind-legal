@@ -997,3 +997,39 @@ html.still .how-pin{padding-block:72px 40px}
 .page-hero+.sec.dark{padding-top:clamp(56px,7vw,110px)!important}
 /* hero buttons stay on one row on tablets and small laptops */
 @media (min-width:861px) and (max-width:1280px){.page-hero .btn{padding:0 20px;font-size:15px;min-height:52px}.page-hero .ctas{gap:10px}}
+/* ---------- phones: pinned scenes keep their copy above the call bar ---------- */
+@media (max-width:860px){
+  .how-pin{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .hero-copy{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+}
+@media (max-width:860px) and (max-height:760px){
+  .how-art{width:min(62vw,30vh)}
+  .how-pin{padding-top:84px;gap:10px}
+  .how-text{gap:14px}
+  .step h3{font-size:clamp(24px,7vw,32px)}
+  .step p{font-size:16px;line-height:1.45}
+  .how-body{min-height:220px}
+  .hero-copy h1{font-size:clamp(32px,9.6vw,48px)}
+  .hero-copy .hero-lead{font-size:16px}
+  .hero-copy{gap:16px}
+}
+@media (max-width:860px) and (max-height:600px){
+  .how-art{width:min(52vw,24vh)}
+  .step h3{font-size:clamp(21px,6.4vw,26px)}
+  .step p{font-size:15px}
+  .how-body{min-height:200px}
+  .hero-copy small{display:none}
+}
+/* ---------- laptops and tablets landscape (861 to 1280): room for the ring labels ---------- */
+@media (min-width:861px) and (max-width:1280px){
+  .how-pin{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,3vw,48px)}
+  .how-art{width:min(30vw,52vh,400px)}
+  .opt{font-size:14px;letter-spacing:.12em;padding:8px 12px}
+  .stepper{gap:16px}
+  .stepper button{font-size:14px;letter-spacing:.1em;white-space:nowrap}
+}
+/* typeset client names never under 12px */
+.wordlogo{font-size:max(12px,min(3.6vw,19px))}
+@media (min-width:861px){.wordlogo{font-size:clamp(13px,1.35vw,19px)}}
+/* very short phones: the hero promise sits clear of the call bar */
+@media (max-width:860px) and (max-height:600px){.hero.tall .hero-side span,.hero.tall .hero-side>:not(strong){display:none}.hero.tall .clock{font-size:clamp(40px,12vw,64px)}}
