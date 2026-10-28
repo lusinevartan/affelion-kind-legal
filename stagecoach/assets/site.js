@@ -1,5 +1,9 @@
 (() => {
-  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const RMQ = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* short landscape screens (a phone held sideways) cannot hold a pinned scene: show the finished frames instead */
+  const isShort = () => innerHeight < 560 && innerWidth > innerHeight;
+  let RM = RMQ || isShort();
+  document.documentElement.classList.toggle('still', RM && !RMQ);
   const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -66,7 +70,7 @@
   const AX = .333, AY = .335; // a point on the S stroke (33.3, 33.5 in the 100-unit symbol)
 
   let vw = innerWidth, vh = innerHeight;
-  addEventListener('resize', () => { vw = innerWidth; vh = innerHeight; frame(); });
+  addEventListener('resize', () => { vw = innerWidth; vh = innerHeight; RM = RMQ || isShort(); document.documentElement.classList.toggle('still', RM && !RMQ); cur.hp = null; frame(); });
 
   const angles = [-90, -18, 54, 126, 198];
   const stepBtns = $$('.stepper button'), heroNext = $('#hero-next'), howNext = $('#how-next');

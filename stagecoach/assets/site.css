@@ -923,3 +923,77 @@ button.btn{border:0;appearance:none;-webkit-appearance:none;font-family:var(--sa
 .foot .foot-brand span:last-child{max-width:40ch}
 button.btn-outline{border:1.5px solid rgba(30,42,62,.32)}
 .dark button.btn-outline{border-color:rgba(244,241,233,.4)}
+/* triage labels larger */
+.opt{font-size:17px;letter-spacing:.14em;padding:10px 15px}
+.opt::before{width:7px;height:7px;margin-right:10px}
+@media (max-width:860px){.how-art .opt{font-size:11.5px;letter-spacing:.1em;padding:6px 10px}.how-art .opt::before{width:6px;height:6px;margin-right:7px}}
+/* step tracker, 20 percent larger */
+.stepper{width:min(672px,100%);gap:22px}
+.stepper button{font-size:16.8px;min-height:58px;gap:12px;padding-top:12px}
+.stepper i{height:4px}
+@media (max-width:860px){.stepper{gap:14px}.stepper button{font-size:14.4px;letter-spacing:.12em}}
+@media (max-width:380px){.stepper button{font-size:13px;letter-spacing:.08em}}
+/* closing band hierarchy: headline leads, the number is a clear second voice, then actions, then the 911 note */
+.cta .eyebrow{margin:0 0 clamp(14px,1.6vw,22px)}
+.cta h2{font-size:clamp(48px,8.4vw,150px);line-height:1.02;margin:0}
+.cta .tel-wrap{margin:clamp(40px,5.6vw,84px) 0 clamp(24px,2.8vw,40px)}
+.cta .tel{font-size:clamp(32px,4.8vw,84px);font-weight:500;line-height:1;letter-spacing:-.02em!important;color:var(--navy)}
+.cta .cta-row{margin:0 0 clamp(18px,2vw,28px)}
+.cta .must{font-size:clamp(15px,1.1vw,17px);max-width:52ch}
+/* ---------- still mode: short landscape screens get the finished frames, unpinned ---------- */
+html.still .intro{display:none}
+html.still .hero{height:auto}
+html.still .hero-pin{position:relative;height:auto;min-height:100svh;display:grid;align-items:center}
+html.still .hero-copy{position:relative;inset:auto;opacity:1;pointer-events:auto;padding:calc(96px + env(safe-area-inset-top,0px)) var(--gut) 40px}
+html.still .clock,html.still .hero-meta,html.still .hero-side,html.still .scroll-cue,html.still .next,html.still .stepper{display:none}
+html.still .how{height:auto}
+html.still .how-pin{position:relative;height:auto;padding:96px var(--gut) 64px;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);align-items:start;gap:32px}
+html.still .how-art{width:min(36vw,300px);position:sticky;top:96px}
+html.still .how-head{display:block!important;position:static;margin-bottom:18px}
+html.still .how-text{min-height:0}
+html.still .how-body{min-height:0}
+html.still .step{position:static;opacity:1;transform:none;margin-bottom:28px;pointer-events:auto}
+html.still .step h3{font-size:clamp(24px,3.4vw,34px)}
+html.still .opt{opacity:1}
+html.still .split .w>span,html.still .rise{transform:none;opacity:1}
+html.still .mission .mw{opacity:1}
+html.still .row{position:relative;top:auto}
+html.still #services{margin-top:0}
+html.still .how{margin-bottom:0}
+html.still .hero-copy{transform:none!important;padding-top:calc(104px + env(safe-area-inset-top,0px));padding-bottom:calc(96px + env(safe-area-inset-bottom,0px));gap:18px}
+html.still .hero-copy h1{font-size:clamp(34px,6.2vw,52px)}
+html.still .hero-copy .hero-lead{font-size:17px;max-width:46ch}
+html.still .how-art{width:min(26vw,210px)}
+html.still .how-art .opt{display:none}
+html.still .step .opts{display:block!important;font-size:14px}
+html.still .how-pin{grid-template-columns:auto minmax(0,1fr);gap:clamp(28px,5vw,56px)}
+html.still .hero-copy{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
+html.still .sec{padding-block:clamp(64px,9vw,96px)}
+html.still .how-pin{padding-block:72px 40px}
+/* ---------- smallest phones (≤360) ---------- */
+@media (max-width:360px){
+  .callbar{gap:8px;padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px))}
+  .cb-call{padding:0 12px!important;font-size:14px}
+  .cb-join{font-size:14px;letter-spacing:0;padding:0 10px;min-width:0}
+  .callbar>*{min-width:0;white-space:nowrap}
+  .brand{gap:9px}.brand .s{width:32px;height:32px}
+  .hdr .wm{font-size:14.5px;letter-spacing:.24em}.wm-tag{font-size:7.6px}
+  .menu-btn{letter-spacing:.14em}
+}
+/* ---------- large monitors ---------- */
+@media (min-width:1800px){
+  .statement{max-width:44ch}
+  .statement .big{font-size:clamp(64px,3.6vw,96px)}
+  .statement p:not(.big):not(.eyebrow){font-size:24px}
+  .sec-head{max-width:72ch}
+  .card h3,.card h2.h3{font-size:24px}.card p{font-size:18px}
+}
+@media (max-width:400px){
+  .sec-head h2,.page-hero h1,.statement .big,.cta h2,.svc-head h2,.journey h2{font-size:clamp(28px,9.4vw,40px)}
+  .page-hero h1{font-size:clamp(34px,10.6vw,44px)}
+  .split .w{max-width:100%}
+}
+/* sections that follow a dark page hero get their own breathing room */
+.page-hero+.sec.dark{padding-top:clamp(56px,7vw,110px)!important}
+/* hero buttons stay on one row on tablets and small laptops */
+@media (min-width:861px) and (max-width:1280px){.page-hero .btn{padding:0 20px;font-size:15px;min-height:52px}.page-hero .ctas{gap:10px}}
