@@ -60,8 +60,8 @@ def title_case_headings(html):
     return html
 
 
-NAV = [('services.html', 'Services'), ('membership.html', 'Membership'), ('events.html', 'Events'),
-       ('kids.html', 'Stagecoach Kids'), ('team.html', 'Team'), ('contact.html', 'Contact')]
+NAV = [('services.html', 'Services'), ('membership.html', 'Membership'), ('team.html', 'Team'), ('contact.html', 'Contact')]
+SHEET_MORE = [('kids.html', 'Stagecoach Kids'), ('events.html', 'Events'), ('partners.html', 'Partners'), ('careers.html', 'Join us')]
 
 
 def head(title, desc):
@@ -89,7 +89,7 @@ def head(title, desc):
 
 def header(current, has_join=True):
     links = ''.join(f'<a href="{h}"{" aria-current=\"page\"" if h == current else ""}>{t}</a>' for h, t in NAV)
-    sheet = ''.join(f'<a href="{h}">{t}</a>' for h, t in [('index.html', 'Home')] + NAV + [('careers.html', 'Join us'), ('partners.html', 'Partners')])
+    sheet = ''.join(f'<a href="{h}">{t}</a>' for h, t in [('index.html', 'Home')] + NAV) + '<span class="sheet-more">' + ''.join(f'<a href="{h}">{t}</a>' for h, t in SHEET_MORE) + '</span>'
     return f'''<header class="hdr on-dark" id="hdr">
   <div class="hdr-in">
     <a class="brand" href="index.html" aria-label="Stagecoach Concierge Emergency Medical Services, home"><svg class="s" viewBox="0 0 100 100" aria-hidden="true"><defs><mask id="hb-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs><path d="{S}" fill="none" stroke="currentColor" stroke-width="14.5" stroke-linecap="round" mask="url(#hb-m)"/><circle cx="50" cy="50" r="6.5" fill="#E37970"/></svg><span class="wm-text"><span class="wm">STAGECOACH</span><span class="wm-tag">CONCIERGE EMERGENCY MEDICINE</span></span></a>
