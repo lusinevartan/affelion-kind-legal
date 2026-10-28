@@ -175,6 +175,7 @@ clear = (f'<svg viewBox="{-cs} {-cs} {HZ["w"] + 2 * cs} {HZ["h"] + 2 * cs}" styl
          f'<rect x="0" y="0" width="{HZ["w"]}" height="{HZ["h"]}" fill="#fff"/>'
          f'<rect x="0" y="0" width="{HZ["w"]}" height="{HZ["h"]}" fill="none" stroke="{CORAL}" stroke-width="1.5" stroke-dasharray="6 5"/>'
          f'{M.inner(HZ, "FullColour")}</svg>')
+grain = asset(os.path.join(HERE, 'grain.png'), 'grain.png')
 busy = asset(os.path.join(os.path.dirname(HERE), 'assets', 'photos', 'team-field.jpg'), 'busy.jpg')
 donts = ''.join(f'<div class="dont"><div class="dz">{art}</div><span>{t}</span></div>' for art, t in [
     (logo_svg(HZ, 'FullColour', 'width:180px;transform:scaleX(1.35)'), 'Do not stretch'),
@@ -222,7 +223,7 @@ slide(f'''{head("Voice", "Plain English, Said Warmly.", "The site was rewritten 
   <div class="vps"><div class="vp"><b>Say what happens</b><span>Who answers, what they decide, how fast someone arrives. No promises we cannot keep, no statistics we cannot source.</span></div>
   <div class="vp"><b>Short sentences</b><span>One idea per line. Headings in Title Case. Nothing in italics, nothing shouting.</span></div>
   <div class="vp"><b>Calm, not clinical</b><span>Doctors speaking as people. The 911 line appears on every page, because honesty is part of the care.</span></div></div>
-  <div class="vs"><p class="vs-eb">We say</p><p class="vs-h">Emergency Care That Comes&nbsp;to&nbsp;You.</p><p class="vs-b">A team of doctors and medics at your home, office or event. Day or night, in Washington,&nbsp;DC.</p><p class="vs-eb">We never say</p><p class="vs-x">“Faster than 911.” “Guaranteed“Faster than 911.” “Guaranteed outcomes.”&nbsp;“World-class.”nbsp;outcomes.” “World-class.”</p></div>
+  <div class="vs"><p class="vs-eb">We say</p><p class="vs-h">Emergency Care That Comes&nbsp;to&nbsp;You.</p><p class="vs-b">A team of doctors and medics at your home, office or event. Day or night, in Washington,&nbsp;DC.</p><p class="vs-eb">We never say</p><p class="vs-x">“Faster than 911.”</p><p class="vs-x">“Guaranteed outcomes.”</p><p class="vs-x">“World-class.”</p></div>
 </div>''')
 
 # 10 website hero
@@ -344,7 +345,7 @@ h1,h2,h3,.cl,.cover-kicker,.quote{{text-wrap:balance}} p,figcaption,span,dd,b{{t
 .dark.recto::after{{background:linear-gradient(90deg,rgba(0,0,0,.38),rgba(0,0,0,.08) 45%,transparent)}}
 .dark.verso::after{{background:linear-gradient(270deg,rgba(0,0,0,.38),rgba(0,0,0,.08) 45%,transparent)}}
 .slide.cover-page::after,.slide.back-cover::after{{display:none}}
-.slide:not(.dark)::before{{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.07;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>")}}
+.slide:not(.dark)::before{{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.5;mix-blend-mode:multiply;background:url({grain}) repeat}}
 /* contents */
 .toc{{list-style:none;margin:60px 0 0;padding:0;columns:2;column-gap:90px}}
 .toc li{{break-inside:avoid;display:grid;grid-template-columns:230px 1fr auto;gap:22px;align-items:baseline;padding:19px 0;border-bottom:1px solid rgba(16,25,43,.10);font:400 24px Montserrat}}
@@ -356,7 +357,7 @@ h1,h2,h3,.cl,.cover-kicker,.quote{{text-wrap:balance}} p,figcaption,span,dd,b{{t
 .vs{{background:#fff;border-radius:24px;padding:56px 60px;box-shadow:0 30px 60px -48px rgba(16,25,43,.6);display:flex;flex-direction:column;justify-content:center}}
 .vs p{{margin:0}} .vs-eb{{font:600 15px Montserrat;letter-spacing:.22em;text-transform:uppercase;color:{INK};margin-bottom:18px!important}}
 .vs-h{{font:500 66px/1.04 Montserrat;letter-spacing:-.03em}} .vs-b{{font:400 24px/1.5 Montserrat;color:#3D4A60;margin:22px 0 60px!important}}
-.vs-x{{font:500 26px/1.5 Montserrat;color:#8A92A0;text-decoration:line-through;text-decoration-color:{CORAL};text-decoration-thickness:2px}}
+.vs-x{{font:500 26px/1.6 Montserrat;color:#8A92A0;text-decoration:line-through;text-decoration-color:{CORAL};text-decoration-thickness:2px}}
 /* back cover */
 .bc{{position:absolute;bottom:60px;left:0;right:0;margin:0;font:500 15px Montserrat;letter-spacing:.06em;opacity:.55}}
 .sh .eb{{margin:0 0 18px;font:600 18px Montserrat;letter-spacing:.24em;text-transform:uppercase;color:{INK}}}
