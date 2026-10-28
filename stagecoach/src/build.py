@@ -106,7 +106,7 @@ def header(current, has_join=True):
     sheet = ''.join(f'<a href="{h}">{t}</a>' for h, t in [('index.html', 'Home')] + NAV) + '<span class="sheet-more">' + ''.join(f'<a href="{h}">{t}</a>' for h, t in SHEET_MORE) + '</span>'
     return f'''<header class="hdr on-dark" id="hdr">
   <div class="hdr-in">
-    <a class="brand" href="index.html" aria-label="Stagecoach Concierge Emergency Medical Services, home"><svg class="s" viewBox="0 0 100 100" aria-hidden="true"><defs><mask id="hb-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs><path d="{S}" fill="none" stroke="currentColor" stroke-width="14.5" stroke-linecap="round" mask="url(#hb-m)"/><circle cx="50" cy="50" r="6.5" fill="#E37970"/></svg><span class="wm-text"><span class="wm">STAGECOACH</span><span class="wm-tag">CONCIERGE EMERGENCY MEDICINE</span></span></a>
+    <a class="brand" href="index.html" aria-label="Stagecoach Concierge Emergency Medical Services, home"><svg class="s" viewBox="0 0 100 100" aria-hidden="true"><defs><mask id="hb-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs><path d="{S}" fill="none" stroke="currentColor" stroke-width="14.5" stroke-linecap="round" mask="url(#hb-m)"/><circle cx="50" cy="50" r="6.5" fill="#E37970"/></svg><span class="wm-text"><span class="wm">STAGECOACH</span><span class="wm-tag">CONCIERGE EMERGENCY MEDICAL SERVICES</span></span></a>
     <nav class="nav" aria-label="Primary">{links}</nav>
     <div style="display:flex;align-items:center;gap:20px">
       <a class="call-link" href="{TEL}" data-cur="Call"><span class="pulse" aria-hidden="true"></span><span class="num"><span class="lbl">24/7 · </span>{PHONE}</span></a>
@@ -124,7 +124,7 @@ def header(current, has_join=True):
 
 
 FOOTER = f'''<footer class="foot">
-  <div class="foot-brand"><a class="foot-logo" href="index.html" aria-label="Stagecoach Concierge Emergency Medical Services, home"><svg class="s" viewBox="0 0 100 100" aria-hidden="true"><defs><mask id="fb-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs><path d="{S}" fill="none" stroke="currentColor" stroke-width="14.5" stroke-linecap="round" mask="url(#fb-m)"/><circle cx="50" cy="50" r="6.5" fill="#E37970"/></svg><span class="wm">STAGECOACH</span><span class="tag">Concierge Emergency Medicine</span></a><span>White glove care, ready for emergencies, wherever you&nbsp;are.<br>Led by doctors. Based in Washington,&nbsp;DC.</span></div>
+  <div class="foot-brand"><a class="foot-logo" href="index.html" aria-label="Stagecoach Concierge Emergency Medical Services, home"><svg class="s" viewBox="0 0 100 100" aria-hidden="true"><defs><mask id="fb-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs><path d="{S}" fill="none" stroke="currentColor" stroke-width="14.5" stroke-linecap="round" mask="url(#fb-m)"/><circle cx="50" cy="50" r="6.5" fill="#E37970"/></svg><span class="wm">STAGECOACH</span><span class="tag">Concierge Emergency Medical Services</span></a><span>White glove care, ready for emergencies, wherever you&nbsp;are.<br>Led by doctors. Based in Washington,&nbsp;DC.</span></div>
   <nav aria-label="Explore"><strong>Explore</strong><a href="services.html">Services</a><a href="membership.html">Membership</a><a href="events.html">Events</a><a href="kids.html">Stagecoach Kids</a><a href="team.html">Team</a></nav>
   <nav aria-label="Company"><strong>Company</strong><a href="careers.html">Join us</a><a href="careers.html#internships">Internships</a><a href="partners.html">Partners</a><a href="contact.html">Contact</a></nav>
   <div><strong>Reach us</strong><br><a href="{TEL}">{PHONE}</a>, 24/7<br><a href="mailto:{EMAIL}">{EMAIL}</a><br>3299 K St NW #210<br>Washington, DC 20007</div>
@@ -553,6 +553,30 @@ hero('Error 404', 'This Page Isn’t&nbsp;Here.', 'The link may be old or mistyp
 ''')
 
 
+def no_widows(html):
+    """Join the last two words of every heading, paragraph and caption with a no-break space,
+    so no line ends with a single word on its own. Skips text that already ends bound."""
+    def fix(m):
+        tag, attrs, inner = m.group(1), m.group(2) or '', m.group(3)
+        if '<p' in inner or '<div' in inner or '<ul' in inner or '<br' in inner:
+            return m.group(0)
+        tail = re.sub(r'<[^>]+>', '', inner)[-24:]
+        if '&nbsp;' in tail or '\u00a0' in tail:
+            return m.group(0)
+        depth, last = 0, -1
+        for i, ch in enumerate(inner):
+            if ch == '<':
+                depth += 1
+            elif ch == '>':
+                depth -= 1
+            elif ch == ' ' and depth == 0 and inner[i + 1:].strip():
+                last = i
+        if last < 0:
+            return m.group(0)
+        return f'<{tag}{attrs}>{inner[:last]}&nbsp;{inner[last + 1:]}</{tag}>'
+    return re.sub(r'<(h1|h2|h3|h4|p|figcaption|dd)(\s[^>]*)?>(.*?)</\1>', fix, html, flags=re.S)
+
+
 def build():
     intro = open(os.path.join(SRC, 'intro.html')).read().replace('{{S}}', S)
     home = (open(os.path.join(SRC, 'home.html')).read()
@@ -566,7 +590,7 @@ def build():
         pages[name] = (title, desc, body, '')
     for name, (title, desc, body, pre) in pages.items():
         has_join = 'id="join"' in body
-        html = title_case_headings(head(title, desc, name) + pre + (header(name, has_join).replace('hdr on-dark', 'hdr') if name == 'index.html' else header(name, has_join)) + '\n<main id="main" tabindex="-1">\n' + body + '\n</main>\n\n' + FOOTER.replace('{JOINHREF}', '#join' if has_join else 'membership.html#join'))
+        html = no_widows(title_case_headings(head(title, desc, name) + pre + (header(name, has_join).replace('hdr on-dark', 'hdr') if name == 'index.html' else header(name, has_join)) + '\n<main id="main" tabindex="-1">\n' + body + '\n</main>\n\n' + FOOTER.replace('{JOINHREF}', '#join' if has_join else 'membership.html#join')))
         if name == '404.html':  # never indexed, never canonical
             html = re.sub(r'<link rel="canonical"[^>]*>\n', '<meta name="robots" content="noindex">\n', html)
             html = re.sub(r'<meta property="og:url"[^>]*>\n', '', html)

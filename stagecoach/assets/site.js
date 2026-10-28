@@ -147,7 +147,7 @@
     opts.forEach((o, i) => {
       const small = box < 420, ang = small ? [-90, -34, 34, 146, 214] : angles;
       const a = ang[i] * Math.PI / 180, R = box * .36 + (small ? 8 : 14), c = Math.cos(a), sn = Math.sin(a);
-      const t = box < 240 ? 0 : RM ? 1 : clamp(s2 * 1.6 - i * .12) * (1 - s3);
+      const t = box < 150 ? 0 : RM ? 1 : clamp(s2 * 1.6 - i * .12) * (1 - s3);
       let x = c * R * (.85 + .15 * t); const y = sn * R * (.85 + .15 * t);
       /* anchor the label's near edge to the ring so the text always grows outward */
       const fx = c < -.3 ? -1 : c > .3 ? 0 : -.5, ay = Math.abs(c) <= .3 ? (sn < 0 ? '-100%' : '0%') : '-50%';
@@ -231,6 +231,11 @@ document.querySelectorAll('.see-all').forEach(b => b.addEventListener('click', (
       const tw = el => { const r = document.createRange(); r.selectNodeContents(el); return r.getBoundingClientRect().width; };
       const target = tw(wm) - parseFloat(getComputedStyle(wm).letterSpacing || 0);
       const n = tag.textContent.trim().length;
+      /* the tagline is long: shrink it until it spans the wordmark with at least .1em of tracking */
+      tag.style.fontSize = '';
+      const fs = parseFloat(getComputedStyle(tag).fontSize), w0 = tw(tag);
+      const fit = Math.min(fs, target / (w0 / fs + 0.1 * (n - 1)));
+      if (fit < fs) tag.style.fontSize = fit.toFixed(2) + 'px';
       const ls = (target - tw(tag)) / (n - 1);
       tag.style.letterSpacing = ls.toFixed(3) + 'px'; tag.style.marginRight = (-ls).toFixed(3) + 'px';
     });
