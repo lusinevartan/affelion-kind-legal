@@ -165,8 +165,8 @@ JOIN = f'''<!-- JOIN: membership waitlist -->
 LOGOS = '''<ul class="logos">
 ''' + ''.join(f'      <li><span class="logo" role="img" aria-label="{n}" style="-webkit-mask-image:url(assets/clients/{u});mask-image:url(assets/clients/{u});--w:{w};--h:{h}"></span></li>\n' for n, u, w, h in [
     ('Meta', 'meta.svg', '70%', '44%'), ('Google', 'google.svg', '60%', '46%'), ('J.P. Morgan', 'jpmorgan.svg', '72%', '44%'),
-    ('The Atlantic', 'atlantic.svg', '64%', '76%'), ('Emerson Collective', 'emerson.png', '68%', '50%'), ('YPO', 'ypo.png', '56%', '48%'),
-    ('Edens', 'edens.png', '58%', '58%'), ('Hargrove', 'hargrove.svg', '70%', '54%')]) + \
+    ('The Atlantic', 'atlantic.svg', '64%', '76%'), ('Emerson Collective', 'emerson.svg', '68%', '50%'), ('YPO', 'ypo.svg', '56%', '48%'),
+    ('Edens', 'edens.svg', '58%', '58%'), ('Hargrove', 'hargrove.svg', '70%', '54%')]) + \
     '      <li><span class="wordlogo">Union Market</span></li>\n      <li><span class="wordlogo">Autoshop</span></li>\n  </ul>'
 
 TEAM = {
