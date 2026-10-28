@@ -518,7 +518,7 @@ PAGES['contact.html'] = ('Contact | Stagecoach Concierge Emergency Medical Servi
 hero('Contact', 'Talk to&nbsp;us.', 'Call or email. A clinician answers the phone, day or&nbsp;night.') +
 f'''<section class="sec" aria-labelledby="ct1">
   <ul class="cards" style="--cols:2">
-    <li class="card rise"><span class="tag">Call 24/7</span><h2 id="ct1" class="h3"><a href="{TEL}" style="text-decoration:none;font-size:clamp(32px,3.6vw,56px);letter-spacing:-.03em">{PHONE}</a></h2><p>A clinician answers. If it’s life-threatening, call 911 right away.</p><p>{EMAIL}<br>3299 K St NW #210, Washington, DC 20007</p></li>
+    <li class="card rise"><span class="tag">Call 24/7</span><h2 id="ct1" class="h3"><a href="{TEL}" style="text-decoration:none;font-size:clamp(32px,3.6vw,56px);letter-spacing:-.03em">{PHONE}</a></h2><p>A clinician answers. If it’s life-threatening, call 911 right away.</p><p><a class="mail" href="mailto:{EMAIL}">{EMAIL}</a><br>3299 K St NW #210, Washington, DC 20007</p></li>
     <li class="card rise"><span class="tag">Questions</span><h2 class="h3">Email our team</h2><p>Tell us what you need: membership, event coverage or a partnership. A real person will write back.</p><p><a class="btn btn-dark" href="mailto:{EMAIL}">Email us <span class="arr" aria-hidden="true">→</span></a></p><p style="font-size:15px">Please don’t send medical details by email. For anything urgent, call {PHONE}.</p></li>
   </ul>
 </section>

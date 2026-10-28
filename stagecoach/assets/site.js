@@ -117,8 +117,11 @@
     const sx0 = (vw - m) / 2 + AX * m, sy0 = vh * cy - m / 2 + AY * m;
     hero.style.setProperty('--sb', `${Math.round(vh * cy + m / 2)}px`); hero.classList.toggle('tall', tall);
     if (tall) { /* put the vehicle itself inside the S: photo focal point (62%, 64%) lands on the S centre */
-      const ih = vh * 1.6, iw = ih * HERO_AR; win.style.backgroundSize = `${iw}px ${ih}px`;
-      win.style.backgroundPosition = `${(vw / 2 - .25 * iw).toFixed(1)}px ${(vh * cy - .60 * ih).toFixed(1)}px`;
+      /* inside the S the vehicle is framed close; as the S opens the photo eases back to its natural, sharp size */
+      const ih = vh * (1.6 - .35 * z), iw = ih * HERO_AR; win.style.backgroundSize = `${iw}px ${ih}px`;
+      /* end framing keeps the top 24% of the photo (the street sign) above the screen */
+      const fx = .25 + .09 * z, py = (vh * cy - .60 * ih) * (1 - z) + (-.24 * ih) * z;
+      win.style.backgroundPosition = `${(vw / 2 - fx * iw).toFixed(1)}px ${py.toFixed(1)}px`;
     } else { win.style.backgroundSize = ''; win.style.backgroundPosition = ''; }
     const ax = sx0 + (vw / 2 - sx0) * z, ay = sy0 + (vh / 2 - sy0) * z;
     const pos = `${ax - AX * size}px ${ay - AY * size}px`, sz = `${size}px ${size}px`;
