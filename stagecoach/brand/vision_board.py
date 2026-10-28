@@ -7,6 +7,7 @@ KIT_DIR is the output of build_kit.py. SHOTS_DIR holds website screenshots
 """
 import base64
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -79,16 +80,32 @@ def count(*parts):
 
 
 # ---------------------------------------------------------------- slide helpers
-SLIDES = []
+SLIDES, TOC = [], []
+SEC = ''  # running head for the pages that follow
 
 
-def slide(body, dark=False, cls='', foot=True):
+def slide(body, dark=False, cls='', foot=True, title=''):
+    """Pages are bound as a booklet: the cover sits alone, then facing pairs. Even pages are
+    verso (left), odd pages recto (right); folios sit at the outer corner of each."""
     n = len(SLIDES) + 1
-    f = f'<div class="foot"><span>Stagecoach · Brand Vision 2026</span><span>{n:02d}</span></div>' if foot else ''
-    SLIDES.append(f'<section class="slide {"dark" if dark else ""} {cls}">{body}{f}</section>')
+    side = 'verso' if n % 2 == 0 else 'recto'
+    f = f'<div class="foot"><span>{SEC}</span><i></i><span>{n:02d}</span></div>' if foot else ''
+    if title:
+        TOC.append((n, SEC, title))
+    SLIDES.append(f'<section class="slide {"dark" if dark else ""} {side} {cls}">{body}{f}</section>')
+
+
+def contents():
+    """Filled in once every page exists, so the numbers are real."""
+    rows, last = [], None
+    for n, sec, title in TOC:
+        rows.append(f'<li>{"<b>" + sec + "</b>" if sec != last else "<b></b>"}<span>{title}</span><em>{n:02d}</em></li>')
+        last = sec
+    return f'<ol class="toc">{"".join(rows)}</ol>'
 
 
 def head(eyebrow, title, sub=''):
+    TOC.append((len(SLIDES) + 1, SEC, re.sub(r'<[^>]+>', '', title)))
     return (f'<header class="sh"><p class="eb">{eyebrow}</p><h2>{title}</h2>' + (f'<p class="sub">{sub}</p>' if sub else '') + '</header>')
 
 
@@ -111,9 +128,15 @@ slide(f'''<div class="cover">
   <p class="cover-kicker">Brand &amp; Experience Vision</p>
   <p class="cover-meta">Prepared for Stagecoach Concierge Emergency Medical Services · Washington, DC · 2026</p>
   <div class="cover-glow"></div>
-</div>''', dark=True)
+</div>''', dark=True, cls='cover-page', foot=False)
 
-# 2 the idea
+# 2 contents (verso, facing The idea)
+slide(f'''{head("Contents", "What Is Inside.")}
+%%CONTENTS%%''')
+TOC.pop()  # the contents page does not list itself
+
+# 3 the idea
+SEC = 'The Idea'
 stages = ''.join(
     f'<div class="idea-step"><svg viewBox="0 0 100 100">{s}</svg><b>{t}</b><span>{d}</span></div>' for s, t, d in [
         ('<circle cx="50" cy="50" r="7" fill="#E37970"/>', 'The Call', 'A point: one number, answered by a clinician.'),
@@ -124,7 +147,8 @@ slide(f'''{head("The idea", "One Promise, Drawn in One Letter.", "The S is the b
 <div class="idea">{stages}</div>
 <p class="quote">“Emergency Care That Comes to You.”</p>''')
 
-# 3 logo system
+# 4 logo system
+SEC = 'Identity'
 slide(f'''{head("Logo system", "Four Forms, One Mark.")}
 <div class="grid2x2">
   <div class="tile cream"><div class="lg">{logo_svg(HZ, "FullColour", "width:620px")}</div><p><b>Primary horizontal</b>Website header, letterhead, signage, everyday use.</p></div>
@@ -133,7 +157,7 @@ slide(f'''{head("Logo system", "Four Forms, One Mark.")}
   <div class="tile cream"><div class="lg">{logo_svg(HZN, "FullColour", "width:560px")}</div><p><b>Without tagline</b>Embroidery and anything under 2 in wide.</p></div>
 </div>''')
 
-# 4 colourways
+# 5 colourways
 cws = ''.join(
     f'<div class="cw" style="background:{bg}"><div>{logo_svg(HZ, cw, "width:380px")}</div><p style="color:{fg}">{label}</p></div>' for cw, bg, fg, label in [
         ('FullColour', CREAM, NAVY, 'Full colour'), ('Reverse', NAVY, CREAM, 'Reverse'), ('Navy', '#FFFFFF', NAVY, 'One colour navy'),
@@ -143,7 +167,7 @@ cws = cws.replace(f'<div class="cw" style="background:{CORAL}"><div>{logo_svg(HZ
 slide(f'''{head("Colourways", "Built for Every Surface.", "Every version ships as vector PDF and EPS in CMYK for print, SVG for screens, and transparent PNG.")}
 <div class="cws">{cws}</div>''')
 
-# 5 usage
+# 6 usage
 cs = LG.clear_space(HZ)
 k = 640 / (HZ['w'] + 2 * cs)
 clear = (f'<svg viewBox="{-cs} {-cs} {HZ["w"] + 2 * cs} {HZ["h"] + 2 * cs}" style="width:640px;background:#fff;border-radius:6px">'
@@ -151,12 +175,13 @@ clear = (f'<svg viewBox="{-cs} {-cs} {HZ["w"] + 2 * cs} {HZ["h"] + 2 * cs}" styl
          f'<rect x="0" y="0" width="{HZ["w"]}" height="{HZ["h"]}" fill="#fff"/>'
          f'<rect x="0" y="0" width="{HZ["w"]}" height="{HZ["h"]}" fill="none" stroke="{CORAL}" stroke-width="1.5" stroke-dasharray="6 5"/>'
          f'{M.inner(HZ, "FullColour")}</svg>')
+busy = asset(os.path.join(os.path.dirname(HERE), 'assets', 'photos', 'team-field.jpg'), 'busy.jpg')
 donts = ''.join(f'<div class="dont"><div class="dz">{art}</div><span>{t}</span></div>' for art, t in [
     (logo_svg(HZ, 'FullColour', 'width:180px;transform:scaleX(1.35)'), 'Do not stretch'),
     (logo_svg(HZ, 'FullColour', 'width:240px;filter:hue-rotate(140deg) saturate(2)'), 'Do not recolour'),
     (logo_svg(HZ, 'FullColour', 'width:220px;transform:rotate(-12deg)'), 'Do not rotate'),
     (logo_svg(HZ, 'FullColour', 'width:240px;filter:drop-shadow(6px 6px 3px rgba(0,0,0,.5))'), 'Do not add effects'),
-    (f'<div style="background:url({card_front if False else "d-hero.jpg"}) center/cover;padding:26px 12px;width:260px">{logo_svg(HZ, "FullColour", "width:236px")}</div>', 'Do not place on busy photos'),
+    (f'<div style="background:url({busy}) center/cover;display:grid;place-items:center;width:100%;height:100%;border-radius:10px">{logo_svg(HZ, "FullColour", "width:230px")}</div>', 'Do not place on busy photos'),
     ('<div style="display:flex;gap:14px;align-items:center">' + logo_svg(WM, 'FullColour', 'width:170px') + logo_svg(SY, 'FullColour', 'height:46px') + '</div>', 'Do not rearrange the parts'),
 ])
 slide(f'''{head("Using the logo", "Room to Breathe.")}
@@ -167,7 +192,7 @@ slide(f'''{head("Using the logo", "Room to Breathe.")}
   <div class="donts">{donts}</div>
 </div>''')
 
-# 6 colour
+# 7 colour
 sw = ''.join(
     f'<div class="sw" style="flex:{flex}"><div class="chip" style="background:{c["hex"]};color:{fg}"><b>{c["name"]}</b></div>'
     f'<dl><dt>HEX</dt><dd>{c["hex"]}</dd><dt>RGB</dt><dd>{" ".join(map(str, c["rgb"]))}</dd><dt>CMYK</dt><dd>{" ".join(map(str, c["cmyk"]))}</dd></dl></div>'
@@ -178,7 +203,7 @@ slide(f'''{head("Colour", "Calm Navy, Warm Light, One Coral Pulse.", "Navy and P
 <div class="ratio"><i style="flex:55;background:{NAVY}"></i><i style="flex:28;background:{CREAM}"></i><i style="flex:10;background:{NIGHT}"></i><i style="flex:5;background:{PEACH}"></i><i style="flex:2;background:{CORAL}"></i></div>
 <p class="cap" style="margin-top:14px">Approximate balance across a page. HEX is the master value; CMYK builds are a starting point to approve on a printed proof.</p>''')
 
-# 7 typography
+# 8 typography
 slide(f'''{head("Typography", "One Family. Montserrat.", "Geometric, clear at any size, free to use everywhere. Installed fonts are in the kit.")}
 <div class="type">
   <div class="spec"><span class="aa">Aa</span><p>ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789 · 202.839.9439</p>
@@ -191,11 +216,21 @@ slide(f'''{head("Typography", "One Family. Montserrat.", "Geometric, clear at an
   </div>
 </div>''')
 
-# 8 website hero
+# 9 voice
+slide(f'''{head("Voice", "Plain English, Said Warmly.", "The site was rewritten so a worried parent at 2 a.m. understands every line on the first read.")}
+<div class="voice">
+  <div class="vps"><div class="vp"><b>Say what happens</b><span>Who answers, what they decide, how fast someone arrives. No promises we cannot keep, no statistics we cannot source.</span></div>
+  <div class="vp"><b>Short sentences</b><span>One idea per line. Headings in Title Case. Nothing in italics, nothing shouting.</span></div>
+  <div class="vp"><b>Calm, not clinical</b><span>Doctors speaking as people. The 911 line appears on every page, because honesty is part of the care.</span></div></div>
+  <div class="vs"><p class="vs-eb">We say</p><p class="vs-h">Emergency Care That Comes&nbsp;to&nbsp;You.</p><p class="vs-b">A team of doctors and medics at your home, office or event. Day or night, in Washington,&nbsp;DC.</p><p class="vs-eb">We never say</p><p class="vs-x">“Faster than 911.” “Guaranteed“Faster than 911.” “Guaranteed outcomes.”&nbsp;“World-class.”nbsp;outcomes.” “World-class.”</p></div>
+</div>''')
+
+# 10 website hero
+SEC = 'Website'
 slide(f'''{head("Website", "A Site That Moves Like the Brand.", "Nine pages plus a 404, rewritten in plain English, built mobile first, and checked at 23 screen sizes.")}
 <div class="web1">{browser("d-hero.jpg")}<div class="phones">{phone("m-hero.jpg")}{phone("m-how.jpg")}</div></div>''')
 
-# 9 website journey
+# 11 website journey
 slide(f'''{head("Website", "From First Call to Front Door.")}
 <div class="web2">
   <figure>{browser("d-how.jpg")}<figcaption>How It Works: the S builds itself as you scroll</figcaption></figure>
@@ -204,24 +239,25 @@ slide(f'''{head("Website", "From First Call to Front Door.")}
   <figure>{browser("d-logos.jpg")}<figcaption>Clients as proof, set in one consistent weight</figcaption></figure>
 </div>''')
 
-# 10 inside pages + phones
+# 12 inside pages + phones
 slide(f'''{head("Website", "Every Page, Every Screen.")}
 <div class="web3">
   <div class="pages">{"".join(f'<figure>{browser(f"p-{pg}.jpg", f"stagecoachmedical.com/{pg}")}</figure>' for pg in ("services", "membership", "kids", "team"))}</div>
   <div class="phones">{phone("m-services.jpg")}{phone("m-join.jpg")}</div>
 </div>''')
 
-# 11 motion
+# 13 motion
 slide(f'''{head("Motion", "The Opening Moment.", "Name, point, S, lockup. It plays once per visit, can be skipped, and is ready to drop into the current Lovable site.")}
 <div class="motion">{"".join(f'<figure><div class="fr"><img src="intro{i}.jpg"></div><figcaption>{t}</figcaption></figure>' for i, t in ((1, "01 The name"), (2, "02 The point"), (3, "03 The S draws"), (4, "04 The lockup")))}</div>''', dark=True)
 
-# 12 business cards
+# 14 business cards
+SEC = 'Print'
 slide(f'''{head("Business cards", "Quiet, Confident, Personal.", "Print-ready for all ten team members, CMYK with bleed, plus a blank template for new hires.")}
 <div class="cards">
   <img class="c1" src="{card_front}"><img class="c2" src="{card_back_noah}"><img class="c3" src="{card_back_david}">
 </div>''', cls='surface')
 
-# 13 stationery
+# 15 stationery
 slide(f'''{head("Stationery", "Every Letter, Every Email.")}
 <div class="stat">
   <figure class="paper"><img src="{letterhead}"><div class="letter"><p>October 2026</p><p>Dear Member,</p><p>Thank you for joining Stagecoach. A real clinician answers our line, day or night, and our team comes to you when you need us.</p><p>Warm regards,</p><p><b>Noah Gray, EMT</b><br>Co-Founder &amp; CEO</p></div></figure>
@@ -229,7 +265,8 @@ slide(f'''{head("Stationery", "Every Letter, Every Email.")}
     <div class="sig">{logo_svg(HZ, "FullColour", "width:250px")}<p class="sn">Noah Gray, EMT</p><p class="sr">Co-Founder &amp; CEO</p><p>202.839.9439 <span>· 24/7</span><br>medical@thestagecoachgroup.com<br>stagecoachmedical.com</p><p class="sf">Not a substitute for 911. In a life-threatening emergency, call 911.</p></div></div></div>
 </div>''', cls='surface')
 
-# 14 tees
+# 16 tees
+SEC = 'Apparel and Objects'
 u = 570 / 20.0
 front_n = M.tee(NAVY, M.place(HZ, 'Reverse', 560, 245, w=3.5 * u))
 back_n = M.tee(NAVY, M.centred(ST, 'Reverse', 500, 220, w=10 * u), back=True)
@@ -238,24 +275,25 @@ back_c = M.tee(CREAM, M.centred(ST, 'FullColour', 500, 220, w=10 * u), back=True
 slide(f'''{head("Apparel", "Team Tees.", "Left chest at 3.5 in, full back at 10 in. Screen print and embroidery files included.")}
 <div class="row4">{stage(front_n, "Navy tee", "Front")}{stage(back_n, "Navy tee", "Back")}{stage(front_c, "Natural tee", "Front")}{stage(back_c, "Natural tee", "Back")}</div>''')
 
-# 15 quarter zip + cap
+# 17 quarter zip + cap
 qz = M.quarter_zip(NAVY, M.place(HZN, 'Reverse', 548, 236, w=3.25 * 22))
 cp = M.cap(NAVY, M.centred(SY, 'Reverse', 350, 150, h=128))
 detail = (f'<div class="detail"><div class="emb">{logo_svg(HZN, "Reverse", "width:360px")}</div><span>Embroidery detail, left chest</span></div>')
 slide(f'''{head("Apparel", "The Quarter-Zip and the Cap.", "Tone-on-tone navy, porcelain thread, a single coral stitch for the dot.")}
 <div class="row3">{stage(qz, "Quarter-zip", "Embroidered, without tagline")}{detail}{stage(cp, "Cap", "Embroidered symbol, 2.25 in")}</div>''')
 
-# 16 bags
+# 18 bags
 slide(f'''{head("Retail and gifting", "The Bag Goes Home With Them.")}
 <div class="row2">{stage(M.shopping_bag(ST), "Shopping bag", "Navy paper, porcelain rope, foil or one-colour print")}{stage(M.tote(ST), "Canvas tote", "Natural canvas, navy web handles")}</div>''')
 
-# 17 doctor kit bag
+# 19 doctor kit bag
 body, bw, bh = M.badge(noah, 'Noah Gray, EMT', 'Co-Founder & CEO', HZN)
 badge_svg = M.svg(bw, bh + 60, body, vb=f'0 0 {bw} {bh + 60}')
 slide(f'''{head("In the field", "Arrive Like a Concierge.", "A navy leather kit bag with a pressed S, brass hardware and a porcelain tag. A clinician ID that reads at a glance.")}
 <div class="field">{stage(M.doctor_bag(SY, ST), "Doctor’s kit bag", "Debossed symbol, brass hardware")}{stage(badge_svg, "Clinician ID", "Photo, name, role, 24/7 line", cls="badge")}</div>''')
 
-# 18 digital
+# 20 digital
+SEC = 'Digital'
 slide(f'''{head("Digital", "Recognisable at Every Size.")}
 <div class="digital">
   <div class="colL"><figure class="li"><img src="{linkedin}"><figcaption>LinkedIn cover</figcaption></figure>
@@ -264,7 +302,8 @@ slide(f'''{head("Digital", "Recognisable at Every Size.")}
     <div class="pair"><figure class="av"><img src="{avatar}"><figcaption>Profile picture</figcaption></figure><figure class="ic"><img src="{appicon}"><figcaption>App icon</figcaption></figure></div></div>
 </div>''')
 
-# 19 the kit
+# 21 the kit
+SEC = 'The Kit'
 items = [
     ('Logos', count('01_Logo'), '5 layouts × 5 colourways. SVG, CMYK PDF, EPS, PNG, app icon.'),
     ('Colour', count('02_Colour'), 'Swatches for Adobe (RGB and CMYK), CSS, values sheet.'),
@@ -279,8 +318,10 @@ rows = ''.join(f'<div class="ki"><b>{n}</b><span class="num">{c}</span><p>{d}</p
 slide(f'''{head("The kit", f"{total} Files, Ready for Any Vendor.", "Every logo is outlined artwork, so printers need no fonts. Print files are CMYK with bleed where it applies.")}
 <div class="kit">{rows}</div>''')
 
-# 20 close
-slide(f'''<div class="close">{logo_svg(ST, "Reverse", "height:330px")}<p class="cl">Ready When You Need Us.</p><p class="cm">202.839.9439 · medical@thestagecoachgroup.com · stagecoachmedical.com</p></div>''', dark=True)
+# 22 close, as the back cover
+SEC = ''
+slide(f'''<div class="close">{logo_svg(ST, "Reverse", "height:330px")}<p class="cl">Ready When You Need Us.</p><p class="cm">202.839.9439 · medical@thestagecoachgroup.com · stagecoachmedical.com</p><p class="bc">© 2026 Stagecoach Concierge Emergency Medical Services. Not a substitute for 911. In a life-threatening emergency, call&nbsp;911.</p></div>''', dark=True, cls='back-cover', foot=False)
+SLIDES[1] = SLIDES[1].replace('%%CONTENTS%%', contents())
 
 
 # ---------------------------------------------------------------- page
@@ -292,14 +333,38 @@ h1,h2,h3,.cl,.cover-kicker,.quote{{text-wrap:balance}} p,figcaption,span,dd,b{{t
 .slide{{width:1920px;height:1080px;position:relative;overflow:hidden;background:{CREAM};padding:96px 120px;page-break-after:always;break-after:page}}
 .slide.dark{{background:radial-gradient(60% 80% at 85% 10%,rgba(227,121,112,.30),transparent 60%),linear-gradient(160deg,{NAVY},{NIGHT});color:{CREAM}}}
 .slide.surface{{background:radial-gradient(70% 70% at 70% 30%,#FBF9F4,#E9E4DA)}}
-.foot{{position:absolute;left:120px;right:120px;bottom:44px;display:flex;justify-content:space-between;font:500 14px Montserrat;letter-spacing:.14em;text-transform:uppercase;color:#8A92A0}}
+.foot{{position:absolute;bottom:44px;display:flex;align-items:center;gap:14px;font:500 14px Montserrat;letter-spacing:.14em;text-transform:uppercase;color:#8A92A0}}
+.foot i{{width:22px;height:1px;background:currentColor;opacity:.6}} .foot span:empty,.foot span:empty+i{{display:none}}
+.recto .foot{{right:120px;flex-direction:row}} .verso .foot{{left:120px;flex-direction:row-reverse}}
 .dark .foot{{color:#8E97A8}}
+/* bound edge: a soft shadow at the spine, paper grain over light pages */
+.slide::after{{content:"";position:absolute;top:0;bottom:0;width:90px;z-index:5;pointer-events:none}}
+.recto::after{{left:0;background:linear-gradient(90deg,rgba(16,25,43,.09),rgba(16,25,43,.02) 45%,transparent)}}
+.verso::after{{right:0;background:linear-gradient(270deg,rgba(16,25,43,.09),rgba(16,25,43,.02) 45%,transparent)}}
+.dark.recto::after{{background:linear-gradient(90deg,rgba(0,0,0,.38),rgba(0,0,0,.08) 45%,transparent)}}
+.dark.verso::after{{background:linear-gradient(270deg,rgba(0,0,0,.38),rgba(0,0,0,.08) 45%,transparent)}}
+.slide.cover-page::after,.slide.back-cover::after{{display:none}}
+.slide:not(.dark)::before{{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.07;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>")}}
+/* contents */
+.toc{{list-style:none;margin:60px 0 0;padding:0;columns:2;column-gap:90px}}
+.toc li{{break-inside:avoid;display:grid;grid-template-columns:230px 1fr auto;gap:22px;align-items:baseline;padding:19px 0;border-bottom:1px solid rgba(16,25,43,.10);font:400 24px Montserrat}}
+.toc b{{font:600 13px Montserrat;letter-spacing:.2em;text-transform:uppercase;color:{INK}}} .toc em{{font-style:normal;font:500 16px Montserrat;letter-spacing:.1em;color:#8A92A0}}
+/* voice */
+.voice{{display:grid;grid-template-columns:1fr 760px;gap:110px;margin-top:64px;align-items:stretch}}
+.vps{{display:grid;align-content:space-between;gap:34px}}
+.vp{{display:grid;gap:14px;padding-top:26px;border-top:2px solid {CORAL}}} .vp b{{font:600 32px Montserrat;letter-spacing:-.015em}} .vp span{{font:400 23px/1.5 Montserrat;color:#3D4A60;max-width:640px}}
+.vs{{background:#fff;border-radius:24px;padding:56px 60px;box-shadow:0 30px 60px -48px rgba(16,25,43,.6);display:flex;flex-direction:column;justify-content:center}}
+.vs p{{margin:0}} .vs-eb{{font:600 15px Montserrat;letter-spacing:.22em;text-transform:uppercase;color:{INK};margin-bottom:18px!important}}
+.vs-h{{font:500 66px/1.04 Montserrat;letter-spacing:-.03em}} .vs-b{{font:400 24px/1.5 Montserrat;color:#3D4A60;margin:22px 0 60px!important}}
+.vs-x{{font:500 26px/1.5 Montserrat;color:#8A92A0;text-decoration:line-through;text-decoration-color:{CORAL};text-decoration-thickness:2px}}
+/* back cover */
+.bc{{position:absolute;bottom:60px;left:0;right:0;margin:0;font:500 15px Montserrat;letter-spacing:.06em;opacity:.55}}
 .sh .eb{{margin:0 0 18px;font:600 18px Montserrat;letter-spacing:.24em;text-transform:uppercase;color:{INK}}}
 .dark .sh .eb{{color:{PEACH}}}
 .sh h2{{margin:0;font:500 76px/1.04 Montserrat;letter-spacing:-.035em;max-width:1300px}}
 .sh .sub{{margin:22px 0 0;font:400 25px/1.5 Montserrat;max-width:1180px;color:#3D4A60}}
 .dark .sh .sub{{color:#C9CDD6}}
-.cap{{font:400 20px/1.5 Montserrat;color:#3D4A60;max-width:720px}} .cap b{{font-weight:600;color:{NAVY};margin-right:8px}}
+.cap{{font:400 21px/1.5 Montserrat;color:#3D4A60;max-width:720px;margin:26px 0 0}} .cap b{{font-weight:600;color:{NAVY};margin-right:8px}}
 /* cover */
 .cover{{height:100%;display:flex;flex-direction:column;justify-content:center;position:relative}}
 .cover-kicker{{margin:56px 0 0;font:500 40px Montserrat;letter-spacing:-.01em}}
@@ -318,12 +383,12 @@ h1,h2,h3,.cl,.cover-kicker,.quote{{text-wrap:balance}} p,figcaption,span,dd,b{{t
 .cw{{height:300px;border-radius:18px;display:grid;grid-template-rows:1fr auto;padding:26px 30px;box-shadow:0 26px 50px -42px rgba(16,25,43,.6)}}
 .cw>div{{display:grid;place-items:center}} .cw p{{margin:0;font:600 16px Montserrat;letter-spacing:.16em;text-transform:uppercase}}
 /* usage */
-.usage{{display:grid;grid-template-columns:700px 1fr;gap:70px;margin-top:46px}}
-.clear{{padding:20px;background:#fff;border-radius:18px;display:inline-block;box-shadow:0 26px 50px -42px rgba(16,25,43,.6)}}
-.mins{{display:flex;gap:44px;align-items:flex-end;margin-top:26px;background:#fff;border-radius:16px;padding:26px 30px;box-shadow:0 26px 50px -44px rgba(16,25,43,.6)}} .mins div{{display:grid;gap:12px;justify-items:start}} .mins span{{font:600 14px Montserrat;letter-spacing:.1em;color:#7A8394}}
-.donts{{display:grid;grid-template-columns:1fr 1fr;gap:20px}}
-.dont{{background:#fff;border-radius:16px;padding:18px;display:grid;gap:10px;justify-items:center;box-shadow:0 26px 50px -44px rgba(16,25,43,.6)}}
-.dz{{height:120px;display:grid;place-items:center;position:relative}}
+.usage{{display:grid;grid-template-columns:700px 1fr;gap:80px;margin-top:64px;align-items:stretch}}
+.clear{{padding:24px;background:#fff;border-radius:18px;display:inline-block;box-shadow:0 26px 50px -42px rgba(16,25,43,.6)}} .clear svg{{width:652px!important}}
+.mins{{display:flex;gap:44px;align-items:flex-end;margin-top:34px;background:#fff;border-radius:16px;padding:26px 30px;box-shadow:0 26px 50px -44px rgba(16,25,43,.6)}} .mins div{{display:grid;gap:12px;justify-items:start}} .mins span{{font:600 14px Montserrat;letter-spacing:.1em;color:#7A8394}}
+.donts{{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:24px}}
+.dont{{background:#fff;border-radius:16px;padding:22px;display:grid;grid-template-rows:1fr auto;gap:14px;justify-items:center;box-shadow:0 26px 50px -44px rgba(16,25,43,.6)}}
+.dz{{width:100%;min-height:150px;display:grid;place-items:center;position:relative;overflow:hidden}}
 .dont span{{font:600 15px Montserrat;letter-spacing:.12em;text-transform:uppercase;color:{INK}}} .dont span::before{{content:"✕ ";}}
 /* colour */
 .sws{{display:flex;gap:18px;margin-top:46px}} .sw{{min-width:0}}
@@ -331,13 +396,13 @@ h1,h2,h3,.cl,.cover-kicker,.quote{{text-wrap:balance}} p,figcaption,span,dd,b{{t
 .sw dl{{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:16px 4px 0;font:500 16px Montserrat}} .sw dt{{color:#7A8394;font-weight:600;letter-spacing:.1em}} .sw dd{{margin:0}}
 .ratio{{display:flex;height:22px;border-radius:12px;overflow:hidden;margin-top:30px;box-shadow:inset 0 0 0 1px rgba(16,25,43,.12)}}
 /* type */
-.type{{display:grid;grid-template-columns:720px 1fr;gap:80px;margin-top:40px}}
-.spec{{background:#fff;border-radius:22px;padding:40px 44px;box-shadow:0 30px 60px -48px rgba(16,25,43,.6)}}
-.aa{{font:500 220px/1 Montserrat;letter-spacing:-.04em}} .spec p{{font:400 24px/1.5 Montserrat;margin:20px 0 0}}
-.weights{{display:flex;gap:26px;font-size:26px!important}}
-.hier p{{margin:0 0 26px}} .h-eb{{font:600 18px Montserrat;letter-spacing:.24em;text-transform:uppercase;color:{INK}}}
-.h-1{{font:500 92px/1.02 Montserrat;letter-spacing:-.035em}} .h-1 span{{color:{INK}}}
-.h-2{{font:500 34px/1.2 Montserrat;letter-spacing:-.02em}} .h-b{{font:400 24px/1.55 Montserrat;color:#3D4A60;max-width:760px}}
+.type{{display:grid;grid-template-columns:760px 1fr;gap:90px;margin-top:64px;align-items:stretch}}
+.spec{{background:#fff;border-radius:24px;padding:56px 60px;box-shadow:0 30px 60px -48px rgba(16,25,43,.6);display:flex;flex-direction:column;justify-content:space-between}}
+.aa{{font:500 330px/1 Montserrat;letter-spacing:-.04em}} .spec p{{font:400 26px/1.5 Montserrat;margin:20px 0 0}}
+.weights{{display:flex;gap:30px;font-size:30px!important}}
+.hier{{display:flex;flex-direction:column;justify-content:center}} .hier p{{margin:0 0 30px}} .h-eb{{font:600 18px Montserrat;letter-spacing:.24em;text-transform:uppercase;color:{INK}}}
+.h-1{{font:500 108px/1.02 Montserrat;letter-spacing:-.035em}} .h-1 span{{color:{INK}}}
+.h-2{{font:500 38px/1.2 Montserrat;letter-spacing:-.02em}} .h-b{{font:400 26px/1.55 Montserrat;color:#3D4A60;max-width:800px}}
 /* devices */
 .browser{{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 40px 80px -40px rgba(16,25,43,.55)}}
 .browser .bar{{height:34px;background:#ECE8DF;display:flex;align-items:center;gap:8px;padding:0 14px}}
@@ -408,4 +473,18 @@ open(js, 'w').write(f'''const {{ chromium }} = require('playwright');
   for (let i = 0; i < n; i++) {{ const el = (await p.$$('.slide'))[i]; await el.screenshot({{ path: {os.path.splitext(OUT_PDF)[0]!r} + `-${{String(i + 1).padStart(2, '0')}}.jpg`, type: 'jpeg', quality: 80 }}); }}
   await b.close(); }})();''')
 subprocess.run(['node', js], check=True)
-print('wrote', OUT_PDF, len(SLIDES), 'slides'); print('html', page)
+from pypdf import PdfReader, PdfWriter
+from pypdf.generic import NameObject
+w = PdfWriter(clone_from=PdfReader(OUT_PDF))
+w.add_metadata({'/Title': 'Stagecoach Brand Vision 2026', '/Subject': 'Brand and experience vision for Stagecoach Concierge Emergency Medical Services'})
+w._root_object[NameObject('/PageLayout')] = NameObject('/TwoPageRight')  # cover alone, then spreads
+w._root_object[NameObject('/PageMode')] = NameObject('/UseNone')
+w.add_outline_item('Cover', 0)
+last = None
+for n, sec, title in TOC:
+    if sec and sec != last:
+        parent = w.add_outline_item(sec, n - 1); last = sec
+    w.add_outline_item(title, n - 1, parent=parent if sec else None)
+w.add_outline_item('Back cover', len(SLIDES) - 1)
+w.write(OUT_PDF)
+print('wrote', OUT_PDF, len(SLIDES), 'pages'); print('html', page)
