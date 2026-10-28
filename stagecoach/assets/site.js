@@ -198,3 +198,6 @@
   /* touch: tap a portrait to see it in colour */
   $$('.portrait').forEach(p => { p.addEventListener('click', () => p.classList.toggle('color')); p.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); p.classList.toggle('color'); } }); });
 })();
+
+/* fold: show the rest of a card grid on request */
+document.querySelectorAll('.see-all').forEach(b => b.addEventListener('click', () => { b.closest('.cardfold').classList.add('open'); }));

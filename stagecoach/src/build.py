@@ -124,7 +124,6 @@ FOOTER = f'''<footer class="foot">
 
 JOIN = f'''<!-- JOIN: membership waitlist -->
 <section class="sec join" id="join" aria-labelledby="join-h">
-  <img class="join-sym" src="assets/symbol-cream.svg" alt="" aria-hidden="true">
   <div class="join-in">
     <div class="join-copy">
       <p class="eyebrow rise"><span class="live-dot" aria-hidden="true"></span>Launching soon</p>
@@ -164,9 +163,9 @@ JOIN = f'''<!-- JOIN: membership waitlist -->
 
 LOGOS = '''<ul class="logos">
 ''' + ''.join(f'      <li><span class="logo" role="img" aria-label="{n}" style="-webkit-mask-image:url(assets/clients/{u});mask-image:url(assets/clients/{u});--w:{w};--h:{h}"></span></li>\n' for n, u, w, h in [
-    ('Meta', 'meta.svg', '70%', '44%'), ('Google', 'google.svg', '60%', '46%'), ('J.P. Morgan', 'jpmorgan.svg', '72%', '44%'),
-    ('The Atlantic', 'atlantic.svg', '64%', '76%'), ('Emerson Collective', 'emerson.svg', '68%', '50%'), ('YPO', 'ypo.svg', '56%', '48%'),
-    ('Edens', 'edens.svg', '58%', '58%'), ('Hargrove', 'hargrove.svg', '70%', '54%')]) + \
+    ('Meta', 'meta.svg', '56%', '34%'), ('Google', 'google.svg', '50%', '36%'), ('J.P. Morgan', 'jpmorgan.svg', '66%', '40%'),
+    ('The Atlantic', 'atlantic.svg', '54%', '64%'), ('Emerson Collective', 'emerson.svg', '74%', '56%'), ('YPO', 'ypo.svg', '62%', '54%'),
+    ('Edens', 'edens.svg', '60%', '60%'), ('Hargrove', 'hargrove.svg', '72%', '56%')]) + \
     '      <li><span class="wordlogo">Union Market</span></li>\n      <li><span class="wordlogo">Autoshop</span></li>\n  </ul>'
 
 TEAM = {
@@ -229,7 +228,6 @@ def hero(eyebrow, h1, lead, ctas='', img=None, alt=''):
     <p class="lead rise">{lead}</p>
     {f'<div class="ctas rise">{ctas}</div>' if ctas else ''}</div>'''
     return f'''<section class="dark page-hero{' has-img' if img else ''}" aria-label="Introduction">
-  {SYM}
   {copy}
   {pic}
 </section>
@@ -240,14 +238,31 @@ def head2(eyebrow, h2, p='', id_=''):
     return f'''<div class="sec-head"><p class="eyebrow rise">{eyebrow}</p><h2{f' id="{id_}"' if id_ else ''} class="split">{h2}</h2>{f'<p class="rise">{p}</p>' if p else ''}</div>'''
 
 
-def cards(items, cols=3):
-    out = f'<ul class="cards" style="--cols:{cols}">\n'
-    for it in items:
+def cards(items, cols=3, show=None):
+    """A card grid. With show=N, only the first N cards are visible until the reader asks for the rest."""
+    fold = show is not None and len(items) > show
+    out = ('<div class="cardfold">\n' if fold else '') + f'<ul class="cards" style="--cols:{cols}">\n'
+    for i, it in enumerate(items):
         t, p = it[0], it[1]
         extra = it[2] if len(it) > 2 else ''
         ic = f'<span class="ic-wrap">{icon(it[3])}</span>' if len(it) > 3 and it[3] else ''
-        out += f'      <li class="card rise">{ic}<h3>{t}</h3><p>{p}</p>{extra}</li>\n'
-    return out + '    </ul>'
+        cls = 'card rise fold-item' if fold and i >= show else 'card rise'
+        out += f'      <li class="{cls}">{ic}<h3>{t}</h3><p>{p}</p>{extra}</li>\n'
+    out += '    </ul>'
+    if fold:
+        n = len(items) - show
+        out += f'\n    <button class="see-all rise" type="button">See {n} more <span aria-hidden="true">↓</span></button>\n</div>'
+    return out
+
+
+def statement(eyebrow, big, p='', link='', id_=''):
+    """A typographic break: one big sentence, one plain sentence, an optional link."""
+    return f'''<div class="statement">
+    <p class="eyebrow rise">{eyebrow}</p>
+    <p{f' id="{id_}"' if id_ else ''} class="big split">{big}</p>
+    {f'<p class="rise">{p}</p>' if p else ''}
+    {f'<p class="rise">{link}</p>' if link else ''}
+  </div>'''
 
 
 def checks(items):
@@ -285,13 +300,10 @@ f'''<section class="sec" aria-labelledby="s1">
           ('Urgent care at your door', 'We treat you where you are, at home or on the go.', '', 'home'),
           ('Critical care and transport', 'ICU level care, and a safe ride to the hospital if you need one.', '', 'truck'),
           ('Blood products on scene', 'We can give lifesaving blood before you reach a hospital.', '', 'drop'),
-          ('Emergency care for kids', 'A pediatric team for babies, kids and teens.', '<a class="more" href="kids.html">About Stagecoach Kids →</a>', 'child')])}
+          ('Emergency care for kids', 'A pediatric team for babies, kids and teens.', '<a class="more" href="kids.html">About Stagecoach Kids →</a>', 'child')], 3, show=3)}
 </section>
 <section class="sec alt" id="dental" aria-labelledby="s2">
-  {head2('Dental', 'Dental emergencies, 24/7', 'A cracked tooth at midnight? The ER can’t fix that. We can, with our partner White32&nbsp;Dental.', 's2')}
-  {cards([('Dental visits to you', 'Emergency dental care, any hour, including visits to your home.', '', 'tooth'),
-          ('Pain relief on site', 'Dental procedures and pain management where you are.', '', 'pill'),
-          ('Our partner', 'White32 Dental, led by Dr. Charles White.', '<a class="more" href="https://white32dc.com" rel="noopener">Visit white32dc.com →</a>', 'handshake')])}
+  {statement('Dental emergencies, 24/7', 'A cracked tooth at midnight? The ER can’t fix that. We&nbsp;can.', 'Emergency dental care any hour, with pain relief on site and visits to your home, through our partner White32 Dental, led by Dr. Charles White.', '<a class="tlink" href="https://white32dc.com" rel="noopener">Visit white32dc.com</a>', 's2')}
 </section>
 <section class="sec" aria-labelledby="s3">
   {head2('Private care', 'Private, discreet&nbsp;medicine', 'Care that fits your life, your schedule and your privacy.', 's3')}
@@ -300,7 +312,7 @@ f'''<section class="sec" aria-labelledby="s1">
           ('The hospital you choose', 'If you need to go in, we take you to the hospital you want.', '', 'hospital'),
           ('Lab tests at home or on site', 'Blood work and tests without a trip to the lab.', '', 'flask'),
           ('Help inside the hospital', 'We guide you through the hospital and speak up for you.', '', 'compass'),
-          ('Works with your security', 'Medical care that works hand in hand with executive protection.', '', 'shield')])}
+          ('Works with your security', 'Medical care that works hand in hand with executive protection.', '', 'shield')], 3, show=3)}
 </section>
 <section class="sec alt" aria-labelledby="s4">
   {head2('For groups', 'For organizations and&nbsp;agencies', '', 's4')}
@@ -319,14 +331,7 @@ PAGES['membership.html'] = ('Membership | Stagecoach Concierge Emergency Medical
 hero('Membership · Launching soon', 'Skip the ER wait. We come to&nbsp;you.', 'Members get 24/7 access to a team led by doctors for the whole family, including dental&nbsp;care.',
      '<a class="btn btn-light" href="#join">Join the waitlist <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="#tiers">See membership options</a>', IMG['kids2'], 'A parent comforting a young child') +
 f'''<section class="sec dark" aria-labelledby="m1" style="padding-top:0">
-  {head2('Why it matters', 'The ER is not built for&nbsp;you.', 'In DC, a trip to the ER takes hours and costs a lot. There are few beds for a very big city.', 'm1')}
-  <ul class="stats">
-    <li class="rise"><b>5h 14m</b><span>The average ER visit in DC. Almost twice the national average.</span></li>
-    <li class="rise"><b>$2,863</b><span>The average cost of one ER visit.</span></li>
-    <li class="rise"><b>350</b><span>ER beds in all of Washington, DC.</span></li>
-    <li class="rise"><b>0.05%</b><span>The share of people DC’s ERs can treat at once: 694,000 residents and about 1 million people by day.</span></li>
-  </ul>
-  <p class="src rise">Figures from Stagecoach’s research. Sources to be added before launch.</p>
+  {statement('Why it matters', 'The ER is not built for&nbsp;you.', 'In DC, a trip to the ER means hours of waiting, a big bill, and a room that was never meant for you. We come to you instead, with the same training and the right equipment.', '', 'm1')}
 </section>
 <section class="sec" aria-labelledby="m2">
   {head2('How it works', 'Three simple&nbsp;steps', '', 'm2')}
@@ -406,7 +411,7 @@ f'''<section class="sec dark" aria-labelledby="k1" style="padding-top:0">
   {checks(['You call us. No phone tree, no hold music.', 'A children’s ER doctor guides care from the first minute.', 'Our team comes to you, day or night.', 'Treatment at home when it’s safe. A fast path to the right ER when it isn’t.', 'Your pediatrician gets the handoff.'])}
 </section>
 <section class="sec alt" aria-labelledby="k3">
-  <div class="big-stat"><b class="rise">130,000</b><div><h2 id="k3" class="sec-head" style="margin:0 0 12px;font:500 clamp(28px,3vw,44px)/1.1 var(--sans);letter-spacing:-.03em">kids live in DC.</h2><p class="rise">When the pediatrician is closed or full, families are left with 911 or the ER. No children’s urgent care in the city is open overnight, and nothing at all after 10 p.m. We fill that gap, any&nbsp;hour.</p><p class="src rise">Figures from Stagecoach’s research. Sources to be added before launch.</p></div></div>
+  {statement('After hours', 'When the pediatrician is closed, most families are left with 911 or the&nbsp;ER.', 'Late at night there is often nowhere else to go. We fill that gap, any hour, with a children’s ER doctor on the line.', '', 'k3')}
 </section>
 <section class="sec" aria-labelledby="k4">
   {head2('How it works', 'Three simple&nbsp;steps', '', 'k4')}
@@ -459,10 +464,7 @@ f'''<section class="sec" aria-labelledby="c1">
           ('Management and operations', 'Vehicles, schedules, supplies and member experience behind every visit.', '', 'wrench')])}
 </section>
 <section class="sec" aria-labelledby="c3">
-  {head2('Why Stagecoach', 'Why work with&nbsp;us', '', 'c3')}
-  {cards([('Learn from the best', 'Work with leaders who ran medicine and communications for DC Fire & EMS.', '', 'star'),
-          ('Medicine done right', 'Time with each patient, the right equipment, and care in the patient’s own space when it’s safe.', '', 'heart-pulse'),
-          ('Build it from day one', 'We’re launching now. Our first team shapes our protocols, our culture and our standard of care.', '', 'spark')])}
+  {statement('Why Stagecoach', 'Time with each patient. The right equipment. Care in the patient’s own&nbsp;space.', 'We’re launching now, with leaders who ran medicine and communications for DC Fire & EMS. Our first team shapes our protocols, our culture and our standard of care.', '', 'c3')}
 </section>
 <section class="sec alt" id="internships" aria-labelledby="c4">
   {head2('Internships', 'Internships for academic credit in&nbsp;DC', 'For students in medical and health programs. Hybrid, about 10 to 15 hours a week, with regular supervision and a real semester project. At our Georgetown office, 3299 K St NW #210.', 'c4')}
