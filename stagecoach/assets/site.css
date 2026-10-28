@@ -624,3 +624,19 @@ html:not(.js) .hero-win{--scrim:.55}
   .row .thumb .place{font-size:clamp(40px,11vw,56px)}
 }
 .row .thumb .tag{background:linear-gradient(135deg,var(--peach),var(--coral));color:var(--night);box-shadow:0 10px 24px -12px rgba(227,121,112,.9)}
+
+/* ---------- portraits: real colour with a warm brand wash ---------- */
+.portrait{isolation:isolate;background:var(--night)}
+.portrait img:not(.sym){filter:saturate(.92) contrast(1.03);mix-blend-mode:normal;opacity:1;transition:filter .9s var(--ease),transform 1.2s var(--ease)}
+.portrait::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(160deg,rgba(220,142,115,.55) 0%,rgba(227,121,112,.25) 45%,rgba(30,42,62,.35) 100%);mix-blend-mode:soft-light;transition:opacity .9s var(--ease)}
+.portrait::after{content:"";position:absolute;inset:auto 0 0 0;height:46%;z-index:1;pointer-events:none;background:linear-gradient(to top,rgba(16,25,43,.62),rgba(16,25,43,.18) 55%,transparent);transition:opacity .9s var(--ease)}
+.portrait img.sym{z-index:2}
+.portrait:hover::before,.portrait:focus-visible::before,.portrait.color::before{opacity:0}
+.portrait:hover::after,.portrait:focus-visible::after,.portrait.color::after{opacity:.35}
+.portrait:hover img:not(.sym),.portrait:focus-visible img:not(.sym),.portrait.color img:not(.sym){filter:saturate(1) contrast(1);transform:scale(1.03)}
+.row .thumb::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(160deg,rgba(220,142,115,.5) 0%,rgba(227,121,112,.2) 50%,transparent 100%);mix-blend-mode:soft-light}
+.row .thumb .scrim,.row .thumb .tag,.row .thumb .place{z-index:2}
+.row .thumb.tile svg{z-index:2}
+
+@media (max-width:860px){.hdr .wm-tag{display:inline}}
+.wm-tag{letter-spacing:.22em}

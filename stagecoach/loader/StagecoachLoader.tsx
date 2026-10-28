@@ -42,7 +42,7 @@ export default function StagecoachLoader() {
           <path className="sc-loader__s" d={S_PATH} pathLength="1" fill="none" stroke="#F4F1E9" strokeWidth="14.5" strokeLinecap="round" mask="url(#sc-m)" />
         </svg>
         <div className="sc-loader__name">STAGECOACH</div>
-        <div className="sc-loader__tag">Concierge Emergency Medical Services</div>
+        <div className="sc-loader__tag">Concierge Emergency Medicine</div>
       </div>
       <button className="sc-loader__skip" type="button" tabIndex={-1}>Skip</button>
     </div>
