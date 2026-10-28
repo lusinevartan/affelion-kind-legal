@@ -840,3 +840,10 @@ html:not(.js) .mission .mw.accent{color:var(--coral-ink)}
 @media (max-width:520px){.hdr .wm{font-size:16px}.wm-tag{font-size:8.5px}}
 /* wide screens: the number sits quietly beside the pill */
 @media (min-width:1280px){.hdr .call-link{display:flex}.call-link .num{display:inline}.call-link .lbl{display:none}}
+/* lockup words, ten percent larger */
+.hdr .wm{font-size:25.3px}
+.wm-tag{font-size:13.2px}
+.brand .wm-text{gap:9px}
+.brand .s{width:50px;height:50px}
+@media (max-width:1180px){.hdr .wm{font-size:21px}.wm-tag{font-size:11px}.brand .s{width:45px;height:45px}}
+@media (max-width:520px){.hdr .wm{font-size:17.6px}.wm-tag{font-size:9.4px}.brand .s{width:39px;height:39px}}
