@@ -10,3 +10,7 @@ The page is built around the locked cover motion (Brand Source of Truth A8):
 4. **Journey** — the S draws again beside "A protected journey, drawn in one letter."
 
 Open items carried over from v3: photography is hotlinked from stagecoachmedical.com (rights and originals to request), client names need display permission, Request care is an email link until a form destination is confirmed, licensing wording to confirm.
+
+## Lovable
+
+Run `python3 src/build.py`, then `python3 src/export_lovable.py`. This writes `lovable-export/`, a package for a Lovable project with its own README and a paste-in request for Lovable.
