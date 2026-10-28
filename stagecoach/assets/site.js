@@ -210,7 +210,7 @@
       if (!ep) { finish(true); return; }
       const btn = $('button', jf); btn.disabled = true; jm.textContent = 'Adding you…';
       try { const r = await fetch(ep, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: v }) }); if (!r.ok) throw 0; finish(false); }
-      catch (err) { jm.textContent = 'That did not go through. Please try again in a moment.'; btn.disabled = false; }
+      catch (err) { jm.textContent = 'That did not go through. Please try again, or call 202.839.9439.'; btn.disabled = false; }
     });
     chips.addEventListener('change', () => { const ep = jf.dataset.endpoint; if (!ep) return; fetch(ep, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: ji.value.trim(), interests: $$('input[name="interest"]:checked', jf).map(c => c.value) }) }).catch(() => {}); });
     ji.addEventListener('input', () => { if (ji.getAttribute('aria-invalid')) { ji.removeAttribute('aria-invalid'); jm.textContent = ''; } });
@@ -239,3 +239,6 @@ document.querySelectorAll('.see-all').forEach(b => b.addEventListener('click', (
   run(); window.addEventListener('resize', fit); window.addEventListener('load', fit);
   const mq = window.matchMedia('(max-width:860px)'); mq.addEventListener ? mq.addEventListener('change', fit) : mq.addListener(fit);
 })();
+
+/* keep the copyright year current */
+document.querySelectorAll('.yr').forEach(e => { e.textContent = new Date().getFullYear(); });

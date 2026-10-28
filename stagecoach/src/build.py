@@ -14,11 +14,12 @@ SRC = os.path.join(ROOT, 'src')
 S = open(os.path.join(SRC, 's-path.txt')).read().strip()
 B = 'https://stagecoachmedical.com/__l5e/assets-v1/'
 IMG = {
-    'kids3': B + 'd69fe3ed-2b99-4dd4-8527-f7204c29ae31/stagecoach-kids-3.jpg',
-    'kids2': B + '48a8e1f1-a0a6-43e8-8552-5d478a5e7539/stagecoach-kids-2.png',
-    'field': B + '4e83799b-d5a1-43d0-9ba3-8f9d9aad5a64/team-field.jpg',
-    'fleet': B + 'c641f78a-cbf0-4b65-9ca2-aa0f0a64ad36/fleet.png',
+    'kids3': 'assets/photos/kids-3.jpg',
+    'kids2': 'assets/photos/kids-2.jpg',
+    'field': 'assets/photos/team-field.jpg',
 }
+# Public address of the live site. Used for link previews and canonical URLs. Change it if the site launches elsewhere.
+SITE_URL = 'https://stagecoachmedical.com'
 PHONE = '202.839.9439'
 TEL = 'tel:+12028399439'
 EMAIL = 'medical@thestagecoachgroup.com'
@@ -64,7 +65,7 @@ NAV = [('services.html', 'Services'), ('membership.html', 'Membership'), ('team.
 SHEET_MORE = [('kids.html', 'Stagecoach Kids'), ('events.html', 'Events'), ('partners.html', 'Partners'), ('careers.html', 'Join us')]
 
 
-def head(title, desc):
+def head(title, desc, name='index.html'):
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,7 +74,20 @@ def head(title, desc):
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta name="theme-color" content="#1E2A3E">
-<link rel="icon" href="assets/favicon-32.png" sizes="32x32">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Stagecoach Concierge Emergency Medical Services">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<link rel="canonical" href="{SITE_URL}/{'' if name == 'index.html' else name}">
+<meta property="og:url" content="{SITE_URL}/{'' if name == 'index.html' else name}">
+<meta property="og:image" content="{SITE_URL}/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Stagecoach: Emergency Care That Comes to You. Washington, DC, 24/7.">
+<meta name="twitter:card" content="summary_large_image">
 <script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -110,11 +124,11 @@ def header(current, has_join=True):
 
 
 FOOTER = f'''<footer class="foot">
-  <div class="foot-brand"><svg class="s" viewBox="0 0 100 100" aria-hidden="true"><defs><mask id="fb-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs><path d="{S}" fill="none" stroke="currentColor" stroke-width="14.5" stroke-linecap="round" mask="url(#fb-m)"/><circle cx="50" cy="50" r="6.5" fill="#E37970"/></svg><span class="wm">STAGECOACH</span><span class="tag">Concierge Emergency Medicine</span><span>White glove care, ready for emergencies, wherever you&nbsp;are.<br>Led by doctors. Based in Washington,&nbsp;DC.</span></div>
+  <div class="foot-brand"><a class="foot-logo" href="index.html" aria-label="Stagecoach Concierge Emergency Medical Services, home"><svg class="s" viewBox="0 0 100 100" aria-hidden="true"><defs><mask id="fb-m" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140"><rect x="-20" y="-20" width="140" height="140" fill="#fff"/><circle cx="50" cy="50" r="13.5" fill="#000"/></mask></defs><path d="{S}" fill="none" stroke="currentColor" stroke-width="14.5" stroke-linecap="round" mask="url(#fb-m)"/><circle cx="50" cy="50" r="6.5" fill="#E37970"/></svg><span class="wm">STAGECOACH</span><span class="tag">Concierge Emergency Medicine</span></a><span>White glove care, ready for emergencies, wherever you&nbsp;are.<br>Led by doctors. Based in Washington,&nbsp;DC.</span></div>
   <nav aria-label="Explore"><strong>Explore</strong><a href="services.html">Services</a><a href="membership.html">Membership</a><a href="events.html">Events</a><a href="kids.html">Stagecoach Kids</a><a href="team.html">Team</a></nav>
   <nav aria-label="Company"><strong>Company</strong><a href="careers.html">Join us</a><a href="careers.html#internships">Internships</a><a href="partners.html">Partners</a><a href="contact.html">Contact</a></nav>
   <div><strong>Reach us</strong><br><a href="{TEL}">{PHONE}</a>, 24/7<br><a href="mailto:{EMAIL}">{EMAIL}</a><br>3299 K St NW #210<br>Washington, DC 20007</div>
-  <div class="fine"><span>© 2026 Stagecoach Concierge Emergency Medical Services. Not a substitute for 911. In a life-threatening emergency, call 911.</span><span>Stagecoach Concierge EMS PC is pending EMS Agency approval by the District of&nbsp;Columbia.</span></div>
+  <div class="fine"><span>© <span class="yr">2026</span> Stagecoach Concierge Emergency Medical Services. Not a substitute for 911. In a life-threatening emergency, call 911.</span><span>Stagecoach Concierge EMS PC is pending EMS Agency approval by the District of&nbsp;Columbia.</span></div>
 </footer>
 <nav class="callbar" aria-label="Quick actions"><a class="cb-call" href="{TEL}"><span class="pulse" aria-hidden="true"></span>Call 24/7</a><a class="cb-join" href="{{JOINHREF}}">Join the Waitlist</a></nav>
 <script src="assets/site.js"></script>
@@ -429,7 +443,7 @@ f'''<section class="sec dark" aria-labelledby="k1" style="padding-top:0">
 {JOIN}
 ''')
 
-PAGES['team.html'] = ('Our team | Stagecoach Concierge Emergency Medical Services', 'Meet the founders and clinical leaders of Stagecoach Concierge Emergency Medical Services in Washington, DC.',
+PAGES['team.html'] = ('Our Team | Stagecoach Concierge Emergency Medical Services', 'Meet the founders and clinical leaders of Stagecoach Concierge Emergency Medical Services in Washington, DC.',
 hero('Our team', 'Who we&nbsp;are.', 'The people of Stagecoach Concierge Emergency Medical Services: doctors, nurses, paramedics and leaders with one belief. Not every urgent problem needs the&nbsp;ER.') +
 f'''<section class="sec" aria-labelledby="t0">
   {head2('Our belief', 'Emergency medicine, built around&nbsp;you.', 'We built a better option. We bring great care to you, treat more where you are, and help you get to the right place when you need more. Expert, kind and private.', 't0')}
@@ -449,7 +463,7 @@ f'''<section class="sec" aria-labelledby="t0">
 INTERN_COMMON = '''<h4>Pay and credit</h4><p>This internship is unpaid by Stagecoach Concierge Emergency Medical Services and is built for academic credit. You may get a stipend, grant, scholarship, work study or other funding from your school or another approved source. We’ll help with any paperwork your school or funder needs.</p>'''
 APPLY = f'''<h4>How to apply</h4><p>Email <a href="mailto:{EMAIL}">{EMAIL}</a> with:</p><ul><li>Your résumé</li><li>A short note on why you’re interested</li><li>Your program and expected graduation date</li><li>Any EMS or healthcare experience</li><li>Your school credit or funding needs</li><li>When you’re available</li></ul>'''
 
-PAGES['careers.html'] = ('Join us | Stagecoach Concierge Emergency Medical Services', 'Careers at Stagecoach Concierge Emergency Medical Services in Washington, DC: doctors, nurses, paramedics, EMTs, NPs, PAs, dispatch and operations, plus academic credit internships.',
+PAGES['careers.html'] = ('Join Us | Stagecoach Concierge Emergency Medical Services', 'Careers at Stagecoach Concierge Emergency Medical Services in Washington, DC: doctors, nurses, paramedics, EMTs, NPs, PAs, dispatch and operations, plus academic credit internships.',
 hero('Join us', 'Help us build something&nbsp;new.', 'Stagecoach Concierge Emergency Medical Services is a practice led by doctors launching in Washington, DC. We’re hiring our first clinical&nbsp;team.',
      f'<a class="btn btn-paper" href="mailto:{EMAIL}?subject=Careers%20at%20Stagecoach">Email your CV <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-outline" href="#internships">Internships</a>') +
 f'''<section class="sec" aria-labelledby="c1">
@@ -504,7 +518,7 @@ hero('Partners', 'Emergency care for the people you look&nbsp;after.', 'We work 
      f'<a class="btn btn-paper" href="mailto:{EMAIL}?subject=Partnership">Start a conversation <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-outline" href="membership.html">For individuals and families</a>') +
 f'''<section class="sec" aria-labelledby="p1">
   {head2('Who we work with', 'How we can&nbsp;help', '', 'p1')}
-  {cards([('Cities and government', 'A 24/7 EMS triage line. Nearly 60% of 911 calls are low urgency. DC pays about $1M a year for its triage line and diverts just 2% of calls, against a 5–15% benchmark. Nearby counties have none.<span class="src" style="display:block">Figures from Stagecoach’s research. Sources to be added before launch.</span>', '', 'building'),
+  {cards([('Cities and government', 'A 24/7 triage line run by emergency clinicians. Callers who don’t need an ambulance get the right care, and 911 crews stay free for the calls that do.', '', 'building'),
           ('EMS agencies and doctors', 'Medical direction and EMS consulting: protocols, credentialing and quality review, led by a former Medical Director of DC Fire & EMS.', '', 'stetho'),
           ('Companies and leaders', 'Private executive medicine and care that works with your security team, with retainers and seats for staff. Includes blood products for high risk clients.', '', 'briefcase'),
           ('Hotels', 'A team led by doctors on call for your guests, with five star discretion.', '', 'map-pin'),
@@ -519,10 +533,23 @@ hero('Contact', 'Talk to&nbsp;us.', 'Call or email. A clinician answers the phon
 f'''<section class="sec" aria-labelledby="ct1">
   <ul class="cards" style="--cols:2">
     <li class="card rise"><span class="tag">Call 24/7</span><h2 id="ct1" class="h3"><a href="{TEL}" style="text-decoration:none;font-size:clamp(32px,3.6vw,56px);letter-spacing:-.03em">{PHONE}</a></h2><p>A clinician answers. If it’s life-threatening, call 911 right away.</p><p><a class="mail" href="mailto:{EMAIL}">{EMAIL}</a><br>3299 K St NW #210, Washington, DC 20007</p></li>
-    <li class="card rise"><span class="tag">Questions</span><h2 class="h3">Email our team</h2><p>Tell us what you need: membership, event coverage or a partnership. A real person will write back.</p><p><a class="btn btn-dark" href="mailto:{EMAIL}">Email us <span class="arr" aria-hidden="true">→</span></a></p><p style="font-size:15px">Please don’t send medical details by email. For anything urgent, call {PHONE}.</p></li>
+    <li class="card rise"><span class="tag">Questions</span><h2 class="h3">Email our team</h2><p>Tell us what you need: membership, event coverage or a partnership. A real person will write back.</p><p><a class="btn btn-dark" href="mailto:{EMAIL}">Email us <span class="arr" aria-hidden="true">→</span></a></p><p style="font-size:15px">Please don’t send medical details by email. For anything urgent, call <a href="{TEL}">{PHONE}</a>.</p></li>
   </ul>
 </section>
 {JOIN}
+''')
+
+
+PAGES['404.html'] = ('Page Not Found | Stagecoach Concierge Emergency Medical Services', 'This page does not exist. Find Stagecoach services, membership or our 24/7 number.',
+hero('Error 404', 'This Page Isn’t&nbsp;Here.', 'The link may be old or mistyped. Everything else is one tap away, and our line is open around the&nbsp;clock.',
+     '<a class="btn btn-paper" href="index.html">Go to the home page <span class="arr" aria-hidden="true">→</span></a>' + f'<a class="btn btn-outline" href="{TEL}">Call {PHONE}</a>') +
+'''<section class="sec" aria-labelledby="nf1">
+  <div class="sec-head"><p class="eyebrow rise">Popular pages</p><h2 id="nf1" class="split">Where to&nbsp;Next</h2></div>
+  ''' + cards([('Services', 'Emergency care, private medicine and dental, 24/7.', '<a class="more" href="services.html">See services →</a>', 'heart-pulse'),
+          ('Membership', 'Join the waitlist for 24/7 access for your household.', '<a class="more" href="membership.html">About membership →</a>', 'home'),
+          ('Contact', 'Call or email. A real person answers.', '<a class="more" href="contact.html">Contact us →</a>', 'phone')]) + '''
+  <p class="note rise">In a life-threatening emergency, call 911.</p>
+</section>
 ''')
 
 
@@ -532,14 +559,17 @@ def build():
             .replace('{{S}}', S).replace('{{B}}', B).replace('{{JOIN}}', JOIN)
             .replace('{{COFOUNDERS}}', COFOUNDERS).replace('{{LOGOS}}', LOGOS))
     home = re.sub(r'\{\{ICON:([a-z-]+)\}\}', lambda m: f'<span class="ic-wrap">{icon(m.group(1))}</span>', home)
-    pages = {'index.html': ('Stagecoach Concierge Emergency Medical Services | Emergency care that comes to you',
+    pages = {'index.html': ('Stagecoach Concierge Emergency Medical Services | Emergency Care That Comes to You',
                             'A team led by doctors that comes to your home, office or event in Washington, DC, 24/7. Not a substitute for 911.',
                             home, intro)}
     for name, (title, desc, body) in PAGES.items():
         pages[name] = (title, desc, body, '')
     for name, (title, desc, body, pre) in pages.items():
         has_join = 'id="join"' in body
-        html = title_case_headings(head(title, desc) + pre + (header(name, has_join).replace('hdr on-dark', 'hdr') if name == 'index.html' else header(name, has_join)) + '\n<main id="main" tabindex="-1">\n' + body + '\n</main>\n\n' + FOOTER.replace('{JOINHREF}', '#join' if has_join else 'membership.html#join'))
+        html = title_case_headings(head(title, desc, name) + pre + (header(name, has_join).replace('hdr on-dark', 'hdr') if name == 'index.html' else header(name, has_join)) + '\n<main id="main" tabindex="-1">\n' + body + '\n</main>\n\n' + FOOTER.replace('{JOINHREF}', '#join' if has_join else 'membership.html#join'))
+        if name == '404.html':  # never indexed, never canonical
+            html = re.sub(r'<link rel="canonical"[^>]*>\n', '<meta name="robots" content="noindex">\n', html)
+            html = re.sub(r'<meta property="og:url"[^>]*>\n', '', html)
         open(os.path.join(ROOT, name), 'w').write(html)
         print('wrote', name, len(html) // 1024, 'KB')
 

@@ -83,7 +83,7 @@ a{color:inherit}
 /* ---------- hero: zoom through the S ---------- */
 .hero{position:relative;height:400vh;background:var(--night)}
 .hero-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;color:var(--porcelain)}
-.hero-win{position:absolute;inset:0;background:var(--night) url("https://stagecoachmedical.com/__l5e/assets-v1/c641f78a-cbf0-4b65-9ca2-aa0f0a64ad36/fleet.png") 50% 0%/auto 220% no-repeat;-webkit-mask-image:url(symbol-mask.svg);mask-image:url(symbol-mask.svg);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;will-change:mask-size,mask-position}
+.hero-win{position:absolute;inset:0;background:var(--night) none 50% 0%/auto 220% no-repeat;-webkit-mask-image:url(symbol-mask.svg);mask-image:url(symbol-mask.svg);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;will-change:mask-size,mask-position}
 .hero-win::after{content:"";position:absolute;inset:0;background:var(--night);opacity:var(--scrim,0)}
 .hero-ghost{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
 .hero-meta{position:absolute;left:var(--gut);right:var(--gut);top:104px;display:flex;justify-content:space-between;gap:16px;align-items:center}
@@ -1087,3 +1087,9 @@ html.still .how-pin{padding-block:72px 40px}
 @media (max-width:600px){.t-grid.four,.t-grid.three{gap:36px}}
 .card .mail{white-space:nowrap;font-size:clamp(14px,4vw,17px)}
 @media (max-width:360px){.card .mail{font-size:13px;letter-spacing:-.01em}}
+
+/* footer logo is a link home */
+.foot-logo{display:grid;gap:8px;justify-items:start;text-decoration:none;color:inherit;width:max-content;max-width:100%}
+.foot-logo:hover .wm{color:var(--wine)}
+/* 404 */
+.page-hero .eyebrow+h1{margin-top:0}
