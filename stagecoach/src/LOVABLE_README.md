@@ -34,6 +34,6 @@ If **Import project to Lovable** is not in your **+** menu, Lovable has not turn
 
 ## Making changes later
 
-Small text changes can be made by asking Lovable's AI. Always add: "Edit the HTML in public/ directly and keep the existing styles." Without that, Lovable may try to rebuild a page in its own style.
+The team can keep the site current with Claude. `docs/UPDATING_THE_SITE.md` is the setup (connect the Lovable project to GitHub, add `CLAUDE.md`, open claude.ai/code) and `docs/PROMPTS.md` has copy-and-paste prompts for the common changes. `CLAUDE.md` at the root tells Claude the brand rules, the required legal lines and where every file lives, so every edit stays on brand.
 
-Lovable uses credits for the import and for each change it makes.
+Small text changes can also be made by asking Lovable's AI. Always add: "Edit the HTML in public/ directly and keep the existing styles." Without that, Lovable may try to rebuild a page in its own style. Lovable uses credits for the import and for each change it makes.
