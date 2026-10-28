@@ -531,6 +531,7 @@ def build():
     home = (open(os.path.join(SRC, 'home.html')).read()
             .replace('{{S}}', S).replace('{{B}}', B).replace('{{JOIN}}', JOIN)
             .replace('{{COFOUNDERS}}', COFOUNDERS).replace('{{LOGOS}}', LOGOS))
+    home = re.sub(r'\{\{ICON:([a-z-]+)\}\}', lambda m: f'<span class="ic-wrap">{icon(m.group(1))}</span>', home)
     pages = {'index.html': ('Stagecoach Concierge Emergency Medical Services | Emergency care that comes to you',
                             'A team led by doctors that comes to your home, office or event in Washington, DC, 24/7. Not a substitute for 911.',
                             home, intro)}

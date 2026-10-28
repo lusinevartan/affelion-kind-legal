@@ -763,3 +763,59 @@ html:not(.js) .mission .mw.accent{color:var(--coral-ink)}
 .foot-brand span:last-child{margin-top:12px}
 @media (max-width:1180px){.hdr .wm{font-size:15px;letter-spacing:.3em}.wm-tag{font-size:8px}}
 @media (max-width:520px){.hdr .wm{font-size:14px;letter-spacing:.3em}.wm-tag{font-size:7.5px}}
+/* header lockup, larger */
+.brand .s{width:52px;height:52px}
+.brand{gap:16px}
+.hdr .wm{font-size:21px;letter-spacing:.36em}
+.wm-tag{font-size:11px}
+.brand .wm-text{gap:7px}
+@media (max-width:1180px){.brand .s{width:44px;height:44px}.hdr .wm{font-size:18px;letter-spacing:.32em}.wm-tag{font-size:9.5px}}
+@media (max-width:520px){.brand .s{width:38px;height:38px}.brand{gap:12px}.hdr .wm{font-size:16px;letter-spacing:.3em}.wm-tag{font-size:8.5px}}
+/* phones: the next section slides up over the empty foot of the pinned step frame */
+@media (max-width:860px){
+  .how{margin-bottom:-18vh}
+  #services{position:relative;z-index:3;background:var(--porcelain);padding-top:72px}
+}
+/* after the service cards: one line, two clear links */
+.svc-more{display:flex;flex-wrap:wrap;gap:14px 40px;align-items:center;justify-content:space-between;margin-top:clamp(32px,4vw,56px)}
+.svc-more p{margin:0;font:500 clamp(17px,1.3vw,20px)/1.5 var(--sans);color:var(--ink2)}
+.svc-links{display:flex;flex-wrap:wrap;gap:12px 32px}
+.svc-links .more-link{margin-top:0;font-size:17px;text-decoration:none;color:var(--navy);padding:12px 18px;border:1.5px solid rgba(30,42,62,.28);border-radius:999px;min-height:48px;transition:background .4s var(--ease),color .4s var(--ease)}
+.svc-links .more-link:hover,.svc-links .more-link:focus-visible{background:var(--navy);color:var(--porcelain)}
+@media (max-width:860px){.svc-more{margin-top:40px;gap:16px}.svc-links{width:100%}.svc-links .more-link{flex:1 1 auto;justify-content:center}}
+/* phones: roomier cards in the deck */
+@media (max-width:860px){
+  .row a{padding:12px 12px 30px;gap:18px 16px}
+  .row .txt{padding:8px 12px 0;gap:12px}
+  .row .go{align-self:start;margin-top:10px;margin-right:12px}
+  .row+.row{margin-top:36px}
+}
+/* why Stagecoach: six reasons as tiles with icons */
+.why-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,1.6vw,20px)}
+.why-grid li{display:grid;gap:8px;align-content:start;padding:clamp(18px,2vw,26px);background:#fff;border-radius:12px;box-shadow:0 24px 50px -36px rgba(16,25,43,.45)}
+.why-grid .ic-wrap{margin-bottom:6px}
+.why-grid strong{font:600 clamp(17px,1.3vw,20px)/1.2 var(--sans);letter-spacing:-.01em}
+.why-grid span{font-size:clamp(15px,1.1vw,17px);line-height:1.45;color:var(--ink2)}
+@media (max-width:520px){.why-grid{gap:10px}.why-grid li{padding:16px 14px}.why-grid .ic-wrap{width:40px;height:40px}.why-grid strong{font-size:16px}.why-grid span{font-size:14px}}
+/* closing band: compact, no rules */
+.cta{min-height:0;padding-block:clamp(90px,12vw,170px)}
+.cta .tel::after,.cta .tel::before{display:none}
+.cta-row .tlink{text-decoration:none;display:inline-flex;align-items:center;min-height:48px;padding:12px 18px;border:1.5px solid rgba(30,42,62,.28);border-radius:999px;transition:background .4s var(--ease),color .4s var(--ease)}
+.cta-row .tlink::after{display:none}
+.cta-row .tlink:hover,.cta-row .tlink:focus-visible{background:var(--navy);color:var(--porcelain)}
+/* ---------- footer: columns never squeeze below their words ---------- */
+.foot{grid-template-columns:minmax(0,1.5fr) max-content max-content minmax(0,1.3fr);gap:40px clamp(32px,5vw,96px);overflow-wrap:normal;padding-top:clamp(64px,8vw,96px)}
+.foot nav a,.foot nav strong,.foot>div strong{white-space:nowrap}
+.foot a[href^="mailto:"]{overflow-wrap:anywhere;white-space:normal}
+.foot nav{gap:8px}
+.foot .fine{margin-top:24px;grid-column:1/-1}
+@media (max-width:1100px){
+  .foot{grid-template-columns:max-content max-content minmax(0,1fr);gap:40px clamp(40px,7vw,96px)}
+  .foot .foot-brand{grid-column:1/-1;max-width:420px}
+}
+@media (max-width:700px){
+  .foot{grid-template-columns:1fr 1fr;gap:36px 24px}
+  .foot .foot-brand{grid-column:1/-1}
+  .foot>div:nth-of-type(2){grid-column:1/-1}
+}
+@media (max-width:700px){.foot a[href^="mailto:"]{overflow-wrap:normal;white-space:nowrap;font-size:15px;letter-spacing:-.01em}}
