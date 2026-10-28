@@ -1,16 +1,15 @@
 """Package the built site so it can live inside a Lovable project.
 
-Lovable cannot import a zip or an existing repository. It can sync code that is
-pushed to the GitHub repository it creates for a project. Lovable projects are
-either React + Vite (older) or TanStack Start (from May 2026). Both serve the
-`public/` folder as plain static files, so the site ships there unchanged:
+Lovable projects use TanStack Start (from May 2026), which serves the `public/`
+folder as plain static files, so the site ships there unchanged:
 
     public/home.html, public/services.html, ... public/404.html
     public/site-assets/...      (styles, script, images, icons)
 
-The only change Lovable has to make is to send `/` to `/home.html`, and unknown
-routes to `/404.html`. LOVABLE_PROMPT.md holds the exact request to paste into
-Lovable's chat, and README.md has the code for both project types.
+The package is a complete TanStack Start app (src/lovable_template, tested) whose
+only job is to send `/` to `/home.html` and unknown routes to `/404.html`. It can
+go in through Lovable's "Import project to Lovable" (zip upload, no GitHub).
+README.md is written for the client.
 
 Run after `python3 src/build.py`:
 
@@ -44,6 +43,8 @@ def rewrite(html):
 def main():
     if os.path.exists(OUT):
         shutil.rmtree(OUT)
+    here = os.path.dirname(os.path.abspath(__file__))
+    shutil.copytree(os.path.join(here, 'lovable_template'), OUT)
     pub = os.path.join(OUT, 'public')
     os.makedirs(pub)
     for name in PAGES:
@@ -52,9 +53,7 @@ def main():
         assert not re.search(r'["\'(]assets/', html), f'unrewritten asset path in {name}'
         open(os.path.join(pub, page_file(name)), 'w', encoding='utf-8').write(html)
     shutil.copytree(os.path.join(ROOT, 'assets'), os.path.join(pub, ASSETS))
-    here = os.path.dirname(os.path.abspath(__file__))
-    for doc in ('LOVABLE_README.md', 'LOVABLE_PROMPT.md'):
-        shutil.copy(os.path.join(here, doc), os.path.join(OUT, doc.replace('LOVABLE_', '') if doc == 'LOVABLE_README.md' else doc))
+    shutil.copy(os.path.join(here, 'LOVABLE_README.md'), os.path.join(OUT, 'README.md'))
     n = sum(len(fs) for _, _, fs in os.walk(OUT))
     print(f'wrote {OUT} ({n} files)')
 

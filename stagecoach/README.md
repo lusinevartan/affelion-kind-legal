@@ -13,4 +13,4 @@ Open items carried over from v3: photography is hotlinked from stagecoachmedical
 
 ## Lovable
 
-Run `python3 src/build.py`, then `python3 src/export_lovable.py`. This writes `lovable-export/`, a package for a Lovable project with its own README and a paste-in request for Lovable.
+Run `python3 src/build.py`, then `python3 src/export_lovable.py`. This writes `lovable-export/`, a complete Lovable project (TanStack Start) with the site in `public/`. Zip it and import it in Lovable with "Import project to Lovable", then "Upload code". No GitHub needed. Its README is written for the client.
