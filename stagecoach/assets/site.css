@@ -847,3 +847,30 @@ html:not(.js) .mission .mw.accent{color:var(--coral-ink)}
 .brand .s{width:50px;height:50px}
 @media (max-width:1180px){.hdr .wm{font-size:21px}.wm-tag{font-size:11px}.brand .s{width:45px;height:45px}}
 @media (max-width:520px){.hdr .wm{font-size:17.6px}.wm-tag{font-size:9.4px}.brand .s{width:39px;height:39px}}
+/* join button: flat, no bevel or drop shadow */
+.join .field .btn{box-shadow:none;transform:none!important}
+.join .field .btn::before{display:none}
+.join .field .btn:hover,.join .field .btn:focus-visible{background:var(--navy)}
+/* phones: the field and the button stack as two clean blocks */
+@media (max-width:860px){
+  .join .field{background:transparent;padding:0;box-shadow:none;gap:10px;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .join .field input{background:#fff;border-radius:14px;min-height:60px;box-shadow:0 12px 30px -22px rgba(16,25,43,.5)}
+  .join .field .btn{border-radius:14px;min-height:60px}
+}
+/* ---------- accessibility pass ---------- */
+button.btn{border:0;appearance:none;-webkit-appearance:none;font-family:var(--sans)}
+.card h2.h3{font:600 clamp(19px,1.5vw,24px)/1.25 var(--sans);letter-spacing:-.01em;margin:0}
+/* mission words rest at a contrast that still reads, then light fully */
+.mission .mw{opacity:.6}
+/* hidden "Next" links leave the tab order until shown */
+.next:not(.show){visibility:hidden}
+/* keyboard focus on portraits */
+.portrait:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+/* footer and inline links get a comfortable target */
+.foot nav a{display:inline-block;padding:3px 0;min-height:28px}
+.foot a[href^="tel:"],.foot a[href^="mailto:"],.join-fine a,.cta .must a{display:inline-block;padding:2px 0}
+.more-link{min-height:44px;align-items:center}
+/* inactive step labels keep 4.5:1 */
+.stepper button{opacity:.7}
+.stepper button.on{opacity:1}
+.fine a,.join-fine a,.cta .must a{display:inline-block;padding:4px 0;line-height:1.3}

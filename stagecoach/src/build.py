@@ -116,7 +116,7 @@ FOOTER = f'''<footer class="foot">
   <div><strong>Reach us</strong><br><a href="{TEL}">{PHONE}</a>, 24/7<br><a href="mailto:{EMAIL}">{EMAIL}</a><br>3299 K St NW #210<br>Washington, DC 20007</div>
   <div class="fine"><span>© 2026 Stagecoach Concierge Emergency Medical Services. Not a substitute for 911. In a life-threatening emergency, call 911.</span><span>Stagecoach Concierge EMS PC is pending EMS Agency approval by the District of&nbsp;Columbia.</span></div>
 </footer>
-<div class="callbar"><a class="cb-call" href="{TEL}"><span class="pulse" aria-hidden="true"></span>Call 24/7</a><a class="cb-join" href="{{JOINHREF}}">Join the Waitlist</a></div>
+<nav class="callbar" aria-label="Quick actions"><a class="cb-call" href="{TEL}"><span class="pulse" aria-hidden="true"></span>Call 24/7</a><a class="cb-join" href="{{JOINHREF}}">Join the Waitlist</a></nav>
 <script src="assets/site.js"></script>
 </body>
 </html>
@@ -518,8 +518,8 @@ PAGES['contact.html'] = ('Contact | Stagecoach Concierge Emergency Medical Servi
 hero('Contact', 'Talk to&nbsp;us.', 'Call or email. A clinician answers the phone, day or&nbsp;night.') +
 f'''<section class="sec" aria-labelledby="ct1">
   <ul class="cards" style="--cols:2">
-    <li class="card rise"><span class="tag">Call 24/7</span><h3 id="ct1"><a href="{TEL}" style="text-decoration:none;font-size:clamp(32px,3.6vw,56px);letter-spacing:-.03em">{PHONE}</a></h3><p>A clinician answers. If it’s life-threatening, call 911 right away.</p><p>{EMAIL}<br>3299 K St NW #210, Washington, DC 20007</p></li>
-    <li class="card rise"><span class="tag">Questions</span><h3>Email our team</h3><p>Tell us what you need: membership, event coverage or a partnership. A real person will write back.</p><p><a class="btn btn-dark" href="mailto:{EMAIL}">Email us <span class="arr" aria-hidden="true">→</span></a></p><p style="font-size:15px">Please don’t send medical details by email. For anything urgent, call {PHONE}.</p></li>
+    <li class="card rise"><span class="tag">Call 24/7</span><h2 id="ct1" class="h3"><a href="{TEL}" style="text-decoration:none;font-size:clamp(32px,3.6vw,56px);letter-spacing:-.03em">{PHONE}</a></h2><p>A clinician answers. If it’s life-threatening, call 911 right away.</p><p>{EMAIL}<br>3299 K St NW #210, Washington, DC 20007</p></li>
+    <li class="card rise"><span class="tag">Questions</span><h2 class="h3">Email our team</h2><p>Tell us what you need: membership, event coverage or a partnership. A real person will write back.</p><p><a class="btn btn-dark" href="mailto:{EMAIL}">Email us <span class="arr" aria-hidden="true">→</span></a></p><p style="font-size:15px">Please don’t send medical details by email. For anything urgent, call {PHONE}.</p></li>
   </ul>
 </section>
 {JOIN}
