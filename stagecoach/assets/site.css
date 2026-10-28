@@ -623,3 +623,4 @@ html:not(.js) .hero-win{--scrim:.55}
   .row .thumb{grid-column:1/-1;aspect-ratio:4/3}
   .row .thumb .place{font-size:clamp(40px,11vw,56px)}
 }
+.row .thumb .tag{background:linear-gradient(135deg,var(--peach),var(--coral));color:var(--night);box-shadow:0 10px 24px -12px rgba(227,121,112,.9)}
