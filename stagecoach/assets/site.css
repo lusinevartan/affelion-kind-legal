@@ -712,9 +712,8 @@ html:not(.js) .fold-item{display:grid}html:not(.js) .see-all{display:none}
 .cta-row .tlink{color:var(--navy)}
 /* ---------- phones: the five options read as a legend under the ring ---------- */
 @media (max-width:860px){
-  .how-art{width:100%;aspect-ratio:auto;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding-top:calc(min(56vw,30vh) + 16px)}
-  .how-art svg{width:min(56vw,30vh);height:min(56vw,30vh);inset:0 auto auto 50%;transform:translateX(-50%)}
-  .how-art .opt{position:static;opacity:1!important;transform:none!important;font-size:11px;letter-spacing:.14em;padding:7px 11px;box-shadow:none;background:rgba(255,255,255,.6)}
+  .how-art{width:min(70vw,38vh)}
+  .how-art .opt{font-size:9px;letter-spacing:.1em;padding:5px 8px;box-shadow:none;background:rgba(244,241,233,.9)}
 }
 @media (max-width:860px){.step .opts{display:none}}
 
@@ -739,8 +738,6 @@ html:not(.js) .mission .mw.accent{color:var(--coral-ink)}
 /* phones: the tracker is the heading, the legend sits quiet */
 @media (max-width:860px){
   html.js .how-head{display:none}
-  .how-art{gap:5px;padding-top:calc(min(56vw,30vh) + 12px)}
-  .how-art .opt{font-size:10px;letter-spacing:.12em;padding:6px 10px;background:rgba(30,42,62,.06);color:var(--navy)}
   .how-text{gap:22px}
 }
 /* hero copy: a soft wash behind the words so the vehicle lettering never competes */
@@ -756,3 +753,13 @@ html:not(.js) .mission .mw.accent{color:var(--coral-ink)}
 .logo-mix .logo.mark{width:1.9em;height:1.7em}
 .logo-mix .wordlogo{font-size:1.25em;letter-spacing:.12em;opacity:1}
 .logos li:hover .logo-mix .logo{opacity:1}
+/* ---------- lockup: wordmark and tagline share one width ---------- */
+.hdr .wm{font-size:17px;font-weight:700;letter-spacing:.36em}
+.wm-tag{font-size:9px;font-weight:600;letter-spacing:.14em;opacity:1;color:currentColor;white-space:nowrap}
+.brand .wm-text{gap:6px}
+.foot-brand .wm{font-size:22px;font-weight:700;letter-spacing:.34em}
+.foot-brand .tag{font:600 11px/1 var(--sans);letter-spacing:.14em;white-space:nowrap;color:var(--navy)}
+.foot-brand{gap:8px}
+.foot-brand span:last-child{margin-top:12px}
+@media (max-width:1180px){.hdr .wm{font-size:15px;letter-spacing:.3em}.wm-tag{font-size:8px}}
+@media (max-width:520px){.hdr .wm{font-size:14px;letter-spacing:.3em}.wm-tag{font-size:7.5px}}

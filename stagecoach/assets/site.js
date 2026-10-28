@@ -130,8 +130,9 @@
     hGuide.setAttribute('opacity', (RM ? .5 : clamp(s2 * 2) * (1 - s3) * .9).toFixed(3));
     const box = $('.how-art').getBoundingClientRect().width;
     opts.forEach((o, i) => {
-      const a = angles[i] * Math.PI / 180, R = box * .36 + 14, c = Math.cos(a), sn = Math.sin(a);
-      const t = box < 300 ? 0 : RM ? 1 : clamp(s2 * 1.6 - i * .12) * (1 - s3);
+      const small = box < 420, ang = small ? [-90, -34, 34, 146, 214] : angles;
+      const a = ang[i] * Math.PI / 180, R = box * .36 + (small ? 8 : 14), c = Math.cos(a), sn = Math.sin(a);
+      const t = box < 240 ? 0 : RM ? 1 : clamp(s2 * 1.6 - i * .12) * (1 - s3);
       const x = c * R * (.85 + .15 * t), y = sn * R * (.85 + .15 * t);
       /* anchor the label's near edge to the ring so the text always grows outward */
       const ax = c < -.3 ? '-100%' : c > .3 ? '0%' : '-50%', ay = Math.abs(c) <= .3 ? (sn < 0 ? '-100%' : '0%') : '-50%';
@@ -201,3 +202,21 @@
 
 /* fold: show the rest of a card grid on request */
 document.querySelectorAll('.see-all').forEach(b => b.addEventListener('click', () => { b.closest('.cardfold').classList.add('open'); }));
+/* lockup: track the tagline so it spans exactly the width of the wordmark */
+(function () {
+  const fit = () => {
+    document.querySelectorAll('.brand .wm-text, .foot-brand').forEach(box => {
+      const wm = box.querySelector('.wm'), tag = box.querySelector('.wm-tag, .tag');
+      if (!wm || !tag || getComputedStyle(tag).display === 'none') return;
+      tag.style.letterSpacing = '0px'; tag.style.marginRight = '';
+      const tw = el => { const r = document.createRange(); r.selectNodeContents(el); return r.getBoundingClientRect().width; };
+      const target = tw(wm) - parseFloat(getComputedStyle(wm).letterSpacing || 0);
+      const n = tag.textContent.trim().length;
+      const ls = (target - tw(tag)) / (n - 1);
+      tag.style.letterSpacing = ls.toFixed(3) + 'px'; tag.style.marginRight = (-ls).toFixed(3) + 'px';
+    });
+  };
+  const run = () => (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(fit);
+  run(); window.addEventListener('resize', fit); window.addEventListener('load', fit);
+  const mq = window.matchMedia('(max-width:860px)'); mq.addEventListener ? mq.addEventListener('change', fit) : mq.addListener(fit);
+})();
