@@ -874,3 +874,52 @@ button.btn{border:0;appearance:none;-webkit-appearance:none;font-family:var(--sa
 .stepper button{opacity:.7}
 .stepper button.on{opacity:1}
 .fine a,.join-fine a,.cta .must a{display:inline-block;padding:4px 0;line-height:1.3}
+/* ---------- tall and phone hero: a composed column, nothing stranded ---------- */
+.hero.tall .clock{bottom:auto;top:calc(var(--sb,56vh) + 26px);font-size:clamp(48px,13vw,88px)}
+.hero.tall .hero-side{display:block;right:auto;left:var(--gut);bottom:auto;top:calc(var(--sb,56vh) + 26px + clamp(48px,13vw,88px) + 18px);text-align:left;max-width:24ch;font-size:16px}
+.hero.tall .hero-side strong{font-size:clamp(20px,5.2vw,26px);margin-bottom:6px}
+.hero.tall .scroll-cue{display:none}
+.hero.tall .hero-meta{top:calc(96px + env(safe-area-inset-top,0px))}
+@media (max-width:860px){.hero-win{background-size:auto 112%;background-position:60% 78%}}
+/* word reveal: room for descenders, and no clipping once the line is in */
+.split .w{padding-bottom:.22em;margin-bottom:-.22em}
+.split.in .w{overflow:visible}
+/* tall hero: the vehicle sits inside the S, not just its door */
+@media (max-width:860px){.hero-win{background-size:auto 100%;background-position:64% 55%}}
+.hero.tall .hero-win{background-size:auto 100%;background-position:64% 55%}
+.hero.tall .hero-side{max-width:30ch}
+/* closing band: even rhythm between headline, number and buttons */
+.cta{gap:0}
+.cta h2{line-height:1.04;margin-bottom:.35em}
+.cta .tel-wrap{margin-bottom:clamp(22px,3vw,36px)}
+.cta .tel{line-height:1.05}
+.cta .cta-row{margin-bottom:clamp(18px,2.4vw,28px)}
+/* ---------- button system ----------
+   Primary filled: coral = Join the Waitlist only; navy on light surfaces; porcelain on dark.
+   Secondary: outline pill in the surface's ink. Tertiary: underlined text link, inline in copy only.
+   Sizes: default 56px, .btn-md 48px, header pill 44px. Arrows on filled primaries only. */
+.btn{min-height:56px;padding:0 28px;font-size:16px;gap:12px;border:1.5px solid transparent}
+.btn-md{min-height:48px;padding:0 20px;font-size:15px}
+.btn-paper{background:var(--porcelain);color:var(--night);box-shadow:0 18px 40px -20px rgba(16,25,43,.5)}
+.btn-paper::before{background:#fff}
+.btn-outline{background:transparent;color:var(--navy);border-color:rgba(30,42,62,.32);box-shadow:none}
+.btn-outline::before{background:var(--navy)}
+.btn-outline:hover,.btn-outline:focus-visible{color:var(--porcelain);border-color:var(--navy)}
+.dark .btn-outline,.page-hero .btn-outline,.band .btn-outline{color:var(--porcelain);border-color:rgba(244,241,233,.4)}
+.dark .btn-outline::before,.page-hero .btn-outline::before,.band .btn-outline::before{background:var(--porcelain)}
+.dark .btn-outline:hover,.page-hero .btn-outline:hover,.band .btn-outline:hover,.dark .btn-outline:focus-visible,.page-hero .btn-outline:focus-visible,.band .btn-outline:focus-visible{color:var(--night);border-color:var(--porcelain)}
+.cta .btn-light{background:linear-gradient(135deg,var(--peach),var(--coral));color:var(--night);border-color:transparent}
+.ctas,.cta-row,.band .ctas,.page-hero .ctas{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center}
+.svc-links{gap:12px 14px}
+.svc-links .btn,.see-all.btn{margin:0;text-decoration:none}
+.see-all.btn{margin-top:clamp(18px,2vw,28px)}
+.join .field .btn{min-height:60px}
+@media (max-width:860px){.ctas .btn,.cta-row .btn,.band .ctas .btn{flex:1 1 auto;justify-content:center}.svc-links .btn{flex:1 1 auto;justify-content:center}}
+/* footer lockup, 20 percent larger */
+.foot-brand .s{width:48px;height:48px}
+.foot-brand .wm{font-size:26.4px}
+.foot-brand .tag{font-size:13.2px}
+.foot-brand{gap:10px}
+.foot .foot-brand span:last-child{max-width:40ch}
+button.btn-outline{border:1.5px solid rgba(30,42,62,.32)}
+.dark button.btn-outline{border-color:rgba(244,241,233,.4)}

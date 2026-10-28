@@ -252,7 +252,7 @@ def cards(items, cols=3, show=None):
     out += '    </ul>'
     if fold:
         n = len(items) - show
-        out += f'\n    <button class="see-all rise" type="button">See {n} more <span aria-hidden="true">↓</span></button>\n</div>'
+        out += f'\n    <button class="btn btn-outline btn-md see-all rise" type="button">See {n} more</button>\n</div>'
     return out
 
 
@@ -282,9 +282,9 @@ def band(h2, p, ctas):
 '''
 
 
-BTN_CALL = f'<a class="btn btn-light" href="{TEL}" data-cur="Call">Call {PHONE} <span class="arr" aria-hidden="true">→</span></a>'
-LINK_JOIN = '<a class="tlink" href="#join">Join the waitlist</a>'
-LINK_CONTACT = '<a class="tlink" href="contact.html">Contact us</a>'
+BTN_CALL = f'<a class="btn btn-paper" href="{TEL}" data-cur="Call">Call {PHONE} <span class="arr" aria-hidden="true">→</span></a>'
+LINK_JOIN = '<a class="btn btn-outline" href="#join">Join the waitlist</a>'
+LINK_CONTACT = '<a class="btn btn-outline" href="contact.html">Contact us</a>'
 CALL_STEPS = [('You call. A real clinician answers.', 'Call or reach us online, any time. No phone tree.'),
               ('We figure out what you need.', '911, the ER, a telehealth call, a home visit, or safe to wait. We decide together.'),
               ('If you need us, we come to you.', 'An EMT, paramedic, NP, PA, doctor or dentist comes to you. A triple board certified doctor oversees every visit.')]
@@ -330,7 +330,7 @@ f'''<section class="sec" aria-labelledby="s1">
 
 PAGES['membership.html'] = ('Membership | Stagecoach Concierge Emergency Medical Services', 'Individual, family, employer and executive membership: 24/7 access to a team led by doctors in Washington, DC.',
 hero('Membership · Launching soon', 'Skip the ER wait. We come to&nbsp;you.', 'Members get 24/7 access to a team led by doctors for the whole family, including dental&nbsp;care.',
-     '<a class="btn btn-light" href="#join">Join the waitlist <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="#tiers">See membership options</a>', IMG['kids2'], 'A parent comforting a young child') +
+     '<a class="btn btn-light" href="#join">Join the waitlist <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-outline" href="#tiers">See membership options</a>', IMG['kids2'], 'A parent comforting a young child') +
 f'''<section class="sec dark" aria-labelledby="m1" style="padding-top:0">
   {statement('Why it matters', 'The ER is not built for&nbsp;you.', 'In DC, a trip to the ER means hours of waiting, a big bill, and a room that was never meant for you. We come to you instead, with the same training and the right equipment.', '', 'm1')}
 </section>
@@ -376,7 +376,7 @@ f'''<section class="sec dark" aria-labelledby="m1" style="padding-top:0">
 
 PAGES['events.html'] = ('Events | Stagecoach Concierge Emergency Medical Services', 'Medical coverage led by doctors for galas, productions, conferences and big crowds in Washington, DC.',
 hero('Events', 'A medical team at your&nbsp;event.', 'Coverage led by doctors for galas, film sets, conferences and big crowds. Ready to act, and dressed for the&nbsp;room.',
-     f'<a class="btn btn-light" href="mailto:{EMAIL}?subject=Event%20coverage">Plan your event <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="{TEL}">Call {PHONE}</a>', IMG['field'], 'Stagecoach clinicians at an overnight field operation') +
+     f'<a class="btn btn-paper" href="mailto:{EMAIL}?subject=Event%20coverage">Plan your event <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-outline" href="{TEL}">Call {PHONE}</a>', IMG['field'], 'Stagecoach clinicians at an overnight field operation') +
 f'''<section class="sec" aria-labelledby="e1">
   {head2('Who we cover', 'Every kind of&nbsp;event', '', 'e1')}
   {cards([('Galas and private events', 'Quiet clinicians on site, dressed for the room, ready to act without spoiling the evening.', '', 'star'),
@@ -392,7 +392,7 @@ f'''<section class="sec" aria-labelledby="e1">
   {LOGOS}
 </section>
 ''' + band('Planning an&nbsp;event?', 'Tell us the place, the dates and how many guests. We’ll build the right plan and team.',
-           f'<a class="btn btn-light" href="mailto:{EMAIL}?subject=Event%20coverage">Plan your event <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="{TEL}">Call {PHONE}</a>'))
+           f'<a class="btn btn-paper" href="mailto:{EMAIL}?subject=Event%20coverage">Plan your event <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-outline" href="{TEL}">Call {PHONE}</a>'))
 
 PAGES['kids.html'] = ('Stagecoach Kids | Stagecoach Concierge Emergency Medical Services', 'Help for your child at home, day or night, with a pediatric ER doctor on call.',
 hero('Stagecoach Kids', 'Help for your child, right at&nbsp;home.', 'The right care. Right when you need it. Right where your child feels&nbsp;safest.',
@@ -444,14 +444,14 @@ f'''<section class="sec" aria-labelledby="t0">
     {people(['liza', 'ameen', 'gupi', 'yaffa', 'eve', 'charles'], 'three', True)}
   </div>
 </section>
-''' + band('Want to join&nbsp;them?', 'We’re hiring our first clinical team in Washington, DC.', '<a class="btn btn-light" href="careers.html">See open roles <span class="arr" aria-hidden="true">→</span></a>' + LINK_CONTACT))
+''' + band('Want to join&nbsp;them?', 'We’re hiring our first clinical team in Washington, DC.', '<a class="btn btn-paper" href="careers.html">See open roles <span class="arr" aria-hidden="true">→</span></a>' + LINK_CONTACT))
 
 INTERN_COMMON = '''<h4>Pay and credit</h4><p>This internship is unpaid by Stagecoach Concierge Emergency Medical Services and is built for academic credit. You may get a stipend, grant, scholarship, work study or other funding from your school or another approved source. We’ll help with any paperwork your school or funder needs.</p>'''
 APPLY = f'''<h4>How to apply</h4><p>Email <a href="mailto:{EMAIL}">{EMAIL}</a> with:</p><ul><li>Your résumé</li><li>A short note on why you’re interested</li><li>Your program and expected graduation date</li><li>Any EMS or healthcare experience</li><li>Your school credit or funding needs</li><li>When you’re available</li></ul>'''
 
 PAGES['careers.html'] = ('Join us | Stagecoach Concierge Emergency Medical Services', 'Careers at Stagecoach Concierge Emergency Medical Services in Washington, DC: doctors, nurses, paramedics, EMTs, NPs, PAs, dispatch and operations, plus academic credit internships.',
 hero('Join us', 'Help us build something&nbsp;new.', 'Stagecoach Concierge Emergency Medical Services is a practice led by doctors launching in Washington, DC. We’re hiring our first clinical&nbsp;team.',
-     f'<a class="btn btn-light" href="mailto:{EMAIL}?subject=Careers%20at%20Stagecoach">Email your CV <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="#internships">Internships</a>') +
+     f'<a class="btn btn-paper" href="mailto:{EMAIL}?subject=Careers%20at%20Stagecoach">Email your CV <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-outline" href="#internships">Internships</a>') +
 f'''<section class="sec" aria-labelledby="c1">
   {head2('Who we look for', 'Great medicine is just the&nbsp;start.', 'We want kind, calm and discreet people who notice what a patient needs before they ask. How care feels matters as much as the care itself.', 'c1')}
 </section>
@@ -497,11 +497,11 @@ f'''<section class="sec" aria-labelledby="c1">
   <p class="note rise">Stagecoach Concierge Emergency Medical Services is an equal opportunity organization. We consider qualified applicants without regard to any status protected by law.</p>
 </section>
 ''' + band('Send us your&nbsp;CV.', 'We’re building our first team now. Email your CV, licenses and certifications, and tell us the role you want. We read every one.',
-           f'<a class="btn btn-light" href="mailto:{EMAIL}?subject=Careers%20at%20Stagecoach">Email us <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="team.html">Meet the team</a>'))
+           f'<a class="btn btn-paper" href="mailto:{EMAIL}?subject=Careers%20at%20Stagecoach">Email us <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-outline" href="team.html">Meet the team</a>'))
 
 PAGES['partners.html'] = ('Partners | Stagecoach Concierge Emergency Medical Services', 'Partner with Stagecoach Concierge Emergency Medical Services: triage lines, medical direction, executive medicine, hotel and embassy coverage, and event medicine in Washington, DC.',
 hero('Partners', 'Emergency care for the people you look&nbsp;after.', 'We work with cities, EMS agencies, doctors, employers, hotels, embassies and event&nbsp;producers.',
-     f'<a class="btn btn-light" href="mailto:{EMAIL}?subject=Partnership">Start a conversation <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="membership.html">For individuals and families</a>') +
+     f'<a class="btn btn-paper" href="mailto:{EMAIL}?subject=Partnership">Start a conversation <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-outline" href="membership.html">For individuals and families</a>') +
 f'''<section class="sec" aria-labelledby="p1">
   {head2('Who we work with', 'How we can&nbsp;help', '', 'p1')}
   {cards([('Cities and government', 'A 24/7 EMS triage line. Nearly 60% of 911 calls are low urgency. DC pays about $1M a year for its triage line and diverts just 2% of calls, against a 5–15% benchmark. Nearby counties have none.<span class="src" style="display:block">Figures from Stagecoach’s research. Sources to be added before launch.</span>', '', 'building'),
@@ -512,7 +512,7 @@ f'''<section class="sec" aria-labelledby="p1">
           ('Embassies and institutions', 'Dedicated, discreet emergency coverage on contract.', '', 'globe')])}
 </section>
 ''' + band('Let’s&nbsp;talk.', 'Tell us who you look after and what you need. A real person will reply.',
-           f'<a class="btn btn-light" href="mailto:{EMAIL}?subject=Partnership">Email our team <span class="arr" aria-hidden="true">→</span></a><a class="tlink" href="{TEL}">Call {PHONE}</a>'))
+           f'<a class="btn btn-paper" href="mailto:{EMAIL}?subject=Partnership">Email our team <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-outline" href="{TEL}">Call {PHONE}</a>'))
 
 PAGES['contact.html'] = ('Contact | Stagecoach Concierge Emergency Medical Services', 'Call Stagecoach Concierge Emergency Medical Services 24/7 or email our team in Washington, DC.',
 hero('Contact', 'Talk to&nbsp;us.', 'Call or email. A clinician answers the phone, day or&nbsp;night.') +

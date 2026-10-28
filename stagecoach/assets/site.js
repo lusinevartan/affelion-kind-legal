@@ -103,11 +103,19 @@
     if (hero) heroScene(hp);
     if (how) howScene(p);
   }
+  const HERO_AR = 1.5; /* hero-light.jpg width / height */
   function heroScene(hp) {
-    const m = Math.min(vw, vh) * (vw < 860 ? .7 : .56);
+    const tall = vw < 860 || vh > vw * 1.1;
+    const m = tall ? Math.min(vw * .68, vh * .40) : Math.min(vw, vh) * .56;
     const z = ease(clamp((hp - .1) / .4));
     const size = m * Math.pow(34, z);
-    const sx0 = (vw - m) / 2 + AX * m, sy0 = vh * .44 - m / 2 + AY * m;
+    const cy = tall ? .40 : .44;
+    const sx0 = (vw - m) / 2 + AX * m, sy0 = vh * cy - m / 2 + AY * m;
+    hero.style.setProperty('--sb', `${Math.round(vh * cy + m / 2)}px`); hero.classList.toggle('tall', tall);
+    if (tall) { /* put the vehicle itself inside the S: photo focal point (62%, 64%) lands on the S centre */
+      const ih = vh * 1.6, iw = ih * HERO_AR; win.style.backgroundSize = `${iw}px ${ih}px`;
+      win.style.backgroundPosition = `${(vw / 2 - .25 * iw).toFixed(1)}px ${(vh * cy - .60 * ih).toFixed(1)}px`;
+    } else { win.style.backgroundSize = ''; win.style.backgroundPosition = ''; }
     const ax = sx0 + (vw / 2 - sx0) * z, ay = sy0 + (vh / 2 - sy0) * z;
     const pos = `${ax - AX * size}px ${ay - AY * size}px`, sz = `${size}px ${size}px`;
     win.style.webkitMaskSize = sz; win.style.maskSize = sz; win.style.webkitMaskPosition = pos; win.style.maskPosition = pos;
