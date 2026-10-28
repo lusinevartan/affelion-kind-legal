@@ -165,8 +165,8 @@ LOGOS = '''<ul class="logos">
 ''' + ''.join(f'      <li><span class="logo" role="img" aria-label="{n}" style="-webkit-mask-image:url(assets/clients/{u});mask-image:url(assets/clients/{u});--w:{w};--h:{h}"></span></li>\n' for n, u, w, h in [
     ('Meta', 'meta.svg', '56%', '34%'), ('Google', 'google.svg', '50%', '36%'), ('J.P. Morgan', 'jpmorgan.svg', '66%', '40%'),
     ('The Atlantic', 'atlantic.svg', '54%', '64%'), ('Emerson Collective', 'emerson.svg', '74%', '56%'), ('YPO', 'ypo.svg', '62%', '54%'),
-    ('Edens', 'edens.svg', '60%', '60%'), ('Hargrove', 'hargrove.svg', '72%', '56%')]) + \
-    '      <li><span class="wordlogo">Union Market</span></li>\n      <li><span class="wordlogo">Autoshop</span></li>\n  </ul>'
+    ('Hargrove', 'hargrove.svg', '72%', '56%')]) + \
+    '      <li><span class="wordlogo">Edens</span></li>\n      <li><span class="wordlogo">Union Market</span></li>\n      <li><span class="wordlogo">Autoshop</span></li>\n  </ul>'
 
 TEAM = {
     'noah': ('Noah Gray, EMT', 'Co-Founder & CEO', 'Former Chief Communications Officer, DC Fire & EMS. Volunteer EMT.',
