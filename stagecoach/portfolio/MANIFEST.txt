@@ -24,4 +24,6 @@ m-how.jpg
 m-join.jpg
 og.jpg
 plate.jpg
+reel-poster.jpg
+reel.mp4
 symbol.svg
