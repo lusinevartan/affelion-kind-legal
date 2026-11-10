@@ -1,14 +1,13 @@
 import * as React from 'react';
-import { Alert, Dimensions, Pressable, StyleSheet, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Button, Card, ColorSwatch, MetricRow, Screen, Text } from '../../ui/components';
 import { colors, space } from '../../ui/theme';
 import { useAppActions, useAppState } from '../../features/store/AppStore';
 import { getCachedMask } from '../../features/scan/sessionCache';
-import { PolaroidCard, type PolaroidCardHandle } from '../../render/polaroid/PolaroidCard';
+import { PolaroidCard } from '../../render/polaroid/PolaroidCard';
 import { AURA_COLOR_IDS, AURA_COLORS } from '../../core/color/palette';
-import { capturePolaroid, saveToPhotos, sharePortrait } from '../../services/export';
-import { updatePortraitUri } from '../../services/storage';
+import { usePolaroidExport } from '../../features/portrait/usePolaroidExport';
 
 /**
  * Paid full breakdown. Every colour in the portrait is tied to a number from this scan, in the
@@ -20,8 +19,8 @@ export default function ReportScreen() {
   const { refreshScans } = useAppActions();
   const record = scans.find((s) => s.id === id) ?? null;
   const mask = React.useMemo(() => (id ? getCachedMask(id) : null), [id]);
-  const cardRef = React.useRef<PolaroidCardHandle>(null);
-  const [busy, setBusy] = React.useState(false);
+  const exportOpts = React.useMemo(() => ({ clean: true, exportWidth: 720, onSaved: refreshScans }), [refreshScans]);
+  const { auraRef, busy, run: exportHiRes, exportCard } = usePolaroidExport(record, exportOpts);
 
   React.useEffect(() => {
     if (!entitlement.isPro && record) router.replace({ pathname: '/paywall', params: { from: record.id } });
@@ -39,23 +38,6 @@ export default function ReportScreen() {
   const { heart, voice, aura } = record;
   const width = Math.min(Dimensions.get('window').width - space.xl * 2, 320);
 
-  const exportHiRes = async (mode: 'save' | 'share') => {
-    try {
-      setBusy(true);
-      const uri = await capturePolaroid(cardRef, { fileName: `affelion-aura-${record.id}.png` });
-      await updatePortraitUri(record.id, uri);
-      await refreshScans();
-      if (mode === 'save') {
-        const ok = await saveToPhotos(uri);
-        Alert.alert(ok ? 'Saved' : 'Not saved', ok ? 'Clean export saved to your photo library.' : 'Photo library permission was not granted.');
-      } else await sharePortrait(uri);
-    } catch (e) {
-      Alert.alert('Export failed', e instanceof Error ? e.message : 'Unknown error');
-    } finally {
-      setBusy(false);
-    }
-  };
-
   const hrvWord = aura.state.coherence < 0.25 ? 'low' : aura.state.coherence < 0.5 ? 'moderate' : aura.state.coherence < 0.78 ? 'good' : 'high';
 
   return (
@@ -72,7 +54,7 @@ export default function ReportScreen() {
       </View>
 
       <View style={{ alignItems: 'center', marginTop: space.xl }}>
-        <PolaroidCard ref={cardRef} width={width} stillUri={record.stillUri} aura={{ kind: 'live', params: aura, mask }} caption={AURA_COLORS[aura.dominant].name} subcaption={new Date(record.createdAt).toLocaleDateString()} showWordmark={false} />
+        <PolaroidCard auraRef={auraRef} width={width} stillUri={record.stillUri} aura={{ kind: 'live', params: aura, mask }} caption={AURA_COLORS[aura.dominant].name} subcaption={new Date(record.createdAt).toLocaleDateString()} showWordmark={false} />
       </View>
 
       <Text variant="title" style={{ marginTop: space.xxl }}>
@@ -145,10 +127,11 @@ export default function ReportScreen() {
       <View style={{ marginTop: space.xl, gap: space.md }}>
         <Button label="Ask the guide" onPress={() => router.push({ pathname: '/guide/[id]', params: { id: record.id } })} block />
         <View style={{ flexDirection: 'row', gap: space.md }}>
-          <Button label="Save clean export" variant="secondary" onPress={() => void exportHiRes('save')} loading={busy} style={{ flex: 1 }} />
-          <Button label="Share" variant="secondary" onPress={() => void exportHiRes('share')} loading={busy} style={{ flex: 1 }} />
+          <Button label="Save clean export" variant="secondary" onPress={() => void exportHiRes('save')} loading={busy === 'save'} style={{ flex: 1 }} />
+          <Button label="Share" variant="secondary" onPress={() => void exportHiRes('share')} loading={busy === 'share'} style={{ flex: 1 }} />
         </View>
       </View>
+      {exportCard}
       <Text variant="caption" color={colors.bone30} style={{ marginTop: space.xxl }} align="center">
         Not a medical device. For health concerns, speak with a clinician.
       </Text>

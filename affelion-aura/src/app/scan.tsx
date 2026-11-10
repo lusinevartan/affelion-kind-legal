@@ -12,6 +12,17 @@ import { cacheMask } from '../features/scan/sessionCache';
 import { GUIDANCE_COPY, SCAN_TIMING } from '../core/scan/scanMachine';
 import { useAppActions } from '../features/store/AppStore';
 import { AuraView } from '../render/fluid/AuraView';
+import { mapBiometricsToAura } from '../core/color/mapping';
+
+/**
+ * Neutral preview shown while the outline is being mapped, before any pulse has been read.
+ * It exists so the user sees the fluid wrap their live silhouette; the real colours arrive
+ * only after the measurement. Derived through the same mapping so it stays inside the system.
+ */
+const PREVIEW_PARAMS = mapBiometricsToAura({
+  heart: { bpm: 66, rmssd: 50, sdnn: 55, pnn50: 25, beatCount: 0, quality: 0, durationSec: 0 },
+  voice: null,
+});
 
 /**
  * The scan. One screen, three phases, always-visible status (what we are doing, how far
@@ -73,7 +84,7 @@ export default function ScanScreen() {
   const guidance = GUIDANCE_COPY[state.guidance];
   const phaseLabel =
     state.phase === 'face'
-      ? 'Step 1 of 3 · Outline'
+      ? 'Step 1 of 3 · Outline · preview colours'
       : state.phase === 'finger'
         ? 'Step 2 of 3 · Pulse'
         : state.phase === 'voice'
@@ -125,7 +136,12 @@ export default function ScanScreen() {
             style={StyleSheet.absoluteFill}
           />
         ) : null}
-        {state.phase === 'face' ? <View pointerEvents="none" style={[styles.oval, live.faceDetected && styles.ovalActive]} /> : null}
+        {state.phase === 'face' ? (
+          <>
+            <AuraView params={PREVIEW_PARAMS} mask={session.mask} quality="low" style={StyleSheet.absoluteFill} />
+            <View pointerEvents="none" style={[styles.oval, live.faceDetected && styles.ovalActive]} />
+          </>
+        ) : null}
 
         {state.phase === 'finger' ? (
           <View style={styles.fingerStage}>

@@ -1,16 +1,14 @@
 import * as React from 'react';
-import { Alert, Dimensions, Pressable, StyleSheet, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Button, Screen, Text } from '../../ui/components';
 import { colors, radius, space } from '../../ui/theme';
 import { useAppActions, useAppState } from '../../features/store/AppStore';
 import { getCachedMask } from '../../features/scan/sessionCache';
-import { PolaroidCard, type PolaroidCardHandle } from '../../render/polaroid/PolaroidCard';
-import type { AuraViewRef } from '../../render/fluid/AuraView';
+import { PolaroidCard } from '../../render/polaroid/PolaroidCard';
 import { AURA_COLORS } from '../../core/color/palette';
 import type { AuraRegion } from '../../core/types';
-import { capturePolaroid, saveToPhotos, sharePortrait } from '../../services/export';
-import { updatePortraitUri } from '../../services/storage';
+import { usePolaroidExport } from '../../features/portrait/usePolaroidExport';
 
 /**
  * The free teaser. Real value first: the finished Polaroid, one honest sentence, and one or
@@ -22,10 +20,9 @@ export default function PortraitScreen() {
   const { refreshScans } = useAppActions();
   const record = scans.find((s) => s.id === id) ?? null;
   const mask = React.useMemo(() => (id ? getCachedMask(id) : null), [id]);
-  const cardRef = React.useRef<PolaroidCardHandle>(null);
-  const auraRef = React.useRef<AuraViewRef>(null);
   const [region, setRegion] = React.useState<AuraRegion | null>(null);
-  const [busy, setBusy] = React.useState<'save' | 'share' | null>(null);
+  const exportOpts = React.useMemo(() => ({ clean: entitlement.isPro, exportWidth: entitlement.isPro ? 720 : 480, onSaved: refreshScans }), [entitlement.isPro, refreshScans]);
+  const { auraRef, busy, run: exportPortrait, exportCard } = usePolaroidExport(record, exportOpts);
 
   const width = Math.min(Dimensions.get('window').width - space.xl * 2, 380);
 
@@ -39,25 +36,6 @@ export default function PortraitScreen() {
   }
 
   const teaserRegions = record.aura.regions.slice(0, 2);
-
-  const exportPortrait = async (mode: 'save' | 'share') => {
-    try {
-      setBusy(mode);
-      const uri = await capturePolaroid(cardRef);
-      await updatePortraitUri(record.id, uri);
-      await refreshScans();
-      if (mode === 'save') {
-        const ok = await saveToPhotos(uri);
-        Alert.alert(ok ? 'Saved' : 'Not saved', ok ? 'Your portrait is in your photo library.' : 'Photo library permission was not granted.');
-      } else {
-        await sharePortrait(uri);
-      }
-    } catch (e) {
-      Alert.alert('Export failed', e instanceof Error ? e.message : 'Unknown error');
-    } finally {
-      setBusy(null);
-    }
-  };
 
   const openFull = () => {
     if (entitlement.isPro) router.push({ pathname: '/report/[id]', params: { id: record.id } });
@@ -79,7 +57,6 @@ export default function PortraitScreen() {
 
       <View style={{ alignItems: 'center', marginTop: space.xl }}>
         <PolaroidCard
-          ref={cardRef}
           auraRef={auraRef}
           width={width}
           stillUri={record.stillUri}
@@ -132,6 +109,7 @@ export default function PortraitScreen() {
           <Button label="Share" variant="secondary" onPress={() => void exportPortrait('share')} loading={busy === 'share'} style={{ flex: 1 }} />
         </View>
       </View>
+      {exportCard}
     </Screen>
   );
 }

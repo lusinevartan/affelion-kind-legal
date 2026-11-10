@@ -247,7 +247,7 @@ function tick(state: ScanState, dt: number): ScanState {
 
 export const GUIDANCE_COPY: Record<ScanGuidance, { title: string; body: string }> = {
   faceFraming: { title: 'Frame your face', body: 'Centre yourself in the oval with your shoulders visible. Soft, even light works best.' },
-  faceHold: { title: 'Hold still', body: 'Mapping your outline. Keep looking at the screen.' },
+  faceHold: { title: 'Hold still', body: 'Mapping your outline. The colours you see now are a neutral preview; your own arrive after the pulse reading.' },
   fingerPlace: { title: 'Cover the rear camera', body: 'Place your fingertip over the rear camera and flash together. The flash will turn on; it is safe and will feel slightly warm.' },
   fingerHold: { title: 'Reading your pulse', body: 'Keep your finger still and relaxed. Breathe normally.' },
   fingerPressLighter: { title: 'Press a little lighter', body: 'Too much pressure blocks blood flow. Rest your fingertip gently on the lens.' },

@@ -4,7 +4,7 @@
 
 1. Onboarding (3 screens: what it is, what it measures, what it is not). Permissions are explained here and requested when the scan starts.
 2. Scan (60–90 s, `src/core/scan/scanMachine.ts` + `src/features/scan/useScanSession.ts`):
-   - Face (8 s of framed face): `AffelionSilhouetteView` runs the front camera, emits masks at 15 fps and face metrics; a still is captured after 2.5 s of steady framing.
+   - Face (8 s of framed face): `AffelionSilhouetteView` runs the front camera, emits masks at 15 fps and face metrics; a still is captured after 2.5 s of steady framing. A neutral preview aura (derived through the same mapping from a resting input) is layered over the live feed so the user sees the fluid wrap their silhouette; the guidance says plainly that real colours arrive after the pulse reading.
    - Finger (30–40 s covered, max 90 s wall): `AffelionPpg` runs the rear camera with torch. Samples before exposure lock are discarded. The timer advances only while a fingertip actually covers the lens (`estimateCoverage`). Guidance reacts to saturation (press lighter), darkness (cover the flash too) and low quality (hold steadier).
    - Voice (6 s, min 2.5 s voiced, skippable): `AffelionAudio` streams PCM to `VoiceAnalyzer`.
    - Computing: `PpgProcessor.finish()` + `VoiceAnalyzer.finish()` → `mapBiometricsToAura()` → `ScanRecord` saved to SQLite.
@@ -86,9 +86,13 @@ are in `QUALITY_PRESETS`; lower them on devices that miss 60 fps.
 
 ## Export
 
-The Polaroid card (still + aura GL view + paper frame + caption) is captured with
-`react-native-view-shot`, copied to the document directory, and saved with `expo-media-library` or
-shared with `expo-sharing`. Free exports carry the wordmark; Pro exports are clean.
+`usePolaroidExport` first snapshots the live aura GL view to a PNG with alpha
+(`GLView.takeSnapshotAsync`), then renders an off-screen Polaroid at export width (480 free, 720
+Pro, captured at device scale) with that PNG layered over the still, captures it with
+`react-native-view-shot`, copies it to the document directory, and saves it with
+`expo-media-library` or shares it with `expo-sharing`. The live GL surface is never captured
+directly, which avoids SurfaceView capture failures on Android. Free exports carry the wordmark;
+Pro exports are clean.
 
 ## Monetisation
 
