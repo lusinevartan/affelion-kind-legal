@@ -8,7 +8,7 @@ import { AURA_COLORS } from './palette';
  * any AI-generated text.
  */
 
-export const BANNED_PHRASES: ReadonlyArray<string> = [
+export const BANNED_PHRASES: readonly string[] = [
   'energy field',
   'energetic field',
   'chakra',

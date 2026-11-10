@@ -33,7 +33,7 @@ const RMSSD_LO = 12;
 const RMSSD_HI = 100;
 
 /** Hue path over the activation axis, in "unwrapped" degrees so the red end can sit below 0. */
-const ACTIVATION_HUE_KNOTS: ReadonlyArray<readonly [number, number]> = [
+const ACTIVATION_HUE_KNOTS: readonly (readonly [number, number])[] = [
   [0.0, 250], // indigo      (~45 bpm)
   [0.15, 208], // sky blue   (~55 bpm)
   [0.32, 173], // teal       (~66 bpm)

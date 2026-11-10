@@ -14,7 +14,7 @@ export function norm(x: number, inLo: number, inHi: number): number {
 }
 
 /** Piecewise-linear interpolation over sorted (x, y) knots. Clamps outside the range. */
-export function piecewise(knots: ReadonlyArray<readonly [number, number]>, x: number): number {
+export function piecewise(knots: readonly (readonly [number, number])[], x: number): number {
   const first = knots[0];
   const last = knots[knots.length - 1];
   if (!first || !last) return 0;

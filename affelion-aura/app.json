@@ -8,7 +8,6 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#0B0C10",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -26,7 +25,10 @@
     },
     "android": {
       "package": "com.affelion.aura",
-      "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"],
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#0B0C10",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -43,21 +45,42 @@
       "expo-router",
       "expo-sqlite",
       "expo-font",
-      ["expo-splash-screen", { "backgroundColor": "#0B0C10", "image": "./assets/splash-icon.png", "imageWidth": 160 }],
-      ["expo-camera", {
-        "cameraPermission": "Affelion Aura uses the front camera to frame your portrait and the rear camera with the flash to read your pulse from your fingertip.",
-        "microphonePermission": "Affelion Aura listens for a few seconds to measure the pitch and variation of your voice.",
-        "recordAudioAndroid": true
-      }],
-      ["expo-media-library", {
-        "savePhotosPermission": "Affelion Aura saves your Polaroid portrait to your photo library when you ask it to.",
-        "isAccessMediaLocationEnabled": false
-      }],
-      ["expo-build-properties", {
-        "ios": { "deploymentTarget": "16.4" },
-        "android": { "minSdkVersion": 26, "compileSdkVersion": 36, "targetSdkVersion": 36 }
-      }]
-    ],
-    "experiments": { "typedRoutes": true }
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0B0C10",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Affelion Aura uses the front camera to frame your portrait and the rear camera with the flash to read your pulse from your fingertip.",
+          "microphonePermission": "Affelion Aura listens for a few seconds to measure the pitch and variation of your voice.",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "Affelion Aura saves your Polaroid portrait to your photo library when you ask it to.",
+          "isAccessMediaLocationEnabled": false
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "16.4"
+          },
+          "android": {
+            "minSdkVersion": 26,
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36
+          }
+        }
+      ]
+    ]
   }
 }
