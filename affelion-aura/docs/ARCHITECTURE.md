@@ -6,7 +6,7 @@
 2. Scan (60–90 s, `src/core/scan/scanMachine.ts` + `src/features/scan/useScanSession.ts`):
    - Face (8 s of framed face): `AffelionSilhouetteView` runs the front camera, emits masks at 15 fps and face metrics; a still is captured after 2.5 s of steady framing. A neutral preview aura (derived through the same mapping from a resting input) is layered over the live feed so the user sees the fluid wrap their silhouette; the guidance says plainly that real colours arrive after the pulse reading.
    - Finger (30–40 s covered, max 90 s wall): `AffelionPpg` runs the rear camera with torch. Samples before exposure lock are discarded. The timer advances only while a fingertip actually covers the lens (`estimateCoverage`). Guidance reacts to saturation (press lighter), darkness (cover the flash too) and low quality (hold steadier).
-   - Voice (6 s, min 2.5 s voiced, skippable): `AffelionAudio` streams PCM to `VoiceAnalyzer`.
+   - Voice (5 s, min 2.5 s voiced, skippable): `AffelionAudio` streams PCM to `VoiceAnalyzer`.
    - Computing: `PpgProcessor.finish()` + `VoiceAnalyzer.finish()` → `mapBiometricsToAura()` → `ScanRecord` saved to SQLite.
 3. Portrait teaser (free): Polaroid with the live aura, one grounded sentence, two tappable regions.
 4. Soft paywall, only after a portrait exists. Plans: $8.99 monthly, $54 annual (recommended), $89 lifetime. Restore and manage/cancel are on the paywall and in Settings.
@@ -14,24 +14,16 @@
 
 ## Biometric → colour engine (`src/core/color`)
 
-`palette.ts` is the single source of truth: ten colours, each with hex/HSL, a meaning and the
-physiological description used everywhere (UI, explanations, AI system prompt).
+`knowledgeBase.ts` is the single source of truth: the twenty specified entries verbatim.
+`mapping.ts` implements the specified rules in order (greens/teals, reds/oranges, blues/indigos,
+sky blue), refines the shade from secondary signals, applies the achromatic tones by their stated
+biometric descriptions, and always returns `hue, saturation, lightness, turbulence, pulseSpeed,
+primaryColorId` (plus `secondaryColorId`, `family`, `accentStrength`). Inputs are quantised (1 bpm,
+1 ms, 1 Hz, 0.02 on the vocal scales) and the fluid seed is a hash of the quantised inputs, so
+identical measurements produce identical portraits. Full rule tables: `docs/COLOR_SYSTEM.md`.
 
-`mapping.ts` normalises BPM (45–110 linear) and RMSSD (12–100 ms, log scale) to activation and
-coherence, vocal features to a 0..1 vocal variance, and derives:
-
-| Output | Driver |
-| --- | --- |
-| hue | activation path indigo → sky blue → teal → lime → gold → orange → red, bent toward teal/green by high coherence or toward red by low coherence |
-| saturation | baseline 0.52, +0.28 × vocal variance, muted toward earth at low energy + low coherence |
-| lightness | lifted by coherence, soft white above ~0.96 coherence, darkened toward earth |
-| turbulence | rises with activation and with low coherence, damped by coherence |
-| pulseSpeed | BPM / 60 Hz, clamped 0.6–2.2 |
-
-Inputs are quantised (1 bpm, 1 ms, 0.1 semitone) before mapping and the seed for the fluid's PRNG
-is a hash of the quantised inputs, so identical measurements produce identical portraits.
-`explain.ts` generates every sentence from the actual numbers and asserts against a banned-phrase
-list; the same list guards AI replies.
+`explain.ts` builds every sentence from the knowledge base's own explanation text plus the user's
+measured numbers, and asserts against a banned-phrase list; the same list guards AI replies.
 
 ## PPG (`src/core/signal/ppg.ts`, `modules/affelion-ppg`)
 
@@ -50,8 +42,9 @@ duration). Synthetic tests hold BPM within 1.5 bpm and distinguish RSA from a me
 
 1024-sample frames at 16 kHz, hop 512. Frames above a silence floor get a YIN pitch estimate
 (65–500 Hz, threshold 0.15) and, when confident, a Hann-windowed FFT for the spectral centroid.
-Aggregates: median pitch, pitch standard deviation in semitones, energy coefficient of variation,
-mean centroid, voiced ratio, quality. Nothing is transcribed or stored.
+Aggregates: dominant (median) pitch in Hz, variance 0–1 (pitch spread in semitones and level
+variation), stability 0–1 (frame-to-frame pitch jitter, level shimmer and voicing continuity),
+plus the raw statistics, voiced ratio and quality. Nothing is transcribed or stored.
 
 ## Silhouette (`modules/affelion-silhouette`)
 

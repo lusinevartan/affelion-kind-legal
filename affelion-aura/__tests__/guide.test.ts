@@ -3,7 +3,7 @@ import { mapBiometricsToAura } from '../src/core/color';
 import type { ScanRecord } from '../src/core/types';
 
 const heart = { bpm: 78, rmssd: 34, sdnn: 40, pnn50: 12, beatCount: 50, quality: 0.85, durationSec: 40 };
-const voice = { medianPitchHz: 175, pitchVarianceSemitones: 1.8, energyVariance: 0.3, spectralCentroidHz: 1300, voicedRatio: 0.55, quality: 0.8, durationSec: 6 };
+const voice = { dominantPitchHz: 175, variance: 0.4, stability: 0.7, pitchVarianceSemitones: 1.8, energyVariance: 0.3, spectralCentroidHz: 1300, voicedRatio: 0.55, quality: 0.8, durationSec: 5 };
 const record: ScanRecord = {
   id: 'scan_test',
   createdAt: 1_700_000_000_000,
@@ -20,6 +20,7 @@ describe('guide guardrails', () => {
     expect(ctx).toContain('78 bpm');
     expect(ctx).toContain('RMSSD 34 ms');
     expect(ctx).toContain('175 Hz');
+    expect(ctx).toContain('Colour family rule applied');
   });
 
   test('psychic or predictive replies are replaced', () => {
@@ -29,7 +30,7 @@ describe('guide guardrails', () => {
   });
 
   test('grounded replies pass through unchanged', () => {
-    const ok = 'Your pulse averaged 78 bpm, which maps to lime green in the colour system.';
+    const ok = 'Your pulse averaged 78 bpm, which the knowledge base maps to sky blue.';
     expect(sanitiseGuideReply(ok)).toBe(ok);
   });
 

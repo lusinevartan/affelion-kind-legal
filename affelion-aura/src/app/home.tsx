@@ -63,14 +63,14 @@ export default function Home() {
               {latest.portraitUri || latest.stillUri ? (
                 <Image source={{ uri: latest.portraitUri ?? latest.stillUri ?? undefined }} style={styles.thumb} contentFit="cover" />
               ) : (
-                <View style={[styles.thumb, { backgroundColor: AURA_COLORS[latest.aura.dominant].hex }]} />
+                <View style={[styles.thumb, { backgroundColor: AURA_COLORS[latest.aura.primaryColorId].hex }]} />
               )}
             </View>
             <View style={{ flex: 1, gap: 4 }}>
               <Text variant="caption" color={colors.bone50}>
                 LATEST · {new Date(latest.createdAt).toLocaleDateString()}
               </Text>
-              <Text variant="heading">{AURA_COLORS[latest.aura.dominant].name} centre</Text>
+              <Text variant="heading">{AURA_COLORS[latest.aura.primaryColorId].name} centre</Text>
               <Text variant="bodySmall" color={colors.bone70} numberOfLines={2}>
                 {latest.aura.summary}
               </Text>

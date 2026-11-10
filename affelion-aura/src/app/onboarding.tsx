@@ -13,12 +13,12 @@ const PAGES = [
   {
     eyebrow: 'What this is',
     title: 'A portrait of your pulse and voice, painted in colour.',
-    body: 'Affelion Aura measures your heart rate, its beat-to-beat variability, and the pitch and variation of your voice. It translates those numbers into a living colour field around your silhouette.',
+    body: 'Affelion Aura translates your real heart rate, HRV, and voice into a living color portrait. It does not capture invisible light.',
   },
   {
     eyebrow: 'What it measures',
     title: 'Three signals, about a minute.',
-    body: 'Your fingertip on the rear camera with the flash on reads your pulse. The front camera maps your outline. A few seconds of your voice are analysed for pitch and variation. Everything is processed on your phone. No audio or video is stored or uploaded.',
+    body: 'Your fingertip on the rear camera with the flash on reads your pulse and HRV. The front camera maps your outline. Five seconds of your voice are analysed for pitch, variance and stability. Everything is processed on your phone. No audio or video is stored or uploaded.',
   },
   {
     eyebrow: 'What it is not',

@@ -25,15 +25,19 @@ export interface HeartMetrics {
   durationSec: number;
 }
 
-/** Summary of the short voice sample. */
+/** Summary of the short voice sample (4–6 s). */
 export interface VoiceMetrics {
-  /** Median fundamental frequency in Hz over voiced frames. */
-  medianPitchHz: number;
-  /** Standard deviation of pitch in semitones over voiced frames. */
+  /** Dominant (median) fundamental frequency in Hz over voiced frames. */
+  dominantPitchHz: number;
+  /** Pitch variance normalised 0..1 (0 = monotone, 1 = highly varied). */
+  variance: number;
+  /** Stability normalised 0..1 (1 = very steady pitch and level frame to frame). */
+  stability: number;
+  /** Raw: standard deviation of pitch in semitones over voiced frames. */
   pitchVarianceSemitones: number;
-  /** Coefficient of variation of frame energy (0..1 after clamping). */
+  /** Raw: coefficient of variation of frame energy, clamped 0..1. */
   energyVariance: number;
-  /** Mean spectral centroid in Hz over voiced frames. */
+  /** Raw: mean spectral centroid in Hz over voiced frames. */
   spectralCentroidHz: number;
   /** Fraction (0..1) of frames with a confident pitch. */
   voicedRatio: number;
@@ -49,18 +53,20 @@ export interface BiometricInput {
   voice: VoiceMetrics | null;
 }
 
-/** Identifier for one of the ten colours in the Affelion colour system. */
-export type AuraColorId =
-  | 'deepRed'
-  | 'brightOrange'
-  | 'goldenYellow'
-  | 'limeGreen'
-  | 'teal'
-  | 'skyBlue'
-  | 'indigo'
-  | 'violet'
-  | 'softWhite'
-  | 'earth';
+/** The exact input vector named by the mapping specification. */
+export interface MappingInput {
+  bpm: number;
+  /** HRV in ms (RMSSD). */
+  hrv: number;
+  vocalPitchHz: number;
+  /** 0..1 */
+  vocalVariance: number;
+  /** 0..1 */
+  vocalStability: number;
+}
+
+export type { AuraColorId } from './color/knowledgeBase';
+import type { AuraColorId as KbColorId } from './color/knowledgeBase';
 
 export interface HSL {
   /** Degrees 0..360 */
@@ -77,27 +83,32 @@ export interface RGB {
   b: number;
 }
 
-/** Normalised state derived from the raw metrics. All values 0..1. */
+/** Which rule of the specification selected the colour family. */
+export type ColorFamily = 'greensTeals' | 'redsOranges' | 'bluesIndigos' | 'skyBlue';
+
+/** Normalised state derived from the raw metrics. All values 0..1 unless noted. */
 export interface NormalisedState {
   /** Heart-rate driven activation. 0 = very low BPM, 1 = very high BPM. */
   activation: number;
   /** HRV driven coherence. 0 = very low variability, 1 = very high variability. */
   coherence: number;
-  /** Vocal variance. 0 = flat and quiet, 1 = highly varied. */
+  /** Vocal variance 0..1 as supplied. */
   vocalVariance: number;
-  /** Overall arousal blend used for turbulence. */
-  arousal: number;
+  /** Vocal stability 0..1 as supplied. */
+  vocalStability: number;
+  /** False when no usable voice sample existed and neutral defaults were used. */
+  voiceAvailable: boolean;
 }
 
-/** A region of the portrait that the user can tap for an explanation. */
+/** A region of the portrait that the user can tap for a knowledge-base explanation. */
 export interface AuraRegion {
-  id: 'core' | 'halo' | 'accent';
-  colorId: AuraColorId;
+  id: 'core' | 'halo';
+  colorId: KbColorId;
   /** Relative weight 0..1 used by the renderer for dye injection. */
   weight: number;
-  /** Which metric this region is tied to. */
+  /** Which measurements this region is tied to. */
   metric: 'heartRate' | 'hrv' | 'voice';
-  /** One grounded sentence tying the colour to the measurement. */
+  /** Knowledge-base explanation followed by the user's actual numbers. */
   explanation: string;
 }
 
@@ -113,14 +124,13 @@ export interface AuraParams {
   turbulence: number;
   /** Pulses per second driving the fluid injection rhythm. */
   pulseSpeed: number;
-  /** Secondary hue used for the outer halo. */
-  haloHue: number;
-  /** 0..1 strength of bright accents from vocal variance. */
+  /** Knowledge-base id of the primary colour. */
+  primaryColorId: KbColorId;
+  /** Knowledge-base id of the secondary (halo) colour. */
+  secondaryColorId: KbColorId;
+  family: ColorFamily;
+  /** 0..1 strength of the brighter accent triggered by vocal variance. */
   accentStrength: number;
-  /** Colour ids, dominant first. */
-  dominant: AuraColorId;
-  secondary: AuraColorId;
-  accent: AuraColorId | null;
   regions: AuraRegion[];
   state: NormalisedState;
   /** 32-bit seed derived from the quantised input, for the fluid simulation's PRNG. */

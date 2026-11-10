@@ -376,9 +376,17 @@ export class FluidSim {
     this.params = params;
     this.rng = mulberry32(params.seed);
     const core = hslToRgb({ h: params.hue, s: params.saturation, l: params.lightness });
-    const haloDef = AURA_COLORS[params.secondary].hsl;
-    const halo = hslToRgb({ h: haloDef.h, s: clamp01(haloDef.s * lerp(0.45, 1.0, params.saturation)), l: haloDef.l });
-    const accent = params.accent ? hslToRgb(AURA_COLORS[params.accent].hsl) : null;
+    const haloDef = AURA_COLORS[params.secondaryColorId].hsl;
+    const halo = hslToRgb({
+      h: haloDef.h,
+      s: clamp01(Math.min(haloDef.s, params.saturation + 0.15) * lerp(0.45, 1.0, params.saturation)),
+      l: clamp01(lerp(haloDef.l, params.lightness, 0.5)),
+    });
+    // The brighter accent is the primary colour lifted in lightness; it carries no new meaning.
+    const accent =
+      params.accentStrength > 0
+        ? hslToRgb({ h: params.hue, s: clamp01(params.saturation + 0.1), l: clamp01(params.lightness + 0.25) })
+        : null;
     this.palette = { core, halo, accent };
   }
 
@@ -591,7 +599,7 @@ export class FluidSim {
       // Colour: core near the body centre line, halo toward the shoulders/edges, accents rarely.
       const r = this.rng();
       let color: RGB;
-      if (pal.accent && r < 0.12 * p.accentStrength + 0.02 * p.state.vocalVariance) color = pal.accent;
+      if (pal.accent && r < 0.14 * p.accentStrength) color = pal.accent;
       else if (r < 0.45 + 0.3 * (1 - p.regions[1]!.weight)) color = pal.core;
       else color = pal.halo;
       const intensity = lerp(0.22, 0.4, beat) * lerp(0.85, 1.25, p.saturation);

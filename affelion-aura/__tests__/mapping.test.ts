@@ -1,7 +1,17 @@
-import { mapBiometricsToAura, normalise, AURA_COLORS, findBannedPhrase, hslToHex } from '../src/core/color';
-import type { BiometricInput, HeartMetrics, VoiceMetrics } from '../src/core/types';
+import {
+  mapBiometricsToAura,
+  mapBiometricsToColor,
+  selectFamily,
+  selectAchromatic,
+  AURA_COLORS,
+  COLOR_KNOWLEDGE_BASE,
+  KB_BY_ID,
+  findBannedPhrase,
+  FAMILY_HUE,
+} from '../src/core/color';
+import type { BiometricInput, HeartMetrics, MappingInput, VoiceMetrics } from '../src/core/types';
 
-const heart = (bpm: number, rmssd: number, extra: Partial<HeartMetrics> = {}): HeartMetrics => ({
+const heart = (bpm: number, rmssd: number): HeartMetrics => ({
   bpm,
   rmssd,
   sdnn: rmssd * 1.2,
@@ -9,142 +19,228 @@ const heart = (bpm: number, rmssd: number, extra: Partial<HeartMetrics> = {}): H
   beatCount: 40,
   quality: 0.9,
   durationSec: 40,
-  ...extra,
 });
 
-const voice = (pitchVar: number, energyVar = 0.3, centroid = 1200): VoiceMetrics => ({
-  medianPitchHz: 180,
-  pitchVarianceSemitones: pitchVar,
-  energyVariance: energyVar,
-  spectralCentroidHz: centroid,
+const voice = (variance: number, stability: number, pitch = 180): VoiceMetrics => ({
+  dominantPitchHz: pitch,
+  variance,
+  stability,
+  pitchVarianceSemitones: variance * 4,
+  energyVariance: variance,
+  spectralCentroidHz: 1200,
   voicedRatio: 0.6,
   quality: 0.8,
-  durationSec: 6,
+  durationSec: 5,
 });
 
-const input = (h: HeartMetrics, v: VoiceMetrics | null = voice(1.5)): BiometricInput => ({ heart: h, voice: v });
+const input = (h: HeartMetrics, v: VoiceMetrics | null = voice(0.3, 0.6)): BiometricInput => ({ heart: h, voice: v });
+const m = (bpm: number, hrv: number, vocalVariance = 0.3, vocalStability = 0.6, vocalPitchHz = 180): MappingInput => ({
+  bpm,
+  hrv,
+  vocalPitchHz,
+  vocalVariance,
+  vocalStability,
+});
 
-const isWarm = (hue: number) => hue <= 50 || hue >= 345;
-const isGreenTeal = (hue: number) => hue >= 80 && hue <= 185;
-const isBlueIndigo = (hue: number) => hue >= 195 && hue <= 270;
+const inRange = (hue: number, [lo, hi]: readonly [number, number]) => hue >= lo && hue <= hi;
+const inReds = (hue: number) => hue <= 40 || hue >= 345;
+const ACHROMATIC = ['soft_white', 'pearl', 'muted_gray', 'earth_brown', 'charcoal'];
+const isAchromatic = (id: string) => ACHROMATIC.includes(id);
 
-describe('deterministic biometric → aura mapping', () => {
+describe('family rules (evaluated in the specified order)', () => {
+  test('hrv >= 55 and bpm <= 78 → greens/teals, hue 140–190, low turbulence', () => {
+    for (const [bpm, hrv] of [[55, 55], [78, 60], [70, 95], [62, 70]]) {
+      const out = mapBiometricsToColor(m(bpm!, hrv!));
+      expect(out.family).toBe('greensTeals');
+      expect(inRange(out.hue, FAMILY_HUE.greensTeals)).toBe(true);
+      expect(out.turbulence).toBeLessThanOrEqual(0.25);
+      expect([...ACHROMATIC, 'emerald', 'teal', 'aqua']).toContain(out.primaryColorId);
+    }
+  });
+
+  test('bpm >= 92 or hrv <= 28 → reds/oranges with higher turbulence and pulse speed', () => {
+    for (const [bpm, hrv] of [[92, 60], [110, 40], [80, 28], [75, 15]]) {
+      const out = mapBiometricsToColor(m(bpm!, hrv!));
+      expect(out.family).toBe('redsOranges');
+      expect(inReds(out.hue)).toBe(true);
+      expect(out.turbulence).toBeGreaterThanOrEqual(0.6);
+      expect(['deep_red', 'crimson', 'bright_orange', 'amber']).toContain(out.primaryColorId);
+    }
+    const calm = mapBiometricsToColor(m(70, 60));
+    const fast = mapBiometricsToColor(m(100, 60));
+    expect(fast.pulseSpeed).toBeGreaterThan((100 / 60) * 1.1);
+    expect(fast.pulseSpeed).toBeGreaterThan(calm.pulseSpeed);
+  });
+
+  test('bpm <= 62 → blues/indigos, hue 200–270, low turbulence', () => {
+    for (const [bpm, hrv] of [[62, 45], [50, 50], [45, 40]]) {
+      const out = mapBiometricsToColor(m(bpm!, hrv!));
+      expect(out.family).toBe('bluesIndigos');
+      expect(out.turbulence).toBeLessThanOrEqual(0.2);
+      if (isAchromatic(out.primaryColorId)) continue;
+      expect(inRange(out.hue, FAMILY_HUE.bluesIndigos)).toBe(true);
+      expect(['sky_blue', 'cobalt', 'indigo', 'violet', 'lavender']).toContain(out.primaryColorId);
+    }
+  });
+
+  test('otherwise → sky blue 195–215', () => {
+    for (const [bpm, hrv] of [[70, 45], [85, 50], [63, 30], [91, 54]]) {
+      const out = mapBiometricsToColor(m(bpm!, hrv!));
+      expect(out.family).toBe('skyBlue');
+      if (isAchromatic(out.primaryColorId)) continue;
+      expect(inRange(out.hue, FAMILY_HUE.skyBlue)).toBe(true);
+      expect(out.primaryColorId).toBe('sky_blue');
+    }
+  });
+
+  test('rule order: greens before reds, reds before blues', () => {
+    expect(selectFamily(m(60, 60))).toBe('greensTeals');
+    expect(selectFamily(m(60, 20))).toBe('redsOranges');
+    expect(selectFamily(m(60, 40))).toBe('bluesIndigos');
+  });
+});
+
+describe('vocal signals', () => {
+  test('vocalVariance raises saturation and triggers a brighter accent', () => {
+    const flat = mapBiometricsToColor(m(70, 45, 0.1, 0.6));
+    const varied = mapBiometricsToColor(m(70, 45, 0.9, 0.6));
+    expect(varied.saturation).toBeGreaterThan(flat.saturation + 0.2);
+    expect(flat.accentStrength).toBe(0);
+    expect(varied.accentStrength).toBeGreaterThan(0.5);
+  });
+
+  test('vocalStability sets lightness', () => {
+    const shaky = mapBiometricsToColor(m(70, 45, 0.3, 0.1));
+    const steady = mapBiometricsToColor(m(70, 45, 0.3, 0.95));
+    expect(steady.lightness).toBeGreaterThan(shaky.lightness + 0.1);
+  });
+});
+
+describe('shade refinement by secondary signals', () => {
+  test('deep red vs crimson: crimson needs high BPM with moderate-to-high vocal variance', () => {
+    expect(mapBiometricsToColor(m(112, 20, 0.2, 0.5)).primaryColorId).toBe('deep_red');
+    expect(mapBiometricsToColor(m(112, 20, 0.8, 0.5)).primaryColorId).toBe('crimson');
+    expect(inRange(mapBiometricsToColor(m(112, 20, 0.8, 0.5)).hue, KB_BY_ID.crimson.hueRange!)).toBe(true);
+  });
+
+  test('bright orange vs amber: amber needs positive vocal energy without high BPM', () => {
+    expect(mapBiometricsToColor(m(80, 28, 0.2, 0.5)).primaryColorId).toBe('bright_orange');
+    expect(mapBiometricsToColor(m(80, 28, 0.7, 0.5)).primaryColorId).toBe('amber');
+  });
+
+  test('teal vs aqua: aqua needs an open, steady voice', () => {
+    expect(mapBiometricsToColor(m(58, 98, 0.1, 0.9)).primaryColorId).toBe('teal');
+    expect(mapBiometricsToColor(m(58, 98, 0.7, 0.9)).primaryColorId).toBe('aqua');
+    expect(mapBiometricsToColor(m(76, 56, 0.3, 0.6)).primaryColorId).toBe('emerald');
+  });
+
+  test('cobalt, indigo, violet, lavender inside the blues family', () => {
+    expect(mapBiometricsToColor(m(58, 45, 0.3, 0.9)).primaryColorId).toBe('cobalt');
+    expect(mapBiometricsToColor(m(60, 45, 0.3, 0.3)).primaryColorId).toBe('sky_blue');
+    expect(mapBiometricsToColor(m(52, 45, 0.5, 0.5)).primaryColorId).toBe('indigo');
+    expect(mapBiometricsToColor(m(46, 45, 0.5, 0.9)).primaryColorId).toBe('violet');
+    expect(mapBiometricsToColor(m(46, 45, 0.2, 0.5)).primaryColorId).toBe('lavender');
+  });
+
+  test('every chromatic primary lands inside its own knowledge-base hue range', () => {
+    for (let bpm = 42; bpm <= 125; bpm += 3) {
+      for (let hrv = 8; hrv <= 130; hrv += 7) {
+        for (const [vv, vs] of [[0.05, 0.9], [0.3, 0.6], [0.55, 0.75], [0.9, 0.2]]) {
+          const out = mapBiometricsToColor(m(bpm, hrv, vv!, vs!));
+          const kb = KB_BY_ID[out.primaryColorId];
+          if (kb.hueRange) expect(inRange(out.hue, kb.hueRange)).toBe(true);
+          expect(out.secondaryColorId).not.toBe(out.primaryColorId);
+        }
+      }
+    }
+  });
+});
+
+describe('achromatic tones from the knowledge base', () => {
+  test('charcoal for very low energy markers', () => {
+    expect(selectAchromatic(m(48, 20, 0.1, 0.5), true)).toBe('charcoal');
+    const out = mapBiometricsToColor(m(48, 20, 0.1, 0.5));
+    expect(out.primaryColorId).toBe('charcoal');
+    expect(out.lightness).toBeLessThan(0.25);
+  });
+  test('muted gray for low activation or a flat voice, never over strong HRV', () => {
+    expect(mapBiometricsToColor(m(58, 35, 0.3, 0.5)).primaryColorId).toBe('muted_gray');
+    expect(mapBiometricsToColor(m(66, 50, 0.05, 0.9)).primaryColorId).toBe('muted_gray');
+    expect(mapBiometricsToColor(m(58, 98, 0.05, 0.9)).primaryColorId).toBe('teal');
+  });
+  test('earth brown for moderate-low BPM with reduced HRV', () => {
+    const out = mapBiometricsToColor(m(66, 30, 0.3, 0.5));
+    expect(out.primaryColorId).toBe('earth_brown');
+    expect(out.saturation).toBeLessThan(0.3);
+  });
+  test('soft white and pearl for strong HRV', () => {
+    expect(mapBiometricsToColor(m(64, 90, 0.4, 0.8)).primaryColorId).toBe('soft_white');
+    expect(mapBiometricsToColor(m(64, 72, 0.5, 0.4)).primaryColorId).toBe('pearl');
+  });
+  test('without a voice sample, voice-dependent tones are not selected', () => {
+    expect(selectAchromatic(m(64, 90, 0, 0.5), false)).toBeNull();
+    expect(selectAchromatic(m(66, 50, 0, 0.5), false)).toBeNull();
+  });
+});
+
+describe('determinism and copy', () => {
   test('identical inputs produce identical outputs', () => {
     const a = mapBiometricsToAura(input(heart(72, 45)));
     const b = mapBiometricsToAura(input(heart(72, 45)));
     expect(b).toEqual(a);
   });
 
-  test('inputs within the quantisation step produce identical outputs', () => {
+  test('inputs within the quantisation step are identical', () => {
     const a = mapBiometricsToAura(input(heart(72.2, 45.3)));
     const b = mapBiometricsToAura(input(heart(71.8, 44.7)));
     expect(b.hue).toBe(a.hue);
     expect(b.seed).toBe(a.seed);
-    expect(b.dominant).toBe(a.dominant);
+    expect(b.primaryColorId).toBe(a.primaryColorId);
   });
 
-  test('high BPM → reds/oranges with high turbulence', () => {
-    const p = mapBiometricsToAura(input(heart(105, 20)));
-    expect(isWarm(p.hue)).toBe(true);
-    expect(['deepRed', 'brightOrange']).toContain(p.dominant);
-    expect(p.turbulence).toBeGreaterThan(0.6);
-  });
-
-  test('low HRV at a mid pulse pulls toward red/orange', () => {
-    const p = mapBiometricsToAura(input(heart(80, 14)));
-    expect(p.hue <= 60 || p.hue >= 340).toBe(true);
-    expect(p.turbulence).toBeGreaterThan(0.5);
-  });
-
-  test('high HRV + calm BPM → greens/teals with smooth motion', () => {
-    const p = mapBiometricsToAura(input(heart(62, 85)));
-    expect(isGreenTeal(p.hue)).toBe(true);
-    expect(['teal', 'limeGreen']).toContain(p.dominant);
-    expect(p.turbulence).toBeLessThan(0.35);
-  });
-
-  test('low BPM → blues/indigos', () => {
-    const p = mapBiometricsToAura(input(heart(50, 40)));
-    expect(isBlueIndigo(p.hue)).toBe(true);
-    expect(['skyBlue', 'indigo', 'violet']).toContain(p.dominant);
-  });
-
-  test('vocal variance raises saturation and adds a bright accent', () => {
-    const flat = mapBiometricsToAura(input(heart(70, 45), voice(0.4, 0.05, 600)));
-    const varied = mapBiometricsToAura(input(heart(70, 45), voice(3.8, 0.9, 2400)));
-    expect(varied.saturation).toBeGreaterThan(flat.saturation + 0.15);
-    expect(varied.accent).toBe('goldenYellow');
-    expect(varied.accentStrength).toBeGreaterThan(0.3);
-  });
-
-  test('low energy and low coherence yields muted earth tones', () => {
-    const p = mapBiometricsToAura(input(heart(52, 12), voice(0.3, 0.05, 500)));
-    expect(p.saturation).toBeLessThan(0.3);
-    expect(p.dominant).toBe('earth');
-  });
-
-  test('very high coherence lifts toward soft white', () => {
-    const p = mapBiometricsToAura(input(heart(58, 110), voice(0.5)));
-    expect(p.lightness).toBeGreaterThan(0.7);
-    expect(p.dominant).toBe('softWhite');
-  });
-
-  test('pulse speed follows BPM', () => {
-    expect(mapBiometricsToAura(input(heart(60, 40))).pulseSpeed).toBeCloseTo(1, 2);
-    expect(mapBiometricsToAura(input(heart(90, 40))).pulseSpeed).toBeCloseTo(1.5, 2);
-  });
-
-  test('all parameters stay in range across a grid of inputs', () => {
-    for (let bpm = 40; bpm <= 120; bpm += 5) {
-      for (let rmssd = 8; rmssd <= 130; rmssd += 12) {
-        for (const v of [null, voice(0.3), voice(2), voice(4.5, 1, 3000)]) {
-          const p = mapBiometricsToAura(input(heart(bpm, rmssd), v));
+  test('outputs stay in range across a grid and copy stays honest', () => {
+    for (let bpm = 40; bpm <= 125; bpm += 5) {
+      for (let hrv = 8; hrv <= 130; hrv += 12) {
+        for (const v of [null, voice(0.1, 0.9), voice(0.5, 0.5), voice(0.95, 0.1)]) {
+          const p = mapBiometricsToAura(input(heart(bpm, hrv), v));
           expect(p.hue).toBeGreaterThanOrEqual(0);
           expect(p.hue).toBeLessThan(360);
-          expect(p.saturation).toBeGreaterThanOrEqual(0.14);
-          expect(p.saturation).toBeLessThanOrEqual(0.95);
-          expect(p.lightness).toBeGreaterThanOrEqual(0.3);
-          expect(p.lightness).toBeLessThanOrEqual(0.9);
+          expect(p.saturation).toBeGreaterThanOrEqual(0.05);
+          expect(p.saturation).toBeLessThanOrEqual(0.98);
+          expect(p.lightness).toBeGreaterThanOrEqual(0.15);
+          expect(p.lightness).toBeLessThanOrEqual(0.92);
           expect(p.turbulence).toBeGreaterThanOrEqual(0);
           expect(p.turbulence).toBeLessThanOrEqual(1);
           expect(p.pulseSpeed).toBeGreaterThanOrEqual(0.6);
           expect(p.pulseSpeed).toBeLessThanOrEqual(2.2);
-          expect(p.regions.length).toBeGreaterThanOrEqual(2);
-          expect(p.regions.length).toBeLessThanOrEqual(3);
-          expect(p.secondary).not.toBe(p.dominant);
-          for (const r of p.regions) expect(findBannedPhrase(r.explanation)).toBeNull();
+          expect(p.regions).toHaveLength(2);
+          for (const r of p.regions) {
+            expect(findBannedPhrase(r.explanation)).toBeNull();
+            expect(r.explanation).toContain(KB_BY_ID[r.colorId].explanation);
+          }
           expect(findBannedPhrase(p.summary)).toBeNull();
         }
       }
     }
   });
 
-  test('normalisation is monotonic in BPM and RMSSD', () => {
-    const a = normalise(input(heart(55, 30)));
-    const b = normalise(input(heart(95, 30)));
-    expect(b.activation).toBeGreaterThan(a.activation);
-    const c = normalise(input(heart(70, 20)));
-    const d = normalise(input(heart(70, 80)));
-    expect(d.coherence).toBeGreaterThan(c.coherence);
-  });
-
-  test('explanations reference the actual numbers', () => {
-    const p = mapBiometricsToAura(input(heart(88, 23)));
+  test('explanations quote the knowledge base and the actual numbers', () => {
+    const p = mapBiometricsToAura(input(heart(88, 23), voice(0.4, 0.7, 165)));
     const core = p.regions.find((r) => r.id === 'core')!;
+    expect(core.explanation).toContain(KB_BY_ID[p.primaryColorId].explanation);
     expect(core.explanation).toContain('88 bpm');
-    expect(core.explanation).toContain('23 ms');
-    expect(p.summary).toContain('88 bpm');
+    expect(core.explanation).toContain('HRV 23 ms');
+    expect(core.explanation).toContain('165 Hz');
+    expect(p.summary).toContain(KB_BY_ID[p.primaryColorId].name);
+    const noVoice = mapBiometricsToAura(input(heart(88, 23), null));
+    expect(noVoice.regions[0]!.explanation).toContain('No usable voice sample');
   });
 
-  test('colour system hex values match their HSL definitions closely', () => {
-    for (const c of Object.values(AURA_COLORS)) {
-      const fromHsl = hslToHex(c.hsl);
-      const a = parseInt(fromHsl.slice(1), 16);
-      const b = parseInt(c.hex.slice(1), 16);
-      const dr = Math.abs(((a >> 16) & 255) - ((b >> 16) & 255));
-      const dg = Math.abs(((a >> 8) & 255) - ((b >> 8) & 255));
-      const db = Math.abs((a & 255) - (b & 255));
-      expect(Math.max(dr, dg, db)).toBeLessThan(14);
+  test('the knowledge base is complete and swatches exist for every entry', () => {
+    expect(COLOR_KNOWLEDGE_BASE).toHaveLength(20);
+    for (const c of COLOR_KNOWLEDGE_BASE) {
+      expect(AURA_COLORS[c.id].hex).toMatch(/^#[0-9A-F]{6}$/);
+      expect(AURA_COLORS[c.id].explanation).toBe(c.explanation);
     }
   });
 });

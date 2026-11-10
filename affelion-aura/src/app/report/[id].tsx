@@ -54,7 +54,7 @@ export default function ReportScreen() {
       </View>
 
       <View style={{ alignItems: 'center', marginTop: space.xl }}>
-        <PolaroidCard auraRef={auraRef} width={width} stillUri={record.stillUri} aura={{ kind: 'live', params: aura, mask }} caption={AURA_COLORS[aura.dominant].name} subcaption={new Date(record.createdAt).toLocaleDateString()} showWordmark={false} />
+        <PolaroidCard auraRef={auraRef} width={width} stillUri={record.stillUri} aura={{ kind: 'live', params: aura, mask }} caption={AURA_COLORS[aura.primaryColorId].name} subcaption={new Date(record.createdAt).toLocaleDateString()} showWordmark={false} />
       </View>
 
       <Text variant="title" style={{ marginTop: space.xxl }}>
@@ -75,9 +75,9 @@ export default function ReportScreen() {
         <MetricRow label="Signal quality" value={`${Math.round(heart.quality * 100)}`} unit="%" />
         {voice && voice.quality > 0.2 ? (
           <>
-            <MetricRow label="Voice pitch (median)" value={voice.medianPitchHz.toFixed(0)} unit="Hz" />
-            <MetricRow label="Pitch variation" value={voice.pitchVarianceSemitones.toFixed(1)} unit="semitones" />
-            <MetricRow label="Loudness variation" value={Math.round(voice.energyVariance * 100).toString()} unit="%" />
+            <MetricRow label="Dominant pitch" value={voice.dominantPitchHz.toFixed(0)} unit="Hz" />
+            <MetricRow label="Vocal variance" value={Math.round(voice.variance * 100).toString()} unit="%" note={`${voice.pitchVarianceSemitones.toFixed(1)} semitones of pitch spread`} />
+            <MetricRow label="Vocal stability" value={Math.round(voice.stability * 100).toString()} unit="%" />
             <MetricRow label="Voiced" value={Math.round(voice.voicedRatio * 100).toString()} unit="% of sample" />
           </>
         ) : (
@@ -104,9 +104,9 @@ export default function ReportScreen() {
           SHADER PARAMETERS
         </Text>
         <MetricRow label="Hue" value={`${aura.hue}`} unit="°" />
-        <MetricRow label="Saturation" value={aura.saturation.toFixed(2)} note="Raised by vocal variation" />
-        <MetricRow label="Lightness" value={aura.lightness.toFixed(2)} note="Lifted by high variability" />
-        <MetricRow label="Turbulence" value={aura.turbulence.toFixed(2)} note="Faster pulse and lower variability add motion" />
+        <MetricRow label="Saturation" value={aura.saturation.toFixed(2)} note="Raised by vocal variance" />
+        <MetricRow label="Lightness" value={aura.lightness.toFixed(2)} note="Set by vocal stability" />
+        <MetricRow label="Turbulence" value={aura.turbulence.toFixed(2)} note="Higher for elevated BPM or low HRV" />
         <MetricRow label="Pulse" value={aura.pulseSpeed.toFixed(2)} unit="Hz" note="The fluid breathes at your heart rate" />
         <Text variant="caption" color={colors.bone50} style={{ marginTop: space.md }}>
           Identical measurements always produce identical parameters.
@@ -115,11 +115,11 @@ export default function ReportScreen() {
 
       <Card style={{ marginTop: space.lg }}>
         <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
-          THE COLOUR SYSTEM
+          THE COLOUR KNOWLEDGE BASE
         </Text>
         <View style={{ marginTop: space.sm }}>
           {AURA_COLOR_IDS.map((cid) => (
-            <ColorSwatch key={cid} id={cid} selected={cid === aura.dominant || cid === aura.secondary || cid === aura.accent} />
+            <ColorSwatch key={cid} id={cid} selected={cid === aura.primaryColorId || cid === aura.secondaryColorId} />
           ))}
         </View>
       </Card>

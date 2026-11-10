@@ -10,23 +10,23 @@ import { FluidSim, QUALITY_PRESETS, placeholderMask } from '../src/render/fluid/
 const PRESETS: Record<string, BiometricInput> = {
   activated: {
     heart: { bpm: 104, rmssd: 18, sdnn: 22, pnn50: 4, beatCount: 60, quality: 0.9, durationSec: 40 },
-    voice: { medianPitchHz: 210, pitchVarianceSemitones: 2.6, energyVariance: 0.5, spectralCentroidHz: 1800, voicedRatio: 0.6, quality: 0.8, durationSec: 6 },
+    voice: { dominantPitchHz: 210, variance: 0.6, stability: 0.48, pitchVarianceSemitones: 2.6, energyVariance: 0.5, spectralCentroidHz: 1800, voicedRatio: 0.6, quality: 0.8, durationSec: 5 },
   },
   coherent: {
     heart: { bpm: 63, rmssd: 82, sdnn: 90, pnn50: 48, beatCount: 42, quality: 0.9, durationSec: 40 },
-    voice: { medianPitchHz: 160, pitchVarianceSemitones: 1.2, energyVariance: 0.25, spectralCentroidHz: 1100, voicedRatio: 0.6, quality: 0.8, durationSec: 6 },
+    voice: { dominantPitchHz: 160, variance: 0.28, stability: 0.76, pitchVarianceSemitones: 1.2, energyVariance: 0.25, spectralCentroidHz: 1100, voicedRatio: 0.6, quality: 0.8, durationSec: 5 },
   },
   rest: {
     heart: { bpm: 51, rmssd: 44, sdnn: 50, pnn50: 25, beatCount: 34, quality: 0.9, durationSec: 40 },
-    voice: { medianPitchHz: 130, pitchVarianceSemitones: 0.5, energyVariance: 0.1, spectralCentroidHz: 700, voicedRatio: 0.5, quality: 0.8, durationSec: 6 },
+    voice: { dominantPitchHz: 130, variance: 0.12, stability: 0.9, pitchVarianceSemitones: 0.5, energyVariance: 0.1, spectralCentroidHz: 700, voicedRatio: 0.5, quality: 0.8, durationSec: 5 },
   },
   clarity: {
     heart: { bpm: 86, rmssd: 52, sdnn: 58, pnn50: 30, beatCount: 56, quality: 0.9, durationSec: 40 },
-    voice: { medianPitchHz: 190, pitchVarianceSemitones: 3.6, energyVariance: 0.8, spectralCentroidHz: 2300, voicedRatio: 0.7, quality: 0.9, durationSec: 6 },
+    voice: { dominantPitchHz: 190, variance: 0.87, stability: 0.28, pitchVarianceSemitones: 3.6, energyVariance: 0.8, spectralCentroidHz: 2300, voicedRatio: 0.7, quality: 0.9, durationSec: 5 },
   },
   depleted: {
     heart: { bpm: 54, rmssd: 13, sdnn: 15, pnn50: 2, beatCount: 36, quality: 0.8, durationSec: 40 },
-    voice: { medianPitchHz: 120, pitchVarianceSemitones: 0.3, energyVariance: 0.05, spectralCentroidHz: 600, voicedRatio: 0.4, quality: 0.6, durationSec: 6 },
+    voice: { dominantPitchHz: 120, variance: 0.07, stability: 0.94, pitchVarianceSemitones: 0.3, energyVariance: 0.05, spectralCentroidHz: 600, voicedRatio: 0.4, quality: 0.6, durationSec: 5 },
   },
 };
 

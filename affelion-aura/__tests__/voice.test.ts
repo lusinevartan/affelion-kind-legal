@@ -50,8 +50,10 @@ describe('VoiceAnalyzer', () => {
     const a = new VoiceAnalyzer();
     a.push(tone(() => 150, 5));
     const m = a.finish()!;
-    expect(Math.abs(m.medianPitchHz - 150)).toBeLessThan(3);
+    expect(Math.abs(m.dominantPitchHz - 150)).toBeLessThan(3);
     expect(m.pitchVarianceSemitones).toBeLessThan(0.3);
+    expect(m.variance).toBeLessThan(0.15);
+    expect(m.stability).toBeGreaterThan(0.8);
     expect(m.voicedRatio).toBeGreaterThan(0.9);
     expect(m.quality).toBeGreaterThan(0.7);
   });
@@ -62,6 +64,7 @@ describe('VoiceAnalyzer', () => {
     a.push(tone((t) => 180 * Math.pow(2, (5 * Math.sin(2 * Math.PI * 0.5 * t)) / 12), 5));
     const m = a.finish()!;
     expect(m.pitchVarianceSemitones).toBeGreaterThan(2.5);
+    expect(m.variance).toBeGreaterThan(0.4);
   });
 
   test('silence yields zero quality', () => {
@@ -80,6 +83,6 @@ describe('VoiceAnalyzer', () => {
     for (let i = 0; i < pcm.length; i += 700) chunked.push(pcm.subarray(i, Math.min(pcm.length, i + 700)));
     const a = whole.finish()!;
     const b = chunked.finish()!;
-    expect(Math.abs(a.medianPitchHz - b.medianPitchHz)).toBeLessThan(0.5);
+    expect(Math.abs(a.dominantPitchHz - b.dominantPitchHz)).toBeLessThan(0.5);
   });
 });

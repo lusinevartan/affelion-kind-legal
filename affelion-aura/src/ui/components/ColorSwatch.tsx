@@ -10,7 +10,7 @@ export function ColorSwatch({ id, onPress, selected }: { id: AuraColorId; onPres
   return (
     <Pressable
       accessibilityRole={onPress ? 'button' : 'text'}
-      accessibilityLabel={`${c.name}, ${c.meaning}`}
+      accessibilityLabel={`${c.name}, ${c.primary}`}
       onPress={onPress}
       disabled={!onPress}
       style={({ pressed }) => [styles.row, selected && styles.selected, pressed && { opacity: 0.8 }]}
@@ -19,7 +19,7 @@ export function ColorSwatch({ id, onPress, selected }: { id: AuraColorId; onPres
       <View style={{ flex: 1 }}>
         <Text variant="bodySmall">{c.name}</Text>
         <Text variant="caption" color={colors.bone50}>
-          {c.meaning}
+          {c.primary}
         </Text>
       </View>
     </Pressable>

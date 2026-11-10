@@ -73,7 +73,7 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
           width={opts.exportWidth}
           stillUri={record.stillUri}
           aura={{ kind: 'image', uri: auraImageUri }}
-          caption={AURA_COLORS[record.aura.dominant].name}
+          caption={AURA_COLORS[record.aura.primaryColorId].name}
           subcaption={new Date(record.createdAt).toLocaleDateString()}
           showWordmark={!opts.clean}
         />

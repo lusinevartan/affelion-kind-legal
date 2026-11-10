@@ -16,7 +16,7 @@ export const SCAN_TIMING = {
   fingerTargetSec: 40,
   /** Hard cap on wall time spent in the finger phase before we fail with guidance. */
   fingerMaxWallSec: 90,
-  voiceSec: 6,
+  voiceSec: 5,
   /** Minimum voiced seconds required to accept the voice sample. */
   voiceMinVoicedSec: 2.5,
   voiceMaxWallSec: 25,

@@ -125,7 +125,9 @@ export class VoiceAnalyzer {
     const voicedRatio = this.pitches.length / this.frameCount;
     if (this.pitches.length < 6) {
       return {
-        medianPitchHz: 0,
+        dominantPitchHz: 0,
+        variance: 0,
+        stability: 0,
         pitchVarianceSemitones: 0,
         energyVariance: 0,
         spectralCentroidHz: 0,
@@ -142,8 +144,22 @@ export class VoiceAnalyzer {
     const spectralCentroidHz = mean(this.centroids);
     const levelOk = clamp01(meanEnergy / 0.05);
     const quality = clamp01(0.6 * clamp01(voicedRatio / 0.4) + 0.3 * levelOk + 0.1 * (this.clipCount > 3 ? 0 : 1));
+    // Variance 0..1: 4 semitones of pitch spread or a fully varying level reads as 1.
+    const variance = clamp01(0.7 * clamp01(pitchVarianceSemitones / 4) + 0.3 * energyVariance);
+    // Stability 0..1: how little pitch and level move frame to frame, plus how continuously voiced.
+    const jitter: number[] = [];
+    for (let i = 1; i < semis.length; i++) jitter.push(Math.abs(semis[i]! - semis[i - 1]!));
+    const shimmer: number[] = [];
+    for (let i = 1; i < this.energies.length; i++)
+      shimmer.push(Math.abs(this.energies[i]! - this.energies[i - 1]!) / Math.max(1e-6, meanEnergy));
+    const pitchSteady = 1 - clamp01(median(jitter) / 1.0);
+    const levelSteady = 1 - clamp01(median(shimmer) / 0.5);
+    const continuity = clamp01(voicedRatio / 0.6);
+    const stability = clamp01(0.5 * pitchSteady + 0.3 * levelSteady + 0.2 * continuity);
     return {
-      medianPitchHz: medPitch,
+      dominantPitchHz: medPitch,
+      variance,
+      stability,
       pitchVarianceSemitones,
       energyVariance,
       spectralCentroidHz,

@@ -61,7 +61,7 @@ export default function PortraitScreen() {
           width={width}
           stillUri={record.stillUri}
           aura={{ kind: 'live', params: record.aura, mask }}
-          caption={AURA_COLORS[record.aura.dominant].name}
+          caption={AURA_COLORS[record.aura.primaryColorId].name}
           subcaption={new Date(record.createdAt).toLocaleDateString()}
           showWordmark={!entitlement.isPro}
           overlay={

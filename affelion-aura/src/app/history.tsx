@@ -70,7 +70,7 @@ export default function History() {
           <Pressable
             key={s.id}
             accessibilityRole="button"
-            accessibilityLabel={`Portrait from ${new Date(s.createdAt).toLocaleString()}, ${AURA_COLORS[s.aura.dominant].name}`}
+            accessibilityLabel={`Portrait from ${new Date(s.createdAt).toLocaleString()}, ${AURA_COLORS[s.aura.primaryColorId].name}`}
             onPress={() => router.push({ pathname: '/portrait/[id]', params: { id: s.id } })}
           >
             <Card style={styles.row}>
@@ -78,14 +78,14 @@ export default function History() {
                 {s.portraitUri || s.stillUri ? (
                   <Image source={{ uri: s.portraitUri ?? s.stillUri ?? undefined }} style={styles.thumb} contentFit="cover" />
                 ) : (
-                  <View style={[styles.thumb, { backgroundColor: AURA_COLORS[s.aura.dominant].hex }]} />
+                  <View style={[styles.thumb, { backgroundColor: AURA_COLORS[s.aura.primaryColorId].hex }]} />
                 )}
               </View>
               <View style={{ flex: 1, gap: 2 }}>
                 <Text variant="caption" color={colors.bone50}>
                   {new Date(s.createdAt).toLocaleString()}
                 </Text>
-                <Text variant="heading">{AURA_COLORS[s.aura.dominant].name}</Text>
+                <Text variant="heading">{AURA_COLORS[s.aura.primaryColorId].name}</Text>
                 <Text variant="caption" color={colors.bone70}>
                   {s.heart.bpm.toFixed(0)} bpm · RMSSD {s.heart.rmssd.toFixed(0)} ms
                 </Text>

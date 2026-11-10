@@ -1,240 +1,340 @@
-import type {
-  AuraColorId,
-  AuraParams,
-  AuraRegion,
-  BiometricInput,
-  HeartMetrics,
-  NormalisedState,
-  VoiceMetrics,
-} from '../types';
-import { clamp, clamp01, fnv1a, mixHue, norm, piecewise, quantize, smoothstep, wrapHue } from '../math';
-import { AURA_COLORS, nearestChromaticColor } from './palette';
+import type { AuraParams, AuraRegion, BiometricInput, ColorFamily, MappingInput, NormalisedState } from '../types';
+import { clamp, clamp01, fnv1a, lerp, norm, quantize } from '../math';
+import { COLOR_KNOWLEDGE_BASE, type AuraColorId } from './knowledgeBase';
+import { hueRangeDistance } from './palette';
 import { buildRegionExplanation, buildSummary } from './explain';
 
 /**
- * Deterministic biometric → aura mapping.
+ * Deterministic biometric → colour mapping. Implements the specification's rules exactly:
  *
- * Contract (from the product brief):
- *   high BPM or low HRV   → reds / oranges, higher turbulence
- *   high HRV + calm BPM   → greens / teals, smooth motion
- *   low BPM               → blues / indigos
- *   vocal variance        → raises saturation, can add bright accents
+ *   1. hrv >= 55 and bpm <= 78           → greens/teals, hue 140–190, low turbulence
+ *   2. bpm >= 92 or hrv <= 28            → reds/oranges, hue 0–40, higher turbulence and pulse speed
+ *   3. bpm <= 62                         → blues/indigos, hue 200–270, low turbulence
+ *   4. otherwise                         → sky blue range (195–215)
+ *   vocalVariance raises saturation and can trigger a brighter accent
+ *   vocalStability sets lightness
+ *   secondary signals refine the shade within the family (teal vs aqua, deep red vs crimson …)
  *
- * The same quantised inputs always produce the same outputs. There is no randomness here;
- * the only "random" element in the experience is the fluid simulation, and that is seeded
- * from the quantised inputs too.
+ * Rules are evaluated in the order listed, so a reading that satisfies more than one takes the
+ * first. Every output carries a `primaryColorId` from the knowledge base. There is no randomness:
+ * inputs are quantised, the same inputs always give the same outputs, and the fluid simulation's
+ * seed is a hash of the quantised inputs.
+ *
+ * Assumptions made where the specification is silent (documented, not invented behaviour):
+ *   • Crimson's range is 345–360, adjacent to 0 on the hue circle; it is treated as part of the
+ *     reds/oranges family so the knowledge-base case "high BPM with moderate-to-high vocal
+ *     variance" is reachable.
+ *   • Achromatic knowledge-base tones (soft white, pearl, muted gray, earth brown, charcoal) have
+ *     no hue range. They are selected by their stated biometric descriptions, applied after the
+ *     family rule, and expressed through saturation and lightness rather than hue.
+ *   • When no usable voice sample exists, vocalVariance is 0 and vocalStability is 0.5, and the
+ *     explanations say the voice was not used.
  */
 
-/** Resting heart-rate range we normalise against. Outside is clamped. */
-const BPM_LO = 45;
-const BPM_HI = 110;
-/** RMSSD range (ms), normalised in log space because HRV is log-normal in adults. */
-const RMSSD_LO = 12;
-const RMSSD_HI = 100;
+export const FAMILY_HUE: Record<ColorFamily, readonly [number, number]> = {
+  greensTeals: [140, 190],
+  redsOranges: [0, 40],
+  bluesIndigos: [200, 270],
+  skyBlue: [195, 215],
+};
 
-/** Hue path over the activation axis, in "unwrapped" degrees so the red end can sit below 0. */
-const ACTIVATION_HUE_KNOTS: readonly (readonly [number, number])[] = [
-  [0.0, 250], // indigo      (~45 bpm)
-  [0.15, 208], // sky blue   (~55 bpm)
-  [0.32, 173], // teal       (~66 bpm)
-  [0.5, 95], // lime green   (~77 bpm)
-  [0.66, 46], // golden yellow (~88 bpm)
-  [0.82, 26], // bright orange (~98 bpm)
-  [1.0, 3], // deep red      (~110 bpm)
-];
+/** Knowledge-base entries that can be selected within each family (reds include crimson). */
+const FAMILY_MEMBERS: Record<ColorFamily, readonly AuraColorId[]> = {
+  greensTeals: ['emerald', 'teal', 'aqua'],
+  redsOranges: ['crimson', 'deep_red', 'bright_orange', 'amber'],
+  bluesIndigos: ['sky_blue', 'cobalt', 'indigo', 'violet', 'lavender'],
+  skyBlue: ['sky_blue', 'aqua', 'cobalt'],
+};
 
-export function quantiseHeart(h: HeartMetrics): HeartMetrics {
-  return {
-    ...h,
-    bpm: quantize(h.bpm, 1),
-    rmssd: quantize(h.rmssd, 1),
-    sdnn: quantize(h.sdnn, 1),
-    pnn50: quantize(h.pnn50, 1),
-    quality: quantize(clamp01(h.quality), 0.05),
-  };
-}
-
-export function quantiseVoice(v: VoiceMetrics | null): VoiceMetrics | null {
-  if (!v) return null;
-  return {
-    ...v,
-    medianPitchHz: quantize(v.medianPitchHz, 1),
-    pitchVarianceSemitones: quantize(v.pitchVarianceSemitones, 0.1),
-    energyVariance: quantize(clamp01(v.energyVariance), 0.02),
-    spectralCentroidHz: quantize(v.spectralCentroidHz, 10),
-    voicedRatio: quantize(clamp01(v.voicedRatio), 0.05),
-    quality: quantize(clamp01(v.quality), 0.05),
-  };
-}
-
-export function normalise(input: BiometricInput): NormalisedState {
+export function toMappingInput(input: BiometricInput): MappingInput & { voiceAvailable: boolean } {
   const { heart, voice } = input;
-  const activation = norm(heart.bpm, BPM_LO, BPM_HI);
-  const coherence = norm(Math.log(clamp(heart.rmssd, 1, 400)), Math.log(RMSSD_LO), Math.log(RMSSD_HI));
-
-  let vocalVariance = 0;
-  if (voice && voice.quality > 0.2 && voice.voicedRatio > 0.15) {
-    const pitchVar = norm(voice.pitchVarianceSemitones, 0.4, 4.0);
-    const energyVar = clamp01(voice.energyVariance);
-    const brightness = norm(voice.spectralCentroidHz, 400, 2600);
-    vocalVariance = clamp01(0.55 * pitchVar + 0.3 * energyVar + 0.15 * brightness);
-  }
-
-  const arousal = clamp01(0.6 * activation + 0.4 * (1 - coherence));
-  return { activation, coherence, vocalVariance, arousal };
+  const voiceAvailable = !!voice && voice.quality > 0.2 && voice.voicedRatio > 0.15;
+  return {
+    bpm: heart.bpm,
+    hrv: heart.rmssd,
+    vocalPitchHz: voiceAvailable ? voice!.dominantPitchHz : 0,
+    vocalVariance: voiceAvailable ? clamp01(voice!.variance) : 0,
+    vocalStability: voiceAvailable ? clamp01(voice!.stability) : 0.5,
+    voiceAvailable,
+  };
 }
 
-/** Core hue from activation, bent by coherence. */
-export function deriveHue(state: NormalisedState): number {
-  const { activation: a, coherence: c } = state;
-  const base = piecewise(ACTIVATION_HUE_KNOTS, a);
-  if (c < 0.5) {
-    // Low variability pulls toward red/orange. At very low activation the blue/indigo
-    // family stays put and low coherence is expressed as muted earth tones instead.
-    const k = 0.8 * (1 - 2 * c) * smoothstep(0.15, 0.45, a);
-    return wrapHue(mixHue(base, 8, k));
-  }
-  // High variability pulls toward teal/green once the pulse is out of the deep-rest band,
-  // easing off at very high activation so a racing pulse is never read as calm.
-  const k = 0.7 * (2 * c - 1) * smoothstep(0.1, 0.35, a) * (1 - 0.5 * smoothstep(0.7, 0.95, a));
-  return wrapHue(mixHue(base, 160, k));
+/** Quantise so near-identical readings map to identical portraits. */
+export function quantiseInput<T extends MappingInput>(m: T): T {
+  return {
+    ...m,
+    bpm: quantize(m.bpm, 1),
+    hrv: quantize(m.hrv, 1),
+    vocalPitchHz: quantize(m.vocalPitchHz, 1),
+    vocalVariance: quantize(clamp01(m.vocalVariance), 0.02),
+    vocalStability: quantize(clamp01(m.vocalStability), 0.02),
+  };
 }
 
-export function deriveSaturation(state: NormalisedState): number {
-  const { activation: a, coherence: c, vocalVariance: v } = state;
-  let s = 0.52 + 0.28 * v + 0.1 * Math.abs(2 * c - 1);
-  // Low energy + low coherence → muted earth tones.
-  const earthiness = (1 - c) * (1 - smoothstep(0.25, 0.5, a));
-  s -= 0.38 * earthiness;
-  return clamp(s, 0.14, 0.95);
+export function selectFamily(m: MappingInput): ColorFamily {
+  if (m.hrv >= 55 && m.bpm <= 78) return 'greensTeals';
+  if (m.bpm >= 92 || m.hrv <= 28) return 'redsOranges';
+  if (m.bpm <= 62) return 'bluesIndigos';
+  return 'skyBlue';
 }
 
-export function deriveLightness(state: NormalisedState): number {
-  const { activation: a, coherence: c } = state;
-  let l = 0.5 + 0.14 * (c - 0.5) - 0.08 * (a - 0.5);
-  // Strong coherence lifts the centre toward soft white.
-  l += 0.22 * smoothstep(0.86, 1.0, c);
-  // Low energy + low coherence darkens toward earth.
-  l -= 0.1 * (1 - c) * (1 - smoothstep(0.25, 0.5, a));
-  return clamp(l, 0.3, 0.9);
-}
-
-export function deriveTurbulence(state: NormalisedState): number {
-  const { activation: a, coherence: c } = state;
-  let t = 0.12 + 0.55 * a + 0.38 * (1 - c);
-  t *= 1 - 0.35 * c; // smooth motion when coherence is high
-  return clamp01(t);
-}
-
-export function derivePulseSpeed(bpm: number): number {
-  return clamp(bpm / 60, 0.6, 2.2);
-}
-
-function chooseColors(
-  state: NormalisedState,
-  hue: number,
-  saturation: number,
-  lightness: number,
-): { dominant: AuraColorId; secondary: AuraColorId; accent: AuraColorId | null } {
-  const { activation: a, coherence: c, vocalVariance: v } = state;
-  const earthiness = (1 - c) * (1 - smoothstep(0.25, 0.5, a));
-
-  let dominant: AuraColorId = nearestChromaticColor(hue);
-  if (earthiness > 0.55 && saturation < 0.3) dominant = 'earth';
-  if (c > 0.96 && lightness > 0.72) dominant = 'softWhite';
-
-  // Secondary: the halo. Tied to HRV: high → teal/lime, low → orange/red, mid → neighbour hue.
-  let secondary: AuraColorId;
-  if (c > 0.66) secondary = a < 0.45 ? 'teal' : 'limeGreen';
-  else if (c < 0.34) secondary = a > 0.55 ? 'deepRed' : 'earth';
-  else secondary = nearestChromaticColor(mixHue(hue, c >= 0.5 ? 160 : 30, 0.5));
-  if (dominant === 'earth') {
-    // Low energy: pair the muted centre with deep rest or, at a higher pulse, strain.
-    secondary = a < 0.3 ? 'indigo' : 'deepRed';
-  } else if (dominant === 'softWhite') {
-    secondary = a < 0.3 ? 'skyBlue' : 'teal';
-  } else if (secondary === dominant) {
-    secondary = nearestChromaticColor(wrapHue(hue + (c >= 0.5 ? 35 : -35)));
-    if (secondary === dominant) secondary = c >= 0.5 ? 'skyBlue' : 'brightOrange';
-  }
-
-  // Accent: driven by vocal variance. Bright, well-articulated voice → golden yellow;
-  // very steady voice with high coherence → soft white; low pulse + quiet voice → violet.
-  let accent: AuraColorId | null = null;
-  if (v > 0.45) accent = 'goldenYellow';
-  else if (v < 0.2 && c > 0.7) accent = 'softWhite';
-  else if (v < 0.25 && a < 0.3) accent = 'violet';
-  if (accent === dominant || accent === secondary) accent = accent === 'goldenYellow' ? 'softWhite' : null;
-
-  return { dominant, secondary, accent };
+interface FamilyResult {
+  hue: number;
+  turbulence: number;
+  pulseMultiplier: number;
+  primary: AuraColorId;
 }
 
 /**
- * Map measured biometrics to shader parameters and palette choices.
- * Pure and deterministic for identical (quantised) inputs.
+ * Hue inside the family range and the refined knowledge-base shade.
+ * Each family's position parameter is a 0..1 blend of the signals the knowledge base names for
+ * its members; the refinement rules quote those descriptions.
  */
-export function mapBiometricsToAura(rawInput: BiometricInput): AuraParams {
-  const heart = quantiseHeart(rawInput.heart);
-  const voice = quantiseVoice(rawInput.voice);
-  const input: BiometricInput = { heart, voice };
-  const state = normalise(input);
+function resolveFamily(family: ColorFamily, m: MappingInput): FamilyResult {
+  const [lo, hi] = FAMILY_HUE[family];
+  switch (family) {
+    case 'greensTeals': {
+      // Stronger HRV and calmer pulse move from emerald (140) through teal toward aqua (190).
+      const hrvStrength = norm(m.hrv, 55, 100);
+      const calm = norm(78 - m.bpm, 0, 20);
+      const t = 0.6 * hrvStrength + 0.4 * calm;
+      let hue = lerp(lo, hi, t);
+      // Aqua: "good HRV with open, steady voice". Teal: "high HRV + calm BPM". Emerald: "solid HRV with calm-to-moderate BPM".
+      const openSteadyVoice = m.vocalStability >= 0.6 && m.vocalVariance >= 0.3;
+      let primary: AuraColorId;
+      if (hue >= 175 && openSteadyVoice) {
+        primary = 'aqua';
+        hue = Math.max(hue, 176);
+      } else if (hue >= 155) {
+        primary = 'teal';
+        hue = clamp(hue, 160, 185);
+      } else {
+        primary = 'emerald';
+        hue = clamp(hue, 140, 150);
+      }
+      const turbulence = lerp(0.24, 0.12, hrvStrength);
+      return { hue, turbulence, pulseMultiplier: 1, primary };
+    }
+    case 'redsOranges': {
+      // Intensity from how far past the thresholds the reading is; higher → deeper red.
+      const bpmExcess = norm(m.bpm, 92, 120);
+      const hrvDeficit = norm(28 - m.hrv, 0, 16);
+      const intensity = clamp01(Math.max(bpmExcess, hrvDeficit) * 0.75 + Math.min(bpmExcess, hrvDeficit) * 0.25);
+      let hue = lerp(hi, lo, intensity); // 40 → 0
+      let primary: AuraColorId;
+      const highBpm = m.bpm >= 92;
+      if (highBpm && m.vocalVariance >= 0.5 && intensity >= 0.35) {
+        // Crimson: "high BPM with moderate-to-high vocal variance".
+        primary = 'crimson';
+        hue = lerp(360, 345, norm(m.vocalVariance, 0.5, 1));
+        if (hue >= 360) hue = 359.5;
+      } else if (hue <= 15) {
+        primary = 'deep_red'; // "high BPM or very low HRV"
+        hue = Math.min(hue, 12);
+      } else if (hue >= 34 && m.vocalVariance >= 0.4 && !highBpm) {
+        primary = 'amber'; // "moderate-high BPM with positive vocal energy"
+        hue = clamp(hue, 35, 40);
+      } else {
+        primary = 'bright_orange'; // "elevated BPM or rising activation"
+        hue = clamp(hue, 18, 38);
+      }
+      const turbulence = lerp(0.62, 0.95, intensity);
+      return { hue, turbulence, pulseMultiplier: 1.15, primary };
+    }
+    case 'bluesIndigos': {
+      // Calmer pulse moves from sky blue (200) through cobalt and indigo toward violet (270).
+      const calm = norm(62 - m.bpm, 0, 17);
+      let hue = lerp(lo, hi, calm);
+      let primary: AuraColorId;
+      if (hue >= 255 && m.vocalStability >= 0.7) {
+        primary = 'violet'; // "very calm BPM + clear, steady voice"
+        hue = clamp(Math.max(hue, 260), 260, 270);
+      } else if (hue >= 255 && m.vocalVariance <= 0.25) {
+        primary = 'lavender'; // "calm metrics with low vocal variance"
+        hue = 270;
+      } else if (hue >= 230) {
+        primary = 'indigo'; // "low BPM or strong parasympathetic markers"
+        hue = clamp(hue, 230, 255);
+      } else if (hue >= 210 && m.vocalStability >= 0.6) {
+        primary = 'cobalt'; // "low BPM with high vocal stability"
+        hue = clamp(hue, 210, 230);
+      } else {
+        primary = 'sky_blue'; // "lower-moderate BPM + stable voice"
+        hue = clamp(hue, 200, 215);
+      }
+      const turbulence = lerp(0.2, 0.1, calm);
+      return { hue, turbulence, pulseMultiplier: 1, primary };
+    }
+    case 'skyBlue':
+    default: {
+      // Default band: lower pulse sits higher in the range.
+      const t = 1 - norm(m.bpm, 63, 91);
+      const hue = lerp(195, 215, t);
+      return { hue, turbulence: 0.32, pulseMultiplier: 1, primary: 'sky_blue' };
+    }
+  }
+}
 
-  const hue = quantize(deriveHue(state), 0.5);
-  const saturation = quantize(deriveSaturation(state), 0.005);
-  const lightness = quantize(deriveLightness(state), 0.005);
-  const turbulence = quantize(deriveTurbulence(state), 0.005);
-  const pulseSpeed = quantize(derivePulseSpeed(heart.bpm), 0.01);
+/**
+ * Achromatic tones from the knowledge base, selected by their stated biometric descriptions.
+ * Returns null when no achromatic tone applies. Precedence: charcoal, muted gray, earth brown,
+ * soft white, pearl.
+ */
+export function selectAchromatic(m: MappingInput, voiceAvailable: boolean): AuraColorId | null {
+  const flatVoice = voiceAvailable && m.vocalVariance <= 0.12;
+  // Low-energy tones never override the greens/teals family (hrv >= 55 and calm bpm).
+  const lowEnergyCandidate = !(m.hrv >= 55 && m.bpm <= 78);
+  // Charcoal: "very low energy markers".
+  if (m.bpm <= 52 && m.hrv <= 25 && (!voiceAvailable || m.vocalVariance <= 0.2)) return 'charcoal';
+  // Muted gray: "low overall activation or flat vocal tone".
+  if (lowEnergyCandidate && ((m.bpm <= 62 && m.hrv <= 40) || (flatVoice && m.bpm <= 70))) return 'muted_gray';
+  // Earth brown: "moderate-low BPM with reduced HRV or flat voice".
+  if (lowEnergyCandidate && m.bpm >= 55 && m.bpm <= 70 && (m.hrv <= 35 || flatVoice)) return 'earth_brown';
+  // Soft white: "strong HRV + balanced metrics across the board".
+  if (m.hrv >= 80 && m.bpm >= 55 && m.bpm <= 78 && voiceAvailable && m.vocalStability >= 0.6 && m.vocalVariance >= 0.2 && m.vocalVariance <= 0.6)
+    return 'soft_white';
+  // Pearl: "high HRV with moderate vocal variance".
+  if (m.hrv >= 70 && voiceAvailable && m.vocalVariance >= 0.35 && m.vocalVariance <= 0.65) return 'pearl';
+  return null;
+}
 
-  const { dominant, secondary, accent } = chooseColors(state, hue, saturation, lightness);
-  const haloHue = AURA_COLORS[secondary].hsl.h;
-  const accentStrength = accent
-    ? quantize(clamp01(accent === 'goldenYellow' ? (state.vocalVariance - 0.45) / 0.55 + 0.25 : 0.35), 0.01)
-    : 0;
+/** Second-nearest chromatic member of the family to the hue, for the halo region. */
+function selectSecondary(family: ColorFamily, hue: number, primary: AuraColorId): AuraColorId {
+  const candidates = FAMILY_MEMBERS[family].filter((id) => id !== primary);
+  let best: AuraColorId = candidates[0]!;
+  let bestD = Infinity;
+  for (const id of candidates) {
+    const range = COLOR_KNOWLEDGE_BASE.find((c) => c.id === id)!.hueRange!;
+    const d = hueRangeDistance(hue, range);
+    if (d < bestD) {
+      bestD = d;
+      best = id;
+    }
+  }
+  return best;
+}
+
+export function normalise(m: MappingInput, voiceAvailable: boolean): NormalisedState {
+  return {
+    activation: norm(m.bpm, 45, 120),
+    coherence: norm(Math.log(clamp(m.hrv, 1, 400)), Math.log(12), Math.log(100)),
+    vocalVariance: clamp01(m.vocalVariance),
+    vocalStability: clamp01(m.vocalStability),
+    voiceAvailable,
+  };
+}
+
+export interface MappingOutput {
+  hue: number;
+  saturation: number;
+  lightness: number;
+  turbulence: number;
+  pulseSpeed: number;
+  primaryColorId: AuraColorId;
+  secondaryColorId: AuraColorId;
+  family: ColorFamily;
+  accentStrength: number;
+}
+
+/** The core function named by the specification. Pure and deterministic. */
+export function mapBiometricsToColor(raw: MappingInput, voiceAvailable = true): MappingOutput {
+  const m = quantiseInput(raw);
+  const family = selectFamily(m);
+  const fam = resolveFamily(family, m);
+  const achromatic = selectAchromatic(m, voiceAvailable);
+
+  // Saturation: family base, raised by vocal variance.
+  const familySat: Record<ColorFamily, number> = { greensTeals: 0.5, redsOranges: 0.66, bluesIndigos: 0.48, skyBlue: 0.44 };
+  let saturation = clamp(familySat[family] + 0.32 * m.vocalVariance, 0.15, 0.98);
+  // Lightness: set by vocal stability.
+  let lightness = clamp(0.4 + 0.22 * m.vocalStability, 0.3, 0.75);
+  // Brighter accent once vocal variance is high.
+  let accentStrength = m.vocalVariance >= 0.6 ? clamp01((m.vocalVariance - 0.6) / 0.4) * 0.6 + 0.4 : 0;
+
+  let hue = fam.hue;
+  let primaryColorId = fam.primary;
+  let turbulence = fam.turbulence;
+  const pulseSpeed = clamp((m.bpm / 60) * fam.pulseMultiplier, 0.6, 2.2);
+
+  switch (achromatic) {
+    case 'charcoal':
+      saturation = 0.06;
+      lightness = 0.18;
+      turbulence = Math.min(turbulence, 0.2);
+      accentStrength = 0;
+      break;
+    case 'muted_gray':
+      saturation = 0.08;
+      lightness = 0.5;
+      turbulence = Math.min(turbulence, 0.25);
+      accentStrength = 0;
+      break;
+    case 'earth_brown':
+      hue = 28;
+      saturation = 0.26;
+      lightness = 0.36;
+      turbulence = Math.min(turbulence, 0.3);
+      accentStrength = 0;
+      break;
+    case 'soft_white':
+      saturation = Math.min(saturation, 0.28);
+      lightness = 0.9;
+      break;
+    case 'pearl':
+      saturation = Math.min(saturation, 0.3);
+      lightness = 0.84;
+      break;
+    default:
+      break;
+  }
+  if (achromatic) primaryColorId = achromatic;
+
+  const secondaryColorId = selectSecondary(family, fam.hue, fam.primary);
+
+  return {
+    hue: quantize(((hue % 360) + 360) % 360, 0.5),
+    saturation: quantize(saturation, 0.005),
+    lightness: quantize(lightness, 0.005),
+    turbulence: quantize(turbulence, 0.005),
+    pulseSpeed: quantize(pulseSpeed, 0.01),
+    primaryColorId,
+    secondaryColorId,
+    family,
+    accentStrength: quantize(accentStrength, 0.01),
+  };
+}
+
+/** Full aura parameters for the renderer and UI, including grounded copy. */
+export function mapBiometricsToAura(input: BiometricInput): AuraParams {
+  const { voiceAvailable, ...mapping } = toMappingInput(input);
+  const m = quantiseInput(mapping);
+  const out = mapBiometricsToColor(m, voiceAvailable);
+  const state = normalise(m, voiceAvailable);
 
   const regions: AuraRegion[] = [
     {
       id: 'core',
-      colorId: dominant,
+      colorId: out.primaryColorId,
       weight: 1,
       metric: 'heartRate',
-      explanation: buildRegionExplanation('core', dominant, input, state),
+      explanation: buildRegionExplanation('core', out.primaryColorId, m, voiceAvailable),
     },
     {
       id: 'halo',
-      colorId: secondary,
+      colorId: out.secondaryColorId,
       weight: quantize(0.45 + 0.35 * Math.abs(2 * state.coherence - 1), 0.01),
       metric: 'hrv',
-      explanation: buildRegionExplanation('halo', secondary, input, state),
+      explanation: buildRegionExplanation('halo', out.secondaryColorId, m, voiceAvailable),
     },
   ];
-  if (accent) {
-    regions.push({
-      id: 'accent',
-      colorId: accent,
-      weight: accentStrength,
-      metric: 'voice',
-      explanation: buildRegionExplanation('accent', accent, input, state),
-    });
-  }
 
-  const seed = fnv1a(
-    [heart.bpm, heart.rmssd, voice?.pitchVarianceSemitones ?? -1, voice?.energyVariance ?? -1, hue].join('|'),
-  );
+  const seed = fnv1a([m.bpm, m.hrv, m.vocalPitchHz, m.vocalVariance, m.vocalStability, out.hue].join('|'));
 
   return {
-    hue,
-    saturation,
-    lightness,
-    turbulence,
-    pulseSpeed,
-    haloHue,
-    accentStrength,
-    dominant,
-    secondary,
-    accent,
+    ...out,
     regions,
     state,
     seed,
-    summary: buildSummary(dominant, input, state),
+    summary: buildSummary(out.primaryColorId, m, voiceAvailable),
   };
 }
