@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["AffelionAudioModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.affelionaudio.AffelionAudioModule"]
+  }
+}

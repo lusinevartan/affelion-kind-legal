@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["AffelionSilhouetteModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.affelionsilhouette.AffelionSilhouetteModule"]
+  }
+}

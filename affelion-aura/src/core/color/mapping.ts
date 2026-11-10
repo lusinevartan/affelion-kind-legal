@@ -148,7 +148,12 @@ function chooseColors(
   if (c > 0.66) secondary = a < 0.45 ? 'teal' : 'limeGreen';
   else if (c < 0.34) secondary = a > 0.55 ? 'deepRed' : 'earth';
   else secondary = nearestChromaticColor(mixHue(hue, c >= 0.5 ? 160 : 30, 0.5));
-  if (secondary === dominant) {
+  if (dominant === 'earth') {
+    // Low energy: pair the muted centre with deep rest or, at a higher pulse, strain.
+    secondary = a < 0.3 ? 'indigo' : 'deepRed';
+  } else if (dominant === 'softWhite') {
+    secondary = a < 0.3 ? 'skyBlue' : 'teal';
+  } else if (secondary === dominant) {
     secondary = nearestChromaticColor(wrapHue(hue + (c >= 0.5 ? 35 : -35)));
     if (secondary === dominant) secondary = c >= 0.5 ? 'skyBlue' : 'brightOrange';
   }
