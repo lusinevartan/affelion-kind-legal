@@ -1,3 +1,5 @@
+import type { AuraColorId as KbColorId } from './color/knowledgeBase';
+
 /**
  * Shared domain types for Affelion Aura.
  *
@@ -66,7 +68,6 @@ export interface MappingInput {
 }
 
 export type { AuraColorId } from './color/knowledgeBase';
-import type { AuraColorId as KbColorId } from './color/knowledgeBase';
 
 export interface HSL {
   /** Degrees 0..360 */
