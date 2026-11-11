@@ -58,6 +58,8 @@ export interface PpgLiveState {
   waveform: Float32Array;
   /** Time of the last detected beat (seconds, sample clock) for haptics / pulse UI. */
   lastBeatAt: number | null;
+  /** Detected beat times (seconds, sample clock) in the current window, for coherence analysis. */
+  beats: number[];
 }
 
 export interface PpgProcessorOptions {
@@ -249,10 +251,12 @@ export class PpgProcessor {
     let bpm: number | null = null;
     let quality = 0;
     let lastBeatAt: number | null = null;
+    let beatTimes: number[] = [];
     if (prepared) {
       const { x, t0 } = prepared;
       waveform = x.slice(Math.max(0, x.length - waveLen));
       const beats = this.detectBeats(x, t0);
+      beatTimes = beats.map((b) => b.t);
       const { accepted, total } = this.intervals(beats);
       if (accepted.length >= 4) {
         bpm = 60000 / mean(accepted);
@@ -262,7 +266,7 @@ export class PpgProcessor {
       const lastBeat = beats[beats.length - 1];
       if (lastBeat) lastBeatAt = lastBeat.t;
     }
-    return { coveredSec: this.coveredSec, coverage: this.coverage, bpm, quality, waveform, lastBeatAt };
+    return { coveredSec: this.coveredSec, coverage: this.coverage, bpm, quality, waveform, lastBeatAt, beats: beatTimes };
   }
 
   /** Final metrics over the whole buffered window. Returns null if the window is unusable. */

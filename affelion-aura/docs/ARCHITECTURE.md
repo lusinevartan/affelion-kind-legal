@@ -10,7 +10,7 @@
    - Computing: `PpgProcessor.finish()` + `VoiceAnalyzer.finish()` → `mapBiometricsToAura()` → `ScanRecord` saved to SQLite.
 3. Portrait teaser (free): Polaroid with the live aura, one grounded sentence, two tappable regions.
 4. Soft paywall, only after a portrait exists. Plans: $8.99 monthly, $54 annual (recommended), $89 lifetime. Restore and manage/cancel are on the paywall and in Settings.
-5. Pro: full breakdown (every colour tied to a measurement), history and trends, the guide, clean hi-res export.
+5. Pro: full breakdown (every colour tied to a measurement), history and trends, the guide, clean hi-res export, unlimited practice sessions with before/after portraits and the personal baseline. The first practice session is free so the live feedback is experienced before the paywall.
 
 ## Biometric → colour engine (`src/core/color`)
 
@@ -59,6 +59,34 @@ Mask contract on both platforms: 8-bit, row-major, top-left origin, portrait dis
 mirrored like the preview, covering the full camera image (which the preview shows aspect-filled).
 It is sent base64-encoded through the view event system; `FluidSim.setMask` flips it for GL and
 `maskTransform()` applies the same aspect-fill crop the preview uses.
+
+## Practice: live coherence feedback (`src/core/signal/coherence.ts`, `src/core/practice`, `src/features/practice`)
+
+The one feature that turns the portrait from a snapshot into a mirror the user can act on.
+After a scan, the user keeps a fingertip on the rear camera and breathes with a pacer at about
+six breaths per minute (or their own rate, found by the resonance finder). Every 500 ms the PPG
+beats feed `CoherenceAnalyzer`, which resamples the last 32 s of beat intervals at 4 Hz, detrends,
+windows and FFTs them, and reports how much slow-band (0.04–0.26 Hz) power sits at one rhythm
+(peak ÷ remainder, scored 0–1), the peak frequency, the respiratory sinus arrhythmia amplitude,
+and a breathing-sync value against the pacer frequency. The same deterministic colour mapping is
+applied to the sliding bpm/HRV window (`auraFromWindow`), coherence halves turbulence on top of
+the family rule, and `blendAuraParams` eases the shader parameters so the portrait settles
+visibly as the rhythm settles. `practiceMachine.ts` is a pure reducer: settle (needs 10 steady
+beats) → breathe (timer advances only while the lens is covered) → done; the record keeps a
+before window (first 5 s) and an after window (last 45 s), both rendered as Polaroids.
+
+The resonance finder breathes four 45 s rounds at 6.5, 6, 5.5 and 5 breaths per minute and
+keeps the rate with the largest heart wave; it becomes the user's default.
+
+Honesty: the screen states that what is being trained is heart-rate variability and coherence,
+measured from the fingertip. No other effect is claimed.
+
+## Personal baseline (`src/core/insight/baseline.ts`)
+
+Each scan is read against the median of the user's last seven scans (minimum three): HRV and
+pulse deltas as percentages, and a Theil–Sen trend of HRV across the window. The trend is
+presented with knowledge-base colours (lime for improving, emerald for steady, earth brown for
+declining) as a display colour only; it never changes the portrait.
 
 ## Fluid aura (`src/render/fluid`)
 

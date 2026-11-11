@@ -162,3 +162,36 @@ export interface ScanRecord {
   /** Small base64 preview for history list, optional */
   thumbnailBase64?: string | null;
 }
+
+/** Snapshot of the heart metrics over a short window, used for before/after comparisons. */
+export interface WindowMetrics {
+  bpm: number;
+  rmssd: number;
+  /** 0..1 coherence score (see CoherenceAnalyzer). */
+  coherence: number;
+  /** Respiratory sinus arrhythmia amplitude, ms. */
+  rsaMs: number;
+}
+
+/** A guided breathing practice with live aura feedback. */
+export interface PracticeRecord {
+  id: string;
+  createdAt: number;
+  /** Scan the practice started from, if any. */
+  scanId: string | null;
+  durationSec: number;
+  breathsPerMinute: number;
+  before: WindowMetrics;
+  after: WindowMetrics;
+  beforeAura: AuraParams;
+  afterAura: AuraParams;
+  /** Mean coherence score across the session. */
+  coherenceMean: number;
+  coherencePeak: number;
+  /** Seconds spent at high coherence. */
+  highCoherenceSec: number;
+  /** Mean breathing sync with the pacer, 0..1. */
+  breathingSync: number;
+  beforePortraitUri: string | null;
+  afterPortraitUri: string | null;
+}

@@ -373,8 +373,9 @@ export class FluidSim {
 
   /** Set the aura parameters from the biometric engine. Re-seeds the PRNG. */
   setParams(params: AuraParams) {
+    const reseed = !this.params || this.params.seed !== params.seed;
     this.params = params;
-    this.rng = mulberry32(params.seed);
+    if (reseed) this.rng = mulberry32(params.seed);
     const core = hslToRgb({ h: params.hue, s: params.saturation, l: params.lightness });
     const haloDef = AURA_COLORS[params.secondaryColorId].hsl;
     const halo = hslToRgb({

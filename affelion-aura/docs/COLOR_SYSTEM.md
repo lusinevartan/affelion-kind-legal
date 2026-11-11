@@ -47,7 +47,9 @@ Thresholds live in `selectAchromatic()` in `src/core/color/mapping.ts`.
 As specified, the four family rules never produce hues in 48–65 (golden yellow), 75–110 (lime),
 300–330 (magenta), or 270–290 beyond its 270 boundary (lavender is reached at exactly 270). Those
 entries remain in the knowledge base for legends and the guide but cannot be a portrait's primary
-colour until the rules say when they apply.
+colour until the rules say when they apply. Lime, emerald and earth brown are used as display
+colours for the personal HRV trend (`src/core/insight/baseline.ts`), matching their stated
+biometric descriptions ("improving HRV", "solid HRV", "reduced HRV").
 
 ## Honesty rules
 

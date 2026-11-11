@@ -8,6 +8,7 @@ import { getCachedMask } from '../../features/scan/sessionCache';
 import { PolaroidCard } from '../../render/polaroid/PolaroidCard';
 import { AURA_COLOR_IDS, AURA_COLORS } from '../../core/color/palette';
 import { usePolaroidExport } from '../../features/portrait/usePolaroidExport';
+import { scanInsight } from '../../core/insight/baseline';
 
 /**
  * Paid full breakdown. Every colour in the portrait is tied to a number from this scan, in the
@@ -38,6 +39,7 @@ export default function ReportScreen() {
   const { heart, voice, aura } = record;
   const width = Math.min(Dimensions.get('window').width - space.xl * 2, 320);
 
+  const insight = scanInsight(record, scans);
   const hrvWord = aura.state.coherence < 0.25 ? 'low' : aura.state.coherence < 0.5 ? 'moderate' : aura.state.coherence < 0.78 ? 'good' : 'high';
 
   return (
@@ -83,6 +85,21 @@ export default function ReportScreen() {
         ) : (
           <MetricRow label="Voice" value="—" note="Skipped or too quiet; only the pulse shaped this portrait" />
         )}
+      </Card>
+
+      <Card style={{ marginTop: space.lg }}>
+        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+          AGAINST YOUR BASELINE
+        </Text>
+        {insight.trendColorId ? (
+          <View style={{ marginTop: space.sm }}>
+            <ColorSwatch id={insight.trendColorId} />
+          </View>
+        ) : null}
+        <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.sm }}>
+          {insight.sentence}
+        </Text>
+        <Button label="Practice from this scan" variant="secondary" onPress={() => router.push({ pathname: '/practice', params: { scanId: record.id } })} style={{ marginTop: space.lg }} />
       </Card>
 
       <Card style={{ marginTop: space.lg }}>

@@ -10,7 +10,7 @@ import { Sparkline } from '../features/history/Sparkline';
 
 /** History and trends. Pro feature; free users see their scans but the trend view asks to upgrade. */
 export default function History() {
-  const { scans, entitlement } = useAppState();
+  const { scans, entitlement, practices } = useAppState();
   const chronological = [...scans].reverse();
   const bpm = chronological.map((s) => s.heart.bpm);
   const rmssd = chronological.map((s) => s.heart.rmssd);
@@ -65,6 +65,25 @@ export default function History() {
         </Card>
       )}
 
+      {practices.length > 0 ? (
+        <Card style={{ marginTop: space.xl }}>
+          <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+            PRACTICE SESSIONS
+          </Text>
+          {practices.slice(0, 8).map((p) => (
+            <View key={p.id} style={styles.practiceRow} accessible accessibilityLabel={`Practice on ${new Date(p.createdAt).toLocaleDateString()}, coherence ${Math.round(p.before.coherence * 100)} to ${Math.round(p.after.coherence * 100)}`}>
+              <View style={{ flex: 1 }}>
+                <Text variant="bodySmall">{new Date(p.createdAt).toLocaleDateString()} · {Math.round(p.durationSec / 60)} min at {p.breathsPerMinute}/min</Text>
+                <Text variant="caption" color={colors.bone50}>
+                  HRV {Math.round(p.before.rmssd)} → {Math.round(p.after.rmssd)} ms · {Math.round(p.highCoherenceSec)} s at high coherence
+                </Text>
+              </View>
+              <Text variant="heading">{Math.round(p.before.coherence * 100)} → {Math.round(p.after.coherence * 100)}</Text>
+            </View>
+          ))}
+        </Card>
+      ) : null}
+
       <View style={{ marginTop: space.xl, gap: space.md }}>
         {scans.map((s) => (
           <Pressable
@@ -103,4 +122,5 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', gap: space.lg, alignItems: 'center' },
   thumbWrap: { width: 56, height: 70, borderRadius: radius.sm, overflow: 'hidden', backgroundColor: colors.polaroidPaper, padding: 3 },
   thumb: { flex: 1, borderRadius: 2 },
+  practiceRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.hairline },
 });

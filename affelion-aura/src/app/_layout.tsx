@@ -38,6 +38,7 @@ export default function RootLayout() {
               <Stack.Screen name="onboarding" />
               <Stack.Screen name="home" />
               <Stack.Screen name="scan" options={{ gestureEnabled: false }} />
+              <Stack.Screen name="practice" options={{ gestureEnabled: false }} />
               <Stack.Screen name="portrait/[id]" />
               <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
               <Stack.Screen name="report/[id]" />

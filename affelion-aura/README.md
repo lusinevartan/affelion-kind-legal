@@ -5,7 +5,9 @@ variability from a fingertip on the rear camera (torch on), analyses a few secon
 pitch and variation, and translates those numbers into a living fluid-dynamics colour field that
 wraps the user's silhouette. The result is a soft, glowing Polaroid-style portrait.
 
-It does not claim to capture anything invisible. Every colour maps to a measured number, the same
+After a scan, a guided breathing practice keeps the finger on the camera and lets the portrait
+respond live to heart-rhythm coherence, with before-and-after portraits from the same session and
+a personal baseline across scans. It does not claim to capture anything invisible. Every colour maps to a measured number, the same
 numbers always produce the same portrait, and all copy (including AI responses) is checked against
 an honesty rule set. It is not a medical device.
 
@@ -23,7 +25,8 @@ an honesty rule set. It is not a medical device.
 
 ```
 src/
-  core/        colour system, deterministic mapping, explanations, signal processing, scan state machine
+  core/        colour knowledge base, deterministic mapping, explanations, signal processing (PPG, voice, coherence),
+               scan and practice state machines, personal baseline
   render/      fluid simulation (GLSL + engine), AuraView (expo-gl), Polaroid card
   features/    scan orchestration (native modules → processors → record), app store, history widgets
   services/    SQLite storage, entitlements/purchases, grounded AI guide, export
@@ -38,7 +41,7 @@ docs/          architecture, colour system, reference renders
 
 ```bash
 npm install
-npm test                 # unit tests: mapping determinism, PPG, voice, scan machine, guide guardrails
+npm test                 # unit tests: mapping rules, PPG, voice, coherence, scan and practice machines, baseline, guide guardrails
 npm run typecheck        # tsc --noEmit
 npm run harness:build && npm run harness:shot   # reference renders → docs/renders
 npx expo prebuild --clean
@@ -52,7 +55,7 @@ local templates.
 
 ## Status
 
-What is verified in this repository: the engine and signal processing (46 unit tests), the
+What is verified in this repository: the engine and signal processing (71 unit tests), the
 shader and fluid simulation (rendered in headless Chromium; see `docs/renders`), and the TypeScript
 build of the whole app including native module bindings.
 

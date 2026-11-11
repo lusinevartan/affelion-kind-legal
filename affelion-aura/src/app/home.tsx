@@ -6,10 +6,12 @@ import { Button, Card, Screen, Text } from '../ui/components';
 import { colors, radius, space } from '../ui/theme';
 import { useAppState } from '../features/store/AppStore';
 import { AURA_COLORS } from '../core/color/palette';
+import { scanInsight } from '../core/insight/baseline';
 
 export default function Home() {
-  const { scans, entitlement, canScan, freeScansLeft: left } = useAppState();
+  const { scans, entitlement, canScan, freeScansLeft: left, practices } = useAppState();
   const latest = scans[0] ?? null;
+  const insight = latest ? scanInsight(latest, scans) : null;
 
   return (
     <Screen scroll>
@@ -77,6 +79,26 @@ export default function Home() {
             </View>
           </Card>
         </Pressable>
+      ) : null}
+
+      {latest ? (
+        <Card style={{ marginTop: space.lg }}>
+          <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+            PRACTICE
+          </Text>
+          <Text variant="heading" style={{ marginTop: space.sm }}>
+            Steady your rhythm
+          </Text>
+          <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: 4 }}>
+            Three minutes of paced breathing while the portrait follows your heart rhythm live. {practices.length > 0 ? `${practices.length} session${practices.length === 1 ? '' : 's'} so far.` : 'Your first session is free.'}
+          </Text>
+          {insight?.baseline ? (
+            <Text variant="caption" color={colors.bone50} style={{ marginTop: space.sm }}>
+              {insight.sentence}
+            </Text>
+          ) : null}
+          <Button label="Begin practice" variant="secondary" onPress={() => router.push({ pathname: '/practice', params: { scanId: latest.id } })} block style={{ marginTop: space.lg }} />
+        </Card>
       ) : null}
 
       {scans.length > 0 ? (
