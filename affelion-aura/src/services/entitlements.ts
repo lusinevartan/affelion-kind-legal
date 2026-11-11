@@ -125,6 +125,7 @@ export function createPurchaseProvider(): PurchaseProvider {
   // Required lazily so the dev provider never loads the native module (web review builds).
   const key = revenueCatKey();
   if (key) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- lazy so web review builds never load the native module
     const { RevenueCatPurchaseProvider } = require('./purchases/revenueCat') as typeof import('./purchases/revenueCat');
     return new RevenueCatPurchaseProvider(key);
   }
