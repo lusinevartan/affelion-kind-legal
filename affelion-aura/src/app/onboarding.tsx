@@ -68,7 +68,7 @@ export default function Onboarding() {
         </ScrollView>
         <View style={styles.actions}>
           <Button label={page === PAGES.length - 1 ? 'Begin' : 'Continue'} onPaper={false} onPress={next} block />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minHeight: 44 }}>
             <View style={styles.dots}>
               {PAGES.map((_, i) => (
                 <View key={i} style={[styles.dot, i === page && styles.dotOn]} />

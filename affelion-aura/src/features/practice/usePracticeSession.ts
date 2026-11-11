@@ -2,11 +2,10 @@ import * as React from 'react';
 import { AppState as RNAppState } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { AffelionPpg, type PpgSampleEvent } from '../../../modules/affelion-ppg';
-import { PpgProcessor } from '../../core/signal';
+import { PpgProcessor, recoveryFromChange } from '../../core/signal';
 import { CoherenceAnalyzer, pickResonanceRate, type ResonanceCandidate } from '../../core/signal/coherence';
 import { initialPracticeState, PRACTICE, practiceReducer, type PracticeMode, type PracticeState } from '../../core/practice/practiceMachine';
 import { auraFromWindow, blendAuraParams } from '../../core/color/live';
-import { mapBiometricsToAura } from '../../core/color/mapping';
 import type { AuraParams, PracticeRecord, ScanRecord, WindowMetrics } from '../../core/types';
 import { newPracticeId } from '../../services/storage';
 
@@ -66,9 +65,13 @@ export function usePracticeSession(scan: ScanRecord | null): PracticeSession {
     };
   }, [scan]);
 
+  // The camera and the clock run for the whole of settle and breathe. They are keyed on this
+  // flag, not on the phase, so moving from one to the other never restarts the camera.
+  const active = state.phase === 'settle' || state.phase === 'breathe';
+
   // Tick.
   React.useEffect(() => {
-    if (state.phase !== 'settle' && state.phase !== 'breathe') return;
+    if (!active) return;
     let last = Date.now();
     const id = setInterval(() => {
       const now = Date.now();
@@ -76,11 +79,11 @@ export function usePracticeSession(scan: ScanRecord | null): PracticeSession {
       last = now;
     }, TICK_MS);
     return () => clearInterval(id);
-  }, [state.phase]);
+  }, [active]);
 
   // Camera + analysis while active.
   React.useEffect(() => {
-    if (state.phase !== 'settle' && state.phase !== 'breathe') return;
+    if (!active) return;
     let cancelled = false;
     const sub = AffelionPpg.addListener('onSample', (s: PpgSampleEvent) => {
       if (cancelled || !s.locked) return;
@@ -111,7 +114,9 @@ export function usePracticeSession(scan: ScanRecord | null): PracticeSession {
       const blended = blendAuraParams(auraRef.current, target, 0.25);
       auraRef.current = blended;
       setAura(blended);
-      if (st.phase === 'settle' || (st.phase === 'breathe' && st.elapsed < 5)) {
+      // "Before" is the rhythm on arrival: the settle step and the first seconds of breathing,
+      // or the first estimate available if the settle step was too short to produce one.
+      if (st.phase === 'settle' || (st.phase === 'breathe' && st.elapsed < 5) || !beforeRef.current) {
         beforeRef.current = { bpm: est.bpm, rmssd: est.rmssd, coherence: est.score, rsaMs: est.rsaMs };
         beforeAuraRef.current = target;
       }
@@ -126,7 +131,7 @@ export function usePracticeSession(scan: ScanRecord | null): PracticeSession {
       statusSub.remove();
       AffelionPpg.stop().catch(() => {});
     };
-  }, [state.phase, ppg, coherence, voice]);
+  }, [active, ppg, coherence, voice]);
 
   // Haptic cue at each breath turn.
   const lastBreathing = React.useRef(state.breathing);
@@ -155,10 +160,10 @@ export function usePracticeSession(scan: ScanRecord | null): PracticeSession {
       };
       const before = beforeRef.current ?? afterMetrics;
       const beforeAura = beforeAuraRef.current ?? auraFromWindow({ bpm: before.bpm, hrv: before.rmssd, coherence: before.coherence }, voice.inputs, voice.available);
-      const afterAura = mapBiometricsToAura({
-        heart: { bpm: afterMetrics.bpm, rmssd: afterMetrics.rmssd, sdnn: afterMetrics.rmssd, pnn50: 0, beatCount: 0, quality: 1, durationSec: PRACTICE.afterWindowSec },
-        voice: scan?.voice ?? null,
-      });
+      // Both portraits come from the same function, so they differ only by what was measured.
+      // The "after" one also carries how far the rhythm recovered across the session.
+      const recovery = recoveryFromChange(before.bpm, afterMetrics.bpm, before.rmssd, afterMetrics.rmssd);
+      const afterAura = auraFromWindow({ bpm: afterMetrics.bpm, hrv: afterMetrics.rmssd, coherence: afterMetrics.coherence }, { ...voice.inputs, recovery }, voice.available);
       let resonanceRate: number | null = null;
       if (state.mode === 'findRate') {
         const candidates: ResonanceCandidate[] = PRACTICE.resonanceRates.map((rate) => {

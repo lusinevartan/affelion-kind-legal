@@ -71,7 +71,7 @@ function seed(store: Store) {
   store.kv.onboardingDone = '1';
   try {
     if (globalThis.localStorage?.getItem('aura.pro') === '1') {
-      store.kv['entitlement.dev'] = JSON.stringify({ isPro: true, plan: 'annual', expiresAt: null, source: 'dev' });
+      store.kv['entitlement.dev'] = JSON.stringify({ isPro: true, plan: 'annual', expiresAt: Date.now() + 365 * 86_400_000, source: 'dev' });
     }
   } catch {
     // ignore
@@ -133,8 +133,8 @@ export async function setSetting(key: string, value: string): Promise<void> {
   store.kv[key] = value;
   save(store);
 }
-export async function clearSettings(): Promise<void> {
-  store.kv = {};
+export async function clearSettings(keep: readonly string[] = []): Promise<void> {
+  store.kv = Object.fromEntries(Object.entries(store.kv).filter(([k]) => keep.includes(k)));
   save(store);
 }
 export function newPracticeId(): string {

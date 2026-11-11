@@ -1,3 +1,6 @@
+/// <reference types="node" />
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { askGuide, buildScanContext, GUIDE_NAME, GUIDE_SYSTEM_PROMPT, localGuideAnswer, sanitiseGuideReply } from '../src/services/ai/guide';
 import { mapBiometricsToAura } from '../src/core/color';
 import type { ScanRecord } from '../src/core/types';
@@ -58,5 +61,38 @@ describe('guide guardrails', () => {
     const failing = async () => new Response('nope', { status: 500 });
     const r2 = await askGuide('What does the halo mean?', record, [], { endpoint: 'https://example.invalid/guide', fetchImpl: failing as unknown as typeof fetch });
     expect(r2).toContain('34 ms');
+  });
+});
+
+describe('the server owns the prompt', () => {
+  const serverDir = path.join(__dirname, '..', '..', 'server', 'sasha', 'src');
+
+  test("the server's copy of the system prompt matches the app's (run `npm run sync:guide-prompt` if this fails)", () => {
+    const file = fs.readFileSync(path.join(serverDir, 'systemPrompt.ts'), 'utf8');
+    const literal = file.slice(file.indexOf('= ') + 2, file.lastIndexOf(';'));
+    expect(JSON.parse(literal)).toBe(GUIDE_SYSTEM_PROMPT);
+  });
+
+  test('the server never reads a prompt from the request', () => {
+    const index = fs.readFileSync(path.join(serverDir, 'index.ts'), 'utf8');
+    expect(index).toContain('text: SYSTEM_PROMPT');
+    expect(index).not.toMatch(/body\.system|r\.system/);
+  });
+
+  test('the app does not send a prompt', async () => {
+    let sent: Record<string, unknown> = {};
+    const fetchImpl = (async (_url: unknown, init?: { body?: unknown }) => {
+      sent = JSON.parse(String(init?.body));
+      return { ok: true, json: async () => ({ reply: 'Your pulse averaged 78 bpm.' }) };
+    }) as unknown as typeof fetch;
+    await askGuide('What does my centre mean?', record, [], { endpoint: 'https://example.invalid/guide', fetchImpl });
+    expect(sent.system).toBeUndefined();
+    expect(String(sent.context)).toContain('78 bpm');
+  });
+
+  test('health questions get the not-a-medical-device answer even when they mention the pulse', () => {
+    for (const q of ['Is my heart rate a sign of disease?', 'What illness do I have?', 'Does my pulse mean anxiety?']) {
+      expect(localGuideAnswer(q, record)).toContain('not a medical device');
+    }
   });
 });

@@ -128,11 +128,14 @@ export function scanReducer(state: ScanState, event: ScanEvent): ScanState {
     case 'START':
       return withProgress({ ...initialScanState, phase: 'face', guidance: 'faceFraming' });
     case 'FAIL':
+      if (state.phase === 'failed' || state.phase === 'done' || state.phase === 'idle') return state;
       return withProgress({
         ...state,
         phase: 'failed',
         failure: event.reason,
-        guidance: state.phase === 'finger' ? 'failedFinger' : state.phase === 'voice' ? 'failedVoice' : 'failedCamera',
+        // The only thing that can fail while composing is the pulse reading, so that is the
+        // step to repeat; the outline and still from the face step are kept.
+        guidance: state.phase === 'finger' || state.phase === 'computing' ? 'failedFinger' : state.phase === 'voice' ? 'failedVoice' : 'failedCamera',
       });
     case 'RETRY_PHASE': {
       if (state.phase !== 'failed') return state;
@@ -154,17 +157,22 @@ export function scanReducer(state: ScanState, event: ScanEvent): ScanState {
     case 'FACE_DETECTED':
       if (state.phase !== 'face') return state;
       return withProgress({ ...state, faceDetected: event.detected, guidance: event.detected ? 'faceHold' : 'faceFraming' });
-    case 'FINGER_COVERAGE':
+    case 'FINGER_COVERAGE': {
       if (state.phase !== 'finger') return state;
-      return { ...state, fingerCoverageReason: event.covered ? 'ok' : event.reason };
+      // This arrives once per camera frame; an unchanged reading must not cause a render.
+      const reason: CoverageReason = event.covered ? 'ok' : event.reason;
+      return reason === state.fingerCoverageReason ? state : { ...state, fingerCoverageReason: reason };
+    }
     case 'PPG_QUALITY':
-      if (state.phase !== 'finger') return state;
+      if (state.phase !== 'finger' || state.fingerQuality === event.quality) return state;
       return { ...state, fingerQuality: event.quality };
     case 'VOICE_PROGRESS':
       if (state.phase !== 'voice') return state;
       return { ...state, voicedSec: event.voicedSec, voiceLevel: event.level };
     case 'SKIP_VOICE':
-      if (state.phase !== 'voice' && state.phase !== 'failed') return state;
+      // Skipping is offered during the voice step, or after the voice step failed; never as a
+      // way past a failed pulse reading.
+      if (state.phase !== 'voice' && !(state.phase === 'failed' && state.guidance === 'failedVoice')) return state;
       return withProgress({ ...state, phase: 'computing', voiceSkipped: true, guidance: 'computing', failure: null });
     case 'COMPUTED':
       if (state.phase !== 'computing') return state;

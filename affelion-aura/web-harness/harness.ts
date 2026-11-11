@@ -16,13 +16,14 @@ import { FluidSim, QUALITY_PRESETS, placeholderMask } from '../src/render/fluid/
 function paramsForColor(id: AuraColorId): { params: AuraParams; reachable: boolean; readings: string } {
   const variances = [0.3, 0.15, 0.45, 0.6, 0.05, 0.75, 0.9];
   const stabilities = [0.6, 0.8, 0.4, 0.95, 0.2];
-  for (const withVoice of [true, false]) {
+  for (const recovery of [0, 0.6]) {
+   for (const withVoice of [true, false]) {
     for (let bpm = 48; bpm <= 116; bpm += 2) {
       for (let rmssd = 8; rmssd <= 100; rmssd += 3) {
         for (const variance of withVoice ? variances : [0]) {
           for (const stability of withVoice ? stabilities : [0]) {
             const input: BiometricInput = {
-              heart: { bpm, rmssd, sdnn: rmssd * 1.1, pnn50: rmssd > 40 ? 28 : 6, beatCount: 44, quality: 0.9, durationSec: 40 },
+              heart: { bpm, rmssd, sdnn: rmssd * 1.1, pnn50: rmssd > 40 ? 28 : 6, beatCount: 44, quality: 0.9, durationSec: 40, recovery },
               voice: withVoice
                 ? { dominantPitchHz: 170, variance, stability, pitchVarianceSemitones: variance * 4, energyVariance: variance * 0.8, spectralCentroidHz: 1300, voicedRatio: 0.6, quality: 0.8, durationSec: 5 }
                 : null,
@@ -30,12 +31,14 @@ function paramsForColor(id: AuraColorId): { params: AuraParams; reachable: boole
             const params = mapBiometricsToAura(input);
             if (params.primaryColorId === id) {
               const voice = withVoice ? ` · voice ${Math.round(variance * 100)}% var, ${Math.round(stability * 100)}% steady` : ' · no voice';
-              return { params, reachable: true, readings: `${bpm} bpm · HRV ${rmssd} ms${voice}` };
+              const rec = recovery > 0 ? ' · settling during the scan' : '';
+              return { params, reachable: true, readings: `${bpm} bpm · HRV ${rmssd} ms${voice}${rec}` };
             }
           }
         }
       }
     }
+   }
   }
   const base = mapBiometricsToAura(PRESETS.coherent!);
   const sw = SWATCH_HSL[id];

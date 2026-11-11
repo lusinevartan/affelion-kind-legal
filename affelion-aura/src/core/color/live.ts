@@ -16,7 +16,7 @@ export interface LiveWindow {
   coherence: number;
 }
 
-export function auraFromWindow(w: LiveWindow, voice: Pick<MappingInput, 'vocalPitchHz' | 'vocalVariance' | 'vocalStability'>, voiceAvailable: boolean): AuraParams {
+export function auraFromWindow(w: LiveWindow, voice: Pick<MappingInput, 'vocalPitchHz' | 'vocalVariance' | 'vocalStability' | 'recovery'>, voiceAvailable: boolean): AuraParams {
   const m: MappingInput = { bpm: w.bpm, hrv: w.hrv, ...voice };
   const out = mapBiometricsToColor(m, voiceAvailable);
   const turbulence = out.turbulence * (1 - 0.5 * clamp01(w.coherence));

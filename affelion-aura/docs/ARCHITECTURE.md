@@ -58,6 +58,12 @@ from the upstroke zero-crossing (sub-sample, noise-robust), interval rejection (
 median), then BPM, RMSSD, SDNN, pNN50 and a quality score (accept ratio + autocorrelation SNR +
 duration). Synthetic tests hold BPM within 1.5 bpm and distinguish RSA from a metronomic rhythm.
 
+Each stretch of continuous coverage is a segment, filtered and searched for beats on its own. A
+break longer than 0.5 s starts a new segment; shorter flickers are bridged. So lifting the finger
+never becomes a ramp in the signal or a beat that did not happen, and RMSSD and pNN50 only
+difference intervals that were true neighbours. `recovery` (0..1) compares the first half of the
+reading with the second; it is what lets lime green appear (see `docs/COLOR_SYSTEM.md`).
+
 ## Voice (`src/core/signal/voice.ts`, `modules/affelion-audio`)
 
 1024-sample frames at 16 kHz, hop 512. Frames above a silence floor get a YIN pitch estimate
@@ -142,7 +148,11 @@ Pro exports are clean.
 (`src/services/purchases/revenueCat.ts`) reads the "pro" entitlement from the store, purchases the
 package whose product id matches `PLANS[].productId`, restores, and opens the platform's
 subscription management page. Without keys the `DevPurchaseProvider` simulates purchases locally
-and the paywall says so. Store setup: three products (`com.affelion.aura.pro.monthly`, `.annual`,
+and the paywall says so, but only in development, in the web review build, or in a build that
+sets `EXPO_PUBLIC_ALLOW_SIMULATED_PURCHASES=1` (an internal test build). A release build that is
+missing its keys grants nothing and the paywall button says purchases are unavailable. "Delete
+all data" removes scans, photos, portraits, practice sessions and settings, and keeps the plan
+and the free allowance already used. Store setup: three products (`com.affelion.aura.pro.monthly`, `.annual`,
 `.lifetime`) in App Store Connect and Google Play, attached to a RevenueCat entitlement named `pro`
 and a current offering.
 
@@ -153,6 +163,11 @@ the app's knowledge-base system prompt (cached) plus the scan's numbers to Claud
 effort with server-side refusal fallbacks, and filters the reply through the honesty rules. The
 app points at it with `EXPO_PUBLIC_GUIDE_ENDPOINT` and, optionally, `EXPO_PUBLIC_GUIDE_TOKEN`.
 It stores nothing; the app never sends images or audio.
+
+The server owns the system prompt (`server/sasha/src/systemPrompt.ts`), generated from this
+app's knowledge base by `npm run sync:guide-prompt`; a test fails if they drift. The app sends
+only the scan's numbers and the conversation. A prompt sent by a client is ignored, because the
+app's token ships inside the app and is public.
 
 ## Premium frames (`src/render/polaroid/styles.ts`)
 

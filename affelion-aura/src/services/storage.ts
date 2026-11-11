@@ -197,7 +197,12 @@ export async function setSetting(key: string, value: string): Promise<void> {
   await d.runAsync(`INSERT OR REPLACE INTO kv (key, value) VALUES (?, ?)`, key, value);
 }
 
-export async function clearSettings(): Promise<void> {
+/** Remove every setting except the named keys. */
+export async function clearSettings(keep: readonly string[] = []): Promise<void> {
   const d = await db();
-  await d.execAsync(`DELETE FROM kv`);
+  if (!keep.length) {
+    await d.execAsync(`DELETE FROM kv`);
+    return;
+  }
+  await d.runAsync(`DELETE FROM kv WHERE key NOT IN (${keep.map(() => '?').join(', ')})`, ...keep);
 }

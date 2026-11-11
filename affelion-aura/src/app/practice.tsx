@@ -7,6 +7,7 @@ import { Button, Card, MetricRow, Screen, StatusPill, Text } from '../ui/compone
 import { colors, space } from '../ui/theme';
 import { useAppActions, useAppState } from '../features/store/AppStore';
 import { usePracticeSession } from '../features/practice/usePracticeSession';
+import { updatePracticePortraits } from '../services/storage';
 import { BreathPacer } from '../features/practice/BreathPacer';
 import { getCachedMask } from '../features/scan/sessionCache';
 import { AuraView, type AuraViewRef } from '../render/fluid/AuraView';
@@ -53,13 +54,18 @@ export default function PracticeScreen() {
     }
   }, [state.phase, afterShot]);
 
-  // Persist once the record and after-shot exist (or after a short grace if no shot).
+  // Persist the record as soon as it exists; the portraits are attached when their snapshots
+  // arrive, which can be a moment later.
   React.useEffect(() => {
-    if (!result || saved.current) return;
-    saved.current = true;
-    const rec = { ...result, beforePortraitUri: beforeShot, afterPortraitUri: afterShot };
-    recordPractice(rec).catch((e) => Alert.alert('Could not save', e instanceof Error ? e.message : 'Unknown error'));
-    if (session.resonance) void setResonanceRate(session.resonance.breathsPerMinute);
+    if (!result) return;
+    if (!saved.current) {
+      saved.current = true;
+      const rec = { ...result, beforePortraitUri: beforeShot, afterPortraitUri: afterShot };
+      recordPractice(rec).catch((e) => Alert.alert('Could not save', e instanceof Error ? e.message : 'Unknown error'));
+      if (session.resonance) void setResonanceRate(session.resonance.breathsPerMinute);
+    } else if (beforeShot || afterShot) {
+      void updatePracticePortraits(result.id, beforeShot, afterShot).catch(() => {});
+    }
   }, [result, beforeShot, afterShot, recordPractice, session.resonance, setResonanceRate]);
 
   const begin = async () => {
@@ -82,7 +88,9 @@ export default function PracticeScreen() {
     ]);
   };
 
-  if (!canPractice) {
+  // The gate applies to starting a session. Someone who has just finished their free one must
+  // still see its result, even though finishing it is what uses the allowance up.
+  if (!canPractice && state.phase === 'idle') {
     return (
       <Screen>
         <Text variant="title">Practice is part of Pro</Text>
@@ -204,7 +212,7 @@ export default function PracticeScreen() {
   return (
     <View style={styles.root}>
       <View style={styles.stage}>
-        <AuraView ref={auraRef} params={aura} mask={mask} quality="medium" style={StyleSheet.absoluteFill} />
+        <AuraView ref={auraRef} params={aura} mask={mask} stillUri={scan?.stillUri ?? null} quality="medium" style={StyleSheet.absoluteFill} />
         <View style={[styles.topBar, { paddingTop: insets.top + space.sm }]}>
           <StatusPill label={state.phase === 'settle' ? 'Finding pulse' : `${Math.round(state.elapsed)} s of ${state.durationSec} s · ${state.breathsPerMinute}/min`} tone={state.covered ? 'live' : 'warn'} />
           <Pressable accessibilityRole="button" accessibilityLabel="Stop session" onPress={confirmStop} hitSlop={12} style={styles.cancel}>
@@ -243,7 +251,7 @@ export default function PracticeScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.stage },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  stage: { flex: 1, backgroundColor: '#07080b', overflow: 'hidden' },
+  stage: { flex: 1, backgroundColor: colors.stage, overflow: 'hidden' },
   topBar: { position: 'absolute', left: space.lg, right: space.lg, top: 0, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cancel: { paddingHorizontal: space.md, paddingVertical: 8, backgroundColor: colors.overlay },
   centre: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },

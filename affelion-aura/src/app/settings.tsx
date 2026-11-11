@@ -13,7 +13,7 @@ export default function Settings() {
   const plan = PLANS.find((p) => p.id === entitlement.plan);
 
   const confirmDelete = () => {
-    Alert.alert('Delete all data?', 'Every scan, portrait and setting on this device will be removed. This cannot be undone.', [
+    Alert.alert('Delete all data?', 'Every scan, photo, portrait, practice session and setting on this device will be removed. This cannot be undone. Your plan and the free scans you have already used are not affected.', [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Delete everything', style: 'destructive', onPress: () => void deleteAllData() },
     ]);

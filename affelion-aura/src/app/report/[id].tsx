@@ -30,6 +30,9 @@ export default function ReportScreen() {
     if (!entitlement.isPro && record) router.replace({ pathname: '/paywall', params: { from: record.id } });
   }, [entitlement.isPro, record]);
 
+  // While the redirect to the paywall is in flight, show nothing rather than Pro content.
+  if (record && !entitlement.isPro) return <Screen>{null}</Screen>;
+
   if (!record) {
     return (
       <Screen>

@@ -84,3 +84,47 @@ describe('scan state machine', () => {
     expect(t.voiceSkipped).toBe(true);
   });
 });
+
+describe('scan failures and repeated events', () => {
+  const toComputing = () => {
+    let s = scanReducer(initialScanState, { type: 'START' });
+    s = scanReducer(s, { type: 'FACE_DETECTED', detected: true });
+    s = run(s, ticks(SCAN_TIMING.faceSec * 2));
+    s = scanReducer(s, { type: 'FINGER_COVERAGE', covered: true, reason: 'ok' });
+    s = run(s, ticks(SCAN_TIMING.fingerTargetSec * 2));
+    s = scanReducer(s, { type: 'VOICE_PROGRESS', voicedSec: 3, level: 0.4 });
+    return run(s, ticks(SCAN_TIMING.voiceSec * 2));
+  };
+
+  test('a noisy pulse found while composing sends the person back to the pulse step', () => {
+    let s = toComputing();
+    expect(s.phase).toBe('computing');
+    s = scanReducer(s, { type: 'FAIL', reason: 'too noisy' });
+    expect(s.guidance).toBe('failedFinger');
+    s = scanReducer(s, { type: 'RETRY_PHASE' });
+    expect(s.phase).toBe('finger');
+    expect(s.faceElapsed).toBeGreaterThanOrEqual(SCAN_TIMING.faceSec);
+  });
+
+  test('skipping the voice is not a way past a failed pulse reading', () => {
+    let s = scanReducer(initialScanState, { type: 'START' });
+    s = scanReducer(s, { type: 'FACE_DETECTED', detected: true });
+    s = run(s, ticks(SCAN_TIMING.faceSec * 2));
+    s = scanReducer(s, { type: 'FAIL', reason: 'camera error' });
+    expect(s.guidance).toBe('failedFinger');
+    expect(scanReducer(s, { type: 'SKIP_VOICE' })).toBe(s);
+  });
+
+  test('an unchanged per-frame coverage reading returns the same state object', () => {
+    let s = scanReducer(initialScanState, { type: 'START' });
+    s = scanReducer(s, { type: 'FACE_DETECTED', detected: true });
+    s = run(s, ticks(SCAN_TIMING.faceSec * 2));
+    const a = scanReducer(s, { type: 'FINGER_COVERAGE', covered: true, reason: 'ok' });
+    expect(scanReducer(a, { type: 'FINGER_COVERAGE', covered: true, reason: 'ok' })).toBe(a);
+  });
+
+  test('a failure after the scan is done is ignored', () => {
+    const done = scanReducer(toComputing(), { type: 'COMPUTED' });
+    expect(scanReducer(done, { type: 'FAIL', reason: 'backgrounded' })).toBe(done);
+  });
+});

@@ -78,13 +78,24 @@ export interface PurchaseProvider {
   openManageSubscriptions(): Promise<void>;
 }
 
-const ENTITLEMENT_KEY = 'entitlement.dev';
+export const ENTITLEMENT_KEY = 'entitlement.dev';
+
+/**
+ * Simulated purchases exist so the flow can be exercised without store accounts. They are only
+ * honoured in development, in the web review build, or when a build opts in explicitly with
+ * EXPO_PUBLIC_ALLOW_SIMULATED_PURCHASES=1 (for an internal test build). A release build that is
+ * missing its store keys must never hand out Pro for free.
+ */
+export function simulatedPurchasesAllowed(): boolean {
+  return __DEV__ || Platform.OS === 'web' || process.env.EXPO_PUBLIC_ALLOW_SIMULATED_PURCHASES === '1';
+}
 
 /** Local simulation for development builds. Clearly labelled in the UI. */
 export class DevPurchaseProvider implements PurchaseProvider {
   readonly name = 'dev';
 
   async getEntitlement(): Promise<Entitlement> {
+    if (!simulatedPurchasesAllowed()) return NO_ENTITLEMENT;
     const raw = await getSetting(ENTITLEMENT_KEY);
     if (!raw) return NO_ENTITLEMENT;
     try {
@@ -97,6 +108,7 @@ export class DevPurchaseProvider implements PurchaseProvider {
   }
 
   async purchase(plan: PlanId): Promise<Entitlement> {
+    if (!simulatedPurchasesAllowed()) throw new Error('Purchases are not available in this build yet.');
     const expiresAt = plan === 'lifetime' ? null : Date.now() + (plan === 'annual' ? 365 : 30) * 24 * 3600 * 1000;
     const e: Entitlement = { isPro: true, plan, expiresAt, source: 'dev' };
     await setSetting(ENTITLEMENT_KEY, JSON.stringify(e));
@@ -139,7 +151,12 @@ function revenueCatKey(): string | null {
 
 /** True when purchases are simulated, so the paywall can say so. */
 export function purchasesAreSimulated(): boolean {
-  return revenueCatKey() === null;
+  return revenueCatKey() === null && simulatedPurchasesAllowed();
+}
+
+/** False in a build that has neither store keys nor permission to simulate. */
+export function purchasesAvailable(): boolean {
+  return revenueCatKey() !== null || simulatedPurchasesAllowed();
 }
 
 export const FREE_SCANS_USED_KEY = 'freeScansUsed';
@@ -154,6 +171,9 @@ export async function incrementFreeScansUsed(): Promise<number> {
   await setSetting(FREE_SCANS_USED_KEY, String(n));
   return n;
 }
+
+/** Set once the single free practice session has been used. Survives "delete all data". */
+export const FREE_PRACTICE_USED_KEY = 'freePracticeUsed';
 
 export function freeScansRemaining(used: number): number {
   return Math.max(0, FREE_SCAN_LIMIT - used);

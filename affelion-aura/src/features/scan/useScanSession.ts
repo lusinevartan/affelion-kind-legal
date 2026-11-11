@@ -34,11 +34,15 @@ export interface ScanLive {
 export interface ScanSession {
   state: ScanState;
   live: ScanLive;
+  /** Latest outline, for the live preview. */
   mask: SilhouetteMask | null;
+  /** The outline from the moment the still was taken; this is the one to keep with the scan. */
+  stillMask: SilhouetteMask | null;
   stillUri: string | null;
   result: ScanRecord | null;
   error: string | null;
-  start(): void;
+  /** `voice: false` skips the voice step, for when the microphone is not available. */
+  start(opts?: { voice?: boolean }): void;
   cancel(): void;
   retry(): void;
   skipVoice(): void;
@@ -72,6 +76,9 @@ export function useScanSession(): ScanSession {
   });
   const [mask, setMask] = React.useState<SilhouetteMask | null>(null);
   const [stillUri, setStillUri] = React.useState<string | null>(null);
+  const [stillMask, setStillMask] = React.useState<SilhouetteMask | null>(null);
+  const maskRef = React.useRef<SilhouetteMask | null>(null);
+  const voiceEnabled = React.useRef(true);
   const [result, setResult] = React.useState<ScanRecord | null>(null);
   const error = state.failure;
 
@@ -101,9 +108,15 @@ export function useScanSession(): ScanSession {
     if (state.phase !== 'face') return;
     if (state.faceElapsed > 2.5 && !stillRequested.current && captureStillRef.current) {
       stillRequested.current = true;
+      // The outline that goes with the photograph is the one on screen when the shutter fires,
+      // not whatever the tracker reports later in the step.
+      const outline = maskRef.current;
       captureStillRef
         .current()
-        .then((r) => setStillUri(r.uri))
+        .then((r) => {
+          setStillUri(r.uri);
+          setStillMask(maskRef.current ?? outline);
+        })
         .catch(() => {
           stillRequested.current = false;
         });
@@ -147,6 +160,10 @@ export function useScanSession(): ScanSession {
   // Voice phase: microphone.
   React.useEffect(() => {
     if (state.phase !== 'voice') return;
+    if (!voiceEnabled.current) {
+      dispatch({ type: 'SKIP_VOICE' });
+      return;
+    }
     let cancelled = false;
     voice.reset();
     const sub = AffelionAudio.addListener('onPcm', (e) => {
@@ -218,7 +235,9 @@ export function useScanSession(): ScanSession {
     if (now - lastMaskAt.current < 60) return;
     lastMaskAt.current = now;
     const { width, height, imageAspect, data } = e.nativeEvent;
-    setMask({ width, height, imageAspect, data: base64ToBytes(data) });
+    const next = { width, height, imageAspect, data: base64ToBytes(data) };
+    maskRef.current = next;
+    setMask(next);
   }, []);
 
   const onFace = React.useCallback((e: { nativeEvent: FaceEvent }) => {
@@ -227,11 +246,14 @@ export function useScanSession(): ScanSession {
     dispatch({ type: 'FACE_DETECTED', detected });
   }, []);
 
-  const start = React.useCallback(() => {
+  const start = React.useCallback((opts?: { voice?: boolean }) => {
     computed.current = false;
     stillRequested.current = false;
+    voiceEnabled.current = opts?.voice !== false;
+    maskRef.current = null;
     setResult(null);
     setStillUri(null);
+    setStillMask(null);
     dispatch({ type: 'START' });
   }, []);
 
@@ -256,6 +278,7 @@ export function useScanSession(): ScanSession {
     state,
     live,
     mask,
+    stillMask,
     stillUri,
     result,
     error,

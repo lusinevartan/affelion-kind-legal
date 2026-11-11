@@ -48,7 +48,7 @@ export default function ScanScreen() {
         if (!mic.granted) {
           Alert.alert('Microphone off', 'The voice step will be skipped. You can enable the microphone later in Settings.');
         }
-        session.start();
+        session.start({ voice: mic.granted });
       } else {
         setPermission('denied');
       }
@@ -64,11 +64,11 @@ export default function ScanScreen() {
     if (session.state.phase !== 'done' || !session.result || saved.current) return;
     saved.current = true;
     const record = session.result;
-    cacheMask(record.id, session.mask);
+    cacheMask(record.id, session.stillMask ?? session.mask);
     recordScan(record)
       .then(() => router.replace({ pathname: '/portrait/[id]', params: { id: record.id } }))
       .catch((e) => Alert.alert('Could not save', e instanceof Error ? e.message : 'Unknown error'));
-  }, [session.state.phase, session.result, session.mask, recordScan]);
+  }, [session.state.phase, session.result, session.mask, session.stillMask, recordScan]);
 
   const { state, live } = session;
   const guidance = GUIDANCE_COPY[state.guidance];
@@ -171,7 +171,7 @@ export default function ScanScreen() {
 
         {state.phase === 'computing' ? (
           <View style={StyleSheet.absoluteFill}>
-            <AuraView params={session.result?.aura ?? null} mask={session.mask} style={StyleSheet.absoluteFill} />
+            <AuraView params={session.result?.aura ?? null} mask={session.stillMask ?? session.mask} stillUri={session.stillUri} style={StyleSheet.absoluteFill} />
           </View>
         ) : null}
 

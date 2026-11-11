@@ -58,7 +58,10 @@ export function hrvTrend(history: readonly ScanRecord[]): Trend | null {
 const r0 = (n: number) => Math.round(n).toString();
 const pct = (f: number) => `${Math.round(Math.abs(f) * 100)}%`;
 
-export function scanInsight(scan: ScanRecord, history: readonly ScanRecord[]): ScanInsight {
+export function scanInsight(scan: ScanRecord, allScans: readonly ScanRecord[]): ScanInsight {
+  // A scan is compared with itself and what came before it, never with later scans, so an old
+  // portrait keeps saying what was true when it was made.
+  const history = allScans.filter((s) => s.createdAt <= scan.createdAt);
   const baseline = computeBaseline(history, scan.id);
   const trend = hrvTrend(history);
   if (!baseline) {

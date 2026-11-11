@@ -96,16 +96,19 @@ export function practiceReducer(state: PracticeState, event: PracticeEvent): Pra
       };
     }
     case 'COVERAGE':
+      // This arrives once per camera frame; an unchanged reading must not cause a render.
+      if (state.covered === event.covered) return state;
       return { ...state, covered: event.covered, uncoveredFor: event.covered ? 0 : state.uncoveredFor };
     case 'SETTLE_PROGRESS':
-      return state.phase === 'settle' ? { ...state, settleBeats: event.beats } : state;
+      return state.phase === 'settle' && state.settleBeats !== event.beats ? { ...state, settleBeats: event.beats } : state;
     case 'COHERENCE':
-      return { ...state, coherence: event.score };
+      return state.coherence === event.score ? state : { ...state, coherence: event.score };
     case 'FINISH_EARLY':
       if (state.phase !== 'breathe') return state;
       // Allow an early finish only once there is enough data for an "after" window.
       return state.elapsed >= PRACTICE.afterWindowSec ? { ...state, phase: 'done' } : state;
     case 'FAIL':
+      if (state.phase !== 'settle' && state.phase !== 'breathe') return state;
       return { ...state, phase: 'failed', failure: event.reason };
     case 'TICK':
       return tick(state, event.dt);

@@ -58,7 +58,8 @@
     "test": "jest",
     "harness:build": "node web-harness/build.mjs",
     "harness:shot": "node web-harness/shot.mjs",
-    "prebuild": "expo prebuild --clean"
+    "prebuild": "expo prebuild --clean",
+    "sync:guide-prompt": "node scripts/sync-guide-prompt.mjs"
   },
   "private": true,
   "jest": {

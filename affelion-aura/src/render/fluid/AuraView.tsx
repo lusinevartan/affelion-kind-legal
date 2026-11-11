@@ -77,6 +77,10 @@ export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function Au
       if (params) sim.setParams(params);
       sim.setMask(mask);
       lastRef.current = 0;
+      if (pausedRef.current) {
+        for (let i = 0; i < 150; i++) sim.step(1 / 60);
+        gl.endFrameEXP();
+      }
       rafRef.current = requestAnimationFrame(loop);
       setReady(true);
       onReady?.();
@@ -86,13 +90,29 @@ export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function Au
     [loop],
   );
 
+  // A paused view never runs the loop, so it has to be developed once by hand: enough
+  // simulated time for the fluid to form, then one presented frame.
+  const developPaused = React.useCallback(() => {
+    const sim = simRef.current;
+    const gl = glRef.current;
+    if (!pausedRef.current || !sim || !gl) return;
+    for (let i = 0; i < 150; i++) sim.step(1 / 60);
+    gl.endFrameEXP();
+  }, []);
+
   React.useEffect(() => {
     if (params) simRef.current?.setParams(params);
-  }, [params]);
+    developPaused();
+  }, [params, developPaused]);
 
   React.useEffect(() => {
     simRef.current?.setMask(mask);
-  }, [mask]);
+    developPaused();
+  }, [mask, developPaused]);
+
+  React.useEffect(() => {
+    if (paused) developPaused();
+  }, [paused, developPaused]);
 
   React.useEffect(() => {
     if (simRef.current) simRef.current.paper = paper;

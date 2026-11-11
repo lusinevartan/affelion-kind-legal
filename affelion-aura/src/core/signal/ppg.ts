@@ -9,8 +9,9 @@ import { bandpassZeroPhase, detrend } from './filters';
  * centre region while the torch is on and a fingertip covers the lens. Blood volume in the
  * fingertip rises with each heartbeat and absorbs more light, so the mean red value dips
  * once per beat. We resample to a uniform rate, band-pass between 0.7 and 3.5 Hz
- * (42–210 bpm), detect beats with an adaptive threshold, refine their timing with parabolic
- * interpolation, reject artefacts, and compute heart rate and HRV from the surviving intervals.
+ * (42–210 bpm), detect beats with an adaptive threshold, time each beat at its upstroke, reject
+ * artefacts, and compute heart rate and HRV from the surviving intervals. Every stretch of
+ * continuous coverage is processed on its own, so lifting the finger never invents a beat.
  */
 
 export interface PpgSample {
@@ -77,13 +78,47 @@ interface Beat {
   amp: number;
 }
 
+/** One accepted beat-to-beat interval. */
+interface Interval {
+  ms: number;
+  /** Time of the beat that closes the interval (seconds, sample clock). */
+  t: number;
+  /** True when the interval immediately before it was also accepted, so their difference is real. */
+  adjacent: boolean;
+}
+
+interface Prepared {
+  x: Float32Array;
+  t0: number;
+}
+
+interface Analysis {
+  intervals: Interval[];
+  /** Raw interval count before rejection, across all segments. */
+  total: number;
+  beats: number[];
+  /** Filtered signal of the most recent segment, for the waveform. */
+  latest: Prepared | null;
+  snr: number;
+  /** Seconds of usable signal analysed. */
+  durationSec: number;
+}
+
+/** A break in coverage longer than this starts a new segment instead of being interpolated. */
+const SEGMENT_GAP_SEC = 0.5;
+
 export class PpgProcessor {
   readonly fs: number;
   private readonly windowSec: number;
   private readonly minBpm: number;
   private readonly maxBpm: number;
 
-  private raw: PpgSample[] = [];
+  /**
+   * Covered samples, split wherever the finger left the lens. Each segment is filtered and
+   * searched for beats on its own, so a lift never becomes a ramp in the signal, a beat that
+   * did not happen, or a difference between two intervals that were not neighbours.
+   */
+  private segments: PpgSample[][] = [];
   private coveredSec = 0;
   private lastSampleT: number | null = null;
   private coverage: CoverageEstimate = { covered: false, confidence: 0, reason: 'noFinger' };
@@ -96,7 +131,7 @@ export class PpgProcessor {
   }
 
   reset() {
-    this.raw = [];
+    this.segments = [];
     this.coveredSec = 0;
     this.lastSampleT = null;
     this.coverage = { covered: false, confidence: 0, reason: 'noFinger' };
@@ -109,16 +144,18 @@ export class PpgProcessor {
     this.lastSampleT = sample.t;
     if (this.coverage.covered) {
       this.coveredSec += dt;
-      this.raw.push(sample);
-    } else {
-      // A gap breaks the continuous window. Keep only data after the last long gap.
-      if (dt > 0.1 && this.raw.length) {
-        const last = this.raw[this.raw.length - 1]!;
-        if (sample.t - last.t > 1.0) this.raw = [];
-      }
+      const seg = this.segments[this.segments.length - 1];
+      const last = seg?.[seg.length - 1];
+      if (!seg || !last || sample.t - last.t > SEGMENT_GAP_SEC || sample.t < last.t) this.segments.push([sample]);
+      else seg.push(sample);
     }
     const minT = sample.t - this.windowSec;
-    while (this.raw.length && this.raw[0]!.t < minT) this.raw.shift();
+    while (this.segments.length) {
+      const first = this.segments[0]!;
+      while (first.length && first[0]!.t < minT) first.shift();
+      if (first.length) break;
+      this.segments.shift();
+    }
     return this.coverage;
   }
 
@@ -127,20 +164,20 @@ export class PpgProcessor {
   }
 
   /** Uniformly resampled, inverted red channel (so a beat is a peak), band-passed. */
-  private preparedSignal(): { x: Float32Array; t0: number } | null {
-    const n = this.raw.length;
+  private prepare(raw: PpgSample[]): Prepared | null {
+    const n = raw.length;
     if (n < this.fs * 4) return null;
-    const t0 = this.raw[0]!.t;
-    const t1 = this.raw[n - 1]!.t;
+    const t0 = raw[0]!.t;
+    const t1 = raw[n - 1]!.t;
     const len = Math.floor((t1 - t0) * this.fs);
     if (len < this.fs * 4) return null;
     const x = new Float32Array(len);
     let j = 0;
     for (let i = 0; i < len; i++) {
       const t = t0 + i / this.fs;
-      while (j < n - 2 && this.raw[j + 1]!.t < t) j++;
-      const a = this.raw[j]!;
-      const b = this.raw[Math.min(n - 1, j + 1)]!;
+      while (j < n - 2 && raw[j + 1]!.t < t) j++;
+      const a = raw[j]!;
+      const b = raw[Math.min(n - 1, j + 1)]!;
       const span = b.t - a.t;
       const u = span > 1e-6 ? Math.min(1, Math.max(0, (t - a.t) / span)) : 0;
       x[i] = -(a.r + (b.r - a.r) * u);
@@ -206,27 +243,35 @@ export class PpgProcessor {
     return k - 1 + frac;
   }
 
-  private intervals(beats: Beat[]): { accepted: number[]; total: number } {
-    const ibis: number[] = [];
-    for (let i = 1; i < beats.length; i++) ibis.push((beats[i]!.t - beats[i - 1]!.t) * 1000);
+  /**
+   * Intervals between consecutive beats of one segment, with implausible ones and those more
+   * than 20 % from the local median removed. Each survivor records whether the interval just
+   * before it also survived, because variability is only defined between true neighbours.
+   */
+  private intervals(beats: Beat[]): { accepted: Interval[]; total: number } {
     const lo = (60 / this.maxBpm) * 1000;
     const hi = (60 / this.minBpm) * 1000;
-    const plausible = ibis.filter((v) => v >= lo && v <= hi);
-    if (plausible.length < 3) return { accepted: plausible, total: ibis.length };
-    // Reject intervals deviating more than 25 % from a running median of neighbours.
-    const med = median(plausible);
-    const accepted: number[] = [];
-    for (let i = 0; i < plausible.length; i++) {
-      const local = plausible.slice(Math.max(0, i - 4), Math.min(plausible.length, i + 5));
-      const ref = local.length >= 3 ? median(local) : med;
-      if (Math.abs(plausible[i]! - ref) / ref <= 0.2) accepted.push(plausible[i]!);
+    const plausible: { ms: number; t: number; idx: number }[] = [];
+    for (let i = 1; i < beats.length; i++) {
+      const ms = (beats[i]!.t - beats[i - 1]!.t) * 1000;
+      if (ms >= lo && ms <= hi) plausible.push({ ms, t: beats[i]!.t, idx: i });
     }
-    return { accepted, total: ibis.length };
+    const total = Math.max(0, beats.length - 1);
+    let kept = plausible;
+    if (plausible.length >= 3) {
+      const med = median(plausible.map((p) => p.ms));
+      kept = plausible.filter((p, i) => {
+        const local = plausible.slice(Math.max(0, i - 4), Math.min(plausible.length, i + 5)).map((q) => q.ms);
+        const ref = local.length >= 3 ? median(local) : med;
+        return Math.abs(p.ms - ref) / ref <= 0.2;
+      });
+    }
+    const accepted = kept.map((p, k) => ({ ms: p.ms, t: p.t, adjacent: k > 0 && kept[k - 1]!.idx === p.idx - 1 }));
+    return { accepted, total };
   }
 
   private snr(y: Float32Array): number {
-    // Band power vs total using a crude periodogram over the dominant lag.
-    // Cheaper proxy: ratio of autocorrelation peak within the heart band to lag-0 energy.
+    // Ratio of the autocorrelation peak within the heart band to lag-0 energy.
     const n = y.length;
     let e0 = 0;
     for (let i = 0; i < n; i++) e0 += y[i]! * y[i]!;
@@ -243,49 +288,99 @@ export class PpgProcessor {
     return clamp01(best);
   }
 
+  /** Filter, find beats and collect intervals for every segment long enough to use. */
+  private analyse(): Analysis {
+    const intervals: Interval[] = [];
+    const beats: number[] = [];
+    let total = 0;
+    let samples = 0;
+    let snrSum = 0;
+    let latest: Prepared | null = null;
+    const lastSegment = this.segments[this.segments.length - 1];
+    for (const seg of this.segments) {
+      const prepared = this.prepare(seg);
+      if (!prepared) continue;
+      const found = this.detectBeats(prepared.x, prepared.t0);
+      const r = this.intervals(found);
+      intervals.push(...r.accepted);
+      total += r.total;
+      for (const b of found) beats.push(b.t);
+      samples += prepared.x.length;
+      snrSum += this.snr(prepared.x) * prepared.x.length;
+      if (seg === lastSegment) latest = prepared;
+    }
+    return { intervals, total, beats, latest, snr: samples ? snrSum / samples : 0, durationSec: samples / this.fs };
+  }
+
   /** Current live state for the scan UI. Cheap enough to call a few times per second. */
   live(): PpgLiveState {
-    const prepared = this.preparedSignal();
+    const a = this.analyse();
     const waveLen = this.fs * 4;
-    let waveform = new Float32Array(0);
+    const waveform = a.latest ? a.latest.x.slice(Math.max(0, a.latest.x.length - waveLen)) : new Float32Array(0);
     let bpm: number | null = null;
     let quality = 0;
-    let lastBeatAt: number | null = null;
-    let beatTimes: number[] = [];
-    if (prepared) {
-      const { x, t0 } = prepared;
-      waveform = x.slice(Math.max(0, x.length - waveLen));
-      const beats = this.detectBeats(x, t0);
-      beatTimes = beats.map((b) => b.t);
-      const { accepted, total } = this.intervals(beats);
-      if (accepted.length >= 4) {
-        bpm = 60000 / mean(accepted);
-        const acceptRatio = total ? accepted.length / total : 0;
-        quality = clamp01(0.5 * acceptRatio + 0.5 * this.snr(x)) * clamp01(this.coverage.confidence + 0.4);
-      }
-      const lastBeat = beats[beats.length - 1];
-      if (lastBeat) lastBeatAt = lastBeat.t;
+    if (a.intervals.length >= 4) {
+      bpm = 60000 / mean(a.intervals.map((i) => i.ms));
+      const acceptRatio = a.total ? a.intervals.length / a.total : 0;
+      quality = clamp01(0.5 * acceptRatio + 0.5 * a.snr) * clamp01(this.coverage.confidence + 0.4);
     }
-    return { coveredSec: this.coveredSec, coverage: this.coverage, bpm, quality, waveform, lastBeatAt, beats: beatTimes };
+    const lastBeatAt = a.beats.length ? a.beats[a.beats.length - 1]! : null;
+    return { coveredSec: this.coveredSec, coverage: this.coverage, bpm, quality, waveform, lastBeatAt, beats: a.beats };
   }
 
   /** Final metrics over the whole buffered window. Returns null if the window is unusable. */
   finish(): HeartMetrics | null {
-    const prepared = this.preparedSignal();
-    if (!prepared) return null;
-    const { x, t0 } = prepared;
-    const beats = this.detectBeats(x, t0);
-    const { accepted, total } = this.intervals(beats);
-    if (accepted.length < 8) return null;
-    const bpm = 60000 / mean(accepted);
-    const diffs: number[] = [];
-    for (let i = 1; i < accepted.length; i++) diffs.push(accepted[i]! - accepted[i - 1]!);
-    const rmssd = diffs.length ? Math.sqrt(mean(diffs.map((d) => d * d))) : 0;
-    const sdnn = stddev(accepted);
+    const a = this.analyse();
+    if (a.intervals.length < 8) return null;
+    const ms = a.intervals.map((i) => i.ms);
+    const bpm = 60000 / mean(ms);
+    const rmssd = rmssdOf(a.intervals);
+    const diffs = neighbourDiffs(a.intervals);
+    const sdnn = stddev(ms);
     const pnn50 = diffs.length ? (100 * diffs.filter((d) => Math.abs(d) > 50).length) / diffs.length : 0;
-    const durationSec = x.length / this.fs;
-    const acceptRatio = total ? accepted.length / total : 0;
-    const quality = clamp01(0.45 * acceptRatio + 0.35 * this.snr(x) + 0.2 * clamp01(durationSec / 40));
-    return { bpm, rmssd, sdnn, pnn50, beatCount: accepted.length + 1, quality, durationSec };
+    const acceptRatio = a.total ? a.intervals.length / a.total : 0;
+    const quality = clamp01(0.45 * acceptRatio + 0.35 * a.snr + 0.2 * clamp01(a.durationSec / 40));
+    return { bpm, rmssd, sdnn, pnn50, beatCount: a.intervals.length + 1, quality, durationSec: a.durationSec, recovery: recoveryOf(a.intervals) };
   }
+}
+
+/** Differences between intervals that were true neighbours. */
+function neighbourDiffs(intervals: readonly Interval[]): number[] {
+  const diffs: number[] = [];
+  for (let i = 1; i < intervals.length; i++) if (intervals[i]!.adjacent) diffs.push(intervals[i]!.ms - intervals[i - 1]!.ms);
+  return diffs;
+}
+
+function rmssdOf(intervals: readonly Interval[]): number {
+  const diffs = neighbourDiffs(intervals);
+  return diffs.length ? Math.sqrt(mean(diffs.map((d) => d * d))) : 0;
+}
+
+/**
+ * Recovery within one reading, 0..1: how clearly the pulse slowed and the variability rose from
+ * the first half of the reading to the second. Zero unless the direction is unambiguous: the
+ * pulse fell by at least 3 bpm without variability falling, or variability rose by at least a
+ * fifth without the pulse rising. This is the knowledge base's "improving HRV or recovering
+ * from activation", measured inside the scan itself.
+ */
+export function recoveryOf(intervals: readonly { ms: number; t: number; adjacent: boolean }[]): number {
+  if (intervals.length < 16) return 0;
+  const mid = (intervals[0]!.t + intervals[intervals.length - 1]!.t) / 2;
+  const first = intervals.filter((i) => i.t <= mid);
+  const second = intervals.filter((i) => i.t > mid).map((i, k) => (k === 0 ? { ...i, adjacent: false } : i));
+  if (first.length < 6 || second.length < 6) return 0;
+  const bpm1 = 60000 / mean(first.map((i) => i.ms));
+  const bpm2 = 60000 / mean(second.map((i) => i.ms));
+  const hrv1 = rmssdOf(first);
+  const hrv2 = rmssdOf(second);
+  return recoveryFromChange(bpm1, bpm2, hrv1, hrv2);
+}
+
+/** The same recovery score from any earlier and later pair of pulse and variability readings. */
+export function recoveryFromChange(bpmBefore: number, bpmAfter: number, hrvBefore: number, hrvAfter: number): number {
+  const pulseDrop = bpmBefore - bpmAfter;
+  const hrvGain = hrvAfter / Math.max(1, hrvBefore) - 1;
+  const recovering = (pulseDrop >= 3 && hrvGain >= 0) || (hrvGain >= 0.2 && pulseDrop >= 0);
+  if (!recovering) return 0;
+  return clamp01(0.5 * clamp01(pulseDrop / 8) + 0.5 * clamp01(hrvGain / 0.6));
 }

@@ -26,6 +26,8 @@ export interface PolaroidCardProps {
   overlay?: React.ReactNode;
   /** Frame style (Pro styles are presentation only). */
   frame?: FrameStyleId;
+  /** Called when a pre-rendered aura image has loaded and the card is ready to capture. */
+  onAuraImageLoad?: () => void;
 }
 
 /**
@@ -35,7 +37,7 @@ export interface PolaroidCardProps {
 export type PolaroidCardHandle = React.ComponentRef<typeof View>;
 
 export const PolaroidCard = React.forwardRef<PolaroidCardHandle, PolaroidCardProps>(function PolaroidCard(
-  { stillUri, aura, width, caption, subcaption, showWordmark = true, style, auraRef, overlay, frame = 'classic' },
+  { stillUri, aura, width, caption, subcaption, showWordmark = true, style, auraRef, overlay, frame = 'classic', onAuraImageLoad },
   ref,
 ) {
   const f = FRAME_STYLES[frame];
@@ -50,7 +52,7 @@ export const PolaroidCard = React.forwardRef<PolaroidCardHandle, PolaroidCardPro
         {aura.kind === 'live' ? (
           <AuraView ref={auraRef} params={aura.params} mask={aura.mask} stillUri={stillUri} paused={aura.paused} style={StyleSheet.absoluteFill} />
         ) : (
-          <Image source={{ uri: aura.uri }} style={StyleSheet.absoluteFill} contentFit="cover" />
+          <Image source={{ uri: aura.uri }} style={StyleSheet.absoluteFill} contentFit="cover" onLoad={onAuraImageLoad} onError={onAuraImageLoad} />
         )}
         {overlay}
       </View>

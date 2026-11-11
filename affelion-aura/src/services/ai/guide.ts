@@ -7,8 +7,9 @@ import { findBannedPhrase } from '../../core/color/explain';
  * Affelion colour system. The system prompt forbids psychic, medical and predictive claims,
  * and every response is checked against the same banned-phrase list the copy engine uses.
  *
- * Network: requests go to a server-side endpoint that holds the model API key
- * (`EXPO_PUBLIC_GUIDE_ENDPOINT`). The app never embeds a model key. When no endpoint is
+ * Network: requests go to a server-side endpoint that holds the model API key and its own copy
+ * of the system prompt (`EXPO_PUBLIC_GUIDE_ENDPOINT`). The app sends only the scan's numbers and
+ * the conversation; it never embeds a model key and the server never takes instructions from it. When no endpoint is
  * configured, the guide answers from the local grounded templates instead.
  */
 
@@ -68,6 +69,10 @@ export function localGuideAnswer(question: string, record: ScanRecord): string {
   const { heart, voice, aura } = record;
   const dom = AURA_COLORS[aura.primaryColorId];
   const sec = AURA_COLORS[aura.secondaryColorId];
+  // Health questions are answered first, whatever else the question mentions.
+  if (/(doctor|medical|medic|health|disease|diagnos|sick|ill\b|illness|anxiety|depress|condition|symptom|blood pressure|heart attack|arrhythm|dying|die\b)/.test(q)) {
+    return 'Affelion Aura is not a medical device and cannot assess health conditions. It visualises a short pulse and voice sample. If you have a health concern, please speak with a clinician.';
+  }
   if (/(hrv|variab|rmssd|coheren|halo|edge)/.test(q)) {
     return `Your HRV (RMSSD) was ${heart.rmssd.toFixed(0)} ms. The halo is ${sec.name.toLowerCase()}: ${sec.explanation} HRV of 55 ms or more with a pulse of 78 bpm or less selects greens and teals with low turbulence; HRV of 28 ms or less selects reds and oranges with more turbulence.`;
   }
@@ -84,9 +89,6 @@ export function localGuideAnswer(question: string, record: ScanRecord): string {
   }
   if (/(mean|why|what|explain|colour|color)/.test(q)) {
     return `${aura.summary} ${dom.explanation} The halo follows your HRV (${heart.rmssd.toFixed(0)} ms) and the saturation and brightness follow your voice. Every colour in the portrait maps to one of those measurements and nothing else.`;
-  }
-  if (/(doctor|medical|health|disease|diagnos|sick|anxiety|depress)/.test(q)) {
-    return 'Affelion Aura is not a medical device and cannot assess health conditions. It visualises a short pulse and voice sample. If you have a health concern, please speak with a clinician.';
   }
   return SAFE_FALLBACK;
 }
@@ -114,7 +116,6 @@ export async function askGuide(
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       body: JSON.stringify({
-        system: GUIDE_SYSTEM_PROMPT,
         context: buildScanContext(record),
         messages: [...history, { role: 'user', content: question }],
       }),

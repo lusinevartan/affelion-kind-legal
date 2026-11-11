@@ -3,7 +3,7 @@ import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Button, Rule, Screen, Text } from '../ui/components';
 import { colors, space } from '../ui/theme';
-import { PLANS, purchasesAreSimulated, type PlanId } from '../services/entitlements';
+import { PLANS, purchasesAreSimulated, purchasesAvailable, type PlanId } from '../services/entitlements';
 import { useAppActions, useAppState } from '../features/store/AppStore';
 
 /**
@@ -94,7 +94,14 @@ export default function Paywall() {
         })}
       </View>
 
-      <Button label={entitlement.isPro ? 'You already have Pro' : `Continue with ${PLANS.find((p) => p.id === plan)?.title}`} onPress={() => void buy()} loading={busy} disabled={entitlement.isPro} block style={{ marginTop: space.xl }} />
+      <Button
+        label={entitlement.isPro ? 'You already have Pro' : !purchasesAvailable() ? 'Purchases are not available in this build' : `Continue with ${PLANS.find((p) => p.id === plan)?.title}`}
+        onPress={() => void buy()}
+        loading={busy}
+        disabled={entitlement.isPro || !purchasesAvailable()}
+        block
+        style={{ marginTop: space.xl }}
+      />
 
       <Text variant="caption" color={colors.bone50} style={{ marginTop: space.lg }}>
         Subscriptions renew until cancelled. Cancel any time from your App Store or Google Play subscriptions; access continues to the end of the paid period.
@@ -105,7 +112,7 @@ export default function Paywall() {
       </View>
       {purchasesAreSimulated() ? (
         <Text variant="mono" color={colors.bone30} style={{ marginTop: space.xl }}>
-          dev build · purchases simulated · no payment taken
+          Test build · purchases simulated · no payment taken
         </Text>
       ) : null}
     </Screen>

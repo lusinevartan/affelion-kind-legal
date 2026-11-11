@@ -20,6 +20,18 @@ import { buildRegionExplanation, buildSummary } from './explain';
  * inputs are quantised, the same inputs always give the same outputs, and the fluid simulation's
  * seed is a hash of the quantised inputs.
  *
+ * Three knowledge-base colours have hues outside all four family ranges: golden yellow (48–65),
+ * lime green (75–110) and magenta (300–330). So that every entry can appear, each is selected by
+ * its own stated biometric description as a refinement, and only inside the "otherwise" band
+ * (or, for lime, the mild edge of reds/oranges). The family rule that applied is still reported.
+ *   • Magenta: "mixed activation with expressive voice". Mixed means the pulse and the
+ *     variability disagree: bpm 79–91 with hrv >= 55, and vocalVariance >= 0.5.
+ *   • Golden yellow: "balanced-to-active state + vocal variance". bpm >= 70 in the otherwise
+ *     band with vocalVariance >= 0.55.
+ *   • Lime green: "improving HRV or recovering from activation". The reading itself shows
+ *     recovery (see `recoveryOf` in the PPG processor) at 0.35 or more.
+ *   Precedence where more than one applies: lime, magenta, golden yellow.
+ *
  * Assumptions made where the specification is silent (documented, not invented behaviour):
  *   • Crimson's range is 345–360, adjacent to 0 on the hue circle; it is treated as part of the
  *     reds/oranges family so the knowledge-base case "high BPM with moderate-to-high vocal
@@ -55,6 +67,7 @@ export function toMappingInput(input: BiometricInput): MappingInput & { voiceAva
     vocalPitchHz: voiceAvailable ? voice!.dominantPitchHz : 0,
     vocalVariance: voiceAvailable ? clamp01(voice!.variance) : 0,
     vocalStability: voiceAvailable ? clamp01(voice!.stability) : 0.5,
+    recovery: clamp01(heart.recovery ?? 0),
     voiceAvailable,
   };
 }
@@ -68,6 +81,7 @@ export function quantiseInput<T extends MappingInput>(m: T): T {
     vocalPitchHz: quantize(m.vocalPitchHz, 1),
     vocalVariance: quantize(clamp01(m.vocalVariance), 0.02),
     vocalStability: quantize(clamp01(m.vocalStability), 0.02),
+    recovery: quantize(clamp01(m.recovery ?? 0), 0.05),
   };
 }
 
@@ -83,6 +97,51 @@ interface FamilyResult {
   turbulence: number;
   pulseMultiplier: number;
   primary: AuraColorId;
+  /** Set when the shade lies outside the family's own members and needs a named halo. */
+  secondary?: AuraColorId;
+  /** Saturation base to use instead of the family's. */
+  saturationBase?: number;
+  /** Bounds that give a shade its named character: "deep" red is dark, lavender is pale. */
+  lightnessMax?: number;
+  lightnessMin?: number;
+  saturationMax?: number;
+}
+
+/** Lowest recovery score that reads as "recovering from activation". */
+export const RECOVERY_THRESHOLD = 0.35;
+
+/**
+ * The three colours whose hues sit outside every family range. Returns null when none applies.
+ * `redsIntensity` is the reds/oranges intensity (0..1) when that family was selected.
+ */
+function resolveOutsideFamily(family: ColorFamily, m: MappingInput, voiceAvailable: boolean, redsIntensity: number): FamilyResult | null {
+  const recovery = m.recovery ?? 0;
+  const inOtherwise = family === 'skyBlue';
+  const mildReds = family === 'redsOranges' && redsIntensity < 0.35;
+  // Lime green: "improving HRV or recovering from activation".
+  if (recovery >= RECOVERY_THRESHOLD && (inOtherwise || mildReds)) {
+    const hue = lerp(78, 108, norm(recovery, RECOVERY_THRESHOLD, 1));
+    return { hue, turbulence: 0.28, pulseMultiplier: 1, primary: 'lime', secondary: 'emerald', saturationBase: 0.56 };
+  }
+  if (!inOtherwise || !voiceAvailable) return null;
+  // Magenta: "mixed activation with expressive voice".
+  if (m.bpm >= 79 && m.hrv >= 55 && m.vocalVariance >= 0.5) {
+    const hue = lerp(304, 326, norm(m.vocalVariance, 0.5, 1));
+    return { hue, turbulence: 0.5, pulseMultiplier: 1.05, primary: 'magenta', secondary: 'violet', saturationBase: 0.52 };
+  }
+  // Golden yellow: "balanced-to-active state + vocal variance".
+  if (m.bpm >= 70 && m.vocalVariance >= 0.55) {
+    const hue = lerp(50, 63, norm(m.vocalVariance, 0.55, 1));
+    return { hue, turbulence: 0.4, pulseMultiplier: 1, primary: 'golden_yellow', secondary: 'amber', saturationBase: 0.62 };
+  }
+  return null;
+}
+
+/** Reds/oranges intensity: how far past the thresholds the reading is. */
+function redsIntensityOf(m: MappingInput): number {
+  const bpmExcess = norm(m.bpm, 92, 120);
+  const hrvDeficit = norm(28 - m.hrv, 0, 16);
+  return clamp01(Math.max(bpmExcess, hrvDeficit) * 0.75 + Math.min(bpmExcess, hrvDeficit) * 0.25);
 }
 
 /**
@@ -117,9 +176,7 @@ function resolveFamily(family: ColorFamily, m: MappingInput): FamilyResult {
     }
     case 'redsOranges': {
       // Intensity from how far past the thresholds the reading is; higher → deeper red.
-      const bpmExcess = norm(m.bpm, 92, 120);
-      const hrvDeficit = norm(28 - m.hrv, 0, 16);
-      const intensity = clamp01(Math.max(bpmExcess, hrvDeficit) * 0.75 + Math.min(bpmExcess, hrvDeficit) * 0.25);
+      const intensity = redsIntensityOf(m);
       let hue = lerp(hi, lo, intensity); // 40 → 0
       let primary: AuraColorId;
       const highBpm = m.bpm >= 92;
@@ -129,8 +186,10 @@ function resolveFamily(family: ColorFamily, m: MappingInput): FamilyResult {
         hue = lerp(360, 345, norm(m.vocalVariance, 0.5, 1));
         if (hue >= 360) hue = 359.5;
       } else if (hue <= 15) {
-        primary = 'deep_red'; // "high BPM or very low HRV"
-        hue = Math.min(hue, 12);
+        // "high BPM or very low HRV". Kept to the red end of its range, held dark, and paired
+        // with crimson, so it reads as deep red and never as a darker orange.
+        const turbulence = lerp(0.62, 0.95, intensity);
+        return { hue: clamp(hue * 0.5, 0, 12), turbulence, pulseMultiplier: 1.15, primary: 'deep_red', secondary: 'crimson', lightnessMax: 0.44 };
       } else if (hue >= 34 && m.vocalVariance >= 0.4 && !highBpm) {
         primary = 'amber'; // "moderate-high BPM with positive vocal energy"
         hue = clamp(hue, 35, 40);
@@ -150,8 +209,8 @@ function resolveFamily(family: ColorFamily, m: MappingInput): FamilyResult {
         primary = 'violet'; // "very calm BPM + clear, steady voice"
         hue = clamp(Math.max(hue, 260), 260, 270);
       } else if (hue >= 255 && m.vocalVariance <= 0.25) {
-        primary = 'lavender'; // "calm metrics with low vocal variance"
-        hue = 270;
+        // "calm metrics with low vocal variance": soft and gentle, so pale and lightly coloured.
+        return { hue: 270, turbulence: lerp(0.2, 0.1, calm), pulseMultiplier: 1, primary: 'lavender', lightnessMin: 0.68, saturationMax: 0.46 };
       } else if (hue >= 230) {
         primary = 'indigo'; // "low BPM or strong parasympathetic markers"
         hue = clamp(hue, 230, 255);
@@ -240,14 +299,17 @@ export interface MappingOutput {
 export function mapBiometricsToColor(raw: MappingInput, voiceAvailable = true): MappingOutput {
   const m = quantiseInput(raw);
   const family = selectFamily(m);
-  const fam = resolveFamily(family, m);
+  const fam = resolveOutsideFamily(family, m, voiceAvailable, family === 'redsOranges' ? redsIntensityOf(m) : 0) ?? resolveFamily(family, m);
   const achromatic = selectAchromatic(m, voiceAvailable);
 
   // Saturation: family base, raised by vocal variance.
   const familySat: Record<ColorFamily, number> = { greensTeals: 0.5, redsOranges: 0.66, bluesIndigos: 0.48, skyBlue: 0.44 };
-  let saturation = clamp(familySat[family] + 0.32 * m.vocalVariance, 0.15, 0.98);
-  // Lightness: set by vocal stability.
+  let saturation = clamp((fam.saturationBase ?? familySat[family]) + 0.32 * m.vocalVariance, 0.15, 0.98);
+  if (fam.saturationMax !== undefined) saturation = Math.min(saturation, fam.saturationMax);
+  // Lightness: set by vocal stability, within the bounds a named shade carries.
   let lightness = clamp(0.4 + 0.22 * m.vocalStability, 0.3, 0.75);
+  if (fam.lightnessMax !== undefined) lightness = Math.min(lightness, fam.lightnessMax);
+  if (fam.lightnessMin !== undefined) lightness = Math.max(lightness, fam.lightnessMin);
   // Brighter accent once vocal variance is high.
   let accentStrength = m.vocalVariance >= 0.6 ? clamp01((m.vocalVariance - 0.6) / 0.4) * 0.6 + 0.4 : 0;
 
@@ -289,7 +351,7 @@ export function mapBiometricsToColor(raw: MappingInput, voiceAvailable = true): 
   }
   if (achromatic) primaryColorId = achromatic;
 
-  const secondaryColorId = selectSecondary(family, fam.hue, fam.primary);
+  const secondaryColorId = fam.secondary ?? selectSecondary(family, fam.hue, fam.primary);
 
   return {
     hue: quantize(((hue % 360) + 360) % 360, 0.5),
@@ -328,7 +390,7 @@ export function mapBiometricsToAura(input: BiometricInput): AuraParams {
     },
   ];
 
-  const seed = fnv1a([m.bpm, m.hrv, m.vocalPitchHz, m.vocalVariance, m.vocalStability, out.hue].join('|'));
+  const seed = fnv1a([m.bpm, m.hrv, m.vocalPitchHz, m.vocalVariance, m.vocalStability, m.recovery ?? 0, out.hue].join('|'));
 
   return {
     ...out,

@@ -3,6 +3,9 @@ import type { PracticeRecord, ScanRecord } from '../../core/types';
 import type { FrameStyleId } from '../../render/polaroid/styles';
 import {
   createPurchaseProvider,
+  ENTITLEMENT_KEY,
+  FREE_PRACTICE_USED_KEY,
+  FREE_SCANS_USED_KEY,
   freeScansRemaining,
   getFreeScansUsed,
   incrementFreeScansUsed,
@@ -12,7 +15,8 @@ import {
   type PurchaseProvider,
 } from '../../services/entitlements';
 import { clearSettings, deleteAllScans, getSetting, listMasks, listPractices, listScans, saveMask, savePractice, saveScan, setSetting } from '../../services/storage';
-import { cacheMask, getCachedMask } from '../scan/sessionCache';
+import { deleteFiles } from '../../services/files';
+import { cacheMask, clearCachedMasks, getCachedMask } from '../scan/sessionCache';
 
 /**
  * App-wide state: onboarding, entitlement, free-scan count and the scan history.
@@ -23,6 +27,8 @@ export interface AppState {
   onboardingDone: boolean;
   entitlement: Entitlement;
   freeScansUsed: number;
+  /** True once the single free practice session has been used. */
+  freePracticeUsed: boolean;
   scans: ScanRecord[];
   practices: PracticeRecord[];
   /** Breathing rate found by the resonance finder, breaths per minute, or null. */
@@ -64,6 +70,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
     onboardingDone: false,
     entitlement: NO_ENTITLEMENT,
     freeScansUsed: 0,
+    freePracticeUsed: false,
     scans: [],
     practices: [],
     resonanceRate: null,
@@ -73,7 +80,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
   React.useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [onboarding, entitlement, used, scans, practices, resonance, frame] = await Promise.all([
+      const [onboarding, entitlement, used, scans, practices, resonance, frame, practiceUsed] = await Promise.all([
         getSetting(ONBOARDING_KEY),
         purchases.getEntitlement(),
         getFreeScansUsed(),
@@ -81,6 +88,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         listPractices(),
         getSetting(RESONANCE_KEY),
         getSetting(FRAME_KEY),
+        getSetting(FREE_PRACTICE_USED_KEY),
       ]);
       // Outlines are restored before the first portrait draws, so a saved still and its aura
       // always line up.
@@ -95,6 +103,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         onboardingDone: onboarding === '1',
         entitlement,
         freeScansUsed: used,
+        freePracticeUsed: practiceUsed === '1' || practices.length > 0,
         scans,
         practices,
         resonanceRate: resonance ? Number(resonance) || null : null,
@@ -135,8 +144,9 @@ export function AppStoreProvider({ children, provider }: { children: React.React
       },
       async recordPractice(record) {
         await savePractice(record);
+        await setSetting(FREE_PRACTICE_USED_KEY, '1');
         const practices = await listPractices();
-        setState((s) => ({ ...s, practices }));
+        setState((s) => ({ ...s, practices, freePracticeUsed: true }));
       },
       async setResonanceRate(rate) {
         await setSetting(RESONANCE_KEY, String(rate));
@@ -158,11 +168,17 @@ export function AppStoreProvider({ children, provider }: { children: React.React
       },
       manageSubscriptions: () => purchases.openManageSubscriptions(),
       async deleteAllData() {
+        // The photographs and exported portraits are files, not database rows; remove them too.
+        const [scans, practices] = await Promise.all([listScans(100000), listPractices(100000)]);
+        deleteFiles([...scans.flatMap((s) => [s.stillUri, s.portraitUri]), ...practices.flatMap((p) => [p.beforePortraitUri, p.afterPortraitUri])]);
         await deleteAllScans();
-        await clearSettings();
-        const entitlement = await purchases.getEntitlement();
-        setState({ ready: true, onboardingDone: true, entitlement, freeScansUsed: 0, scans: [], practices: [], resonanceRate: null, frameStyle: 'classic' });
+        clearCachedMasks();
+        // What the person has already used of the free tier, and what they have paid for, is
+        // not their data to delete; everything else goes.
+        await clearSettings([FREE_SCANS_USED_KEY, FREE_PRACTICE_USED_KEY, ENTITLEMENT_KEY]);
         await setSetting(ONBOARDING_KEY, '1');
+        const entitlement = await purchases.getEntitlement();
+        setState((s) => ({ ready: true, onboardingDone: true, entitlement, freeScansUsed: s.freeScansUsed, freePracticeUsed: s.freePracticeUsed, scans: [], practices: [], resonanceRate: null, frameStyle: 'classic' }));
       },
     }),
     [purchases],
@@ -174,7 +190,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
       ...state,
       freeScansLeft,
       canScan: state.entitlement.isPro || freeScansLeft > 0,
-      canPractice: state.entitlement.isPro || state.practices.length === 0,
+      canPractice: state.entitlement.isPro || !state.freePracticeUsed,
     };
   }, [state]);
 

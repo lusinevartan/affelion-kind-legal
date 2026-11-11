@@ -25,6 +25,11 @@ export interface HeartMetrics {
   quality: number;
   /** Seconds of usable signal. */
   durationSec: number;
+  /**
+   * 0..1: how clearly the pulse slowed and variability rose from the first half of the reading
+   * to the second. Absent on readings saved before this was measured.
+   */
+  recovery?: number;
 }
 
 /** Summary of the short voice sample (4–6 s). */
@@ -65,6 +70,8 @@ export interface MappingInput {
   vocalVariance: number;
   /** 0..1 */
   vocalStability: number;
+  /** 0..1 recovery measured inside the reading (pulse slowing, variability rising). Optional. */
+  recovery?: number;
 }
 
 export type { AuraColorId } from './color/knowledgeBase';

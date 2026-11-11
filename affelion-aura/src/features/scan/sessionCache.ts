@@ -13,3 +13,7 @@ export function cacheMask(scanId: string, mask: SilhouetteMask | null) {
 export function getCachedMask(scanId: string): SilhouetteMask | null {
   return masks.get(scanId) ?? null;
 }
+
+export function clearCachedMasks() {
+  masks.clear();
+}

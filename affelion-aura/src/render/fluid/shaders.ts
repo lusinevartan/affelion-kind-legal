@@ -300,7 +300,9 @@ void main () {
   float lumIn = dot(color, vec3(0.299, 0.587, 0.114));
   float lum = lumIn / (0.7 + lumIn);
   color *= lum / max(lumIn, 0.0001);
-  color = min(color, vec3(1.0));
+  // Bring out-of-range colour back by scaling, never by clipping one channel: clipping red
+  // alone while green passes through is what turns a deep red orange.
+  color /= max(1.0, max(color.r, max(color.g, color.b)));
   float alpha = clamp(lum * 1.6, 0.0, 1.0) * shape;
   if (paper > 0.5) {
     // Pigment on paper: deepen and saturate so the colour holds against a light ground.

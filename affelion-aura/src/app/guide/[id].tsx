@@ -24,6 +24,9 @@ export default function GuideScreen() {
     if (!entitlement.isPro && record) router.replace({ pathname: '/paywall', params: { from: record.id } });
   }, [entitlement.isPro, record]);
 
+  // While the redirect to the paywall is in flight, show nothing rather than Pro content.
+  if (record && !entitlement.isPro) return <Screen>{null}</Screen>;
+
   if (!record) {
     return (
       <Screen>
@@ -117,5 +120,5 @@ const styles = StyleSheet.create({
   suggestions: { gap: space.sm, marginTop: space.md },
   chip: { minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg, borderWidth: 1, borderColor: colors.hairlineStrong, borderRadius: 999, alignSelf: 'flex-start' },
   composer: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.xl, paddingTop: space.md, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.hairline, alignItems: 'center' },
-  input: { flex: 1, minHeight: 56, color: colors.fg, backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.hairlineStrong, borderRadius: 999, paddingHorizontal: space.xl, fontSize: 16 },
+  input: { flex: 1, minWidth: 0, minHeight: 56, color: colors.fg, backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.hairlineStrong, borderRadius: 999, paddingHorizontal: space.xl, fontSize: 16 },
 });

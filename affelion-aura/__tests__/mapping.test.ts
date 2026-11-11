@@ -244,3 +244,71 @@ describe('determinism and copy', () => {
     }
   });
 });
+
+describe('every colour in the knowledge base can appear', () => {
+  const withRecovery = (bpm: number, hrv: number, recovery: number, vv = 0.3, vs = 0.6): MappingInput => ({ ...m(bpm, hrv, vv, vs), recovery });
+
+  test('all twenty entries are reachable as a primary colour, with or without a voice', () => {
+    const seen = new Set<string>();
+    for (const voiceAvailable of [true, false]) {
+      for (let bpm = 42; bpm <= 124; bpm += 2) {
+        for (let hrv = 8; hrv <= 110; hrv += 3) {
+          for (const vv of [0.05, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9]) {
+            for (const vs of [0.2, 0.4, 0.6, 0.8, 0.95]) {
+              for (const recovery of [0, 0.6]) {
+                seen.add(mapBiometricsToColor(withRecovery(bpm, hrv, recovery, voiceAvailable ? vv : 0, voiceAvailable ? vs : 0.5), voiceAvailable).primaryColorId);
+              }
+            }
+          }
+        }
+      }
+    }
+    expect([...seen].sort()).toEqual(COLOR_KNOWLEDGE_BASE.map((c) => c.id).sort());
+  });
+
+  test('golden yellow: balanced-to-active state with vocal variance', () => {
+    const out = mapBiometricsToColor(m(80, 45, 0.7, 0.6));
+    expect(out.primaryColorId).toBe('golden_yellow');
+    expect(inRange(out.hue, KB_BY_ID.golden_yellow.hueRange!)).toBe(true);
+    expect(out.family).toBe('skyBlue');
+    // The same pulse and variability with a quiet voice stays sky blue.
+    expect(mapBiometricsToColor(m(80, 45, 0.3, 0.6)).primaryColorId).toBe('sky_blue');
+    // And it needs a voice sample at all.
+    expect(mapBiometricsToColor(m(80, 45, 0, 0.5), false).primaryColorId).toBe('sky_blue');
+  });
+
+  test('magenta: mixed activation (raised pulse, strong variability) with an expressive voice', () => {
+    const out = mapBiometricsToColor(m(85, 60, 0.7, 0.5));
+    expect(out.primaryColorId).toBe('magenta');
+    expect(inRange(out.hue, KB_BY_ID.magenta.hueRange!)).toBe(true);
+    // With a calmer pulse the first rule still wins.
+    expect(mapBiometricsToColor(m(76, 60, 0.7, 0.5)).family).toBe('greensTeals');
+  });
+
+  test('lime green: the reading itself shows recovery', () => {
+    const out = mapBiometricsToColor(withRecovery(80, 45, 0.6));
+    expect(out.primaryColorId).toBe('lime');
+    expect(inRange(out.hue, KB_BY_ID.lime.hueRange!)).toBe(true);
+    // No recovery, no lime.
+    expect(mapBiometricsToColor(withRecovery(80, 45, 0.2)).primaryColorId).not.toBe('lime');
+    // Recovery never repaints a calm reading or a strongly activated one.
+    expect(mapBiometricsToColor(withRecovery(66, 70, 0.9)).family).toBe('greensTeals');
+    expect(mapBiometricsToColor(withRecovery(66, 70, 0.9)).primaryColorId).not.toBe('lime');
+    expect(mapBiometricsToColor(withRecovery(116, 14, 0.9)).primaryColorId).not.toBe('lime');
+    // It may soften a reading that is only just past the activation thresholds.
+    expect(mapBiometricsToColor(withRecovery(93, 40, 0.8)).primaryColorId).toBe('lime');
+  });
+
+  test('the four family rules still decide which rule is reported', () => {
+    expect(selectFamily(m(80, 45))).toBe('skyBlue');
+    expect(mapBiometricsToColor(withRecovery(80, 45, 0.6)).family).toBe('skyBlue');
+  });
+
+  test('a saved reading without a recovery value behaves as it always did', () => {
+    const a = mapBiometricsToAura(input(heart(80, 45)));
+    const b = mapBiometricsToAura(input({ ...heart(80, 45), recovery: 0 }));
+    expect(a.primaryColorId).toBe(b.primaryColorId);
+    expect(a.hue).toBe(b.hue);
+    expect(a.seed).toBe(b.seed);
+  });
+});

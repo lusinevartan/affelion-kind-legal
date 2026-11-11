@@ -7,6 +7,7 @@ import type { AuraViewRef } from '../../render/fluid/AuraView';
 import { PolaroidCard, type PolaroidCardHandle } from '../../render/polaroid/PolaroidCard';
 import { capturePolaroid, saveToPhotos, sharePortrait } from '../../services/export';
 import { updatePortraitUri } from '../../services/storage';
+import { deleteFiles } from '../../services/files';
 import type { FrameStyleId } from '../../render/polaroid/styles';
 
 /**
@@ -22,21 +23,30 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
   const [busy, setBusy] = React.useState<'save' | 'share' | null>(null);
   const pending = React.useRef<((uri: string) => void) | null>(null);
 
-  // Once the off-screen card has the aura image, give it a frame to lay out, then capture.
-  React.useEffect(() => {
-    if (!auraImageUri || !pending.current) return;
+  // Capture once the off-screen card has actually drawn the aura image. A fixed delay is not
+  // enough for a large image on a slow phone, so the image's own load event triggers it, with a
+  // fallback in case that event never arrives.
+  const capture = React.useCallback(() => {
     const resolve = pending.current;
+    if (!resolve) return;
     pending.current = null;
-    const id = setTimeout(() => {
-      capturePolaroid(exportCardRef, { fileName: record ? `affelion-aura-${record.id}.png` : undefined })
+    // One more frame so the loaded image is on screen before the bitmap is taken.
+    requestAnimationFrame(() => {
+      capturePolaroid(exportCardRef, { fileName: record ? `affelion-aura-${record.id}-${Date.now().toString(36)}.png` : undefined })
         .then(resolve)
         .catch((e: unknown) => {
           Alert.alert('Export failed', e instanceof Error ? e.message : 'Unknown error');
           setBusy(null);
+          setAuraImageUri(null);
         });
-    }, 120);
+    });
+  }, [record]);
+
+  React.useEffect(() => {
+    if (!auraImageUri) return;
+    const id = setTimeout(capture, 2500);
     return () => clearTimeout(id);
-  }, [auraImageUri, record]);
+  }, [auraImageUri, capture]);
 
   const run = React.useCallback(
     async (mode: 'save' | 'share') => {
@@ -49,7 +59,9 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
           pending.current = resolve;
           setAuraImageUri(snap.uri);
         });
+        const previous = record.portraitUri;
         await updatePortraitUri(record.id, uri);
+        if (previous && previous !== uri) deleteFiles([previous]);
         await opts.onSaved?.();
         if (mode === 'save') {
           const ok = await saveToPhotos(uri);
@@ -79,6 +91,7 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
           subcaption={formatDate(record.createdAt)}
           showWordmark={!opts.clean}
           frame={opts.frame ?? 'classic'}
+          onAuraImageLoad={capture}
         />
       </View>
     ) : null;

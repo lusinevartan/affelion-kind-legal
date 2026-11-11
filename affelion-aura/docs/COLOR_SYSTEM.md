@@ -7,7 +7,8 @@ file supplies presentation colours for legends; the portrait itself is coloured 
 
 ## Mapping rules (as specified)
 
-Inputs: `bpm`, `hrv` (ms, RMSSD), `vocalPitchHz`, `vocalVariance` (0–1), `vocalStability` (0–1).
+Inputs: `bpm`, `hrv` (ms, RMSSD), `vocalPitchHz`, `vocalVariance` (0–1), `vocalStability` (0–1),
+and an optional `recovery` (0–1, measured inside the reading; see below).
 
 | Order | Condition | Family | Hue | Motion |
 | --- | --- | --- | --- | --- |
@@ -37,19 +38,43 @@ stability). Rules are evaluated in order; the first that matches wins.
 | blues/indigos | cobalt | hue ≥ 210 and vocalStability ≥ 0.6 |
 | blues/indigos | sky blue | otherwise |
 
+Two shades carry bounds that give them the character their names promise, so they can be told
+apart from their neighbours: deep red is held to the red end of its range (hue 0–8), kept dark
+(lightness at most 0.44) and paired with a crimson halo; lavender is pale (lightness at least
+0.68, saturation at most 0.46). Vocal stability still sets lightness inside those bounds.
+
 Achromatic entries (no hue range) are selected after the family rule from their biometric
 descriptions, with precedence charcoal → muted gray → earth brown → soft white → pearl, and are
 expressed through saturation and lightness. Low-energy tones never override the greens/teals family.
 Thresholds live in `selectAchromatic()` in `src/core/color/mapping.ts`.
 
-## Entries the rules do not reach
+## The three colours outside the family ranges
 
-As specified, the four family rules never produce hues in 48–65 (golden yellow), 75–110 (lime),
-300–330 (magenta), or 270–290 beyond its 270 boundary (lavender is reached at exactly 270). Those
-entries remain in the knowledge base for legends and the guide but cannot be a portrait's primary
-colour until the rules say when they apply. Lime, emerald and earth brown are used as display
-colours for the personal HRV trend (`src/core/insight/baseline.ts`), matching their stated
-biometric descriptions ("improving HRV", "solid HRV", "reduced HRV").
+Golden yellow (48–65), lime green (75–110) and magenta (300–330) have hues that none of the four
+family ranges contain. So that every entry in the knowledge base can appear, each is selected by
+its own stated biometric description. They apply only inside the "otherwise" band, plus, for
+lime, the mild edge of reds/oranges. The family rule that matched is still what is reported.
+
+| Shade | Knowledge-base description | Rule | Halo |
+| --- | --- | --- | --- |
+| lime green | improving HRV or recovering from activation | recovery ≥ 0.35 in the otherwise band, or in reds/oranges with intensity < 0.35 | emerald |
+| magenta | mixed activation with expressive voice | bpm 79–91 with hrv ≥ 55 (pulse and variability disagree) and vocalVariance ≥ 0.5 | violet |
+| golden yellow | balanced-to-active state + vocal variance | bpm ≥ 70 in the otherwise band and vocalVariance ≥ 0.55 | amber |
+
+Precedence where more than one applies: lime, magenta, golden yellow. Magenta and golden yellow
+need a usable voice sample. Achromatic tones still take precedence over all three.
+
+**Recovery** is measured inside the reading (`recoveryOf` in `src/core/signal/ppg.ts`): the first
+half of the accepted beat intervals is compared with the second. It is zero unless the direction
+is unambiguous, meaning the pulse fell by at least 3 bpm without variability falling, or
+variability rose by at least a fifth without the pulse rising. The score is then half the pulse
+drop (over 8 bpm) plus half the variability gain (over 60%). A practice session's "after"
+portrait uses the same score across the session (`recoveryFromChange`). Readings saved before
+recovery was measured have none and map exactly as they did.
+
+A test (`__tests__/mapping.test.ts`) fails if any of the twenty entries stops being reachable.
+Lime, emerald and earth brown are also used as display colours for the personal HRV trend
+(`src/core/insight/baseline.ts`).
 
 ## Honesty rules
 
