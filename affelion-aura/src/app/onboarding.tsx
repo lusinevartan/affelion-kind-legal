@@ -11,13 +11,13 @@ import { placeholderMask } from '../render/fluid/FluidSim';
 import { PREVIEW_PARAMS } from '../features/scan/previewParams';
 
 /**
- * Three pages over one live preview. One line each, no explaining beyond what is honest and
- * necessary. Permissions are asked for when the scan starts.
+ * Three pages on the black stage, over one live preview. One statement each, set large; what
+ * it is, how it is made, what it is for. Permissions are asked for when the scan starts.
  */
 const PAGES = [
-  { n: '01', title: 'A portrait of your pulse and voice.', body: 'Affelion Aura translates your real heart rate, HRV, and voice into a living color portrait. It does not capture invisible light.' },
+  { n: '01', title: 'Grounding you can see.', body: 'Affelion Aura translates your real heart rate, HRV, and voice into a living color portrait. It does not capture invisible light.' },
   { n: '02', title: 'One minute. Three readings.', body: 'Fingertip on the rear camera for your pulse and HRV. Front camera for your outline. Five seconds of your voice for pitch and variance. All of it stays on your phone.' },
-  { n: '03', title: 'Same numbers, same portrait.', body: 'Every colour follows a fixed rule from a measurement. Nothing is predicted or diagnosed. Not a medical device.' },
+  { n: '03', title: 'Breathe. Watch it settle.', body: 'A few minutes of paced breathing, and the portrait moves with your heart rhythm. Every colour follows a fixed rule from a measurement. Nothing is predicted or diagnosed. Not a medical device.' },
 ];
 
 export default function Onboarding() {
@@ -42,13 +42,14 @@ export default function Onboarding() {
 
   return (
     <View style={styles.root}>
-      <StatusBar style="dark" />
-      <AuraView params={PREVIEW_PARAMS} mask={mask} quality="low" paper style={StyleSheet.absoluteFill} />
+      <StatusBar style="light" />
+      <AuraView params={PREVIEW_PARAMS} mask={mask} quality="low" style={StyleSheet.absoluteFill} />
+      <View style={styles.shade} pointerEvents="none" />
       <View style={[styles.top, { paddingTop: insets.top + space.lg }]}>
-        <Text variant="eyebrow" color={colors.bone70}>
+        <Text variant="eyebrow" color={colors.stageFg}>
           Affelion Aura
         </Text>
-        <Text variant="eyebrow" color={colors.bone50}>
+        <Text variant="eyebrow" color={colors.stageFg70}>
           {PAGES[page]!.n} / 03
         </Text>
       </View>
@@ -56,22 +57,24 @@ export default function Onboarding() {
         <ScrollView ref={scrollRef} horizontal pagingEnabled showsHorizontalScrollIndicator={false} onMomentumScrollEnd={onScroll} style={{ marginHorizontal: -space.xl }}>
           {PAGES.map((p) => (
             <View key={p.n} style={{ width, paddingHorizontal: space.xl }}>
-              <Text variant="display">{p.title}</Text>
-              <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.md, maxWidth: 330 }}>
+              <Text variant="hero" color={colors.stageFg} accessibilityRole="header" style={styles.statement}>
+                {p.title}
+              </Text>
+              <Text variant="bodySmall" color={colors.stageFg70} style={{ marginTop: space.lg, maxWidth: 330 }}>
                 {p.body}
               </Text>
             </View>
           ))}
         </ScrollView>
         <View style={styles.actions}>
-          <Button label={page === PAGES.length - 1 ? 'Begin' : 'Continue'} onPress={next} block />
+          <Button label={page === PAGES.length - 1 ? 'Begin' : 'Continue'} onPaper={false} onPress={next} block />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={styles.dots}>
               {PAGES.map((_, i) => (
                 <View key={i} style={[styles.dot, i === page && styles.dotOn]} />
               ))}
             </View>
-            {page < PAGES.length - 1 ? <Button label="Skip" variant="ghost" onPress={() => void finish()} /> : null}
+            {page < PAGES.length - 1 ? <Button label="Skip" variant="ghost" onPaper={false} onPress={() => void finish()} /> : null}
           </View>
         </View>
       </View>
@@ -80,11 +83,14 @@ export default function Onboarding() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.ground },
+  root: { flex: 1, backgroundColor: colors.stage },
+  // Keeps the statement legible wherever the fluid drifts.
+  shade: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '62%', experimental_backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.82) 55%, #000 100%)' },
+  statement: { fontSize: 56, lineHeight: 54, letterSpacing: -2.1, maxWidth: 340 },
   top: { position: 'absolute', left: space.xl, right: space.xl, top: 0, flexDirection: 'row', justifyContent: 'space-between' },
   bottom: { position: 'absolute', left: space.xl, right: space.xl, bottom: 0 },
   actions: { marginTop: space.xl, gap: space.sm },
   dots: { flexDirection: 'row', gap: 8, alignItems: 'center' },
-  dot: { width: 20, height: 1, backgroundColor: colors.hairlineStrong },
-  dotOn: { backgroundColor: colors.fg },
+  dot: { width: 20, height: 1, backgroundColor: colors.stageHairline },
+  dotOn: { backgroundColor: colors.stageFg },
 });

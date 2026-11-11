@@ -61,7 +61,7 @@ export default function Settings() {
           PRIVACY
         </Text>
         <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.sm }}>
-          Camera frames and audio are processed on this device and discarded. Only the derived numbers, the portrait parameters and the still photo you see are stored, here on your phone. Portraits leave the device only when you save or share them. If the guide is connected to a server, it receives the numbers from a scan and your question, never images or audio.
+          Camera frames and audio are processed on this device and discarded. Only the derived numbers, the portrait parameters, and the still photo you see with its outline are stored, here on your phone. Portraits leave the device only when you save or share them. If the guide is connected to a server, it receives the numbers from a scan and your question, never images or audio.
         </Text>
         <Button label="Delete all data" variant="danger" onPress={confirmDelete} style={{ marginTop: space.lg }} />
       </Card>

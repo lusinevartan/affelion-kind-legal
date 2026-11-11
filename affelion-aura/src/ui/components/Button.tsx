@@ -17,13 +17,13 @@ export interface ButtonProps extends Omit<PressableProps, 'style'> {
 }
 
 /**
- * Rectangular, hairline, no pill. The primary is a flat clay block with dark text; the rest are
- * outlines or bare text with an arrow, the way a label on a table would read.
+ * Capsules. The primary is solid: charcoal on the grey canvas, white on the black stage. The
+ * secondary is a one-pixel outline. Ghost is text with an arrow. No colour, no shadow.
  */
 export function Button({ label, variant = 'primary', loading, disabled, style, block, hint, onPress, onPaper = true, ...rest }: ButtonProps) {
   const isDisabled = disabled || loading;
   const fg = variant === 'primary' ? (onPaper ? colors.ground : colors.stage) : variant === 'danger' ? colors.danger : onPaper ? colors.fg : colors.stageFg;
-  const border = onPaper ? colors.hairlineStrong : colors.stageHairline;
+  const border = onPaper ? colors.fg : colors.stageFg;
   const primaryBg = onPaper ? colors.fg : colors.stageFg;
   return (
     <Pressable
@@ -66,12 +66,12 @@ export function Button({ label, variant = 'primary', loading, disabled, style, b
 }
 
 const styles = StyleSheet.create({
-  base: { minHeight: 52, minWidth: TOUCH_MIN, paddingHorizontal: space.xl, alignItems: 'center', justifyContent: 'center' },
+  base: { minHeight: 56, minWidth: TOUCH_MIN, paddingHorizontal: space.xl, alignItems: 'center', justifyContent: 'center', borderRadius: 999 },
   inner: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   block: { alignSelf: 'stretch' },
   primary: {},
   secondary: { backgroundColor: 'transparent', borderWidth: 1 },
-  ghost: { backgroundColor: 'transparent', paddingHorizontal: 0, alignItems: 'flex-start' },
+  ghost: { backgroundColor: 'transparent', paddingHorizontal: 0, alignItems: 'flex-start', minHeight: TOUCH_MIN, borderRadius: 0 },
   danger: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.danger },
   pressed: { opacity: 0.7 },
   disabled: { opacity: 0.4 },

@@ -15,9 +15,10 @@ import { usePolaroidExport } from '../../features/portrait/usePolaroidExport';
 import { formatDate } from '../../ui/format';
 
 /**
- * The sheet. A plate of the portrait printed on paper, labelled like an archive specimen:
- * figure numbers, measurements in mono, one serif caption. Two markers open knowledge-base
- * explanations. The paywall is only offered from here, after the portrait exists.
+ * The portrait. A black stage edge to edge with the developed picture, then a grey sheet that
+ * names the colour in one large word, gives the three readings and one action. Two numbered
+ * markers on the stage open knowledge-base explanations. The paywall is only offered from
+ * here, after the portrait exists.
  */
 export default function PortraitScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -31,8 +32,8 @@ export default function PortraitScreen() {
   const exportOpts = React.useMemo(() => ({ clean: entitlement.isPro, exportWidth: entitlement.isPro ? 720 : 480, onSaved: refreshScans }), [entitlement.isPro, refreshScans]);
   const { auraRef, busy, run: exportPortrait, exportCard } = usePolaroidExport(record, exportOpts);
 
-  const width = Dimensions.get('window').width - space.xl * 2;
-  const plateH = Math.round(width * 1.2);
+  const width = Dimensions.get('window').width;
+  const plateH = Math.round(Math.min(width * 1.25, Dimensions.get('window').height * 0.62));
 
   if (!record) {
     return (
@@ -54,55 +55,58 @@ export default function PortraitScreen() {
 
   return (
     <View style={styles.root}>
-      <StatusBar style="dark" />
-      <ScrollView contentContainerStyle={{ paddingTop: insets.top + space.md, paddingBottom: insets.bottom + space.xxl, paddingHorizontal: space.xl }}>
-        <View style={styles.top}>
-          <Pressable accessibilityRole="button" accessibilityLabel="Home" hitSlop={12} onPress={() => router.replace('/home')}>
-            <Text variant="eyebrow" color={colors.inkText70}>
-              ← Home
-            </Text>
-          </Pressable>
-          <Text variant="eyebrow" color={colors.inkText50}>
-            Plate {plateNo} · {formatDate(record.createdAt)}
-          </Text>
-        </View>
-
+      <StatusBar style="light" />
+      <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl }}>
         <View style={[styles.plate, { width, height: plateH }]}>
-          <AuraView ref={auraRef} params={aura} mask={mask} paper style={StyleSheet.absoluteFill} />
+          <AuraView ref={auraRef} params={aura} mask={mask} stillUri={record.stillUri} style={StyleSheet.absoluteFill} />
+          <View style={[styles.top, { paddingTop: insets.top + space.md }]}>
+            <Pressable accessibilityRole="button" accessibilityLabel="Home" hitSlop={16} onPress={() => router.replace('/home')}>
+              <Text variant="eyebrow" color={colors.stageFg}>
+                ← Home
+              </Text>
+            </Pressable>
+            <Text variant="eyebrow" color={colors.stageFg70}>
+              No. {plateNo} · {formatDate(record.createdAt)}
+            </Text>
+          </View>
           {regions.map((r, i) => (
             <Pressable
               key={r.id}
               accessibilityRole="button"
               accessibilityLabel={`${AURA_COLORS[r.colorId].name} region, tap to explain`}
+              accessibilityState={{ selected: region?.id === r.id }}
               onPress={() => setRegion(region?.id === r.id ? null : r)}
-              style={[styles.marker, r.id === 'core' ? styles.markerCore : styles.markerHalo, region?.id === r.id && styles.markerOn]}
+              style={[styles.marker, r.id === 'core' ? styles.markerCore : styles.markerHalo]}
             >
-              <Text variant="mono" color={colors.fg}>
-                {String(i + 1).padStart(2, '0')}
-              </Text>
+              <View style={[styles.markerDot, region?.id === r.id && styles.markerDotOn]}>
+                <Text variant="caption" color={region?.id === r.id ? colors.stage : colors.stageFg}>
+                  {i + 1}
+                </Text>
+              </View>
             </Pressable>
           ))}
         </View>
 
-        <Text variant="serifCaption" color={colors.inkText} style={{ marginTop: space.lg }}>
+        <View style={styles.sheet}>
+        <Text variant="hero" accessibilityRole="header">
           {AURA_COLORS[aura.primaryColorId].name}
         </Text>
-        <Text variant="body" color={colors.inkText70} style={{ marginTop: space.xs }}>
+        <Text variant="body" color={colors.fg70} style={{ marginTop: space.md }}>
           {aura.summary}
         </Text>
 
         <Rule onPaper style={{ marginTop: space.xl }} />
         <View style={styles.figures}>
-          <Figure n="01" label="Pulse" value={Math.round(heart.bpm).toString()} unit="bpm" onPaper />
-          <Figure n="02" label="HRV" value={Math.round(heart.rmssd).toString()} unit="ms" onPaper />
-          <Figure n="03" label="Voice" value={voice && voice.quality > 0.2 ? `${Math.round(voice.variance * 100)}` : '—'} unit={voice && voice.quality > 0.2 ? '% var' : undefined} onPaper />
+          <Figure label="Pulse" value={Math.round(heart.bpm).toString()} unit="bpm" />
+          <Figure label="HRV" value={Math.round(heart.rmssd).toString()} unit="ms" />
+          <Figure label="Voice" value={voice && voice.quality > 0.2 ? `${Math.round(voice.variance * 100)}` : '—'} unit={voice && voice.quality > 0.2 ? '% var' : undefined} onPaper />
         </View>
         <Rule onPaper />
 
         {region ? (
           <View style={styles.explain} accessibilityLiveRegion="polite">
             <Text variant="eyebrow" color={colors.inkText50}>
-              Marker {String(regions.findIndex((r) => r.id === region.id) + 1).padStart(2, '0')} · {AURA_COLORS[region.colorId].name}
+              {regions.findIndex((r) => r.id === region.id) + 1} · {AURA_COLORS[region.colorId].name}
             </Text>
             <Text variant="body" color={colors.inkText} style={{ marginTop: space.sm }}>
               {region.explanation}
@@ -110,7 +114,7 @@ export default function PortraitScreen() {
           </View>
         ) : (
           <Text variant="caption" color={colors.inkText50} style={{ marginTop: space.md }}>
-            Tap a marker on the plate to see which measurement made that colour.
+            Tap a number on the portrait to see which reading made that colour.
           </Text>
         )}
 
@@ -121,6 +125,7 @@ export default function PortraitScreen() {
             <Button label="Share" variant="ghost" onPaper onPress={() => void exportPortrait('share')} loading={busy === 'share'} />
           </View>
         </View>
+        </View>
       </ScrollView>
       {exportCard}
     </View>
@@ -129,12 +134,14 @@ export default function PortraitScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.ground },
-  top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: space.lg },
-  plate: { backgroundColor: colors.ground, overflow: 'hidden' },
-  marker: { position: 'absolute', width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  markerCore: { left: '50%', top: '40%', marginLeft: -22 },
-  markerHalo: { right: '10%', top: '16%' },
-  markerOn: { backgroundColor: 'rgba(30,32,28,0.08)' },
+  plate: { backgroundColor: colors.stage, overflow: 'hidden' },
+  top: { position: 'absolute', left: space.xl, right: space.xl, top: 0, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  sheet: { paddingHorizontal: space.xl, paddingTop: space.xl },
+  marker: { position: 'absolute', width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
+  markerCore: { left: '50%', top: '66%', marginLeft: -24 },
+  markerHalo: { right: '9%', top: '24%' },
+  markerDot: { width: 26, height: 26, borderRadius: 13, borderWidth: 1, borderColor: colors.stageFg, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.35)' },
+  markerDotOn: { backgroundColor: colors.stageFg },
   figures: { flexDirection: 'row', justifyContent: 'space-between' },
   explain: { marginTop: space.lg },
   links: { flexDirection: 'row', gap: space.xl },

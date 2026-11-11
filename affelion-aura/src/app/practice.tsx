@@ -4,7 +4,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Camera } from 'expo-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Card, MetricRow, Screen, StatusPill, Text } from '../ui/components';
-import { colors, radius, space } from '../ui/theme';
+import { colors, space } from '../ui/theme';
 import { useAppActions, useAppState } from '../features/store/AppStore';
 import { usePracticeSession } from '../features/practice/usePracticeSession';
 import { BreathPacer } from '../features/practice/BreathPacer';
@@ -251,6 +251,6 @@ const styles = StyleSheet.create({
   liveRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
   liveStat: { alignItems: 'center', gap: 2, minWidth: 90 },
   dot: { width: 28, height: 28, borderRadius: 14, marginBottom: 6 },
-  chip: { paddingVertical: 10, paddingHorizontal: space.lg, borderWidth: 1, borderColor: colors.hairlineStrong },
+  chip: { minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg, borderWidth: 1, borderColor: colors.hairlineStrong, borderRadius: 999 },
   chipOn: { backgroundColor: colors.fg, borderColor: colors.fg },
 });

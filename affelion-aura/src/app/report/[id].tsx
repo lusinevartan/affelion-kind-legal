@@ -59,7 +59,7 @@ export default function ReportScreen() {
       </View>
 
       <View style={[styles.plate, { width, height: Math.round(width * 1.2), marginTop: space.lg }]}>
-        <AuraView ref={auraRef} params={aura} mask={mask} paper style={StyleSheet.absoluteFill} />
+        <AuraView ref={auraRef} params={aura} mask={mask} stillUri={record.stillUri} style={StyleSheet.absoluteFill} />
       </View>
       <View style={styles.frameRow} accessibilityRole="radiogroup" accessibilityLabel="Export frame">
         <Text variant="eyebrow" color={colors.bone50}>
@@ -82,9 +82,9 @@ export default function ReportScreen() {
       </Text>
       <Rule style={{ marginTop: space.xl }} />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Figure n="01" label="Pulse" value={heart.bpm.toFixed(0)} unit="bpm" />
-        <Figure n="02" label="HRV" value={heart.rmssd.toFixed(0)} unit="ms" />
-        <Figure n="03" label="Voice" value={voice && voice.quality > 0.2 ? Math.round(voice.variance * 100).toString() : '—'} unit={voice && voice.quality > 0.2 ? '% var' : undefined} />
+        <Figure label="Pulse" value={heart.bpm.toFixed(0)} unit="bpm" />
+        <Figure label="HRV" value={heart.rmssd.toFixed(0)} unit="ms" />
+        <Figure label="Voice" value={voice && voice.quality > 0.2 ? Math.round(voice.variance * 100).toString() : '—'} unit={voice && voice.quality > 0.2 ? '% var' : undefined} />
       </View>
       <Rule />
 
@@ -180,6 +180,6 @@ export default function ReportScreen() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  plate: { backgroundColor: colors.ground, overflow: 'hidden' },
+  plate: { backgroundColor: colors.stage, overflow: 'hidden' },
   frameRow: { flexDirection: 'row', gap: space.lg, marginTop: space.md, flexWrap: 'wrap' },
 });

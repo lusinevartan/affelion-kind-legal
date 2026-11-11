@@ -3,7 +3,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Screen, Text } from '../../ui/components';
-import { colors, radius, space } from '../../ui/theme';
+import { colors, space } from '../../ui/theme';
 import { useAppState } from '../../features/store/AppStore';
 import { askGuide, GUIDE_NAME, type GuideMessage } from '../../services/ai/guide';
 
@@ -112,10 +112,10 @@ export default function GuideScreen() {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: space.xl, paddingBottom: space.md },
   thread: { paddingHorizontal: space.xl, gap: space.md, paddingBottom: space.xl },
-  assistant: { alignSelf: 'flex-start', maxWidth: '88%', backgroundColor: colors.ground2, padding: space.lg, borderRadius: radius.lg },
-  user: { alignSelf: 'flex-end', maxWidth: '88%', backgroundColor: colors.fg, padding: space.lg, borderRadius: radius.lg },
+  assistant: { alignSelf: 'flex-start', maxWidth: '88%', backgroundColor: colors.ground2, padding: space.lg, borderRadius: 20 },
+  user: { alignSelf: 'flex-end', maxWidth: '88%', backgroundColor: colors.fg, padding: space.lg, borderRadius: 20 },
   suggestions: { gap: space.sm, marginTop: space.md },
-  chip: { paddingVertical: space.md, paddingHorizontal: space.lg, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.hairlineStrong, alignSelf: 'flex-start' },
+  chip: { minHeight: 44, justifyContent: 'center', paddingHorizontal: space.lg, borderWidth: 1, borderColor: colors.hairlineStrong, borderRadius: 999, alignSelf: 'flex-start' },
   composer: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.xl, paddingTop: space.md, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.hairline, alignItems: 'center' },
-  input: { flex: 1, minHeight: 52, color: colors.fg, backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.hairlineStrong, paddingHorizontal: space.lg, fontSize: 16 },
+  input: { flex: 1, minHeight: 56, color: colors.fg, backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.hairlineStrong, borderRadius: 999, paddingHorizontal: space.xl, fontSize: 16 },
 });

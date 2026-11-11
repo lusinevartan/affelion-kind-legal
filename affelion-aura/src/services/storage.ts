@@ -4,7 +4,8 @@ import type { AuraParams, HeartMetrics, PracticeRecord, ScanRecord, VoiceMetrics
 /**
  * Local-only persistence. Scans never leave the device unless the user explicitly exports a
  * portrait. Raw camera frames and audio are never stored; only the derived metrics,
- * the aura parameters, and file URIs for the still and the exported Polaroid.
+ * the aura parameters, the outline that goes with the still, and file URIs for the still and
+ * the exported Polaroid.
  */
 
 let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
@@ -36,6 +37,13 @@ async function db(): Promise<SQLite.SQLiteDatabase> {
           payload TEXT NOT NULL
         );
         CREATE INDEX IF NOT EXISTS practice_created_at ON practice_sessions(created_at DESC);
+        CREATE TABLE IF NOT EXISTS scan_masks (
+          scan_id TEXT PRIMARY KEY NOT NULL,
+          width INTEGER NOT NULL,
+          height INTEGER NOT NULL,
+          aspect REAL NOT NULL,
+          data BLOB NOT NULL
+        );
       `);
       return handle;
     })();
@@ -115,7 +123,27 @@ export async function deleteScan(id: string): Promise<void> {
 
 export async function deleteAllScans(): Promise<void> {
   const d = await db();
-  await d.execAsync(`DELETE FROM scans; DELETE FROM practice_sessions;`);
+  await d.execAsync(`DELETE FROM scans; DELETE FROM practice_sessions; DELETE FROM scan_masks;`);
+}
+
+/** The outline that goes with a scan's still, so a saved portrait redraws around the same person. */
+export interface StoredMask {
+  scanId: string;
+  width: number;
+  height: number;
+  imageAspect: number;
+  data: Uint8Array;
+}
+
+export async function saveMask(mask: StoredMask): Promise<void> {
+  const d = await db();
+  await d.runAsync(`INSERT OR REPLACE INTO scan_masks (scan_id, width, height, aspect, data) VALUES (?, ?, ?, ?, ?)`, mask.scanId, mask.width, mask.height, mask.imageAspect, mask.data);
+}
+
+export async function listMasks(): Promise<StoredMask[]> {
+  const d = await db();
+  const rows = await d.getAllAsync<{ scan_id: string; width: number; height: number; aspect: number; data: Uint8Array }>(`SELECT * FROM scan_masks`);
+  return rows.map((r) => ({ scanId: r.scan_id, width: r.width, height: r.height, imageAspect: r.aspect, data: new Uint8Array(r.data) }));
 }
 
 interface PracticeRow {

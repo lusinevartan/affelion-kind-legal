@@ -120,6 +120,8 @@ export class FluidSim {
   private field!: DoubleFBO;
   private glow!: DoubleFBO;
   private maskTexture: WebGLTexture | null = null;
+  private stillTexture: WebGLTexture | null = null;
+  private hasStill = false;
   private maskAspect = 3 / 4;
   private hasMask = false;
   private fieldDirty = false;
@@ -391,6 +393,37 @@ export class FluidSim {
         ? hslToRgb({ h: params.hue, s: clamp01(params.saturation + 0.1), l: clamp01(params.lightness + 0.25) })
         : null;
     this.palette = { core, halo, accent };
+  }
+
+  /**
+   * Upload the person's photograph. It is developed in greyscale inside the display pass, so
+   * the aura is the only colour in the picture and a snapshot contains the whole portrait.
+   * `source` is whatever the platform's texImage2D accepts: an image element on web, or
+   * `{ localUri }` with expo-gl on device. Pass null to go back to a transparent aura layer.
+   */
+  setStill(source: unknown | null) {
+    const gl = this.gl;
+    if (!source) {
+      this.hasStill = false;
+      return;
+    }
+    if (!this.stillTexture) this.stillTexture = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, this.stillTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    // Image rows run top to bottom; flip so the top of the photo lands at v = 1, like the mask.
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+    try {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source as TexImageSource);
+      this.hasStill = true;
+    } catch {
+      this.hasStill = false;
+    } finally {
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
+    }
   }
 
   /** Upload a new silhouette mask (8-bit, top-left origin). */
@@ -737,6 +770,9 @@ export class FluidSim {
     gl.uniform1f(pr.uniforms.glowStrength!, 0.9);
     gl.uniform1f(pr.uniforms.vignette!, this.paper ? 0.0 : 0.25);
     gl.uniform1f(pr.uniforms.paper!, this.paper ? 1 : 0);
+    const still = this.hasStill && this.stillTexture && !this.paper;
+    gl.uniform1i(pr.uniforms.uStill!, this.bindTex(still ? this.stillTexture! : this.dye.read.texture, 4));
+    gl.uniform1i(pr.uniforms.hasStill!, still ? 1 : 0);
     gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
     gl.disable(gl.BLEND);
   }

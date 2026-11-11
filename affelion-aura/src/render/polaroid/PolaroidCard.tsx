@@ -29,8 +29,8 @@ export interface PolaroidCardProps {
 }
 
 /**
- * The Polaroid frame: warm off-white paper, a 4:5 image window, and a hand-written style caption
- * area at the bottom. Sized by width so it can be captured at any pixel ratio.
+ * The Polaroid frame: paper, a 4:5 window holding the developed portrait, and a caption area
+ * at the bottom. A pre-rendered aura image already contains the black-and-white still. Sized by width so it can be captured at any pixel ratio.
  */
 export type PolaroidCardHandle = React.ComponentRef<typeof View>;
 
@@ -46,13 +46,9 @@ export const PolaroidCard = React.forwardRef<PolaroidCardHandle, PolaroidCardPro
   return (
     <View ref={ref} collapsable={false} style={[styles.paper, { width, backgroundColor: f.paper, paddingTop: border, paddingHorizontal: border, paddingBottom: bottom, borderRadius: Math.max(2, width * f.cornerRadius) }, style]}>
       <View style={[styles.window, { width: imageW, height: imageH }]}>
-        {stillUri ? (
-          <Image source={{ uri: stillUri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} accessibilityIgnoresInvertColors />
-        ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: '#1a1c22' }]} />
-        )}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: '#000000' }]} />
         {aura.kind === 'live' ? (
-          <AuraView ref={auraRef} params={aura.params} mask={aura.mask} paused={aura.paused} style={StyleSheet.absoluteFill} />
+          <AuraView ref={auraRef} params={aura.params} mask={aura.mask} stillUri={stillUri} paused={aura.paused} style={StyleSheet.absoluteFill} />
         ) : (
           <Image source={{ uri: aura.uri }} style={StyleSheet.absoluteFill} contentFit="cover" />
         )}
@@ -91,7 +87,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 14 },
     elevation: 12,
   },
-  window: { backgroundColor: '#0d0e12', overflow: 'hidden' },
+  window: { backgroundColor: '#000000', overflow: 'hidden' },
   captionArea: { justifyContent: 'space-between', paddingTop: 10 },
   footer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
 });

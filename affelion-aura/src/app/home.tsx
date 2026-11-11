@@ -15,7 +15,8 @@ import { PREVIEW_PARAMS } from '../features/scan/previewParams';
 import { formatDate } from '../ui/format';
 
 /**
- * Home: the latest portrait fills the screen; words sit in the corners like labels on a specimen.
+ * Home is two fields. A black stage with the latest portrait, the only colour on the screen,
+ * and a grey sheet that names it in one large word and offers one action.
  */
 export default function Home() {
   const { scans, entitlement, canScan, freeScansLeft: left, practices } = useAppState();
@@ -24,67 +25,78 @@ export default function Home() {
   const insight = latest ? scanInsight(latest, scans) : null;
   const mask = React.useMemo(() => (latest ? getCachedMask(latest.id) ?? placeholderMask() : placeholderMask()), [latest]);
   const params = latest?.aura ?? PREVIEW_PARAMS;
+  const openLatest = () => latest && router.push({ pathname: '/portrait/[id]', params: { id: latest.id } });
 
   return (
     <View style={styles.root}>
-      <StatusBar style="dark" />
-      <AuraView params={params} mask={mask} quality="medium" paper style={StyleSheet.absoluteFill} />
-      <View style={styles.scrim} pointerEvents="none" />
-
-      <View style={[styles.top, { paddingTop: insets.top + space.lg }]}>
-        <Text variant="eyebrow" color={colors.bone70}>
-          Affelion Aura
-        </Text>
-        <Pressable accessibilityRole="button" accessibilityLabel="Settings" hitSlop={12} onPress={() => router.push('/settings')}>
-          <Text variant="eyebrow" color={colors.bone70}>
-            Settings
+      <StatusBar style="light" />
+      <Pressable
+        style={styles.stage}
+        disabled={!latest}
+        accessibilityRole={latest ? 'button' : undefined}
+        accessibilityLabel={latest ? `Open your latest portrait, ${AURA_COLORS[latest.aura.primaryColorId].name}` : 'Preview portrait'}
+        onPress={openLatest}
+      >
+        <AuraView params={params} mask={mask} stillUri={latest?.stillUri ?? null} quality="medium" style={StyleSheet.absoluteFill} />
+        <View style={[styles.top, { paddingTop: insets.top + space.md }]}>
+          <Text variant="eyebrow" color={colors.stageFg}>
+            Affelion Aura
           </Text>
-        </Pressable>
-      </View>
-
-      <View style={[styles.bottom, { paddingBottom: insets.bottom + space.xl }]}>
-        {latest ? (
-          <Pressable accessibilityRole="button" accessibilityLabel="Open your latest portrait" onPress={() => router.push({ pathname: '/portrait/[id]', params: { id: latest.id } })}>
-            <Text variant="eyebrow" color={colors.bone50}>
-              Fig. 01  Latest · {formatDate(latest.createdAt)}
+          <Pressable accessibilityRole="button" accessibilityLabel="Settings" hitSlop={16} onPress={() => router.push('/settings')}>
+            <Text variant="eyebrow" color={colors.stageFg}>
+              Settings
             </Text>
-            <Text variant="display" style={{ marginTop: space.sm }}>
+          </Pressable>
+        </View>
+        <View style={styles.stageCaption}>
+          <Text variant="eyebrow" color={colors.stageFg70}>
+            {latest ? `Latest · ${formatDate(latest.createdAt)}` : 'Preview'}
+          </Text>
+          {latest ? (
+            <Text variant="eyebrow" color={colors.stageFg70}>
+              Open →
+            </Text>
+          ) : null}
+        </View>
+      </Pressable>
+
+      <View style={[styles.sheet, { paddingBottom: insets.bottom + space.lg }]}>
+        {latest ? (
+          <View>
+            <Text variant="hero" accessibilityRole="header">
               {AURA_COLORS[latest.aura.primaryColorId].name}
             </Text>
-            <Text variant="mono" color={colors.bone70} style={{ marginTop: space.sm }}>
+            <Text variant="mono" color={colors.fg60} style={{ marginTop: space.sm }}>
               {Math.round(latest.heart.bpm)} bpm · HRV {Math.round(latest.heart.rmssd)} ms
               {latest.voice && latest.voice.quality > 0.2 ? ` · voice ${Math.round(latest.voice.variance * 100)}%` : ''}
             </Text>
             {insight?.baseline ? (
-              <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.md, maxWidth: 320 }}>
+              <Text variant="bodySmall" color={colors.fg70} style={{ marginTop: space.md }}>
                 {insight.sentence}
               </Text>
             ) : null}
-          </Pressable>
+          </View>
         ) : (
           <View>
-            <Text variant="eyebrow" color={colors.bone50}>
-              Fig. 00  Preview
+            <Text variant="display" accessibilityRole="header">
+              See how{'\n'}you are.
             </Text>
-            <Text variant="display" style={{ marginTop: space.sm }}>
-              Your pulse,{'\n'}painted.
-            </Text>
-            <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.md, maxWidth: 320 }}>
-              About a minute: your outline, your fingertip on the rear camera, a few words. The colours above are a neutral preview until then.
+            <Text variant="bodySmall" color={colors.fg70} style={{ marginTop: space.md }}>
+              About a minute: your outline, a fingertip on the rear camera, a few words aloud. Your portrait is built from those readings.
             </Text>
           </View>
         )}
 
         <View style={styles.actions}>
-          <Button label={canScan ? 'Begin scan' : 'Unlock scans'} onPress={() => router.push(canScan ? '/scan' : '/paywall')} block />
+          <Button label={canScan ? (latest ? 'New scan' : 'Begin scan') : 'Unlock scans'} onPress={() => router.push(canScan ? '/scan' : '/paywall')} block />
           <View style={styles.links}>
             {latest ? (
               <Button label={practices.length ? 'Practice' : 'First practice, free'} variant="ghost" onPress={() => router.push({ pathname: '/practice', params: { scanId: latest.id } })} />
             ) : null}
             {scans.length > 0 ? <Button label="History" variant="ghost" onPress={() => router.push('/history')} /> : null}
           </View>
-          <Text variant="mono" color={colors.bone50}>
-            {entitlement.isPro ? 'Pro · unlimited' : left > 0 ? `${left} of 3 free scans left` : 'Free scans used'} · not a medical device
+          <Text variant="caption" color={colors.fg60}>
+            {entitlement.isPro ? 'Pro · unlimited' : left > 0 ? `${left} of 3 free scans left` : 'Free scans used'} · Not a medical device
           </Text>
         </View>
       </View>
@@ -94,9 +106,10 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.ground },
-  scrim: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
+  stage: { flex: 1, backgroundColor: colors.stage, overflow: 'hidden' },
   top: { position: 'absolute', left: space.xl, right: space.xl, top: 0, flexDirection: 'row', justifyContent: 'space-between' },
-  bottom: { position: 'absolute', left: space.xl, right: space.xl, bottom: 0 },
-  actions: { marginTop: space.xl, gap: space.md },
+  stageCaption: { position: 'absolute', left: space.xl, right: space.xl, bottom: space.lg, flexDirection: 'row', justifyContent: 'space-between' },
+  sheet: { paddingHorizontal: space.xl, paddingTop: space.xl },
+  actions: { marginTop: space.xl, gap: space.sm },
   links: { flexDirection: 'row', gap: space.xl },
 });

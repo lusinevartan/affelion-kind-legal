@@ -7,11 +7,11 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "backgroundColor": "#F4F3F1",
+    "backgroundColor": "#000000",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#F4F3F1"
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": false,
@@ -30,7 +30,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "adaptiveIcon": {
-        "backgroundColor": "#F4F3F1",
+        "backgroundColor": "#000000",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -48,23 +48,16 @@
         "expo-font",
         {
           "fonts": [
-            "node_modules/@expo-google-fonts/fraunces/300Light/Fraunces_300Light.ttf",
-            "node_modules/@expo-google-fonts/fraunces/500Medium/Fraunces_500Medium.ttf",
-            "node_modules/@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf",
-            "node_modules/@expo-google-fonts/inter/500Medium/Inter_500Medium.ttf",
-            "node_modules/@expo-google-fonts/inter/600SemiBold/Inter_600SemiBold.ttf",
             "node_modules/@expo-google-fonts/inter-tight/300Light/InterTight_300Light.ttf",
             "node_modules/@expo-google-fonts/inter-tight/400Regular/InterTight_400Regular.ttf",
-            "node_modules/@expo-google-fonts/inter-tight/500Medium/InterTight_500Medium.ttf",
-            "node_modules/@expo-google-fonts/jetbrains-mono/400Regular/JetBrainsMono_400Regular.ttf",
-            "node_modules/@expo-google-fonts/jetbrains-mono/500Medium/JetBrainsMono_500Medium.ttf"
+            "node_modules/@expo-google-fonts/inter-tight/500Medium/InterTight_500Medium.ttf"
           ]
         }
       ],
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#F4F3F1",
+          "backgroundColor": "#000000",
           "image": "./assets/splash-icon.png",
           "imageWidth": 160
         }

@@ -4,20 +4,19 @@ import { colors, space } from '../theme';
 import { Text } from './Text';
 
 /**
- * A measurement, labelled like a figure in an archive: "FIG. 02  HRV" above a mono value.
- * Used on the dark table and on the paper sheet.
+ * A measurement: a tiny caption above a large light numeral with its unit. `n` is accepted
+ * for older call sites and no longer printed.
  */
-export function Figure({ n, label, value, unit, note, onPaper = true, large = false }: { n?: string; label: string; value: string; unit?: string; note?: string; onPaper?: boolean; large?: boolean }) {
+export function Figure({ label, value, unit, note, onPaper = true, large = false }: { n?: string; label: string; value: string; unit?: string; note?: string; onPaper?: boolean; large?: boolean }) {
   const fg = onPaper ? colors.fg : colors.stageFg;
   const dim = onPaper ? colors.fg50 : colors.stageFg50;
   return (
     <View style={styles.wrap} accessible accessibilityLabel={`${label}: ${value}${unit ? ` ${unit}` : ''}${note ? `. ${note}` : ''}`}>
       <Text variant="eyebrow" color={dim}>
-        {n ? `Fig. ${n}  ` : ''}
         {label}
       </Text>
       <View style={styles.row}>
-        <Text variant={large ? 'display' : 'title'} color={fg} style={large ? undefined : { fontSize: 26, lineHeight: 28 }}>
+        <Text variant={large ? 'display' : 'title'} color={fg} style={large ? undefined : { fontSize: 34, lineHeight: 36, letterSpacing: -1.1 }}>
           {value}
         </Text>
         {unit ? (
@@ -43,5 +42,5 @@ export function Rule({ onPaper = true, style }: { onPaper?: boolean; style?: obj
 const styles = StyleSheet.create({
   wrap: { gap: 4, paddingVertical: space.md },
   row: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm },
-  rule: { height: StyleSheet.hairlineWidth, alignSelf: 'stretch' },
+  rule: { height: 1, alignSelf: 'stretch' },
 });

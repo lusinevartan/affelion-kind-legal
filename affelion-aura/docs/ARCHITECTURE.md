@@ -12,16 +12,25 @@
 4. Soft paywall, only after a portrait exists. Plans: $8.99 monthly, $54 annual (recommended), $89 lifetime. Restore and manage/cancel are on the paywall and in Settings.
 5. Pro: full breakdown (every colour tied to a measurement), history and trends, the guide, clean hi-res export, unlimited practice sessions with before/after portraits and the personal baseline. The first practice session is free so the live feedback is experienced before the paywall.
 
-## Design system: Specimen (`src/ui/theme.ts`)
+## Design system: Stage (`src/ui/theme.ts`)
 
-The portrait is the object; everything else is a label on a table. One grotesque (Inter Tight,
-light, tight tracking) for words, one monospace (JetBrains Mono) for measurements and figure
-numbers ("Fig. 02 HRV", "Plate 004"), Fraunces only for the keepsake caption. Live screens sit
-on ink (#0E100F) with the fluid full-bleed and text in the corners; results print on paper
-(#EDE9DE) as a plate with hairline rules. No cards with fills, no pills; buttons are flat
-rectangles, the single action per screen is clay, everything else is an outline or bare text
-with an arrow. References: General Matter, Letterform Archive, Castimedia. Screen captures from
-the web review build are in `docs/screens/`.
+The app is greyscale and the person's colour is the only colour. There are two fields. The
+canvas is pale grey (#F0F0F0) with charcoal type (#2A2A2A), grey captions and one-pixel rules;
+it holds words, numbers and actions. The stage is black; it holds the camera and every
+portrait. One typeface, Inter Tight, mostly at weight 300, set large with tight tracking;
+hierarchy comes from scale, never from a second family, a fill or a shadow. Actions are
+capsules: solid charcoal on the canvas, solid white on the stage, a one-pixel outline for
+secondary. Media is square-edged. There is no brand colour and no destructive red; a
+destructive action is an outlined capsule with a confirmation.
+
+A portrait is developed inside the fluid display pass (`AuraView` `stillUri`): the still is
+converted to black and white, the room is dropped to the black stage using the silhouette, and
+the aura is added as light with a screen blend, so it also spills onto the edge of the body.
+The outline that belongs to a still is persisted with the scan (`scan_masks`) and restored at
+launch, so a saved portrait always redraws around the same person. References: Josephmark and
+Dash Digital, as catalogued on Refero. Screen captures from the web review build are in
+`docs/screens/`; the person in them is a stock photograph (Unsplash licence) standing in for
+the user's own still and must not be used in store listings or marketing.
 
 ## Biometric → colour engine (`src/core/color`)
 
@@ -152,8 +161,8 @@ aura is never altered by a style, so every export remains a faithful translation
 
 ## Privacy
 
-All processing is on-device. Stored: derived metrics, aura parameters, the still photo, exported
-portraits. Never stored: raw camera frames, audio. The guide endpoint receives numbers and the
+All processing is on-device. Stored: derived metrics, aura parameters, the still photo and its
+outline, exported portraits. Never stored: raw camera frames, audio. The guide endpoint receives numbers and the
 question only.
 
 ## To verify on first device run
@@ -168,5 +177,10 @@ question only.
 - expo-gl transparency on Android: if the GL surface renders an opaque black background in the
   live preview, enable the TextureView path or composite the camera preview inside GL via
   `createCameraTextureAsync`. The Polaroid export path does not depend on this (it composites images).
+- Developed still in GL (`FluidSim.setStill`): on device the still is passed to `texImage2D` as
+  `{ localUri }` with `UNPACK_FLIP_Y_WEBGL`. This path has only been exercised in the web review
+  build. Check that the photograph is upright, that it lines up with the outline, and that the
+  file URI scheme the scan saves is one expo-gl accepts. If the picture is inverted, drop the
+  flip; if it does not load, the portrait falls back to the aura on an empty stage.
 - Hermes `requestAnimationFrame` pacing with `enableExperimentalWorkletSupport` off: expect 60 fps on
   recent devices at the medium preset; drop to `low` on older ones.

@@ -259,6 +259,8 @@ uniform float glowStrength;
 uniform float vignette;
 uniform int hasMask;
 uniform float paper;          // 1 = composite as pigment on a light ground
+uniform sampler2D uStill;     // the person's photograph, same framing as the mask
+uniform int hasStill;         // 1 = develop the still in greyscale under the aura (opaque output)
 
 float hash (vec2 p) {
   return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
@@ -268,10 +270,10 @@ void main () {
   vec3 dye = texture2D(uDye, vUv).rgb;
   vec3 glow = texture2D(uGlow, vUv).rgb;
   vec2 muv = vUv * maskScale + maskOffset;
+  vec2 cuv = clamp(muv, 0.0, 1.0);
   float inside = 1.0;
   float field = 1.0;
   if (hasMask == 1) {
-    vec2 cuv = clamp(muv, 0.0, 1.0);
     inside = texture2D(uMask, cuv).r;
     field = texture2D(uField, cuv).r;
     // Beyond the mask image (sides and above the head) there is no body; the glow field
@@ -314,6 +316,24 @@ void main () {
   float v = 1.0 - vignette * dot(vd, vd) * 1.6;
   color *= v;
   alpha *= v;
+
+  if (hasStill == 1) {
+    // Developed portrait: the person in black and white on a black stage, and the aura as the
+    // only colour, added as light. The room falls away; colour spills onto the edge of the
+    // body where the interior tint lets it, the way a coloured lamp would.
+    vec3 s = texture2D(uStill, cuv).rgb;
+    float g = dot(s, vec3(0.299, 0.587, 0.114));
+    g = clamp((g - 0.04) * 1.12, 0.0, 1.0);
+    // Pull the cut-out in slightly so no fringe of the room shows around hair and shoulders.
+    float person = hasMask == 1 ? smoothstep(0.62, 0.96, inside) : 1.0;
+    vec3 base = vec3(g) * mix(0.04, 1.0, person) * v;
+    // Light spilling onto the body is gentler than the light around it.
+    vec3 light = color * alpha * mix(1.0, 0.62, person);
+    vec3 outc = 1.0 - (1.0 - base) * (1.0 - light);
+    outc += n * 0.5;
+    gl_FragColor = vec4(clamp(outc, 0.0, 1.0), 1.0);
+    return;
+  }
 
   gl_FragColor = vec4(color * alpha, alpha);
 }

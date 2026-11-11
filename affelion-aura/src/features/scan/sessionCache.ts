@@ -1,9 +1,8 @@
 import type { SilhouetteMask } from '../../render/fluid/FluidSim';
 
 /**
- * In-memory handoff from the scan screen to the portrait/report screens. Masks are large
- * and transient, so they are not persisted; a saved scan without a cached mask falls back
- * to a soft oval field in the renderer.
+ * Outlines by scan id, in memory. The scan screen puts a new one here; the store persists it
+ * and refills this cache at launch. A scan without one falls back to the neutral silhouette.
  */
 const masks = new Map<string, SilhouetteMask>();
 

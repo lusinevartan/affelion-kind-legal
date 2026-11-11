@@ -11,7 +11,8 @@ import {
   type PlanId,
   type PurchaseProvider,
 } from '../../services/entitlements';
-import { clearSettings, deleteAllScans, getSetting, listPractices, listScans, savePractice, saveScan, setSetting } from '../../services/storage';
+import { clearSettings, deleteAllScans, getSetting, listMasks, listPractices, listScans, saveMask, savePractice, saveScan, setSetting } from '../../services/storage';
+import { cacheMask, getCachedMask } from '../scan/sessionCache';
 
 /**
  * App-wide state: onboarding, entitlement, free-scan count and the scan history.
@@ -81,6 +82,13 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         getSetting(RESONANCE_KEY),
         getSetting(FRAME_KEY),
       ]);
+      // Outlines are restored before the first portrait draws, so a saved still and its aura
+      // always line up.
+      try {
+        for (const m of await listMasks()) cacheMask(m.scanId, m);
+      } catch {
+        // A missing outline falls back to the neutral silhouette.
+      }
       if (cancelled) return;
       setState({
         ready: true,
@@ -118,6 +126,8 @@ export function AppStoreProvider({ children, provider }: { children: React.React
       },
       async recordScan(record) {
         await saveScan(record);
+        const mask = getCachedMask(record.id);
+        if (mask) await saveMask({ scanId: record.id, ...mask }).catch(() => {});
         const isPro = stateRef.current.entitlement.isPro;
         const used = isPro ? stateRef.current.freeScansUsed : await incrementFreeScansUsed();
         const scans = await listScans();

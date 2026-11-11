@@ -25,7 +25,7 @@ export default function History() {
           </Text>
         </Pressable>
         <Text variant="eyebrow" color={colors.bone50}>
-          {scans.length} {scans.length === 1 ? 'plate' : 'plates'}
+          {scans.length} {scans.length === 1 ? 'portrait' : 'portraits'}
         </Text>
       </View>
       <Text variant="display" style={{ marginTop: space.xl }}>
@@ -96,15 +96,15 @@ export default function History() {
               style={styles.row}
             >
               <View style={styles.thumbWrap}>
-                {s.portraitUri || s.stillUri ? (
-                  <Image source={{ uri: s.portraitUri ?? s.stillUri ?? undefined }} style={styles.thumb} contentFit="cover" />
+                {s.portraitUri ? (
+                  <Image source={{ uri: s.portraitUri }} style={styles.thumb} contentFit="cover" />
                 ) : (
                   <View style={[styles.thumb, { backgroundColor: AURA_COLORS[s.aura.primaryColorId].hex }]} />
                 )}
               </View>
               <View style={{ flex: 1, gap: 2 }}>
                 <Text variant="eyebrow" color={colors.bone50}>
-                  Plate {String(scans.length - i).padStart(3, '0')} · {formatDate(s.createdAt)}
+                  No. {String(scans.length - i).padStart(3, '0')} · {formatDate(s.createdAt)}
                 </Text>
                 <Text variant="heading">{AURA_COLORS[s.aura.primaryColorId].name}</Text>
                 <Text variant="mono" color={colors.bone70}>

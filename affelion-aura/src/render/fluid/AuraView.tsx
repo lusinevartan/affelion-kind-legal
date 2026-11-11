@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { GLView, type ExpoWebGLRenderingContext } from 'expo-gl';
 import type { AuraParams } from '../../core/types';
 import { FluidSim, QUALITY_PRESETS, type FluidQuality, type SilhouetteMask } from './FluidSim';
@@ -12,6 +12,11 @@ export interface AuraViewProps {
   paused?: boolean;
   /** Composite as pigment on a light ground. */
   paper?: boolean;
+  /**
+   * The person's photograph. When given, the view is opaque: the still is developed in
+   * black and white on a black stage and the aura is the only colour in the frame.
+   */
+  stillUri?: string | null;
   style?: StyleProp<ViewStyle>;
   onReady?: () => void;
 }
@@ -26,7 +31,7 @@ export interface AuraViewRef {
  * Rendering is driven by requestAnimationFrame and paced by the device refresh rate (60 fps target).
  */
 export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function AuraView(
-  { params, mask, quality = 'medium', paused = false, paper = false, style, onReady },
+  { params, mask, quality = 'medium', paused = false, paper = false, stillUri = null, style, onReady },
   ref,
 ) {
   const glViewRef = React.useRef<GLView>(null);
@@ -73,6 +78,7 @@ export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function Au
       sim.setMask(mask);
       lastRef.current = 0;
       rafRef.current = requestAnimationFrame(loop);
+      setReady(true);
       onReady?.();
     },
     // The sim is created once per GL context; later prop changes flow through the effects below.
@@ -91,6 +97,41 @@ export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function Au
   React.useEffect(() => {
     if (simRef.current) simRef.current.paper = paper;
   }, [paper]);
+
+  const [ready, setReady] = React.useState(false);
+  React.useEffect(() => {
+    const sim = simRef.current;
+    if (!ready || !sim) return;
+    if (!stillUri) {
+      sim.setStill(null);
+      return;
+    }
+    // A paused view still has to show the photograph once it arrives.
+    const redrawIfPaused = () => {
+      const gl = glRef.current;
+      if (!pausedRef.current || !simRef.current || !gl) return;
+      simRef.current.step(0.001);
+      gl.endFrameEXP();
+    };
+    if (Platform.OS !== 'web') {
+      // expo-gl decodes a local file straight into the texture.
+      sim.setStill({ localUri: stillUri });
+      redrawIfPaused();
+      return;
+    }
+    let cancelled = false;
+    const img = new (globalThis as unknown as { Image: new () => HTMLImageElement }).Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      if (cancelled) return;
+      simRef.current?.setStill(img);
+      redrawIfPaused();
+    };
+    img.src = stillUri;
+    return () => {
+      cancelled = true;
+    };
+  }, [stillUri, ready]);
 
   React.useEffect(
     () => () => {
