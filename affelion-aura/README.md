@@ -30,7 +30,7 @@ src/
                scan and practice state machines, personal baseline
   render/      fluid simulation (GLSL + engine), AuraView (expo-gl), Polaroid card
   features/    scan orchestration (native modules → processors → record), app store, history widgets
-  services/    SQLite storage, entitlements/purchases, grounded AI guide, export
+  services/    SQLite storage, entitlements/purchases, grounded AI guide (Sasha), export
   ui/          design tokens and components
   app/         Expo Router screens (onboarding → home → scan → portrait → paywall → report/history/guide/settings)
 modules/       local Expo native modules (ios/, android/, src/)

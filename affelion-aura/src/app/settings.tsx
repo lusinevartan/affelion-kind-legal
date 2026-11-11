@@ -71,7 +71,7 @@ export default function Settings() {
           ABOUT
         </Text>
         <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.sm }}>
-          Affelion Aura translates measured heart rate, heart-rate variability and vocal frequency into colour and motion. It does not detect energy fields, make predictions or diagnose anything. It is not a medical device.
+          Affelion Aura translates measured heart rate, heart-rate variability and vocal frequency into colour and motion. It does not detect energy fields, make predictions or diagnose anything. It is not a medical device. Sasha, the guide, is an assistant that answers only from the colour knowledge base and your own measurements.
         </Text>
         <Text variant="caption" color={colors.bone30} style={{ marginTop: space.md }}>
           Version 1.0.0

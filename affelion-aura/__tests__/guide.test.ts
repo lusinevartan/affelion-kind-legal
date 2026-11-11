@@ -1,4 +1,4 @@
-import { askGuide, buildScanContext, localGuideAnswer, sanitiseGuideReply } from '../src/services/ai/guide';
+import { askGuide, buildScanContext, GUIDE_NAME, GUIDE_SYSTEM_PROMPT, localGuideAnswer, sanitiseGuideReply } from '../src/services/ai/guide';
 import { mapBiometricsToAura } from '../src/core/color';
 import type { ScanRecord } from '../src/core/types';
 
@@ -15,6 +15,13 @@ const record: ScanRecord = {
 };
 
 describe('guide guardrails', () => {
+  test('the guide is Sasha, named as an assistant, and the prompt forbids the usual claims', () => {
+    expect(GUIDE_NAME).toBe('Sasha');
+    expect(GUIDE_SYSTEM_PROMPT).toContain('You are Sasha');
+    expect(GUIDE_SYSTEM_PROMPT).toContain('not a person');
+    expect(GUIDE_SYSTEM_PROMPT).toContain('Never diagnose');
+  });
+
   test('context contains the real numbers and no invented claims', () => {
     const ctx = buildScanContext(record);
     expect(ctx).toContain('78 bpm');

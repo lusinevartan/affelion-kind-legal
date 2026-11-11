@@ -57,7 +57,7 @@ export default function Paywall() {
           'Unlimited scans',
           'Full breakdown: every region tied to its measurement',
           'History and trends across scans',
-          'The guide: grounded answers about your results',
+          'Sasha, your guide: grounded answers about your results',
           'Premium frame styles and clean, high-resolution exports',
         ].map((f) => (
           <View key={f} style={styles.feature}>

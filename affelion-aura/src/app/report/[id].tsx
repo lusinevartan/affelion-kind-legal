@@ -143,7 +143,7 @@ export default function ReportScreen() {
       </Card>
 
       <View style={{ marginTop: space.xl, gap: space.md }}>
-        <Button label="Ask the guide" onPress={() => router.push({ pathname: '/guide/[id]', params: { id: record.id } })} block />
+        <Button label="Ask Sasha" onPress={() => router.push({ pathname: '/guide/[id]', params: { id: record.id } })} block />
         <View style={{ flexDirection: 'row', gap: space.md }}>
           <Button label="Save clean export" variant="secondary" onPress={() => void exportHiRes('save')} loading={busy === 'save'} style={{ flex: 1 }} />
           <Button label="Share" variant="secondary" onPress={() => void exportHiRes('share')} loading={busy === 'share'} style={{ flex: 1 }} />

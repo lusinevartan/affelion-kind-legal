@@ -5,11 +5,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Screen, Text } from '../../ui/components';
 import { colors, radius, space } from '../../ui/theme';
 import { useAppState } from '../../features/store/AppStore';
-import { askGuide, type GuideMessage } from '../../services/ai/guide';
+import { askGuide, GUIDE_NAME, type GuideMessage } from '../../services/ai/guide';
 
 const SUGGESTIONS = ['Why is my centre this colour?', 'What does the halo mean?', 'How did my voice change the portrait?', 'What would move this toward teal?'];
 
-/** The guide: grounded answers about this scan only. */
+/** Sasha, the guide: grounded answers about this scan only. */
 export default function GuideScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { scans, entitlement } = useAppState();
@@ -64,7 +64,7 @@ export default function GuideScreen() {
       <ScrollView ref={scrollRef} contentContainerStyle={styles.thread} keyboardShouldPersistTaps="handled">
         <View style={styles.assistant}>
           <Text variant="bodySmall" color={colors.bone70}>
-            I can explain this portrait using only what was measured: a pulse of {record.heart.bpm.toFixed(0)} bpm, variability of {record.heart.rmssd.toFixed(0)} ms, and your voice sample. I will not guess about anything that was not measured, and I am not a substitute for a clinician.
+            I'm {GUIDE_NAME}, your guide. I can explain this portrait using only what was measured: a pulse of {record.heart.bpm.toFixed(0)} bpm, variability of {record.heart.rmssd.toFixed(0)} ms, and your voice sample. I won't guess about anything that wasn't measured, and I'm not a substitute for a clinician.
           </Text>
         </View>
         {messages.map((m, i) => (
@@ -93,10 +93,10 @@ export default function GuideScreen() {
       </ScrollView>
       <View style={[styles.composer, { paddingBottom: insets.bottom + space.md }]}>
         <TextInput
-          accessibilityLabel="Ask about this portrait"
+          accessibilityLabel={`Ask ${GUIDE_NAME} about this portrait`}
           value={input}
           onChangeText={setInput}
-          placeholder="Ask about this portrait"
+          placeholder={`Ask ${GUIDE_NAME} about this portrait`}
           placeholderTextColor={colors.bone30}
           style={styles.input}
           returnKeyType="send"
