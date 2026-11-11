@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Affelion Aura — Support</title>
+<style>
+@font-face {
+  font-family: "Fraunces";
+  src: url("fonts/fraunces-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/inter-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+:root {
+  --night: #1D2A21;
+  --black: #0E100F;
+  --bone: #F6F3E3;
+  --bone-60: #9FA395;
+  --clay: #C4714B;
+  --clay-link: #CE7E58;
+  --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --sans: "Inter", -apple-system, "Helvetica Neue", sans-serif;
+  --rule-quiet: rgba(246, 243, 227, 0.22);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 100%; }
+body {
+  background: var(--night);
+  color: var(--bone);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+.wrap { max-width: 34rem; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone-60);
+}
+h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin-top: 0.75rem;
+}
+.updated {
+  font-size: 0.875rem;
+  color: var(--bone-60);
+  margin: 0.75rem 0 2.5rem;
+}
+hr { border: none; border-top: 1px solid var(--rule-quiet); margin: 2.5rem 0; }
+h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+p { font-size: 1rem; line-height: 1.65; color: var(--bone); max-width: 32rem; }
+p + p { margin-top: 1rem; }
+section + section { margin-top: 2.25rem; }
+a { color: var(--clay-link); text-decoration: underline; text-decoration-color: rgba(206,126,88,0.4); }
+a:hover { text-decoration-color: var(--clay); }
+footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule-quiet);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+<body><main class="wrap">
+<header><nav aria-label="Page links"><a href="mailto:hello@affelion.com">Contact Aura</a><a href="aura-privacy.html">Privacy</a></nav>
+<h1>Help with Aura.</h1><p class="updated">Affelion Aura for iOS and Android · Draft, not yet published</p>
+</header>
+<section><h2>Getting a good pulse reading</h2>
+<p>Rest your fingertip over the rear camera and the flash together. Press lightly: too much pressure blocks blood flow and the signal fades. Keep your hand still, ideally with your elbow resting on something. The flash will feel slightly warm; that is normal. If the app says "cover the flash too", shift your finger so it covers both the lens and the light.</p></section>
+<section><h2>The voice step</h2>
+<p>Speak or hum at a normal volume for about five seconds. Aura measures pitch, variance and stability; it does not record or transcribe what you say. You can skip the voice step; the portrait then comes from your pulse alone and says so.</p></section>
+<section><h2>What the colours mean</h2>
+<p>Every colour in a portrait maps to a measured number through a fixed set of rules. Tap a marker on the portrait, or open the full breakdown, to see which measurement produced which colour. The same numbers always produce the same portrait.</p></section>
+<section><h2>Practice</h2>
+<p>Practice is paced breathing with your finger on the camera while the portrait follows your heart rhythm live. What it trains is heart-rate variability and coherence. Stop if you feel light-headed and breathe normally. Aura is not a medical device; for health concerns, speak with a clinician.</p></section>
+<section><h2>Purchases and cancelling</h2>
+<p>Subscriptions renew until cancelled. Cancel any time from your App Store or Google Play subscriptions, also reachable from Settings in the app; access continues to the end of the paid period. Use Restore in Settings or on the plans page if Pro does not show after reinstalling. For refunds, Apple and Google handle them under their rules.</p></section>
+<section><h2>Your data</h2>
+<p>Scan data stays on your device. Settings has a Delete all data button that removes every scan, portrait and setting from the app. See the <a href="aura-privacy.html">privacy notice</a> for details.</p></section>
+<section><h2>Contact</h2>
+<p>Email <a class="contact" href="mailto:hello@affelion.com">hello@affelion.com</a> with your device type and app version. Please do not send health records, passwords or card details.</p></section>
+<footer><p class="updated">Affelion Aura · Affelion LLC</p></footer>
+</main></body></html>

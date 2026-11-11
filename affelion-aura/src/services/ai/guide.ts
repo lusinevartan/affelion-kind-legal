@@ -109,9 +109,10 @@ export async function askGuide(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), opts.timeoutMs ?? 20000);
   try {
+    const token = process.env.EXPO_PUBLIC_GUIDE_TOKEN;
     const res = await fetchImpl(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       body: JSON.stringify({
         system: GUIDE_SYSTEM_PROMPT,
         context: buildScanContext(record),

@@ -121,8 +121,24 @@ export async function openStoreSubscriptions(): Promise<void> {
 }
 
 export function createPurchaseProvider(): PurchaseProvider {
-  // Swap for a store-backed provider in production builds.
+  // Store-backed when RevenueCat keys are present in the build; the simulated provider otherwise.
+  // Required lazily so the dev provider never loads the native module (web review builds).
+  const key = revenueCatKey();
+  if (key) {
+    const { RevenueCatPurchaseProvider } = require('./purchases/revenueCat') as typeof import('./purchases/revenueCat');
+    return new RevenueCatPurchaseProvider(key);
+  }
   return new DevPurchaseProvider();
+}
+
+function revenueCatKey(): string | null {
+  const key = Platform.OS === 'ios' ? process.env.EXPO_PUBLIC_RC_IOS_KEY : process.env.EXPO_PUBLIC_RC_ANDROID_KEY;
+  return key && key.length > 0 ? key : null;
+}
+
+/** True when purchases are simulated, so the paywall can say so. */
+export function purchasesAreSimulated(): boolean {
+  return revenueCatKey() === null;
 }
 
 export const FREE_SCANS_USED_KEY = 'freeScansUsed';

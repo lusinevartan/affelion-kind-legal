@@ -4,8 +4,8 @@ import { Image } from 'expo-image';
 import type { AuraParams } from '../../core/types';
 import type { SilhouetteMask } from '../fluid/FluidSim';
 import { AuraView, type AuraViewRef } from '../fluid/AuraView';
-import { colors } from '../../ui/theme';
 import { Text } from '../../ui/components/Text';
+import { FRAME_STYLES, type FrameStyleId } from './styles';
 
 export const POLAROID_ASPECT = 0.8; // image area 4:5 inside the paper
 
@@ -24,6 +24,8 @@ export interface PolaroidCardProps {
   auraRef?: React.Ref<AuraViewRef>;
   /** Tappable regions rendered over the image area. */
   overlay?: React.ReactNode;
+  /** Frame style (Pro styles are presentation only). */
+  frame?: FrameStyleId;
 }
 
 /**
@@ -33,15 +35,16 @@ export interface PolaroidCardProps {
 export type PolaroidCardHandle = React.ComponentRef<typeof View>;
 
 export const PolaroidCard = React.forwardRef<PolaroidCardHandle, PolaroidCardProps>(function PolaroidCard(
-  { stillUri, aura, width, caption, subcaption, showWordmark = true, style, auraRef, overlay },
+  { stillUri, aura, width, caption, subcaption, showWordmark = true, style, auraRef, overlay, frame = 'classic' },
   ref,
 ) {
-  const border = Math.round(width * 0.055);
+  const f = FRAME_STYLES[frame];
+  const border = Math.round(width * f.border);
   const imageW = width - border * 2;
   const imageH = Math.round(imageW / POLAROID_ASPECT);
-  const bottom = Math.round(width * 0.2);
+  const bottom = Math.round(width * f.bottom);
   return (
-    <View ref={ref} collapsable={false} style={[styles.paper, { width, paddingTop: border, paddingHorizontal: border, paddingBottom: bottom, borderRadius: Math.max(2, width * 0.008) }, style]}>
+    <View ref={ref} collapsable={false} style={[styles.paper, { width, backgroundColor: f.paper, paddingTop: border, paddingHorizontal: border, paddingBottom: bottom, borderRadius: Math.max(2, width * f.cornerRadius) }, style]}>
       <View style={[styles.window, { width: imageW, height: imageH }]}>
         {stillUri ? (
           <Image source={{ uri: stillUri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} accessibilityIgnoresInvertColors />
@@ -57,20 +60,20 @@ export const PolaroidCard = React.forwardRef<PolaroidCardHandle, PolaroidCardPro
       </View>
       <View style={[styles.captionArea, { height: bottom - border }]}>
         {caption ? (
-          <Text variant="body" color="#2A2724" style={{ fontFamily: styles.handwriting.fontFamily, fontSize: Math.max(12, width * 0.05) }} numberOfLines={2}>
+          <Text variant="heading" color={f.caption} style={{ fontSize: Math.max(12, width * 0.05) }} numberOfLines={2}>
             {caption}
           </Text>
         ) : null}
         <View style={styles.footer}>
           {subcaption ? (
-            <Text variant="caption" color="rgba(42,39,36,0.6)" style={{ fontSize: Math.max(9, width * 0.03) }}>
+            <Text variant="caption" color={f.subcaption} style={{ fontSize: Math.max(9, width * 0.03) }}>
               {subcaption}
             </Text>
           ) : (
             <View />
           )}
           {showWordmark ? (
-            <Text variant="caption" color="rgba(42,39,36,0.55)" style={{ fontSize: Math.max(9, width * 0.03), letterSpacing: 1 }}>
+            <Text variant="caption" color={f.subcaption} style={{ fontSize: Math.max(9, width * 0.03), letterSpacing: 1 }}>
               AFFELION AURA
             </Text>
           ) : null}
@@ -82,7 +85,6 @@ export const PolaroidCard = React.forwardRef<PolaroidCardHandle, PolaroidCardPro
 
 const styles = StyleSheet.create({
   paper: {
-    backgroundColor: colors.polaroidPaper,
     shadowColor: '#000',
     shadowOpacity: 0.45,
     shadowRadius: 24,
@@ -92,5 +94,4 @@ const styles = StyleSheet.create({
   window: { backgroundColor: '#0d0e12', overflow: 'hidden' },
   captionArea: { justifyContent: 'space-between', paddingTop: 10 },
   footer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
-  handwriting: { fontFamily: 'Georgia' },
 });

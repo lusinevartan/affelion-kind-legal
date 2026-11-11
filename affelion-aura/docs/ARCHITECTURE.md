@@ -117,11 +117,27 @@ Pro exports are clean.
 
 ## Monetisation
 
-`PurchaseProvider` interface in `src/services/entitlements.ts`. The shipped `DevPurchaseProvider`
-simulates purchases locally and says so on the paywall. For production, implement the interface with
-RevenueCat (`react-native-purchases`) or `expo-iap`, map store products to `PLANS[].productId`, and
-return the entitlement from the store. Keep the "Manage or cancel" links; they open the platform
-subscription pages.
+`PurchaseProvider` interface in `src/services/entitlements.ts`. With `EXPO_PUBLIC_RC_IOS_KEY` /
+`EXPO_PUBLIC_RC_ANDROID_KEY` set in the build, `RevenueCatPurchaseProvider`
+(`src/services/purchases/revenueCat.ts`) reads the "pro" entitlement from the store, purchases the
+package whose product id matches `PLANS[].productId`, restores, and opens the platform's
+subscription management page. Without keys the `DevPurchaseProvider` simulates purchases locally
+and the paywall says so. Store setup: three products (`com.affelion.aura.pro.monthly`, `.annual`,
+`.lifetime`) in App Store Connect and Google Play, attached to a RevenueCat entitlement named `pro`
+and a current offering.
+
+## Sasha server (`server/sasha`)
+
+A small Node service that holds the Anthropic API key, validates and rate-limits requests, sends
+the app's knowledge-base system prompt (cached) plus the scan's numbers to Claude Opus 5.5 at low
+effort with server-side refusal fallbacks, and filters the reply through the honesty rules. The
+app points at it with `EXPO_PUBLIC_GUIDE_ENDPOINT` and, optionally, `EXPO_PUBLIC_GUIDE_TOKEN`.
+It stores nothing; the app never sends images or audio.
+
+## Premium frames (`src/render/polaroid/styles.ts`)
+
+Classic (free), Noir, Clean and Film. Styles change paper, margins and caption colour only; the
+aura is never altered by a style, so every export remains a faithful translation of the numbers.
 
 ## Privacy
 

@@ -3,7 +3,7 @@ import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Button, Screen, Text } from '../ui/components';
 import { colors, radius, space } from '../ui/theme';
-import { PLANS, type PlanId } from '../services/entitlements';
+import { PLANS, purchasesAreSimulated, type PlanId } from '../services/entitlements';
 import { useAppActions, useAppState } from '../features/store/AppStore';
 
 /**
@@ -126,9 +126,11 @@ export default function Paywall() {
         </Pressable>
       </View>
 
-      <Text variant="caption" color={colors.bone30} style={{ marginTop: space.xxl }} align="center">
-        Development build: purchases are simulated locally and no payment is taken.
-      </Text>
+      {purchasesAreSimulated() ? (
+        <Text variant="caption" color={colors.bone30} style={{ marginTop: space.xxl }} align="center">
+          Development build: purchases are simulated locally and no payment is taken.
+        </Text>
+      ) : null}
     </Screen>
   );
 }

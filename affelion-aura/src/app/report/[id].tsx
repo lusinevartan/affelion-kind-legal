@@ -10,6 +10,7 @@ import { PolaroidCard } from '../../render/polaroid/PolaroidCard';
 import { AURA_COLOR_IDS, AURA_COLORS } from '../../core/color/palette';
 import { usePolaroidExport } from '../../features/portrait/usePolaroidExport';
 import { scanInsight } from '../../core/insight/baseline';
+import { FRAME_STYLE_IDS, FRAME_STYLES } from '../../render/polaroid/styles';
 
 /**
  * Paid full breakdown. Every colour in the portrait is tied to a number from this scan, in the
@@ -17,11 +18,11 @@ import { scanInsight } from '../../core/insight/baseline';
  */
 export default function ReportScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { scans, entitlement } = useAppState();
-  const { refreshScans } = useAppActions();
+  const { scans, entitlement, frameStyle } = useAppState();
+  const { refreshScans, setFrameStyle } = useAppActions();
   const record = scans.find((s) => s.id === id) ?? null;
   const mask = React.useMemo(() => (id ? getCachedMask(id) : null), [id]);
-  const exportOpts = React.useMemo(() => ({ clean: true, exportWidth: 720, onSaved: refreshScans }), [refreshScans]);
+  const exportOpts = React.useMemo(() => ({ clean: true, exportWidth: 720, onSaved: refreshScans, frame: frameStyle }), [refreshScans, frameStyle]);
   const { auraRef, busy, run: exportHiRes, exportCard } = usePolaroidExport(record, exportOpts);
 
   React.useEffect(() => {
@@ -57,7 +58,17 @@ export default function ReportScreen() {
       </View>
 
       <View style={{ alignItems: 'center', marginTop: space.xl }}>
-        <PolaroidCard auraRef={auraRef} width={width} stillUri={record.stillUri} aura={{ kind: 'live', params: aura, mask }} caption={AURA_COLORS[aura.primaryColorId].name} subcaption={formatDate(record.createdAt)} showWordmark={false} />
+        <PolaroidCard auraRef={auraRef} width={width} stillUri={record.stillUri} aura={{ kind: 'live', params: aura, mask }} caption={AURA_COLORS[aura.primaryColorId].name} subcaption={formatDate(record.createdAt)} showWordmark={false} frame={frameStyle} />
+      </View>
+      <View style={styles.frameRow} accessibilityRole="radiogroup" accessibilityLabel="Frame style">
+        {FRAME_STYLE_IDS.map((id) => (
+          <Pressable key={id} accessibilityRole="radio" accessibilityState={{ selected: frameStyle === id }} accessibilityLabel={FRAME_STYLES[id].name} onPress={() => void setFrameStyle(id)} style={[styles.frameChip, frameStyle === id && styles.frameChipOn]}>
+            <View style={[styles.frameSwatch, { backgroundColor: FRAME_STYLES[id].paper }]} />
+            <Text variant="caption" color={frameStyle === id ? colors.bone : colors.bone60}>
+              {FRAME_STYLES[id].name}
+            </Text>
+          </Pressable>
+        ))}
       </View>
 
       <Text variant="title" style={{ marginTop: space.xxl }}>
@@ -159,4 +170,8 @@ export default function ReportScreen() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  frameRow: { flexDirection: 'row', justifyContent: 'center', gap: space.sm, marginTop: space.lg, flexWrap: 'wrap' },
+  frameChip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 999, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.hairlineStrong },
+  frameChipOn: { backgroundColor: colors.surfaceRaised, borderColor: colors.clay },
+  frameSwatch: { width: 14, height: 14, borderRadius: 3, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.hairlineStrong },
 });

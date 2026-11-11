@@ -1,5 +1,6 @@
 import * as React from 'react';
 import type { PracticeRecord, ScanRecord } from '../../core/types';
+import type { FrameStyleId } from '../../render/polaroid/styles';
 import {
   createPurchaseProvider,
   freeScansRemaining,
@@ -25,6 +26,7 @@ export interface AppState {
   practices: PracticeRecord[];
   /** Breathing rate found by the resonance finder, breaths per minute, or null. */
   resonanceRate: number | null;
+  frameStyle: FrameStyleId;
   /** Derived: Pro, or free scans remaining. */
   canScan: boolean;
   freeScansLeft: number;
@@ -38,6 +40,7 @@ export interface AppActions {
   recordScan(record: ScanRecord): Promise<void>;
   recordPractice(record: PracticeRecord): Promise<void>;
   setResonanceRate(rate: number): Promise<void>;
+  setFrameStyle(style: FrameStyleId): Promise<void>;
   purchase(plan: PlanId): Promise<Entitlement>;
   restore(): Promise<Entitlement>;
   manageSubscriptions(): Promise<void>;
@@ -51,6 +54,7 @@ const ActionsContext = React.createContext<AppActions | null>(null);
 
 const ONBOARDING_KEY = 'onboardingDone';
 const RESONANCE_KEY = 'resonanceRate';
+const FRAME_KEY = 'frameStyle';
 
 export function AppStoreProvider({ children, provider }: { children: React.ReactNode; provider?: PurchaseProvider }) {
   const purchases = React.useMemo(() => provider ?? createPurchaseProvider(), [provider]);
@@ -62,18 +66,20 @@ export function AppStoreProvider({ children, provider }: { children: React.React
     scans: [],
     practices: [],
     resonanceRate: null,
+    frameStyle: 'classic',
   });
 
   React.useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [onboarding, entitlement, used, scans, practices, resonance] = await Promise.all([
+      const [onboarding, entitlement, used, scans, practices, resonance, frame] = await Promise.all([
         getSetting(ONBOARDING_KEY),
         purchases.getEntitlement(),
         getFreeScansUsed(),
         listScans(),
         listPractices(),
         getSetting(RESONANCE_KEY),
+        getSetting(FRAME_KEY),
       ]);
       if (cancelled) return;
       setState({
@@ -84,6 +90,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         scans,
         practices,
         resonanceRate: resonance ? Number(resonance) || null : null,
+        frameStyle: (frame as FrameStyleId | null) ?? 'classic',
       });
     })().catch((e) => {
       console.warn('App store failed to load', e);
@@ -125,6 +132,10 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         await setSetting(RESONANCE_KEY, String(rate));
         setState((s) => ({ ...s, resonanceRate: rate }));
       },
+      async setFrameStyle(style) {
+        await setSetting(FRAME_KEY, style);
+        setState((s) => ({ ...s, frameStyle: style }));
+      },
       async purchase(plan) {
         const entitlement = await purchases.purchase(plan);
         setState((s) => ({ ...s, entitlement }));
@@ -140,7 +151,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         await deleteAllScans();
         await clearSettings();
         const entitlement = await purchases.getEntitlement();
-        setState({ ready: true, onboardingDone: true, entitlement, freeScansUsed: 0, scans: [], practices: [], resonanceRate: null });
+        setState({ ready: true, onboardingDone: true, entitlement, freeScansUsed: 0, scans: [], practices: [], resonanceRate: null, frameStyle: 'classic' });
         await setSetting(ONBOARDING_KEY, '1');
       },
     }),

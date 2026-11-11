@@ -52,9 +52,15 @@ npx expo run:ios         # development build (native modules require a dev build
 npx expo run:android
 ```
 
-The AI guide calls `EXPO_PUBLIC_GUIDE_ENDPOINT` (a server you own that holds the model key and
-applies the system prompt in `src/services/ai/guide.ts`). Without it, the guide answers from grounded
-local templates.
+Build-time environment (EAS secrets or `.env`):
+
+| Variable | Purpose |
+| --- | --- |
+| `EXPO_PUBLIC_GUIDE_ENDPOINT` | URL of the Sasha server (`server/sasha`); without it the guide answers from grounded local templates |
+| `EXPO_PUBLIC_GUIDE_TOKEN` | Optional shared secret the Sasha server expects as a Bearer header |
+| `EXPO_PUBLIC_RC_IOS_KEY`, `EXPO_PUBLIC_RC_ANDROID_KEY` | RevenueCat public SDK keys; without them purchases are simulated and the paywall says so |
+
+`eas.json` has development, preview and production profiles.
 
 ## Status
 

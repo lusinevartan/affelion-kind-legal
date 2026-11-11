@@ -7,6 +7,7 @@ import type { AuraViewRef } from '../../render/fluid/AuraView';
 import { PolaroidCard, type PolaroidCardHandle } from '../../render/polaroid/PolaroidCard';
 import { capturePolaroid, saveToPhotos, sharePortrait } from '../../services/export';
 import { updatePortraitUri } from '../../services/storage';
+import type { FrameStyleId } from '../../render/polaroid/styles';
 
 /**
  * Export pipeline that never depends on capturing a live GL surface (unreliable on Android):
@@ -14,7 +15,7 @@ import { updatePortraitUri } from '../../services/storage';
  *   2. render an off-screen Polaroid at export size with that PNG layered over the still,
  *   3. capture that card as a bitmap, persist and save/share.
  */
-export function usePolaroidExport(record: ScanRecord | null, opts: { clean: boolean; exportWidth: number; onSaved?: () => Promise<void> | void }) {
+export function usePolaroidExport(record: ScanRecord | null, opts: { clean: boolean; exportWidth: number; onSaved?: () => Promise<void> | void; frame?: FrameStyleId }) {
   const auraRef = React.useRef<AuraViewRef>(null);
   const exportCardRef = React.useRef<PolaroidCardHandle>(null);
   const [auraImageUri, setAuraImageUri] = React.useState<string | null>(null);
@@ -77,6 +78,7 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
           caption={AURA_COLORS[record.aura.primaryColorId].name}
           subcaption={formatDate(record.createdAt)}
           showWordmark={!opts.clean}
+          frame={opts.frame ?? 'classic'}
         />
       </View>
     ) : null;
