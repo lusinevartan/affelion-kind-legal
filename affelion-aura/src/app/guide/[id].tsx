@@ -64,7 +64,7 @@ export default function GuideScreen() {
       <ScrollView ref={scrollRef} contentContainerStyle={styles.thread} keyboardShouldPersistTaps="handled">
         <View style={styles.assistant}>
           <Text variant="bodySmall" color={colors.bone70}>
-            I'm {GUIDE_NAME}, your guide. I can explain this portrait using only what was measured: a pulse of {record.heart.bpm.toFixed(0)} bpm, variability of {record.heart.rmssd.toFixed(0)} ms, and your voice sample. I won't guess about anything that wasn't measured, and I'm not a substitute for a clinician.
+            {`I'm ${GUIDE_NAME}, your guide. I can explain this portrait using only what was measured: a pulse of ${record.heart.bpm.toFixed(0)} bpm, variability of ${record.heart.rmssd.toFixed(0)} ms, and your voice sample. I won't guess about anything that wasn't measured, and I'm not a substitute for a clinician.`}
           </Text>
         </View>
         {messages.map((m, i) => (
