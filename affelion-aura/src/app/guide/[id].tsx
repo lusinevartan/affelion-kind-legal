@@ -58,7 +58,7 @@ export default function GuideScreen() {
           </Text>
         </Pressable>
         <Text variant="caption" color={colors.bone50}>
-          THE GUIDE
+          {GUIDE_NAME}
         </Text>
       </View>
       <ScrollView ref={scrollRef} contentContainerStyle={styles.thread} keyboardShouldPersistTaps="handled">
