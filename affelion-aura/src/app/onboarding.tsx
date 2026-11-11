@@ -4,6 +4,9 @@ import { router } from 'expo-router';
 import { Button, Screen, Text } from '../ui/components';
 import { colors, radius, space } from '../ui/theme';
 import { useAppActions } from '../features/store/AppStore';
+import { AuraView } from '../render/fluid/AuraView';
+import { placeholderMask } from '../render/fluid/FluidSim';
+import { PREVIEW_PARAMS } from '../features/scan/previewParams';
 
 /**
  * Three honest screens. What the app does, what it measures, what it does not claim.
@@ -32,6 +35,7 @@ export default function Onboarding() {
   const [page, setPage] = React.useState(0);
   const width = Dimensions.get('window').width;
   const scrollRef = React.useRef<React.ComponentRef<typeof ScrollView>>(null);
+  const mask = React.useMemo(() => placeholderMask(), []);
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const p = Math.round(e.nativeEvent.contentOffset.x / width);
@@ -51,9 +55,12 @@ export default function Onboarding() {
   return (
     <Screen padded={false} bottomInset={0}>
       <View style={styles.brand}>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 2 }}>
+        <Text variant="eyebrow" color={colors.bone60}>
           AFFELION AURA
         </Text>
+      </View>
+      <View style={styles.hero} accessible accessibilityLabel="A living colour field wrapping a silhouette, shown as a neutral preview">
+        <AuraView params={PREVIEW_PARAMS} mask={mask} quality="low" style={StyleSheet.absoluteFill} />
       </View>
       <ScrollView
         ref={scrollRef}
@@ -65,11 +72,8 @@ export default function Onboarding() {
       >
         {PAGES.map((p) => (
           <View key={p.eyebrow} style={[styles.page, { width }]}>
-            <View style={styles.art}>
-              <View style={[styles.orb, { backgroundColor: p.eyebrow === 'What this is' ? '#1FB5A3' : p.eyebrow === 'What it measures' ? '#F0781E' : '#4A4BC0' }]} />
-            </View>
-            <Text variant="caption" color={colors.brass} style={{ letterSpacing: 1.5 }}>
-              {p.eyebrow.toUpperCase()}
+            <Text variant="eyebrow" color={colors.clay}>
+              {p.eyebrow}
             </Text>
             <Text variant="title" style={{ marginTop: space.sm }}>
               {p.title}
@@ -105,8 +109,7 @@ export default function Onboarding() {
 const styles = StyleSheet.create({
   brand: { paddingHorizontal: space.xl, paddingBottom: space.lg },
   page: { paddingHorizontal: space.xl, paddingTop: space.lg },
-  art: { height: 220, justifyContent: 'center', alignItems: 'center', marginBottom: space.xxl },
-  orb: { width: 150, height: 150, borderRadius: 75, opacity: 0.85, shadowColor: '#fff', shadowOpacity: 0.3, shadowRadius: 40 },
+  hero: { height: 260, marginHorizontal: space.xl, marginBottom: space.xl, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.black },
   footer: { paddingHorizontal: space.xl, gap: space.sm, paddingTop: space.lg },
   dots: { flexDirection: 'row', gap: 6, justifyContent: 'center', marginBottom: space.md },
   dot: { width: 6, height: 6, borderRadius: radius.pill, backgroundColor: colors.hairlineStrong },

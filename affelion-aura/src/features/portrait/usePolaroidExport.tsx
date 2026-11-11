@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { formatDate } from '../../ui/format';
 import { Alert, StyleSheet, View } from 'react-native';
 import type { ScanRecord } from '../../core/types';
 import { AURA_COLORS } from '../../core/color/palette';
@@ -74,7 +75,7 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
           stillUri={record.stillUri}
           aura={{ kind: 'image', uri: auraImageUri }}
           caption={AURA_COLORS[record.aura.primaryColorId].name}
-          subcaption={new Date(record.createdAt).toLocaleDateString()}
+          subcaption={formatDate(record.createdAt)}
           showWordmark={!opts.clean}
         />
       </View>

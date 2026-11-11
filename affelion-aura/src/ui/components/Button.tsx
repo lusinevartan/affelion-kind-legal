@@ -39,8 +39,8 @@ export function Button({ label, variant = 'primary', loading, disabled, style, b
       {...rest}
     >
       <View style={styles.inner}>
-        {loading ? <ActivityIndicator color={variant === 'primary' ? colors.night : colors.bone} /> : null}
-        <Text variant="heading" color={variant === 'primary' ? colors.night : variant === 'danger' ? colors.danger : colors.bone}>
+        {loading ? <ActivityIndicator color={variant === 'primary' ? colors.black : colors.bone} /> : null}
+        <Text variant="label" color={variant === 'primary' ? colors.black : variant === 'danger' ? colors.danger : colors.bone}>
           {label}
         </Text>
       </View>
@@ -59,8 +59,8 @@ const styles = StyleSheet.create({
   },
   inner: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   block: { alignSelf: 'stretch' },
-  primary: { backgroundColor: colors.bone },
-  secondary: { backgroundColor: colors.surfaceRaised, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.hairlineStrong },
+  primary: { backgroundColor: colors.clay },
+  secondary: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.hairlineStrong },
   ghost: { backgroundColor: 'transparent' },
   danger: { backgroundColor: 'transparent', borderWidth: StyleSheet.hairlineWidth, borderColor: colors.danger },
   pressed: { opacity: 0.82, transform: [{ scale: 0.99 }] },

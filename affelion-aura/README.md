@@ -14,6 +14,7 @@ an honesty rule set. It is not a medical device.
 ## Stack
 
 - Expo SDK 58 / React Native 0.88 / React 19, TypeScript strict, Expo Router.
+- Affelion brand system: night green ground, bone type, clay accent, Fraunces light display and Inter text (`src/ui/theme.ts`, fonts embedded via expo-font).
 - Three local Expo modules (Swift + Kotlin) in `modules/`:
   - `affelion-ppg`: rear camera + torch photoplethysmography (AVFoundation / Camera2), locked exposure, per-frame mean RGB.
   - `affelion-silhouette`: front-camera preview with person segmentation and face metrics (ARKit + Vision on iOS, CameraX + ML Kit on Android). Emits 8-bit masks in display orientation.
@@ -44,6 +45,8 @@ npm install
 npm test                 # unit tests: mapping rules, PPG, voice, coherence, scan and practice machines, baseline, guide guardrails
 npm run typecheck        # tsc --noEmit
 npm run harness:build && npm run harness:shot   # reference renders → docs/renders
+npx expo export --platform web --output-dir /tmp/aura-web   # design review build; serve it and set
+                          # localStorage aura.demo=1 (and aura.pro=1) for seeded screens
 npx expo prebuild --clean
 npx expo run:ios         # development build (native modules require a dev build, not Expo Go)
 npx expo run:android

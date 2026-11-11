@@ -12,17 +12,7 @@ import { cacheMask } from '../features/scan/sessionCache';
 import { GUIDANCE_COPY, SCAN_TIMING } from '../core/scan/scanMachine';
 import { useAppActions } from '../features/store/AppStore';
 import { AuraView } from '../render/fluid/AuraView';
-import { mapBiometricsToAura } from '../core/color/mapping';
-
-/**
- * Neutral preview shown while the outline is being mapped, before any pulse has been read.
- * It exists so the user sees the fluid wrap their live silhouette; the real colours arrive
- * only after the measurement. Derived through the same mapping so it stays inside the system.
- */
-const PREVIEW_PARAMS = mapBiometricsToAura({
-  heart: { bpm: 66, rmssd: 50, sdnn: 55, pnn50: 25, beatCount: 0, quality: 0, durationSec: 0 },
-  voice: null,
-});
+import { PREVIEW_PARAMS } from '../features/scan/previewParams';
 
 /**
  * The scan. One screen, three phases, always-visible status (what we are doing, how far
@@ -197,7 +187,7 @@ export default function ScanScreen() {
 
       {/* Guidance */}
       <View style={[styles.panel, { paddingBottom: insets.bottom + space.lg }]}>
-        <ProgressBar value={state.totalProgress} label="Scan progress" tint={colors.brass} />
+        <ProgressBar value={state.totalProgress} label="Scan progress" tint={colors.clay} />
         <Text variant="title" style={{ marginTop: space.lg }} accessibilityLiveRegion="polite">
           {guidance.title}
         </Text>
@@ -231,7 +221,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: 'rgba(243,239,230,0.35)',
   },
-  ovalActive: { borderColor: colors.brass },
+  ovalActive: { borderColor: colors.clay },
   topBar: { position: 'absolute', left: space.lg, right: space.lg, top: 0, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cancel: { paddingHorizontal: space.md, paddingVertical: 8, borderRadius: radius.pill, backgroundColor: colors.overlay },
   fingerStage: { flex: 1, alignItems: 'center', justifyContent: 'center' },
@@ -246,6 +236,6 @@ const styles = StyleSheet.create({
     borderColor: colors.hairlineStrong,
   },
   levelRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 4, height: 60 },
-  levelBar: { width: 6, borderRadius: 3, backgroundColor: colors.brass },
+  levelBar: { width: 6, borderRadius: 3, backgroundColor: colors.clay },
   panel: { paddingHorizontal: space.xl, paddingTop: space.lg, backgroundColor: colors.night, minHeight: 220 },
 });

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { formatDate, formatDateTime } from '../../ui/format';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Button, Card, ColorSwatch, MetricRow, Screen, Text } from '../../ui/components';
@@ -51,12 +52,12 @@ export default function ReportScreen() {
           </Text>
         </Pressable>
         <Text variant="caption" color={colors.bone50}>
-          {new Date(record.createdAt).toLocaleString()}
+          {formatDateTime(record.createdAt)}
         </Text>
       </View>
 
       <View style={{ alignItems: 'center', marginTop: space.xl }}>
-        <PolaroidCard auraRef={auraRef} width={width} stillUri={record.stillUri} aura={{ kind: 'live', params: aura, mask }} caption={AURA_COLORS[aura.primaryColorId].name} subcaption={new Date(record.createdAt).toLocaleDateString()} showWordmark={false} />
+        <PolaroidCard auraRef={auraRef} width={width} stillUri={record.stillUri} aura={{ kind: 'live', params: aura, mask }} caption={AURA_COLORS[aura.primaryColorId].name} subcaption={formatDate(record.createdAt)} showWordmark={false} />
       </View>
 
       <Text variant="title" style={{ marginTop: space.xxl }}>
@@ -67,7 +68,7 @@ export default function ReportScreen() {
       </Text>
 
       <Card style={{ marginTop: space.xl }}>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+        <Text variant="eyebrow" color={colors.bone60}>
           MEASUREMENTS
         </Text>
         <MetricRow label="Heart rate" value={heart.bpm.toFixed(0)} unit="bpm" note={`${heart.beatCount} beats over ${heart.durationSec.toFixed(0)} s`} />
@@ -88,7 +89,7 @@ export default function ReportScreen() {
       </Card>
 
       <Card style={{ marginTop: space.lg }}>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+        <Text variant="eyebrow" color={colors.bone60}>
           AGAINST YOUR BASELINE
         </Text>
         {insight.trendColorId ? (
@@ -103,7 +104,7 @@ export default function ReportScreen() {
       </Card>
 
       <Card style={{ marginTop: space.lg }}>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+        <Text variant="eyebrow" color={colors.bone60}>
           REGIONS
         </Text>
         {aura.regions.map((r) => (
@@ -117,7 +118,7 @@ export default function ReportScreen() {
       </Card>
 
       <Card style={{ marginTop: space.lg }}>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+        <Text variant="eyebrow" color={colors.bone60}>
           SHADER PARAMETERS
         </Text>
         <MetricRow label="Hue" value={`${aura.hue}`} unit="°" />
@@ -131,7 +132,7 @@ export default function ReportScreen() {
       </Card>
 
       <Card style={{ marginTop: space.lg }}>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+        <Text variant="eyebrow" color={colors.bone60}>
           THE COLOUR KNOWLEDGE BASE
         </Text>
         <View style={{ marginTop: space.sm }}>

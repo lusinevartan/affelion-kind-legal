@@ -1,27 +1,36 @@
 import { Platform } from 'react-native';
 
 /**
- * Design tokens. Dark, quiet, premium. The aura supplies the colour; the chrome stays neutral
- * so the portrait is always the brightest thing on screen.
+ * Affelion design tokens, taken from the Affelion brand system used by Kind:
+ * night green ground, bone type, clay accent, Fraunces for display at light weight with tight
+ * tracking, Inter for everything else, spaced uppercase eyebrows in muted bone, and quiet
+ * hairlines rather than boxes. The aura supplies the colour; the chrome stays still.
  */
 export const colors = {
-  night: '#0B0C10',
-  ink: '#111318',
-  surface: '#171A21',
-  surfaceRaised: '#1F232C',
-  hairline: 'rgba(243, 239, 230, 0.10)',
-  hairlineStrong: 'rgba(243, 239, 230, 0.18)',
-  bone: '#F3EFE6',
-  bone70: 'rgba(243, 239, 230, 0.72)',
-  bone50: 'rgba(243, 239, 230, 0.5)',
-  bone30: 'rgba(243, 239, 230, 0.3)',
-  brass: '#D8B06A',
-  brassDeep: '#B8893E',
-  danger: '#E0655A',
-  success: '#5FBF9F',
-  overlay: 'rgba(11, 12, 16, 0.72)',
-  polaroidPaper: '#F4F1EA',
+  night: '#1D2A21',
+  black: '#0E100F',
+  /** Slightly lifted ground for cards. */
+  surface: '#243329',
+  surfaceRaised: '#2C3D32',
+  hairline: 'rgba(246, 243, 227, 0.14)',
+  hairlineStrong: 'rgba(246, 243, 227, 0.22)',
+  bone: '#F6F3E3',
+  bone70: 'rgba(246, 243, 227, 0.74)',
+  bone60: '#9FA395',
+  bone50: 'rgba(246, 243, 227, 0.5)',
+  bone30: 'rgba(246, 243, 227, 0.3)',
+  clay: '#C4714B',
+  clayLink: '#CE7E58',
+  claySoft: 'rgba(196, 113, 75, 0.18)',
+  danger: '#D9705C',
+  success: '#7FB89A',
+  overlay: 'rgba(14, 16, 15, 0.72)',
+  polaroidPaper: '#F6F3E3',
   polaroidShadow: 'rgba(0,0,0,0.55)',
+  /** Kept for compatibility with earlier screens; prefer `clay`. */
+  brass: '#C4714B',
+  brassDeep: '#A85E3B',
+  ink: '#0E100F',
 } as const;
 
 export const space = {
@@ -42,22 +51,27 @@ export const radius = {
   pill: 999,
 } as const;
 
-const serif = Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia' });
-const sans = Platform.select({ ios: 'System', android: 'sans-serif', default: 'System' });
+/** Font family names as registered with expo-font (see `src/ui/fonts.ts`). */
+export const fonts = {
+  serifLight: 'Fraunces_300Light',
+  serif: 'Fraunces_400Regular',
+  serifMedium: 'Fraunces_500Medium',
+  sans: 'Inter_400Regular',
+  sansMedium: 'Inter_500Medium',
+  sansSemi: 'Inter_600SemiBold',
+  mono: Platform.select({ ios: 'Menlo', android: 'monospace', default: 'monospace' }) as string,
+} as const;
 
 export const type = {
-  display: { fontFamily: serif, fontSize: 36, lineHeight: 42, letterSpacing: -0.5, fontWeight: '500' as const },
-  title: { fontFamily: serif, fontSize: 26, lineHeight: 32, letterSpacing: -0.3, fontWeight: '500' as const },
-  heading: { fontFamily: sans, fontSize: 18, lineHeight: 24, fontWeight: '600' as const },
-  body: { fontFamily: sans, fontSize: 16, lineHeight: 24, fontWeight: '400' as const },
-  bodySmall: { fontFamily: sans, fontSize: 14, lineHeight: 20, fontWeight: '400' as const },
-  caption: { fontFamily: sans, fontSize: 12, lineHeight: 16, letterSpacing: 0.2, fontWeight: '500' as const },
-  mono: {
-    fontFamily: Platform.select({ ios: 'Menlo', android: 'monospace', default: 'monospace' }),
-    fontSize: 13,
-    lineHeight: 18,
-    fontWeight: '400' as const,
-  },
+  display: { fontFamily: fonts.serifLight, fontSize: 38, lineHeight: 44, letterSpacing: -0.4 },
+  title: { fontFamily: fonts.serifLight, fontSize: 28, lineHeight: 33, letterSpacing: -0.3 },
+  heading: { fontFamily: fonts.serif, fontSize: 20, lineHeight: 26, letterSpacing: -0.1 },
+  body: { fontFamily: fonts.sans, fontSize: 16, lineHeight: 26 },
+  bodySmall: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 21 },
+  label: { fontFamily: fonts.sansMedium, fontSize: 15, lineHeight: 20 },
+  caption: { fontFamily: fonts.sans, fontSize: 12, lineHeight: 16, letterSpacing: 0.1 },
+  eyebrow: { fontFamily: fonts.sansMedium, fontSize: 11, lineHeight: 16, letterSpacing: 1.6, textTransform: 'uppercase' as const },
+  mono: { fontFamily: fonts.mono, fontSize: 13, lineHeight: 18 },
 } as const;
 
 /** Minimum touch target per WCAG 2.5.5 / platform guidance. */

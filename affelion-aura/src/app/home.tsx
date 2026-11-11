@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { formatDate } from '../ui/format';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
@@ -16,7 +17,7 @@ export default function Home() {
   return (
     <Screen scroll>
       <View style={styles.header}>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 2 }}>
+        <Text variant="eyebrow" color={colors.bone60}>
           AFFELION AURA
         </Text>
         <Pressable accessibilityRole="button" accessibilityLabel="Settings" hitSlop={12} onPress={() => router.push('/settings')}>
@@ -70,7 +71,7 @@ export default function Home() {
             </View>
             <View style={{ flex: 1, gap: 4 }}>
               <Text variant="caption" color={colors.bone50}>
-                LATEST · {new Date(latest.createdAt).toLocaleDateString()}
+                LATEST · {formatDate(latest.createdAt)}
               </Text>
               <Text variant="heading">{AURA_COLORS[latest.aura.primaryColorId].name} centre</Text>
               <Text variant="bodySmall" color={colors.bone70} numberOfLines={2}>
@@ -83,7 +84,7 @@ export default function Home() {
 
       {latest ? (
         <Card style={{ marginTop: space.lg }}>
-          <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+          <Text variant="eyebrow" color={colors.bone60}>
             PRACTICE
           </Text>
           <Text variant="heading" style={{ marginTop: space.sm }}>

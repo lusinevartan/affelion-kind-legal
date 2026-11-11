@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors, radius } from '../theme';
 
-export function ProgressBar({ value, tint = colors.bone, label }: { value: number; tint?: string; label?: string }) {
+export function ProgressBar({ value, tint = colors.clay, label }: { value: number; tint?: string; label?: string }) {
   const pct = Math.max(0, Math.min(1, value));
   return (
     <View

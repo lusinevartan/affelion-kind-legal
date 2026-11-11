@@ -6,19 +6,22 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
 import { AppStoreProvider, useAppState } from '../features/store/AppStore';
 import { colors } from '../ui/theme';
+import { useBrandFonts } from '../ui/fonts';
 
 void SplashScreen.preventAutoHideAsync().catch(() => {});
 
-function Gate({ children }: { children: React.ReactNode }) {
+function Gate({ children, fontsReady }: { children: React.ReactNode; fontsReady: boolean }) {
   const { ready } = useAppState();
+  const show = ready && fontsReady;
   React.useEffect(() => {
-    if (ready) void SplashScreen.hideAsync().catch(() => {});
-  }, [ready]);
-  if (!ready) return null;
+    if (show) void SplashScreen.hideAsync().catch(() => {});
+  }, [show]);
+  if (!show) return null;
   return <>{children}</>;
 }
 
 export default function RootLayout() {
+  const fontsReady = useBrandFonts();
   React.useEffect(() => {
     void SystemUI.setBackgroundColorAsync(colors.night).catch(() => {});
   }, []);
@@ -26,7 +29,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.night }}>
       <SafeAreaProvider>
         <AppStoreProvider>
-          <Gate>
+          <Gate fontsReady={fontsReady}>
             <Stack
               screenOptions={{
                 headerShown: false,

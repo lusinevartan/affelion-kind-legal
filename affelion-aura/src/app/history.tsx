@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { formatDate, formatDateTime } from '../ui/format';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
@@ -35,13 +36,13 @@ export default function History() {
         scans.length >= 2 ? (
           <Card style={{ marginTop: space.xl, gap: space.lg }}>
             <View>
-              <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+              <Text variant="eyebrow" color={colors.bone60}>
                 HEART RATE · BPM
               </Text>
-              <Sparkline values={bpm} tint={colors.brass} />
+              <Sparkline values={bpm} tint={colors.clay} />
             </View>
             <View>
-              <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+              <Text variant="eyebrow" color={colors.bone60}>
                 VARIABILITY · RMSSD MS
               </Text>
               <Sparkline values={rmssd} tint={AURA_COLORS.teal.hex} />
@@ -67,13 +68,13 @@ export default function History() {
 
       {practices.length > 0 ? (
         <Card style={{ marginTop: space.xl }}>
-          <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+          <Text variant="eyebrow" color={colors.bone60}>
             PRACTICE SESSIONS
           </Text>
           {practices.slice(0, 8).map((p) => (
-            <View key={p.id} style={styles.practiceRow} accessible accessibilityLabel={`Practice on ${new Date(p.createdAt).toLocaleDateString()}, coherence ${Math.round(p.before.coherence * 100)} to ${Math.round(p.after.coherence * 100)}`}>
+            <View key={p.id} style={styles.practiceRow} accessible accessibilityLabel={`Practice on ${formatDate(p.createdAt)}, coherence ${Math.round(p.before.coherence * 100)} to ${Math.round(p.after.coherence * 100)}`}>
               <View style={{ flex: 1 }}>
-                <Text variant="bodySmall">{new Date(p.createdAt).toLocaleDateString()} · {Math.round(p.durationSec / 60)} min at {p.breathsPerMinute}/min</Text>
+                <Text variant="bodySmall">{formatDate(p.createdAt)} · {Math.round(p.durationSec / 60)} min at {p.breathsPerMinute}/min</Text>
                 <Text variant="caption" color={colors.bone50}>
                   HRV {Math.round(p.before.rmssd)} → {Math.round(p.after.rmssd)} ms · {Math.round(p.highCoherenceSec)} s at high coherence
                 </Text>
@@ -89,7 +90,7 @@ export default function History() {
           <Pressable
             key={s.id}
             accessibilityRole="button"
-            accessibilityLabel={`Portrait from ${new Date(s.createdAt).toLocaleString()}, ${AURA_COLORS[s.aura.primaryColorId].name}`}
+            accessibilityLabel={`Portrait from ${formatDateTime(s.createdAt)}, ${AURA_COLORS[s.aura.primaryColorId].name}`}
             onPress={() => router.push({ pathname: '/portrait/[id]', params: { id: s.id } })}
           >
             <Card style={styles.row}>
@@ -102,7 +103,7 @@ export default function History() {
               </View>
               <View style={{ flex: 1, gap: 2 }}>
                 <Text variant="caption" color={colors.bone50}>
-                  {new Date(s.createdAt).toLocaleString()}
+                  {formatDateTime(s.createdAt)}
                 </Text>
                 <Text variant="heading">{AURA_COLORS[s.aura.primaryColorId].name}</Text>
                 <Text variant="caption" color={colors.bone70}>

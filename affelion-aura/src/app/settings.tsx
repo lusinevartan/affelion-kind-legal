@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { formatDate } from '../ui/format';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Button, Card, Screen, Text } from '../ui/components';
@@ -32,7 +33,7 @@ export default function Settings() {
       </Text>
 
       <Card style={{ marginTop: space.xl }}>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+        <Text variant="eyebrow" color={colors.bone60}>
           PLAN
         </Text>
         <Text variant="heading" style={{ marginTop: space.sm }}>
@@ -41,7 +42,7 @@ export default function Settings() {
         <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: 4 }}>
           {entitlement.isPro
             ? entitlement.expiresAt
-              ? `Renews or ends ${new Date(entitlement.expiresAt).toLocaleDateString()}. Cancel any time; access continues to the end of the period.`
+              ? `Renews or ends ${formatDate(entitlement.expiresAt)}. Cancel any time; access continues to the end of the period.`
               : 'Lifetime access. Nothing renews.'
             : `${Math.max(0, 3 - freeScansUsed)} of 3 free scans left.`}
         </Text>
@@ -56,7 +57,7 @@ export default function Settings() {
       </Card>
 
       <Card style={{ marginTop: space.lg }}>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+        <Text variant="eyebrow" color={colors.bone60}>
           PRIVACY
         </Text>
         <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.sm }}>
@@ -66,7 +67,7 @@ export default function Settings() {
       </Card>
 
       <Card style={{ marginTop: space.lg }}>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>
+        <Text variant="eyebrow" color={colors.bone60}>
           ABOUT
         </Text>
         <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.sm }}>

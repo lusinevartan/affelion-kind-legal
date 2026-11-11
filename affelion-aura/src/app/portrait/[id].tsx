@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { formatDate, formatDateTime } from '../../ui/format';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Button, Screen, Text } from '../../ui/components';
@@ -51,7 +52,7 @@ export default function PortraitScreen() {
           </Text>
         </Pressable>
         <Text variant="caption" color={colors.bone50}>
-          {new Date(record.createdAt).toLocaleString()}
+          {formatDateTime(record.createdAt)}
         </Text>
       </View>
 
@@ -62,7 +63,7 @@ export default function PortraitScreen() {
           stillUri={record.stillUri}
           aura={{ kind: 'live', params: record.aura, mask }}
           caption={AURA_COLORS[record.aura.primaryColorId].name}
-          subcaption={new Date(record.createdAt).toLocaleDateString()}
+          subcaption={formatDate(record.createdAt)}
           showWordmark={!entitlement.isPro}
           overlay={
             <>

@@ -110,11 +110,11 @@ export default function PracticeScreen() {
           Slow, even breathing at about six breaths a minute makes the heart rate rise and fall in one smooth wave. That wave is what the portrait responds to: as your rhythm steadies, the colours settle and the motion smooths. The numbers behind it are heart-rate variability and coherence, measured from your fingertip.
         </Text>
         <Card style={{ marginTop: space.xl, gap: space.md }}>
-          <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>MODE</Text>
-          <View style={{ flexDirection: 'row', gap: space.sm }}>
+          <Text variant="eyebrow" color={colors.bone60}>MODE</Text>
+          <View style={{ flexDirection: 'row', gap: space.sm, flexWrap: 'wrap' }}>
             {([
-              ['practice', `Breathe at ${rate} per minute`],
-              ['findRate', 'Find my rate (3 min)'],
+              ['practice', `Breathe at ${rate}/min`],
+              ['findRate', 'Find my rate'],
             ] as const).map(([m, label]) => (
               <Pressable key={m} accessibilityRole="radio" accessibilityState={{ selected: mode === m }} onPress={() => setMode(m)} style={[styles.chip, mode === m && styles.chipOn]}>
                 <Text variant="bodySmall" color={mode === m ? colors.night : colors.bone}>{label}</Text>
@@ -155,14 +155,14 @@ export default function PracticeScreen() {
     const dCoh = result.after.coherence - result.before.coherence;
     return (
       <Screen scroll>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 2 }}>SESSION COMPLETE</Text>
+        <Text variant="eyebrow" color={colors.bone60}>SESSION COMPLETE</Text>
         <Text variant="title" style={{ marginTop: space.sm }}>{PRACTICE_COPY.done.body}</Text>
         <View style={{ flexDirection: 'row', gap: space.md, marginTop: space.xl, justifyContent: 'center' }}>
           <PolaroidCard width={w} stillUri={scan?.stillUri ?? null} aura={beforeShot ? { kind: 'image', uri: beforeShot } : { kind: 'live', params: result.beforeAura, mask, paused: true }} caption="Before" subcaption={AURA_COLORS[result.beforeAura.primaryColorId].name} showWordmark={false} />
           <PolaroidCard width={w} stillUri={scan?.stillUri ?? null} aura={afterShot ? { kind: 'image', uri: afterShot } : { kind: 'live', params: result.afterAura, mask, paused: true }} caption="After" subcaption={AURA_COLORS[result.afterAura.primaryColorId].name} showWordmark={false} />
         </View>
         <Card style={{ marginTop: space.xl }}>
-          <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 1 }}>WHAT CHANGED</Text>
+          <Text variant="eyebrow" color={colors.bone60}>WHAT CHANGED</Text>
           <MetricRow label="Coherence" value={`${Math.round(result.before.coherence * 100)} → ${Math.round(result.after.coherence * 100)}`} unit="/100" note={dCoh >= 0.05 ? 'Your heart rhythm became more regular with your breath' : dCoh <= -0.05 ? 'Less regular than at the start' : 'About the same'} />
           <MetricRow label="HRV (RMSSD)" value={`${Math.round(result.before.rmssd)} → ${Math.round(result.after.rmssd)}`} unit="ms" note={dHrv > 3 ? 'Variability rose' : dHrv < -3 ? 'Variability fell' : 'About the same'} />
           <MetricRow label="Heart rate" value={`${Math.round(result.before.bpm)} → ${Math.round(result.after.bpm)}`} unit="bpm" note={dBpm < -2 ? 'Pulse slowed' : dBpm > 2 ? 'Pulse rose' : 'About the same'} />

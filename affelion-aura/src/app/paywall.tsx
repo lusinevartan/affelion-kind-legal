@@ -35,7 +35,7 @@ export default function Paywall() {
   return (
     <Screen scroll>
       <View style={styles.header}>
-        <Text variant="caption" color={colors.bone50} style={{ letterSpacing: 2 }}>
+        <Text variant="eyebrow" color={colors.bone60}>
           AFFELION AURA PRO
         </Text>
         <Pressable accessibilityRole="button" accessibilityLabel="Not now" hitSlop={12} onPress={() => router.back()}>
@@ -77,17 +77,17 @@ export default function Paywall() {
               key={p.id}
               accessibilityRole="radio"
               accessibilityState={{ selected }}
-              accessibilityLabel={`${p.title}, ${p.price} ${p.period}${p.recommended ? ', recommended' : ''}`}
+              accessibilityLabel={`${p.title}, ${p.price} ${p.period}${p.recommended ? ', best value' : ''}`}
               onPress={() => setPlan(p.id)}
               style={[styles.plan, selected && styles.planSelected]}
             >
               <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, flexWrap: 'wrap' }}>
                   <Text variant="heading">{p.title}</Text>
                   {p.recommended ? (
                     <View style={styles.badge}>
-                      <Text variant="caption" color={colors.night}>
-                        Recommended
+                      <Text variant="caption" color={colors.black}>
+                        Best value
                       </Text>
                     </View>
                   ) : null}
@@ -135,8 +135,8 @@ export default function Paywall() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  feature: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  tick: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.brass },
+  feature: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md },
+  tick: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.clay, marginTop: 8 },
   plan: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -148,6 +148,6 @@ const styles = StyleSheet.create({
     borderColor: colors.hairline,
     minHeight: 72,
   },
-  planSelected: { borderColor: colors.brass, backgroundColor: colors.surfaceRaised },
-  badge: { backgroundColor: colors.brass, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 2 },
+  planSelected: { borderColor: colors.clay, backgroundColor: colors.surfaceRaised },
+  badge: { backgroundColor: colors.clay, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 2 },
 });

@@ -7,11 +7,11 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "backgroundColor": "#0B0C10",
+    "backgroundColor": "#1D2A21",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0B0C10"
+      "backgroundColor": "#1D2A21"
     },
     "ios": {
       "supportsTablet": false,
@@ -30,7 +30,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "adaptiveIcon": {
-        "backgroundColor": "#0B0C10",
+        "backgroundColor": "#1D2A21",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -44,11 +44,23 @@
     "plugins": [
       "expo-router",
       "expo-sqlite",
-      "expo-font",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/fraunces/300Light/Fraunces_300Light.ttf",
+            "node_modules/@expo-google-fonts/fraunces/400Regular/Fraunces_400Regular.ttf",
+            "node_modules/@expo-google-fonts/fraunces/500Medium/Fraunces_500Medium.ttf",
+            "node_modules/@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf",
+            "node_modules/@expo-google-fonts/inter/500Medium/Inter_500Medium.ttf",
+            "node_modules/@expo-google-fonts/inter/600SemiBold/Inter_600SemiBold.ttf"
+          ]
+        }
+      ],
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#0B0C10",
+          "backgroundColor": "#1D2A21",
           "image": "./assets/splash-icon.png",
           "imageWidth": 160
         }
