@@ -1,0 +1,22 @@
+{
+  "name": "affelion-sasha-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sasha, the Affelion Aura guide: a small HTTP service that holds the model key and keeps every reply grounded in the colour knowledge base and the user's measurements.",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "start": "node dist/index.js",
+    "dev": "tsc -p . && node dist/index.js",
+    "typecheck": "tsc -p . --noEmit"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@anthropic-ai/sdk": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}
