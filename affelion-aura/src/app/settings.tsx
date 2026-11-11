@@ -23,12 +23,12 @@ export default function Settings() {
     <Screen scroll>
       <View style={styles.header}>
         <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={12} onPress={() => router.back()}>
-          <Text variant="bodySmall" color={colors.bone70}>
-            Back
+          <Text variant="eyebrow" color={colors.bone70}>
+            ← Back
           </Text>
         </Pressable>
       </View>
-      <Text variant="title" style={{ marginTop: space.xl }}>
+      <Text variant="display" style={{ marginTop: space.xl }}>
         Settings
       </Text>
 

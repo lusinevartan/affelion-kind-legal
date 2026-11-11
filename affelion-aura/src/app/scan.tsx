@@ -4,8 +4,8 @@ import { router } from 'expo-router';
 import { Camera } from 'expo-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AffelionSilhouetteView, type AffelionSilhouetteViewRef } from '../../modules/affelion-silhouette';
-import { Button, ProgressBar, Screen, StatusPill, Text } from '../ui/components';
-import { colors, radius, space } from '../ui/theme';
+import { Button, ProgressBar, Screen, Text } from '../ui/components';
+import { colors, space } from '../ui/theme';
 import { useScanSession } from '../features/scan/useScanSession';
 import { Waveform } from '../features/scan/Waveform';
 import { cacheMask } from '../features/scan/sessionCache';
@@ -74,11 +74,11 @@ export default function ScanScreen() {
   const guidance = GUIDANCE_COPY[state.guidance];
   const phaseLabel =
     state.phase === 'face'
-      ? 'Step 1 of 3 · Outline · preview colours'
+      ? '01 / 03  Outline · preview colours'
       : state.phase === 'finger'
-        ? 'Step 2 of 3 · Pulse'
+        ? '02 / 03  Pulse'
         : state.phase === 'voice'
-          ? 'Step 3 of 3 · Voice'
+          ? '03 / 03  Voice'
           : state.phase === 'computing'
             ? 'Composing'
             : state.phase === 'failed'
@@ -176,9 +176,11 @@ export default function ScanScreen() {
         ) : null}
 
         <View style={[styles.topBar, { paddingTop: insets.top + space.sm }]}>
-          <StatusPill label={phaseLabel} tone={state.phase === 'failed' ? 'warn' : 'live'} />
-          <Pressable accessibilityRole="button" accessibilityLabel="Stop scan" onPress={confirmCancel} hitSlop={12} style={styles.cancel}>
-            <Text variant="bodySmall" color={colors.bone}>
+          <Text variant="eyebrow" color={colors.bone70}>
+            {phaseLabel}
+          </Text>
+          <Pressable accessibilityRole="button" accessibilityLabel="Stop scan" onPress={confirmCancel} hitSlop={12}>
+            <Text variant="eyebrow" color={colors.bone70}>
               Stop
             </Text>
           </Pressable>
@@ -187,11 +189,11 @@ export default function ScanScreen() {
 
       {/* Guidance */}
       <View style={[styles.panel, { paddingBottom: insets.bottom + space.lg }]}>
-        <ProgressBar value={state.totalProgress} label="Scan progress" tint={colors.clay} />
+        <ProgressBar value={state.totalProgress} label="Scan progress" tint={colors.bone} />
         <Text variant="title" style={{ marginTop: space.lg }} accessibilityLiveRegion="polite">
           {guidance.title}
         </Text>
-        <Text variant="body" color={colors.bone70} style={{ marginTop: space.sm }}>
+        <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.sm }}>
           {session.error ?? guidance.body}
         </Text>
         {state.phase === 'failed' ? (
@@ -209,7 +211,7 @@ export default function ScanScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.night },
+  root: { flex: 1, backgroundColor: colors.ink },
   stage: { flex: 1, backgroundColor: '#000', overflow: 'hidden' },
   oval: {
     position: 'absolute',
@@ -218,18 +220,17 @@ const styles = StyleSheet.create({
     top: '12%',
     bottom: '22%',
     borderRadius: 999,
-    borderWidth: 1.5,
-    borderColor: 'rgba(243,239,230,0.35)',
+    borderWidth: 1,
+    borderColor: 'rgba(246,243,227,0.35)',
   },
-  ovalActive: { borderColor: colors.clay },
+  ovalActive: { borderColor: colors.bone },
   topBar: { position: 'absolute', left: space.lg, right: space.lg, top: 0, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  cancel: { paddingHorizontal: space.md, paddingVertical: 8, borderRadius: radius.pill, backgroundColor: colors.overlay },
   fingerStage: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   pulseDisc: {
     width: 180,
     height: 180,
     borderRadius: 90,
-    backgroundColor: colors.surface,
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
@@ -237,5 +238,5 @@ const styles = StyleSheet.create({
   },
   levelRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 4, height: 60 },
   levelBar: { width: 6, borderRadius: 3, backgroundColor: colors.clay },
-  panel: { paddingHorizontal: space.xl, paddingTop: space.lg, backgroundColor: colors.night, minHeight: 220 },
+  panel: { paddingHorizontal: space.xl, paddingTop: space.lg, backgroundColor: colors.ink, minHeight: 200 },
 });

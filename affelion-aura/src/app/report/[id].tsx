@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { formatDate, formatDateTime } from '../../ui/format';
+import { formatDateTime } from '../../ui/format';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Button, Card, ColorSwatch, MetricRow, Screen, Text } from '../../ui/components';
+import { Button, Card, ColorSwatch, Figure, MetricRow, Rule, Screen, Text } from '../../ui/components';
 import { colors, space } from '../../ui/theme';
 import { useAppActions, useAppState } from '../../features/store/AppStore';
 import { getCachedMask } from '../../features/scan/sessionCache';
-import { PolaroidCard } from '../../render/polaroid/PolaroidCard';
-import { AURA_COLOR_IDS, AURA_COLORS } from '../../core/color/palette';
+import { AuraView } from '../../render/fluid/AuraView';
+import { placeholderMask } from '../../render/fluid/FluidSim';
+import { AURA_COLOR_IDS } from '../../core/color/palette';
 import { usePolaroidExport } from '../../features/portrait/usePolaroidExport';
 import { scanInsight } from '../../core/insight/baseline';
 import { FRAME_STYLE_IDS, FRAME_STYLES } from '../../render/polaroid/styles';
@@ -21,7 +22,7 @@ export default function ReportScreen() {
   const { scans, entitlement, frameStyle } = useAppState();
   const { refreshScans, setFrameStyle } = useAppActions();
   const record = scans.find((s) => s.id === id) ?? null;
-  const mask = React.useMemo(() => (id ? getCachedMask(id) : null), [id]);
+  const mask = React.useMemo(() => (id ? getCachedMask(id) ?? placeholderMask() : placeholderMask()), [id]);
   const exportOpts = React.useMemo(() => ({ clean: true, exportWidth: 720, onSaved: refreshScans, frame: frameStyle }), [refreshScans, frameStyle]);
   const { auraRef, busy, run: exportHiRes, exportCard } = usePolaroidExport(record, exportOpts);
 
@@ -39,7 +40,7 @@ export default function ReportScreen() {
   }
 
   const { heart, voice, aura } = record;
-  const width = Math.min(Dimensions.get('window').width - space.xl * 2, 320);
+  const width = Dimensions.get('window').width - space.xl * 2;
 
   const insight = scanInsight(record, scans);
   const hrvWord = aura.state.coherence < 0.25 ? 'low' : aura.state.coherence < 0.5 ? 'moderate' : aura.state.coherence < 0.78 ? 'good' : 'high';
@@ -48,35 +49,44 @@ export default function ReportScreen() {
     <Screen scroll>
       <View style={styles.header}>
         <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={12} onPress={() => router.back()}>
-          <Text variant="bodySmall" color={colors.bone70}>
-            Back
+          <Text variant="eyebrow" color={colors.bone70}>
+            ← Back
           </Text>
         </Pressable>
-        <Text variant="caption" color={colors.bone50}>
+        <Text variant="eyebrow" color={colors.bone50}>
           {formatDateTime(record.createdAt)}
         </Text>
       </View>
 
-      <View style={{ alignItems: 'center', marginTop: space.xl }}>
-        <PolaroidCard auraRef={auraRef} width={width} stillUri={record.stillUri} aura={{ kind: 'live', params: aura, mask }} caption={AURA_COLORS[aura.primaryColorId].name} subcaption={formatDate(record.createdAt)} showWordmark={false} frame={frameStyle} />
+      <View style={[styles.plate, { width, height: Math.round(width * 1.2), marginTop: space.lg }]}>
+        <AuraView ref={auraRef} params={aura} mask={mask} style={StyleSheet.absoluteFill} />
       </View>
-      <View style={styles.frameRow} accessibilityRole="radiogroup" accessibilityLabel="Frame style">
+      <View style={styles.frameRow} accessibilityRole="radiogroup" accessibilityLabel="Export frame">
+        <Text variant="eyebrow" color={colors.bone50}>
+          Export frame
+        </Text>
         {FRAME_STYLE_IDS.map((id) => (
-          <Pressable key={id} accessibilityRole="radio" accessibilityState={{ selected: frameStyle === id }} accessibilityLabel={FRAME_STYLES[id].name} onPress={() => void setFrameStyle(id)} style={[styles.frameChip, frameStyle === id && styles.frameChipOn]}>
-            <View style={[styles.frameSwatch, { backgroundColor: FRAME_STYLES[id].paper }]} />
-            <Text variant="caption" color={frameStyle === id ? colors.bone : colors.bone60}>
+          <Pressable key={id} accessibilityRole="radio" accessibilityState={{ selected: frameStyle === id }} accessibilityLabel={FRAME_STYLES[id].name} onPress={() => void setFrameStyle(id)} hitSlop={8}>
+            <Text variant="eyebrow" color={frameStyle === id ? colors.bone : colors.bone50} style={frameStyle === id ? { textDecorationLine: 'underline' } : undefined}>
               {FRAME_STYLES[id].name}
             </Text>
           </Pressable>
         ))}
       </View>
 
-      <Text variant="title" style={{ marginTop: space.xxl }}>
+      <Text variant="display" style={{ marginTop: space.xxl }}>
         What made this portrait
       </Text>
       <Text variant="body" color={colors.bone70} style={{ marginTop: space.sm }}>
         {aura.summary}
       </Text>
+      <Rule style={{ marginTop: space.xl }} />
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Figure n="01" label="Pulse" value={heart.bpm.toFixed(0)} unit="bpm" />
+        <Figure n="02" label="HRV" value={heart.rmssd.toFixed(0)} unit="ms" />
+        <Figure n="03" label="Voice" value={voice && voice.quality > 0.2 ? Math.round(voice.variance * 100).toString() : '—'} unit={voice && voice.quality > 0.2 ? '% var' : undefined} />
+      </View>
+      <Rule />
 
       <Card style={{ marginTop: space.xl }}>
         <Text variant="eyebrow" color={colors.bone60}>
@@ -170,8 +180,6 @@ export default function ReportScreen() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  frameRow: { flexDirection: 'row', justifyContent: 'center', gap: space.sm, marginTop: space.lg, flexWrap: 'wrap' },
-  frameChip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 999, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.hairlineStrong },
-  frameChipOn: { backgroundColor: colors.surfaceRaised, borderColor: colors.clay },
-  frameSwatch: { width: 14, height: 14, borderRadius: 3, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.hairlineStrong },
+  plate: { backgroundColor: colors.ink2, overflow: 'hidden' },
+  frameRow: { flexDirection: 'row', gap: space.lg, marginTop: space.md, flexWrap: 'wrap' },
 });

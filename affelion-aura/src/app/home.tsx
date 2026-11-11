@@ -1,121 +1,102 @@
 import * as React from 'react';
-import { formatDate } from '../ui/format';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
-import { Image } from 'expo-image';
-import { Button, Card, Screen, Text } from '../ui/components';
-import { colors, radius, space } from '../ui/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+import { Button, Text } from '../ui/components';
+import { colors, space } from '../ui/theme';
 import { useAppState } from '../features/store/AppStore';
 import { AURA_COLORS } from '../core/color/palette';
 import { scanInsight } from '../core/insight/baseline';
+import { AuraView } from '../render/fluid/AuraView';
+import { placeholderMask } from '../render/fluid/FluidSim';
+import { getCachedMask } from '../features/scan/sessionCache';
+import { PREVIEW_PARAMS } from '../features/scan/previewParams';
+import { formatDate } from '../ui/format';
 
+/**
+ * Home: the latest portrait fills the screen; words sit in the corners like labels on a specimen.
+ */
 export default function Home() {
   const { scans, entitlement, canScan, freeScansLeft: left, practices } = useAppState();
+  const insets = useSafeAreaInsets();
   const latest = scans[0] ?? null;
   const insight = latest ? scanInsight(latest, scans) : null;
+  const mask = React.useMemo(() => (latest ? getCachedMask(latest.id) ?? placeholderMask() : placeholderMask()), [latest]);
+  const params = latest?.aura ?? PREVIEW_PARAMS;
 
   return (
-    <Screen scroll>
-      <View style={styles.header}>
-        <Text variant="eyebrow" color={colors.bone60}>
-          AFFELION AURA
+    <View style={styles.root}>
+      <StatusBar style="light" />
+      <AuraView params={params} mask={mask} quality="medium" style={StyleSheet.absoluteFill} />
+      <View style={styles.scrim} pointerEvents="none" />
+
+      <View style={[styles.top, { paddingTop: insets.top + space.lg }]}>
+        <Text variant="eyebrow" color={colors.bone70}>
+          Affelion Aura
         </Text>
         <Pressable accessibilityRole="button" accessibilityLabel="Settings" hitSlop={12} onPress={() => router.push('/settings')}>
-          <Text variant="bodySmall" color={colors.bone70}>
+          <Text variant="eyebrow" color={colors.bone70}>
             Settings
           </Text>
         </Pressable>
       </View>
 
-      <Text variant="display" style={{ marginTop: space.xxl }}>
-        {latest ? 'Welcome back.' : 'Your first portrait.'}
-      </Text>
-      <Text variant="body" color={colors.bone70} style={{ marginTop: space.md }}>
-        {latest
-          ? 'Scan again to see how your pulse, variability and voice have shifted.'
-          : 'About a minute: your face, your fingertip on the rear camera, and a few words.'}
-      </Text>
-
-      <View style={{ marginTop: space.xxl, gap: space.md }}>
-        <Button
-          label={canScan ? 'Begin scan' : 'Unlock unlimited scans'}
-          onPress={() => router.push(canScan ? '/scan' : '/paywall')}
-          block
-          hint={canScan ? 'Starts the one-minute scan' : 'Opens plans'}
-        />
-        {!entitlement.isPro ? (
-          <Text variant="caption" color={colors.bone50} align="center">
-            {left > 0 ? `${left} of 3 free scans left` : 'Free scans used. Pro is unlimited.'}
-          </Text>
-        ) : (
-          <Text variant="caption" color={colors.bone50} align="center">
-            Pro · unlimited scans
-          </Text>
-        )}
-      </View>
-
-      {latest ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Open your latest portrait"
-          onPress={() => router.push({ pathname: '/portrait/[id]', params: { id: latest.id } })}
-          style={{ marginTop: space.xxxl }}
-        >
-          <Card style={styles.latest}>
-            <View style={styles.thumbWrap}>
-              {latest.portraitUri || latest.stillUri ? (
-                <Image source={{ uri: latest.portraitUri ?? latest.stillUri ?? undefined }} style={styles.thumb} contentFit="cover" />
-              ) : (
-                <View style={[styles.thumb, { backgroundColor: AURA_COLORS[latest.aura.primaryColorId].hex }]} />
-              )}
-            </View>
-            <View style={{ flex: 1, gap: 4 }}>
-              <Text variant="caption" color={colors.bone50}>
-                LATEST · {formatDate(latest.createdAt)}
-              </Text>
-              <Text variant="heading">{AURA_COLORS[latest.aura.primaryColorId].name} centre</Text>
-              <Text variant="bodySmall" color={colors.bone70} numberOfLines={2}>
-                {latest.aura.summary}
-              </Text>
-            </View>
-          </Card>
-        </Pressable>
-      ) : null}
-
-      {latest ? (
-        <Card style={{ marginTop: space.lg }}>
-          <Text variant="eyebrow" color={colors.bone60}>
-            PRACTICE
-          </Text>
-          <Text variant="heading" style={{ marginTop: space.sm }}>
-            Steady your rhythm
-          </Text>
-          <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: 4 }}>
-            Three minutes of paced breathing while the portrait follows your heart rhythm live. {practices.length > 0 ? `${practices.length} session${practices.length === 1 ? '' : 's'} so far.` : 'Your first session is free.'}
-          </Text>
-          {insight?.baseline ? (
-            <Text variant="caption" color={colors.bone50} style={{ marginTop: space.sm }}>
-              {insight.sentence}
+      <View style={[styles.bottom, { paddingBottom: insets.bottom + space.xl }]}>
+        {latest ? (
+          <Pressable accessibilityRole="button" accessibilityLabel="Open your latest portrait" onPress={() => router.push({ pathname: '/portrait/[id]', params: { id: latest.id } })}>
+            <Text variant="eyebrow" color={colors.bone50}>
+              Fig. 01  Latest · {formatDate(latest.createdAt)}
             </Text>
-          ) : null}
-          <Button label="Begin practice" variant="secondary" onPress={() => router.push({ pathname: '/practice', params: { scanId: latest.id } })} block style={{ marginTop: space.lg }} />
-        </Card>
-      ) : null}
+            <Text variant="display" style={{ marginTop: space.sm }}>
+              {AURA_COLORS[latest.aura.primaryColorId].name}
+            </Text>
+            <Text variant="mono" color={colors.bone70} style={{ marginTop: space.sm }}>
+              {Math.round(latest.heart.bpm)} bpm · HRV {Math.round(latest.heart.rmssd)} ms
+              {latest.voice && latest.voice.quality > 0.2 ? ` · voice ${Math.round(latest.voice.variance * 100)}%` : ''}
+            </Text>
+            {insight?.baseline ? (
+              <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.md, maxWidth: 320 }}>
+                {insight.sentence}
+              </Text>
+            ) : null}
+          </Pressable>
+        ) : (
+          <View>
+            <Text variant="eyebrow" color={colors.bone50}>
+              Fig. 00  Preview
+            </Text>
+            <Text variant="display" style={{ marginTop: space.sm }}>
+              Your pulse,{'\n'}painted.
+            </Text>
+            <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.md, maxWidth: 320 }}>
+              About a minute: your outline, your fingertip on the rear camera, a few words. The colours above are a neutral preview until then.
+            </Text>
+          </View>
+        )}
 
-      {scans.length > 0 ? (
-        <Button label="History and trends" variant="secondary" onPress={() => router.push('/history')} block style={{ marginTop: space.lg }} />
-      ) : null}
-
-      <Text variant="caption" color={colors.bone30} style={{ marginTop: space.xxxl }} align="center">
-        Not a medical device. Colours are a translation of measured pulse and voice.
-      </Text>
-    </Screen>
+        <View style={styles.actions}>
+          <Button label={canScan ? 'Begin scan' : 'Unlock scans'} onPress={() => router.push(canScan ? '/scan' : '/paywall')} block />
+          <View style={styles.links}>
+            {latest ? (
+              <Button label={practices.length ? 'Practice' : 'First practice, free'} variant="ghost" onPress={() => router.push({ pathname: '/practice', params: { scanId: latest.id } })} />
+            ) : null}
+            {scans.length > 0 ? <Button label="History" variant="ghost" onPress={() => router.push('/history')} /> : null}
+          </View>
+          <Text variant="mono" color={colors.bone50}>
+            {entitlement.isPro ? 'Pro · unlimited' : left > 0 ? `${left} of 3 free scans left` : 'Free scans used'} · not a medical device
+          </Text>
+        </View>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  latest: { flexDirection: 'row', gap: space.lg, alignItems: 'center' },
-  thumbWrap: { width: 72, height: 90, borderRadius: radius.sm, overflow: 'hidden', backgroundColor: colors.polaroidPaper, padding: 4 },
-  thumb: { flex: 1, borderRadius: 2 },
+  root: { flex: 1, backgroundColor: colors.ink },
+  scrim: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
+  top: { position: 'absolute', left: space.xl, right: space.xl, top: 0, flexDirection: 'row', justifyContent: 'space-between' },
+  bottom: { position: 'absolute', left: space.xl, right: space.xl, bottom: 0 },
+  actions: { marginTop: space.xl, gap: space.md },
+  links: { flexDirection: 'row', gap: space.xl },
 });

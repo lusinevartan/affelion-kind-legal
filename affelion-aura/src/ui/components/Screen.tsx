@@ -37,6 +37,6 @@ export function Screen({ children, scroll = false, padded = true, style, content
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.night },
+  root: { flex: 1, backgroundColor: colors.ink },
   fill: { flex: 1 },
 });

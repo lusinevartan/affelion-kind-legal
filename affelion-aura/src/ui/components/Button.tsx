@@ -1,21 +1,29 @@
 import * as React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { colors, radius, space, TOUCH_MIN } from '../theme';
+import { colors, space, TOUCH_MIN } from '../theme';
 import { Text } from './Text';
 
 export interface ButtonProps extends Omit<PressableProps, 'style'> {
   label: string;
+  /** primary: the one action on the screen. secondary: outlined. ghost: text with arrow. danger. */
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
-  /** Fill the available width. */
   block?: boolean;
   hint?: string;
+  /** Render for a paper (light) ground. */
+  onPaper?: boolean;
 }
 
-export function Button({ label, variant = 'primary', loading, disabled, style, block, hint, onPress, ...rest }: ButtonProps) {
+/**
+ * Rectangular, hairline, no pill. The primary is a flat clay block with dark text; the rest are
+ * outlines or bare text with an arrow, the way a label on a table would read.
+ */
+export function Button({ label, variant = 'primary', loading, disabled, style, block, hint, onPress, onPaper = false, ...rest }: ButtonProps) {
   const isDisabled = disabled || loading;
+  const fg = variant === 'primary' ? colors.ink : variant === 'danger' ? colors.danger : onPaper ? colors.inkText : colors.bone;
+  const border = onPaper ? colors.hairlineOnPaper : colors.hairlineStrong;
   return (
     <Pressable
       accessibilityRole="button"
@@ -30,7 +38,10 @@ export function Button({ label, variant = 'primary', loading, disabled, style, b
       hitSlop={6}
       style={({ pressed }) => [
         styles.base,
-        styles[variant],
+        variant === 'primary' && styles.primary,
+        variant === 'secondary' && [styles.secondary, { borderColor: border }],
+        variant === 'danger' && styles.danger,
+        variant === 'ghost' && styles.ghost,
         block && styles.block,
         pressed && styles.pressed,
         isDisabled && styles.disabled,
@@ -39,30 +50,28 @@ export function Button({ label, variant = 'primary', loading, disabled, style, b
       {...rest}
     >
       <View style={styles.inner}>
-        {loading ? <ActivityIndicator color={variant === 'primary' ? colors.black : colors.bone} /> : null}
-        <Text variant="label" color={variant === 'primary' ? colors.black : variant === 'danger' ? colors.danger : colors.bone}>
+        {loading ? <ActivityIndicator color={fg} /> : null}
+        <Text variant="label" color={fg}>
           {label}
         </Text>
+        {variant === 'ghost' ? (
+          <Text variant="label" color={fg}>
+            →
+          </Text>
+        ) : null}
       </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  base: {
-    minHeight: 52,
-    minWidth: TOUCH_MIN,
-    paddingHorizontal: space.xl,
-    borderRadius: radius.pill,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  base: { minHeight: 52, minWidth: TOUCH_MIN, paddingHorizontal: space.xl, alignItems: 'center', justifyContent: 'center' },
   inner: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   block: { alignSelf: 'stretch' },
   primary: { backgroundColor: colors.clay },
-  secondary: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.hairlineStrong },
-  ghost: { backgroundColor: 'transparent' },
-  danger: { backgroundColor: 'transparent', borderWidth: StyleSheet.hairlineWidth, borderColor: colors.danger },
-  pressed: { opacity: 0.82, transform: [{ scale: 0.99 }] },
-  disabled: { opacity: 0.45 },
+  secondary: { backgroundColor: 'transparent', borderWidth: 1 },
+  ghost: { backgroundColor: 'transparent', paddingHorizontal: 0, alignItems: 'flex-start' },
+  danger: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.danger },
+  pressed: { opacity: 0.7 },
+  disabled: { opacity: 0.4 },
 });

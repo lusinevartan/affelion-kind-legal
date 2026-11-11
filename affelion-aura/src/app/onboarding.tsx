@@ -1,37 +1,28 @@
 import * as React from 'react';
 import { Dimensions, ScrollView, StyleSheet, View, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 import { router } from 'expo-router';
-import { Button, Screen, Text } from '../ui/components';
-import { colors, radius, space } from '../ui/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+import { Button, Text } from '../ui/components';
+import { colors, space } from '../ui/theme';
 import { useAppActions } from '../features/store/AppStore';
 import { AuraView } from '../render/fluid/AuraView';
 import { placeholderMask } from '../render/fluid/FluidSim';
 import { PREVIEW_PARAMS } from '../features/scan/previewParams';
 
 /**
- * Three honest screens. What the app does, what it measures, what it does not claim.
- * Progressive disclosure: permissions are explained here and requested only when the scan starts.
+ * Three pages over one live preview. One line each, no explaining beyond what is honest and
+ * necessary. Permissions are asked for when the scan starts.
  */
 const PAGES = [
-  {
-    eyebrow: 'What this is',
-    title: 'A portrait of your pulse and voice, painted in colour.',
-    body: 'Affelion Aura translates your real heart rate, HRV, and voice into a living color portrait. It does not capture invisible light.',
-  },
-  {
-    eyebrow: 'What it measures',
-    title: 'Three signals, about a minute.',
-    body: 'Your fingertip on the rear camera with the flash on reads your pulse and HRV. The front camera maps your outline. Five seconds of your voice are analysed for pitch, variance and stability. Everything is processed on your phone. No audio or video is stored or uploaded.',
-  },
-  {
-    eyebrow: 'What it is not',
-    title: 'Not a reading of anything invisible.',
-    body: 'The colours are a deterministic translation of physical measurements. The same numbers always produce the same portrait. This is not a medical device and it does not detect energy, predict anything, or diagnose anything.',
-  },
+  { n: '01', title: 'A portrait of your pulse and voice.', body: 'Affelion Aura translates your real heart rate, HRV, and voice into a living color portrait. It does not capture invisible light.' },
+  { n: '02', title: 'One minute. Three readings.', body: 'Fingertip on the rear camera for your pulse and HRV. Front camera for your outline. Five seconds of your voice for pitch and variance. All of it stays on your phone.' },
+  { n: '03', title: 'Same numbers, same portrait.', body: 'Every colour follows a fixed rule from a measurement. Nothing is predicted or diagnosed. Not a medical device.' },
 ];
 
 export default function Onboarding() {
   const { completeOnboarding } = useAppActions();
+  const insets = useSafeAreaInsets();
   const [page, setPage] = React.useState(0);
   const width = Dimensions.get('window').width;
   const scrollRef = React.useRef<React.ComponentRef<typeof ScrollView>>(null);
@@ -41,77 +32,59 @@ export default function Onboarding() {
     const p = Math.round(e.nativeEvent.contentOffset.x / width);
     if (p !== page) setPage(p);
   };
-
-  const next = async () => {
+  const finish = () => completeOnboarding().then(() => router.replace('/home'));
+  const next = () => {
     if (page < PAGES.length - 1) {
       scrollRef.current?.scrollTo({ x: (page + 1) * width, animated: true });
       setPage(page + 1);
-      return;
-    }
-    await completeOnboarding();
-    router.replace('/home');
+    } else void finish();
   };
 
   return (
-    <Screen padded={false} bottomInset={0}>
-      <View style={styles.brand}>
-        <Text variant="eyebrow" color={colors.bone60}>
-          AFFELION AURA
+    <View style={styles.root}>
+      <StatusBar style="light" />
+      <AuraView params={PREVIEW_PARAMS} mask={mask} quality="low" style={StyleSheet.absoluteFill} />
+      <View style={[styles.top, { paddingTop: insets.top + space.lg }]}>
+        <Text variant="eyebrow" color={colors.bone70}>
+          Affelion Aura
+        </Text>
+        <Text variant="eyebrow" color={colors.bone50}>
+          {PAGES[page]!.n} / 03
         </Text>
       </View>
-      <View style={styles.hero} accessible accessibilityLabel="A living colour field wrapping a silhouette, shown as a neutral preview">
-        <AuraView params={PREVIEW_PARAMS} mask={mask} quality="low" style={StyleSheet.absoluteFill} />
-      </View>
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={onScroll}
-        style={{ flex: 1 }}
-      >
-        {PAGES.map((p) => (
-          <View key={p.eyebrow} style={[styles.page, { width }]}>
-            <Text variant="eyebrow" color={colors.clay}>
-              {p.eyebrow}
-            </Text>
-            <Text variant="title" style={{ marginTop: space.sm }}>
-              {p.title}
-            </Text>
-            <Text variant="body" color={colors.bone70} style={{ marginTop: space.lg }}>
-              {p.body}
-            </Text>
-          </View>
-        ))}
-      </ScrollView>
-      <View style={styles.footer}>
-        <View style={styles.dots} accessibilityLabel={`Page ${page + 1} of ${PAGES.length}`}>
-          {PAGES.map((_, i) => (
-            <View key={i} style={[styles.dot, i === page && styles.dotActive]} />
+      <View style={[styles.bottom, { paddingBottom: insets.bottom + space.xl }]}>
+        <ScrollView ref={scrollRef} horizontal pagingEnabled showsHorizontalScrollIndicator={false} onMomentumScrollEnd={onScroll} style={{ marginHorizontal: -space.xl }}>
+          {PAGES.map((p) => (
+            <View key={p.n} style={{ width, paddingHorizontal: space.xl }}>
+              <Text variant="display">{p.title}</Text>
+              <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.md, maxWidth: 330 }}>
+                {p.body}
+              </Text>
+            </View>
           ))}
+        </ScrollView>
+        <View style={styles.actions}>
+          <Button label={page === PAGES.length - 1 ? 'Begin' : 'Continue'} onPress={next} block />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={styles.dots}>
+              {PAGES.map((_, i) => (
+                <View key={i} style={[styles.dot, i === page && styles.dotOn]} />
+              ))}
+            </View>
+            {page < PAGES.length - 1 ? <Button label="Skip" variant="ghost" onPress={() => void finish()} /> : null}
+          </View>
         </View>
-        <Button label={page === PAGES.length - 1 ? 'Begin' : 'Continue'} onPress={() => void next()} block />
-        {page < PAGES.length - 1 ? (
-          <Button
-            label="Skip"
-            variant="ghost"
-            onPress={() => {
-              void completeOnboarding().then(() => router.replace('/home'));
-            }}
-            block
-          />
-        ) : null}
       </View>
-    </Screen>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  brand: { paddingHorizontal: space.xl, paddingBottom: space.lg },
-  page: { paddingHorizontal: space.xl, paddingTop: space.lg },
-  hero: { height: 260, marginHorizontal: space.xl, marginBottom: space.xl, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.black },
-  footer: { paddingHorizontal: space.xl, gap: space.sm, paddingTop: space.lg },
-  dots: { flexDirection: 'row', gap: 6, justifyContent: 'center', marginBottom: space.md },
-  dot: { width: 6, height: 6, borderRadius: radius.pill, backgroundColor: colors.hairlineStrong },
-  dotActive: { backgroundColor: colors.bone, width: 18 },
+  root: { flex: 1, backgroundColor: colors.ink },
+  top: { position: 'absolute', left: space.xl, right: space.xl, top: 0, flexDirection: 'row', justifyContent: 'space-between' },
+  bottom: { position: 'absolute', left: space.xl, right: space.xl, bottom: 0 },
+  actions: { marginTop: space.xl, gap: space.sm },
+  dots: { flexDirection: 'row', gap: 8, alignItems: 'center' },
+  dot: { width: 20, height: 1, backgroundColor: colors.hairlineStrong },
+  dotOn: { backgroundColor: colors.bone },
 });

@@ -270,9 +270,11 @@ void main () {
   float inside = 1.0;
   float field = 1.0;
   if (hasMask == 1) {
-    inside = texture2D(uMask, muv).r;
-    field = texture2D(uField, muv).r;
-    if (muv.x < 0.0 || muv.x > 1.0 || muv.y < 0.0 || muv.y > 1.0) { inside = 0.0; field = 0.0; }
+    vec2 cuv = clamp(muv, 0.0, 1.0);
+    inside = texture2D(uMask, cuv).r;
+    field = texture2D(uField, cuv).r;
+    // Beyond the mask image there is no body, but the glow field continues softly.
+    if (muv.x < 0.0 || muv.x > 1.0 || muv.y < 0.0 || muv.y > 1.0) { inside = 0.0; field *= 0.6; }
   }
   // Rim: the band where the blurred field is between 0 and 1.
   float rim = field * (1.0 - field) * 4.0;

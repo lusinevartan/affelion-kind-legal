@@ -53,11 +53,11 @@ export default function GuideScreen() {
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.night }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={[styles.header, { paddingTop: insets.top + space.md }]}>
         <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={12} onPress={() => router.back()}>
-          <Text variant="bodySmall" color={colors.bone70}>
-            Back
+          <Text variant="eyebrow" color={colors.bone70}>
+            ← Back
           </Text>
         </Pressable>
-        <Text variant="caption" color={colors.bone50}>
+        <Text variant="eyebrow" color={colors.bone50}>
           {GUIDE_NAME}
         </Text>
       </View>
@@ -112,10 +112,10 @@ export default function GuideScreen() {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: space.xl, paddingBottom: space.md },
   thread: { paddingHorizontal: space.xl, gap: space.md, paddingBottom: space.xl },
-  assistant: { alignSelf: 'flex-start', maxWidth: '88%', backgroundColor: colors.surface, padding: space.lg, borderRadius: radius.lg, borderBottomLeftRadius: 6 },
-  user: { alignSelf: 'flex-end', maxWidth: '88%', backgroundColor: colors.bone, padding: space.lg, borderRadius: radius.lg, borderBottomRightRadius: 6 },
+  assistant: { alignSelf: 'flex-start', maxWidth: '88%', backgroundColor: colors.ink2, padding: space.lg, borderRadius: radius.lg },
+  user: { alignSelf: 'flex-end', maxWidth: '88%', backgroundColor: colors.bone, padding: space.lg, borderRadius: radius.lg },
   suggestions: { gap: space.sm, marginTop: space.md },
-  chip: { paddingVertical: space.md, paddingHorizontal: space.lg, borderRadius: radius.pill, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.hairlineStrong, alignSelf: 'flex-start' },
+  chip: { paddingVertical: space.md, paddingHorizontal: space.lg, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.hairlineStrong, alignSelf: 'flex-start' },
   composer: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.xl, paddingTop: space.md, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.hairline, alignItems: 'center' },
-  input: { flex: 1, minHeight: 48, color: colors.bone, backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: space.lg, fontSize: 16 },
+  input: { flex: 1, minHeight: 52, color: colors.bone, backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.hairlineStrong, paddingHorizontal: space.lg, fontSize: 16 },
 });

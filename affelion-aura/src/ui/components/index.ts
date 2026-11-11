@@ -6,3 +6,4 @@ export * from './ProgressBar';
 export * from './StatusPill';
 export * from './MetricRow';
 export * from './ColorSwatch';
+export * from './Figure';

@@ -3,8 +3,8 @@ import { formatDate, formatDateTime } from '../ui/format';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
-import { Button, Card, Screen, Text } from '../ui/components';
-import { colors, radius, space } from '../ui/theme';
+import { Button, Card, Rule, Screen, Text } from '../ui/components';
+import { colors, space } from '../ui/theme';
 import { useAppState } from '../features/store/AppStore';
 import { AURA_COLORS } from '../core/color/palette';
 import { Sparkline } from '../features/history/Sparkline';
@@ -20,15 +20,15 @@ export default function History() {
     <Screen scroll>
       <View style={styles.header}>
         <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={12} onPress={() => router.back()}>
-          <Text variant="bodySmall" color={colors.bone70}>
-            Back
+          <Text variant="eyebrow" color={colors.bone70}>
+            ← Back
           </Text>
         </Pressable>
-        <Text variant="caption" color={colors.bone50}>
-          {scans.length} {scans.length === 1 ? 'scan' : 'scans'}
+        <Text variant="eyebrow" color={colors.bone50}>
+          {scans.length} {scans.length === 1 ? 'plate' : 'plates'}
         </Text>
       </View>
-      <Text variant="title" style={{ marginTop: space.xl }}>
+      <Text variant="display" style={{ marginTop: space.xl }}>
         History
       </Text>
 
@@ -39,13 +39,13 @@ export default function History() {
               <Text variant="eyebrow" color={colors.bone60}>
                 HEART RATE · BPM
               </Text>
-              <Sparkline values={bpm} tint={colors.clay} />
+              <Sparkline values={bpm} tint={colors.bone} />
             </View>
             <View>
               <Text variant="eyebrow" color={colors.bone60}>
                 VARIABILITY · RMSSD MS
               </Text>
-              <Sparkline values={rmssd} tint={AURA_COLORS.teal.hex} />
+              <Sparkline values={rmssd} tint={colors.clay} />
             </View>
             <Text variant="caption" color={colors.bone50}>
               Trends compare scans taken under similar conditions best: same time of day, seated, after a minute of rest.
@@ -86,14 +86,15 @@ export default function History() {
       ) : null}
 
       <View style={{ marginTop: space.xl, gap: space.md }}>
-        {scans.map((s) => (
-          <Pressable
-            key={s.id}
-            accessibilityRole="button"
-            accessibilityLabel={`Portrait from ${formatDateTime(s.createdAt)}, ${AURA_COLORS[s.aura.primaryColorId].name}`}
-            onPress={() => router.push({ pathname: '/portrait/[id]', params: { id: s.id } })}
-          >
-            <Card style={styles.row}>
+        <Rule />
+        {scans.map((s, i) => (
+          <View key={s.id}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`Portrait from ${formatDateTime(s.createdAt)}, ${AURA_COLORS[s.aura.primaryColorId].name}`}
+              onPress={() => router.push({ pathname: '/portrait/[id]', params: { id: s.id } })}
+              style={styles.row}
+            >
               <View style={styles.thumbWrap}>
                 {s.portraitUri || s.stillUri ? (
                   <Image source={{ uri: s.portraitUri ?? s.stillUri ?? undefined }} style={styles.thumb} contentFit="cover" />
@@ -102,16 +103,18 @@ export default function History() {
                 )}
               </View>
               <View style={{ flex: 1, gap: 2 }}>
-                <Text variant="caption" color={colors.bone50}>
-                  {formatDateTime(s.createdAt)}
+                <Text variant="eyebrow" color={colors.bone50}>
+                  Plate {String(scans.length - i).padStart(3, '0')} · {formatDate(s.createdAt)}
                 </Text>
                 <Text variant="heading">{AURA_COLORS[s.aura.primaryColorId].name}</Text>
-                <Text variant="caption" color={colors.bone70}>
-                  {s.heart.bpm.toFixed(0)} bpm · RMSSD {s.heart.rmssd.toFixed(0)} ms
+                <Text variant="mono" color={colors.bone70}>
+                  {s.heart.bpm.toFixed(0)} bpm · HRV {s.heart.rmssd.toFixed(0)} ms
                 </Text>
               </View>
-            </Card>
-          </Pressable>
+              <Text variant="label" color={colors.bone50}>→</Text>
+            </Pressable>
+            <Rule />
+          </View>
         ))}
       </View>
     </Screen>
@@ -120,8 +123,8 @@ export default function History() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  row: { flexDirection: 'row', gap: space.lg, alignItems: 'center' },
-  thumbWrap: { width: 56, height: 70, borderRadius: radius.sm, overflow: 'hidden', backgroundColor: colors.polaroidPaper, padding: 3 },
-  thumb: { flex: 1, borderRadius: 2 },
+  row: { flexDirection: 'row', gap: space.lg, alignItems: 'center', paddingVertical: space.lg },
+  thumbWrap: { width: 48, height: 60, overflow: 'hidden', backgroundColor: colors.ink2 },
+  thumb: { flex: 1 },
   practiceRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.hairline },
 });

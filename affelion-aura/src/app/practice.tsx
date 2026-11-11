@@ -101,13 +101,13 @@ export default function PracticeScreen() {
       <Screen scroll>
         <View style={styles.header}>
           <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={12} onPress={() => router.back()}>
-            <Text variant="bodySmall" color={colors.bone70}>Back</Text>
+            <Text variant="eyebrow" color={colors.bone70}>← Back</Text>
           </Pressable>
-          {!entitlement.isPro ? <Text variant="caption" color={colors.bone50}>FREE SESSION</Text> : null}
+          {!entitlement.isPro ? <Text variant="eyebrow" color={colors.bone50}>Free session</Text> : null}
         </View>
-        <Text variant="title" style={{ marginTop: space.xl }}>Steady your rhythm</Text>
+        <Text variant="display" style={{ marginTop: space.xl }}>Steady your rhythm</Text>
         <Text variant="body" color={colors.bone70} style={{ marginTop: space.md }}>
-          Slow, even breathing at about six breaths a minute makes the heart rate rise and fall in one smooth wave. That wave is what the portrait responds to: as your rhythm steadies, the colours settle and the motion smooths. The numbers behind it are heart-rate variability and coherence, measured from your fingertip.
+          Breathe slowly with the light, fingertip on the rear camera. As your heart rhythm steadies, the portrait settles. What is measured: heart-rate variability and coherence.
         </Text>
         <Card style={{ marginTop: space.xl, gap: space.md }}>
           <Text variant="eyebrow" color={colors.bone60}>MODE</Text>
@@ -251,6 +251,6 @@ const styles = StyleSheet.create({
   liveRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
   liveStat: { alignItems: 'center', gap: 2, minWidth: 90 },
   dot: { width: 28, height: 28, borderRadius: 14, marginBottom: 6 },
-  chip: { paddingVertical: 10, paddingHorizontal: space.lg, borderRadius: radius.pill, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.hairlineStrong },
+  chip: { paddingVertical: 10, paddingHorizontal: space.lg, borderWidth: 1, borderColor: colors.hairlineStrong },
   chipOn: { backgroundColor: colors.bone, borderColor: colors.bone },
 });

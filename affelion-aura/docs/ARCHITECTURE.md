@@ -12,6 +12,17 @@
 4. Soft paywall, only after a portrait exists. Plans: $8.99 monthly, $54 annual (recommended), $89 lifetime. Restore and manage/cancel are on the paywall and in Settings.
 5. Pro: full breakdown (every colour tied to a measurement), history and trends, the guide, clean hi-res export, unlimited practice sessions with before/after portraits and the personal baseline. The first practice session is free so the live feedback is experienced before the paywall.
 
+## Design system: Specimen (`src/ui/theme.ts`)
+
+The portrait is the object; everything else is a label on a table. One grotesque (Inter Tight,
+light, tight tracking) for words, one monospace (JetBrains Mono) for measurements and figure
+numbers ("Fig. 02 HRV", "Plate 004"), Fraunces only for the keepsake caption. Live screens sit
+on ink (#0E100F) with the fluid full-bleed and text in the corners; results print on paper
+(#EDE9DE) as a plate with hairline rules. No cards with fills, no pills; buttons are flat
+rectangles, the single action per screen is clay, everything else is an outline or bare text
+with an arrow. References: General Matter, Letterform Archive, Castimedia. Screen captures from
+the web review build are in `docs/screens/`.
+
 ## Biometric → colour engine (`src/core/color`)
 
 `knowledgeBase.ts` is the single source of truth: the twenty specified entries verbatim.
