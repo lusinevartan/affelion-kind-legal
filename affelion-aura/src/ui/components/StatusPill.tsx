@@ -4,11 +4,11 @@ import { colors, radius, space } from '../theme';
 import { Text } from './Text';
 
 export function StatusPill({ label, tone = 'neutral' }: { label: string; tone?: 'neutral' | 'live' | 'warn' | 'good' }) {
-  const dot = tone === 'live' ? colors.clay : tone === 'warn' ? colors.danger : tone === 'good' ? colors.success : colors.bone50;
+  const dot = tone === 'live' ? colors.accent : tone === 'warn' ? colors.danger : tone === 'good' ? colors.success : colors.bone50;
   return (
     <View style={styles.pill} accessibilityRole="text" accessibilityLiveRegion="polite">
       <View style={[styles.dot, { backgroundColor: dot }]} />
-      <Text variant="caption" color={colors.bone70}>
+      <Text variant="caption" color={colors.stageFg70}>
         {label}
       </Text>
     </View>

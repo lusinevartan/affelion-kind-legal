@@ -27,8 +27,8 @@ export default function Home() {
 
   return (
     <View style={styles.root}>
-      <StatusBar style="light" />
-      <AuraView params={params} mask={mask} quality="medium" style={StyleSheet.absoluteFill} />
+      <StatusBar style="dark" />
+      <AuraView params={params} mask={mask} quality="medium" paper style={StyleSheet.absoluteFill} />
       <View style={styles.scrim} pointerEvents="none" />
 
       <View style={[styles.top, { paddingTop: insets.top + space.lg }]}>
@@ -93,7 +93,7 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.ink },
+  root: { flex: 1, backgroundColor: colors.ground },
   scrim: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
   top: { position: 'absolute', left: space.xl, right: space.xl, top: 0, flexDirection: 'row', justifyContent: 'space-between' },
   bottom: { position: 'absolute', left: space.xl, right: space.xl, bottom: 0 },

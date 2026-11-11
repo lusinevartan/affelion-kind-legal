@@ -34,6 +34,7 @@ declare global {
   interface Window {
     __aura: {
       setPreset(name: string): unknown;
+      setPaper(on: boolean): void;
       run(frames: number, dt?: number): void;
       presets(): string[];
       info(): unknown;
@@ -82,6 +83,9 @@ function main() {
 
   window.__aura = {
     setPreset: (name) => apply(name),
+    setPaper: (on) => {
+      sim.paper = on;
+    },
     run: (frames, dt = 1 / 60) => {
       for (let i = 0; i < frames; i++) sim.step(dt);
     },

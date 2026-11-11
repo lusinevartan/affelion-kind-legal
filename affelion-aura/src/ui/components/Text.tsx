@@ -10,6 +10,6 @@ export interface TextProps extends RNTextProps {
   align?: TextStyle['textAlign'];
 }
 
-export function Text({ variant = 'body', color = colors.bone, align, style, ...rest }: TextProps) {
+export function Text({ variant = 'body', color = colors.fg, align, style, ...rest }: TextProps) {
   return <RNText {...rest} style={[type[variant], { color, textAlign: align }, style]} />;
 }

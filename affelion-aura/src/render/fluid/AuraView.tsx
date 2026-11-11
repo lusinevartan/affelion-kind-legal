@@ -10,6 +10,8 @@ export interface AuraViewProps {
   quality?: keyof typeof QUALITY_PRESETS | FluidQuality;
   /** Stop advancing the simulation (keeps the last frame). */
   paused?: boolean;
+  /** Composite as pigment on a light ground. */
+  paper?: boolean;
   style?: StyleProp<ViewStyle>;
   onReady?: () => void;
 }
@@ -24,7 +26,7 @@ export interface AuraViewRef {
  * Rendering is driven by requestAnimationFrame and paced by the device refresh rate (60 fps target).
  */
 export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function AuraView(
-  { params, mask, quality = 'medium', paused = false, style, onReady },
+  { params, mask, quality = 'medium', paused = false, paper = false, style, onReady },
   ref,
 ) {
   const glViewRef = React.useRef<GLView>(null);
@@ -65,6 +67,7 @@ export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function Au
       glRef.current = gl;
       const q = typeof quality === 'string' ? QUALITY_PRESETS[quality] : quality;
       const sim = new FluidSim(gl, q);
+      sim.paper = paper;
       simRef.current = sim;
       if (params) sim.setParams(params);
       sim.setMask(mask);
@@ -84,6 +87,10 @@ export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function Au
   React.useEffect(() => {
     simRef.current?.setMask(mask);
   }, [mask]);
+
+  React.useEffect(() => {
+    if (simRef.current) simRef.current.paper = paper;
+  }, [paper]);
 
   React.useEffect(
     () => () => {

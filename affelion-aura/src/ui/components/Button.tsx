@@ -12,7 +12,7 @@ export interface ButtonProps extends Omit<PressableProps, 'style'> {
   style?: StyleProp<ViewStyle>;
   block?: boolean;
   hint?: string;
-  /** Render for a paper (light) ground. */
+  /** Render for a paper (light) ground. Default true; pass false on a dark camera stage. */
   onPaper?: boolean;
 }
 
@@ -20,10 +20,11 @@ export interface ButtonProps extends Omit<PressableProps, 'style'> {
  * Rectangular, hairline, no pill. The primary is a flat clay block with dark text; the rest are
  * outlines or bare text with an arrow, the way a label on a table would read.
  */
-export function Button({ label, variant = 'primary', loading, disabled, style, block, hint, onPress, onPaper = false, ...rest }: ButtonProps) {
+export function Button({ label, variant = 'primary', loading, disabled, style, block, hint, onPress, onPaper = true, ...rest }: ButtonProps) {
   const isDisabled = disabled || loading;
-  const fg = variant === 'primary' ? colors.ink : variant === 'danger' ? colors.danger : onPaper ? colors.inkText : colors.bone;
-  const border = onPaper ? colors.hairlineOnPaper : colors.hairlineStrong;
+  const fg = variant === 'primary' ? (onPaper ? colors.ground : colors.stage) : variant === 'danger' ? colors.danger : onPaper ? colors.fg : colors.stageFg;
+  const border = onPaper ? colors.hairlineStrong : colors.stageHairline;
+  const primaryBg = onPaper ? colors.fg : colors.stageFg;
   return (
     <Pressable
       accessibilityRole="button"
@@ -38,7 +39,7 @@ export function Button({ label, variant = 'primary', loading, disabled, style, b
       hitSlop={6}
       style={({ pressed }) => [
         styles.base,
-        variant === 'primary' && styles.primary,
+        variant === 'primary' && [styles.primary, { backgroundColor: primaryBg }],
         variant === 'secondary' && [styles.secondary, { borderColor: border }],
         variant === 'danger' && styles.danger,
         variant === 'ghost' && styles.ghost,
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
   base: { minHeight: 52, minWidth: TOUCH_MIN, paddingHorizontal: space.xl, alignItems: 'center', justifyContent: 'center' },
   inner: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   block: { alignSelf: 'stretch' },
-  primary: { backgroundColor: colors.clay },
+  primary: {},
   secondary: { backgroundColor: 'transparent', borderWidth: 1 },
   ghost: { backgroundColor: 'transparent', paddingHorizontal: 0, alignItems: 'flex-start' },
   danger: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.danger },

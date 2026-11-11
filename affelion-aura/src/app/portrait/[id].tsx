@@ -68,7 +68,7 @@ export default function PortraitScreen() {
         </View>
 
         <View style={[styles.plate, { width, height: plateH }]}>
-          <AuraView ref={auraRef} params={aura} mask={mask} style={StyleSheet.absoluteFill} />
+          <AuraView ref={auraRef} params={aura} mask={mask} paper style={StyleSheet.absoluteFill} />
           {regions.map((r, i) => (
             <Pressable
               key={r.id}
@@ -77,7 +77,7 @@ export default function PortraitScreen() {
               onPress={() => setRegion(region?.id === r.id ? null : r)}
               style={[styles.marker, r.id === 'core' ? styles.markerCore : styles.markerHalo, region?.id === r.id && styles.markerOn]}
             >
-              <Text variant="mono" color={colors.bone}>
+              <Text variant="mono" color={colors.fg}>
                 {String(i + 1).padStart(2, '0')}
               </Text>
             </Pressable>
@@ -128,13 +128,13 @@ export default function PortraitScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.paper },
+  root: { flex: 1, backgroundColor: colors.ground },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: space.lg },
-  plate: { backgroundColor: colors.ink, overflow: 'hidden' },
+  plate: { backgroundColor: colors.ground, overflow: 'hidden' },
   marker: { position: 'absolute', width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   markerCore: { left: '50%', top: '40%', marginLeft: -22 },
   markerHalo: { right: '10%', top: '16%' },
-  markerOn: { backgroundColor: 'rgba(246,243,227,0.18)' },
+  markerOn: { backgroundColor: 'rgba(30,32,28,0.08)' },
   figures: { flexDirection: 'row', justifyContent: 'space-between' },
   explain: { marginTop: space.lg },
   links: { flexDirection: 'row', gap: space.xl },

@@ -50,7 +50,7 @@ export default function GuideScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.night }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.ground }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={[styles.header, { paddingTop: insets.top + space.md }]}>
         <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={12} onPress={() => router.back()}>
           <Text variant="eyebrow" color={colors.bone70}>
@@ -69,7 +69,7 @@ export default function GuideScreen() {
         </View>
         {messages.map((m, i) => (
           <View key={i} style={m.role === 'user' ? styles.user : styles.assistant}>
-            <Text variant="bodySmall" color={m.role === 'user' ? colors.night : colors.bone}>
+            <Text variant="bodySmall" color={m.role === 'user' ? colors.ground : colors.fg}>
               {m.content}
             </Text>
           </View>
@@ -97,7 +97,7 @@ export default function GuideScreen() {
           value={input}
           onChangeText={setInput}
           placeholder={`Ask ${GUIDE_NAME} about this portrait`}
-          placeholderTextColor={colors.bone30}
+          placeholderTextColor={colors.fg30}
           style={styles.input}
           returnKeyType="send"
           onSubmitEditing={() => void send(input)}
@@ -112,10 +112,10 @@ export default function GuideScreen() {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: space.xl, paddingBottom: space.md },
   thread: { paddingHorizontal: space.xl, gap: space.md, paddingBottom: space.xl },
-  assistant: { alignSelf: 'flex-start', maxWidth: '88%', backgroundColor: colors.ink2, padding: space.lg, borderRadius: radius.lg },
-  user: { alignSelf: 'flex-end', maxWidth: '88%', backgroundColor: colors.bone, padding: space.lg, borderRadius: radius.lg },
+  assistant: { alignSelf: 'flex-start', maxWidth: '88%', backgroundColor: colors.ground2, padding: space.lg, borderRadius: radius.lg },
+  user: { alignSelf: 'flex-end', maxWidth: '88%', backgroundColor: colors.fg, padding: space.lg, borderRadius: radius.lg },
   suggestions: { gap: space.sm, marginTop: space.md },
   chip: { paddingVertical: space.md, paddingHorizontal: space.lg, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.hairlineStrong, alignSelf: 'flex-start' },
   composer: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.xl, paddingTop: space.md, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.hairline, alignItems: 'center' },
-  input: { flex: 1, minHeight: 52, color: colors.bone, backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.hairlineStrong, paddingHorizontal: space.lg, fontSize: 16 },
+  input: { flex: 1, minHeight: 52, color: colors.fg, backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.hairlineStrong, paddingHorizontal: space.lg, fontSize: 16 },
 });

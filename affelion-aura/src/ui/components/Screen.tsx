@@ -24,7 +24,7 @@ export function Screen({ children, scroll = false, padded = true, style, content
   };
   return (
     <View style={[styles.root, style]}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       {scroll ? (
         <ScrollView contentContainerStyle={[padding, contentStyle]} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           {children}
@@ -37,6 +37,6 @@ export function Screen({ children, scroll = false, padded = true, style, content
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.ink },
+  root: { flex: 1, backgroundColor: colors.ground },
   fill: { flex: 1 },
 });

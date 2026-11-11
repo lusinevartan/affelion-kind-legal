@@ -59,7 +59,7 @@ export default function ReportScreen() {
       </View>
 
       <View style={[styles.plate, { width, height: Math.round(width * 1.2), marginTop: space.lg }]}>
-        <AuraView ref={auraRef} params={aura} mask={mask} style={StyleSheet.absoluteFill} />
+        <AuraView ref={auraRef} params={aura} mask={mask} paper style={StyleSheet.absoluteFill} />
       </View>
       <View style={styles.frameRow} accessibilityRole="radiogroup" accessibilityLabel="Export frame">
         <Text variant="eyebrow" color={colors.bone50}>
@@ -180,6 +180,6 @@ export default function ReportScreen() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  plate: { backgroundColor: colors.ink2, overflow: 'hidden' },
+  plate: { backgroundColor: colors.ground, overflow: 'hidden' },
   frameRow: { flexDirection: 'row', gap: space.lg, marginTop: space.md, flexWrap: 'wrap' },
 });

@@ -136,17 +136,17 @@ export default function ScanScreen() {
         {state.phase === 'finger' ? (
           <View style={styles.fingerStage}>
             <View style={[styles.pulseDisc, { transform: [{ scale: 1 + 0.08 * Math.min(1, live.waveform.length ? Math.abs(live.waveform[live.waveform.length - 1] ?? 0) : 0) }] }]}>
-              <Text variant="display" color={colors.bone}>
+              <Text variant="display" color={colors.stageFg}>
                 {live.bpm ? Math.round(live.bpm) : '—'}
               </Text>
-              <Text variant="caption" color={colors.bone50}>
+              <Text variant="caption" color={colors.stageFg50}>
                 BPM
               </Text>
             </View>
             <View style={{ width: '100%', paddingHorizontal: space.xl, marginTop: space.xl }}>
-              <Waveform samples={live.waveform} tint={live.coverage === 'ok' ? colors.bone : colors.bone30} />
+              <Waveform samples={live.waveform} tint={live.coverage === 'ok' ? colors.stageFg : colors.stageFg50} />
             </View>
-            <Text variant="caption" color={colors.bone50} style={{ marginTop: space.lg }}>
+            <Text variant="caption" color={colors.stageFg50} style={{ marginTop: space.lg }}>
               {Math.round(state.fingerCovered)} s of {SCAN_TIMING.fingerTargetSec} s · signal {Math.round(state.fingerQuality * 100)}%
             </Text>
           </View>
@@ -160,10 +160,10 @@ export default function ScanScreen() {
                 return <View key={i} style={[styles.levelBar, { height: 10 + i * 2, opacity: on ? 1 : 0.2 }]} />;
               })}
             </View>
-            <Text variant="display" style={{ marginTop: space.xl }}>
+            <Text variant="display" color={colors.stageFg} style={{ marginTop: space.xl }}>
               {live.voicePitch ? `${Math.round(live.voicePitch)} Hz` : '· · ·'}
             </Text>
-            <Text variant="caption" color={colors.bone50} style={{ marginTop: space.sm }}>
+            <Text variant="caption" color={colors.stageFg50} style={{ marginTop: space.sm }}>
               {Math.round(state.voicedSec * 10) / 10} s of voice heard
             </Text>
           </View>
@@ -176,11 +176,11 @@ export default function ScanScreen() {
         ) : null}
 
         <View style={[styles.topBar, { paddingTop: insets.top + space.sm }]}>
-          <Text variant="eyebrow" color={colors.bone70}>
+          <Text variant="eyebrow" color={colors.stageFg70}>
             {phaseLabel}
           </Text>
           <Pressable accessibilityRole="button" accessibilityLabel="Stop scan" onPress={confirmCancel} hitSlop={12}>
-            <Text variant="eyebrow" color={colors.bone70}>
+            <Text variant="eyebrow" color={colors.stageFg70}>
               Stop
             </Text>
           </Pressable>
@@ -189,21 +189,21 @@ export default function ScanScreen() {
 
       {/* Guidance */}
       <View style={[styles.panel, { paddingBottom: insets.bottom + space.lg }]}>
-        <ProgressBar value={state.totalProgress} label="Scan progress" tint={colors.bone} />
-        <Text variant="title" style={{ marginTop: space.lg }} accessibilityLiveRegion="polite">
+        <ProgressBar value={state.totalProgress} label="Scan progress" tint={colors.stageFg} />
+        <Text variant="title" color={colors.stageFg} style={{ marginTop: space.lg }} accessibilityLiveRegion="polite">
           {guidance.title}
         </Text>
-        <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.sm }}>
+        <Text variant="bodySmall" color={colors.stageFg70} style={{ marginTop: space.sm }}>
           {session.error ?? guidance.body}
         </Text>
         {state.phase === 'failed' ? (
           <View style={{ flexDirection: 'row', gap: space.md, marginTop: space.lg }}>
-            <Button label="Try again" onPress={session.retry} style={{ flex: 1 }} />
-            {state.guidance === 'failedVoice' ? <Button label="Skip voice" variant="secondary" onPress={session.skipVoice} style={{ flex: 1 }} /> : null}
+            <Button label="Try again" onPaper={false} onPress={session.retry} style={{ flex: 1 }} />
+            {state.guidance === 'failedVoice' ? <Button label="Skip voice" variant="secondary" onPaper={false} onPress={session.skipVoice} style={{ flex: 1 }} /> : null}
           </View>
         ) : null}
         {state.phase === 'voice' ? (
-          <Button label="Skip the voice step" variant="ghost" onPress={session.skipVoice} style={{ marginTop: space.md }} />
+          <Button label="Skip the voice step" variant="ghost" onPaper={false} onPress={session.skipVoice} style={{ marginTop: space.md }} />
         ) : null}
       </View>
     </View>
@@ -211,7 +211,7 @@ export default function ScanScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.ink },
+  root: { flex: 1, backgroundColor: colors.stage },
   stage: { flex: 1, backgroundColor: '#000', overflow: 'hidden' },
   oval: {
     position: 'absolute',
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(246,243,227,0.35)',
   },
-  ovalActive: { borderColor: colors.bone },
+  ovalActive: { borderColor: colors.stageFg },
   topBar: { position: 'absolute', left: space.lg, right: space.lg, top: 0, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   fingerStage: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   pulseDisc: {
@@ -234,9 +234,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: colors.hairlineStrong,
+    borderColor: colors.stageHairline,
   },
   levelRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 4, height: 60 },
-  levelBar: { width: 6, borderRadius: 3, backgroundColor: colors.clay },
-  panel: { paddingHorizontal: space.xl, paddingTop: space.lg, backgroundColor: colors.ink, minHeight: 200 },
+  levelBar: { width: 6, borderRadius: 3, backgroundColor: colors.stageFg },
+  panel: { paddingHorizontal: space.xl, paddingTop: space.lg, backgroundColor: colors.stage, minHeight: 200 },
 });

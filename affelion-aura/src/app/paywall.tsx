@@ -72,7 +72,7 @@ export default function Paywall() {
                   <View style={{ flex: 1 }}>
                     <Text variant="heading">
                       {p.title}
-                      {p.recommended ? <Text variant="mono" color={colors.clay}>{'   best value'}</Text> : null}
+                      {p.recommended ? <Text variant="mono" color={colors.fg60}>{'   best value'}</Text> : null}
                     </Text>
                     <Text variant="caption" color={colors.bone50} style={{ marginTop: 2 }}>
                       {p.note}

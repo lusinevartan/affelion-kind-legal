@@ -19,7 +19,7 @@ export function BreathPacer({ phase, breathing, size = 200, tint = colors.bone }
     <View style={[styles.wrap, { width: size, height: size }]} accessibilityRole="image" accessibilityLabel={breathing === 'inhale' ? 'Breathe in' : 'Breathe out'} accessibilityLiveRegion="polite">
       <View style={[styles.outer, { width: size, height: size, borderRadius: size / 2, borderColor: tint }]} />
       <View style={[styles.inner, { width: size, height: size, borderRadius: size / 2, backgroundColor: tint, transform: [{ scale }] }]} />
-      <Text variant="heading" color={colors.night} style={styles.label}>
+      <Text variant="heading" color={colors.stage} style={styles.label}>
         {breathing === 'inhale' ? 'In' : 'Out'}
       </Text>
     </View>

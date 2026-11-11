@@ -134,6 +134,8 @@ export class FluidSim {
   private lastBeatPhase = 0;
   private lastSplatAt = 0;
   private disposed = false;
+  /** Composite for a light ground (pigment) instead of a dark one (light). */
+  paper = false;
 
   constructor(gl: GL, quality: FluidQuality = QUALITY_PRESETS.medium) {
     this.gl = gl;
@@ -733,7 +735,8 @@ export class FluidSim {
     gl.uniform1f(pr.uniforms.grain!, 0.05);
     gl.uniform1f(pr.uniforms.exposure!, lerp(1.7, 2.3, p?.lightness ?? 0.5));
     gl.uniform1f(pr.uniforms.glowStrength!, 0.9);
-    gl.uniform1f(pr.uniforms.vignette!, 0.25);
+    gl.uniform1f(pr.uniforms.vignette!, this.paper ? 0.0 : 0.25);
+    gl.uniform1f(pr.uniforms.paper!, this.paper ? 1 : 0);
     gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
     gl.disable(gl.BLEND);
   }
@@ -863,16 +866,27 @@ export function ovalEdges(n: number): EdgePoint[] {
 }
 
 /** Procedural placeholder mask (head and shoulders) for previews and web. */
-export function placeholderMask(width = 120, height = 160): SilhouetteMask {
+export function placeholderMask(width = 180, height = 240): SilhouetteMask {
   const data = new Uint8Array(width * height);
+  // Soft-edged head, neck and sloping shoulders. Coverage is computed from a signed distance
+  // so the edge is anti-aliased instead of stepped; the sim's edge field smooths it further.
+  const px = 1 / width;
+  const coverage = (d: number) => Math.max(0, Math.min(1, 0.5 - d / (2 * px)));
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      const u = x / width - 0.5;
-      const v = y / height;
-      const head = Math.hypot(u / 0.16, (v - 0.3) / 0.19) < 1;
-      const neck = Math.abs(u) < 0.06 && v > 0.42 && v < 0.55;
-      const shoulders = v > 0.52 && Math.abs(u) < 0.2 + 0.26 * Math.min(1, (v - 0.52) / 0.18);
-      data[y * width + x] = head || neck || shoulders ? 255 : 0;
+      const u = (x + 0.5) / width - 0.5;
+      const v = (y + 0.5) / height;
+      // Head: ellipse, signed distance approximated in normalised units.
+      const he = Math.hypot(u / 0.16, (v - 0.3) / 0.19);
+      const head = (he - 1) * 0.16;
+      // Neck: rounded box.
+      const neck = Math.max(Math.abs(u) - 0.06, Math.abs(v - 0.485) - 0.065);
+      // Shoulders: half-width eases out with a smooth curve, top edge rounded.
+      const t = Math.max(0, Math.min(1, (v - 0.52) / 0.2));
+      const halfWidth = 0.2 + 0.26 * (t * t * (3 - 2 * t));
+      const shoulders = Math.max(Math.abs(u) - halfWidth, 0.52 - v);
+      const d = Math.min(head, neck, shoulders);
+      data[y * width + x] = Math.round(255 * coverage(d));
     }
   }
   return { width, height, data, imageAspect: width / height };

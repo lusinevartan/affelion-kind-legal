@@ -258,6 +258,7 @@ uniform float exposure;
 uniform float glowStrength;
 uniform float vignette;
 uniform int hasMask;
+uniform float paper;          // 1 = composite as pigment on a light ground
 
 float hash (vec2 p) {
   return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
@@ -273,8 +274,11 @@ void main () {
     vec2 cuv = clamp(muv, 0.0, 1.0);
     inside = texture2D(uMask, cuv).r;
     field = texture2D(uField, cuv).r;
-    // Beyond the mask image there is no body, but the glow field continues softly.
-    if (muv.x < 0.0 || muv.x > 1.0 || muv.y < 0.0 || muv.y > 1.0) { inside = 0.0; field *= 0.6; }
+    // Beyond the mask image (sides and above the head) there is no body; the glow field
+    // continues and eases off without a visible seam. Below the frame the body continues.
+    float outside = max(max(-muv.x, muv.x - 1.0), muv.y - 1.0);
+    inside *= 1.0 - step(0.0, outside);
+    field *= 1.0 - 0.4 * smoothstep(0.0, 0.25, outside);
   }
   // Rim: the band where the blurred field is between 0 and 1.
   float rim = field * (1.0 - field) * 4.0;
@@ -296,6 +300,12 @@ void main () {
   color *= lum / max(lumIn, 0.0001);
   color = min(color, vec3(1.0));
   float alpha = clamp(lum * 1.6, 0.0, 1.0) * shape;
+  if (paper > 0.5) {
+    // Pigment on paper: deepen and saturate so the colour holds against a light ground.
+    float l2 = dot(color, vec3(0.299, 0.587, 0.114));
+    color = clamp(mix(vec3(l2), color, 1.35) * 0.74, 0.0, 1.0);
+    alpha = clamp(lum * 2.0, 0.0, 1.0) * shape;
+  }
 
   float n = (hash(vUv * 1024.0 + fract(time)) - 0.5) * grain;
   color += n * alpha;

@@ -42,8 +42,8 @@ export default function Onboarding() {
 
   return (
     <View style={styles.root}>
-      <StatusBar style="light" />
-      <AuraView params={PREVIEW_PARAMS} mask={mask} quality="low" style={StyleSheet.absoluteFill} />
+      <StatusBar style="dark" />
+      <AuraView params={PREVIEW_PARAMS} mask={mask} quality="low" paper style={StyleSheet.absoluteFill} />
       <View style={[styles.top, { paddingTop: insets.top + space.lg }]}>
         <Text variant="eyebrow" color={colors.bone70}>
           Affelion Aura
@@ -80,11 +80,11 @@ export default function Onboarding() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.ink },
+  root: { flex: 1, backgroundColor: colors.ground },
   top: { position: 'absolute', left: space.xl, right: space.xl, top: 0, flexDirection: 'row', justifyContent: 'space-between' },
   bottom: { position: 'absolute', left: space.xl, right: space.xl, bottom: 0 },
   actions: { marginTop: space.xl, gap: space.sm },
   dots: { flexDirection: 'row', gap: 8, alignItems: 'center' },
   dot: { width: 20, height: 1, backgroundColor: colors.hairlineStrong },
-  dotOn: { backgroundColor: colors.bone },
+  dotOn: { backgroundColor: colors.fg },
 });

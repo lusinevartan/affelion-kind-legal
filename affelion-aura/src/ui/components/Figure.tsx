@@ -7,9 +7,9 @@ import { Text } from './Text';
  * A measurement, labelled like a figure in an archive: "FIG. 02  HRV" above a mono value.
  * Used on the dark table and on the paper sheet.
  */
-export function Figure({ n, label, value, unit, note, onPaper = false, large = false }: { n?: string; label: string; value: string; unit?: string; note?: string; onPaper?: boolean; large?: boolean }) {
-  const fg = onPaper ? colors.inkText : colors.bone;
-  const dim = onPaper ? colors.inkText50 : colors.bone50;
+export function Figure({ n, label, value, unit, note, onPaper = true, large = false }: { n?: string; label: string; value: string; unit?: string; note?: string; onPaper?: boolean; large?: boolean }) {
+  const fg = onPaper ? colors.fg : colors.stageFg;
+  const dim = onPaper ? colors.fg50 : colors.stageFg50;
   return (
     <View style={styles.wrap} accessible accessibilityLabel={`${label}: ${value}${unit ? ` ${unit}` : ''}${note ? `. ${note}` : ''}`}>
       <Text variant="eyebrow" color={dim}>
@@ -36,8 +36,8 @@ export function Figure({ n, label, value, unit, note, onPaper = false, large = f
 }
 
 /** Hairline rule. */
-export function Rule({ onPaper = false, style }: { onPaper?: boolean; style?: object }) {
-  return <View style={[styles.rule, { backgroundColor: onPaper ? colors.hairlineOnPaper : colors.hairline }, style]} />;
+export function Rule({ onPaper = true, style }: { onPaper?: boolean; style?: object }) {
+  return <View style={[styles.rule, { backgroundColor: onPaper ? colors.hairline : colors.stageHairline }, style]} />;
 }
 
 const styles = StyleSheet.create({

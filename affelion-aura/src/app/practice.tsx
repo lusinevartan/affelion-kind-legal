@@ -117,7 +117,7 @@ export default function PracticeScreen() {
               ['findRate', 'Find my rate'],
             ] as const).map(([m, label]) => (
               <Pressable key={m} accessibilityRole="radio" accessibilityState={{ selected: mode === m }} onPress={() => setMode(m)} style={[styles.chip, mode === m && styles.chipOn]}>
-                <Text variant="bodySmall" color={mode === m ? colors.night : colors.bone}>{label}</Text>
+                <Text variant="bodySmall" color={mode === m ? colors.ground : colors.fg}>{label}</Text>
               </Pressable>
             ))}
           </View>
@@ -127,7 +127,7 @@ export default function PracticeScreen() {
               <View style={{ flexDirection: 'row', gap: space.sm }}>
                 {PRACTICE.durations.map((d) => (
                   <Pressable key={d} accessibilityRole="radio" accessibilityState={{ selected: duration === d }} onPress={() => setDuration(d)} style={[styles.chip, duration === d && styles.chipOn]}>
-                    <Text variant="bodySmall" color={duration === d ? colors.night : colors.bone}>{d / 60} min</Text>
+                    <Text variant="bodySmall" color={duration === d ? colors.ground : colors.fg}>{d / 60} min</Text>
                   </Pressable>
                 ))}
               </View>
@@ -200,7 +200,7 @@ export default function PracticeScreen() {
 
   // Live session
   const copy = state.phase === 'settle' ? PRACTICE_COPY.settle : !state.covered && state.uncoveredFor > PRACTICE.coverageGraceSec ? PRACTICE_COPY.uncovered : state.mode === 'findRate' ? PRACTICE_COPY.findRate : PRACTICE_COPY.breathe;
-  const tint = aura ? AURA_COLORS[aura.primaryColorId].hex : colors.bone;
+  const tint = aura ? AURA_COLORS[aura.primaryColorId].hex : colors.stageFg;
   return (
     <View style={styles.root}>
       <View style={styles.stage}>
@@ -208,32 +208,32 @@ export default function PracticeScreen() {
         <View style={[styles.topBar, { paddingTop: insets.top + space.sm }]}>
           <StatusPill label={state.phase === 'settle' ? 'Finding pulse' : `${Math.round(state.elapsed)} s of ${state.durationSec} s · ${state.breathsPerMinute}/min`} tone={state.covered ? 'live' : 'warn'} />
           <Pressable accessibilityRole="button" accessibilityLabel="Stop session" onPress={confirmStop} hitSlop={12} style={styles.cancel}>
-            <Text variant="bodySmall" color={colors.bone}>Stop</Text>
+            <Text variant="eyebrow" color={colors.stageFg70}>Stop</Text>
           </Pressable>
         </View>
         <View style={styles.centre} pointerEvents="none">
-          {state.phase === 'breathe' ? <BreathPacer phase={state.breathPhase} breathing={state.breathing} tint={colors.bone} /> : null}
+          {state.phase === 'breathe' ? <BreathPacer phase={state.breathPhase} breathing={state.breathing} tint={colors.stageFg} /> : null}
         </View>
       </View>
       <ScrollView style={styles.panel} contentContainerStyle={{ paddingBottom: insets.bottom + space.lg }}>
         <View style={styles.liveRow}>
           <View style={styles.liveStat}>
-            <Text variant="display">{Math.round(live.coherence * 100)}</Text>
-            <Text variant="caption" color={colors.bone50}>COHERENCE</Text>
+            <Text variant="display" color={colors.stageFg}>{Math.round(live.coherence * 100)}</Text>
+            <Text variant="caption" color={colors.stageFg50}>COHERENCE</Text>
           </View>
           <View style={styles.liveStat}>
-            <Text variant="display">{live.bpm ? Math.round(live.bpm) : '—'}</Text>
-            <Text variant="caption" color={colors.bone50}>BPM</Text>
+            <Text variant="display" color={colors.stageFg}>{live.bpm ? Math.round(live.bpm) : '—'}</Text>
+            <Text variant="caption" color={colors.stageFg50}>BPM</Text>
           </View>
           <View style={styles.liveStat}>
             <View style={[styles.dot, { backgroundColor: tint }]} />
-            <Text variant="caption" color={colors.bone50}>{aura ? AURA_COLORS[aura.primaryColorId].name.toUpperCase() : '—'}</Text>
+            <Text variant="caption" color={colors.stageFg50}>{aura ? AURA_COLORS[aura.primaryColorId].name.toUpperCase() : '—'}</Text>
           </View>
         </View>
-        <Text variant="title" style={{ marginTop: space.md }} accessibilityLiveRegion="polite">{copy.title}</Text>
-        <Text variant="body" color={colors.bone70} style={{ marginTop: space.xs }}>{copy.body}</Text>
+        <Text variant="title" color={colors.stageFg} style={{ marginTop: space.md }} accessibilityLiveRegion="polite">{copy.title}</Text>
+        <Text variant="body" color={colors.stageFg70} style={{ marginTop: space.xs }}>{copy.body}</Text>
         {state.phase === 'breathe' && state.elapsed >= PRACTICE.afterWindowSec ? (
-          <Button label="Finish now" variant="ghost" onPress={session.finishEarly} style={{ marginTop: space.md }} />
+          <Button label="Finish now" variant="ghost" onPaper={false} onPress={session.finishEarly} style={{ marginTop: space.md }} />
         ) : null}
       </ScrollView>
     </View>
@@ -241,16 +241,16 @@ export default function PracticeScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.night },
+  root: { flex: 1, backgroundColor: colors.stage },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   stage: { flex: 1, backgroundColor: '#07080b', overflow: 'hidden' },
   topBar: { position: 'absolute', left: space.lg, right: space.lg, top: 0, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  cancel: { paddingHorizontal: space.md, paddingVertical: 8, borderRadius: radius.pill, backgroundColor: colors.overlay },
+  cancel: { paddingHorizontal: space.md, paddingVertical: 8, backgroundColor: colors.overlay },
   centre: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
-  panel: { maxHeight: 260, paddingHorizontal: space.xl, paddingTop: space.lg, backgroundColor: colors.night },
+  panel: { maxHeight: 260, paddingHorizontal: space.xl, paddingTop: space.lg, backgroundColor: colors.stage },
   liveRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
   liveStat: { alignItems: 'center', gap: 2, minWidth: 90 },
   dot: { width: 28, height: 28, borderRadius: 14, marginBottom: 6 },
   chip: { paddingVertical: 10, paddingHorizontal: space.lg, borderWidth: 1, borderColor: colors.hairlineStrong },
-  chipOn: { backgroundColor: colors.bone, borderColor: colors.bone },
+  chipOn: { backgroundColor: colors.fg, borderColor: colors.fg },
 });

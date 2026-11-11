@@ -23,17 +23,17 @@ function Gate({ children, fontsReady }: { children: React.ReactNode; fontsReady:
 export default function RootLayout() {
   const fontsReady = useBrandFonts();
   React.useEffect(() => {
-    void SystemUI.setBackgroundColorAsync(colors.night).catch(() => {});
+    void SystemUI.setBackgroundColorAsync(colors.ground).catch(() => {});
   }, []);
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.night }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.ground }}>
       <SafeAreaProvider>
         <AppStoreProvider>
           <Gate fontsReady={fontsReady}>
             <Stack
               screenOptions={{
                 headerShown: false,
-                contentStyle: { backgroundColor: colors.night },
+                contentStyle: { backgroundColor: colors.ground },
                 animation: 'fade',
               }}
             >
