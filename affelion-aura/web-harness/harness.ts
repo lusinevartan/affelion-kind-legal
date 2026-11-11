@@ -4,8 +4,47 @@
  * mapping code as the app.
  */
 import { mapBiometricsToAura } from '../src/core/color/mapping';
-import type { BiometricInput } from '../src/core/types';
+import { AURA_COLOR_IDS, SWATCH_HSL, type AuraColorId } from '../src/core/color/knowledgeBase';
+import type { AuraParams, BiometricInput } from '../src/core/types';
 import { FluidSim, QUALITY_PRESETS, placeholderMask } from '../src/render/fluid/FluidSim';
+
+/**
+ * Find real readings that the mapping turns into a given knowledge-base colour, so a swatch
+ * sheet shows what the rules actually produce. Colours no reading reaches come back as
+ * `reachable: false` with parameters taken straight from the swatch, for reference only.
+ */
+function paramsForColor(id: AuraColorId): { params: AuraParams; reachable: boolean; readings: string } {
+  const variances = [0.3, 0.15, 0.45, 0.6, 0.05, 0.75, 0.9];
+  const stabilities = [0.6, 0.8, 0.4, 0.95, 0.2];
+  for (const withVoice of [true, false]) {
+    for (let bpm = 48; bpm <= 116; bpm += 2) {
+      for (let rmssd = 8; rmssd <= 100; rmssd += 3) {
+        for (const variance of withVoice ? variances : [0]) {
+          for (const stability of withVoice ? stabilities : [0]) {
+            const input: BiometricInput = {
+              heart: { bpm, rmssd, sdnn: rmssd * 1.1, pnn50: rmssd > 40 ? 28 : 6, beatCount: 44, quality: 0.9, durationSec: 40 },
+              voice: withVoice
+                ? { dominantPitchHz: 170, variance, stability, pitchVarianceSemitones: variance * 4, energyVariance: variance * 0.8, spectralCentroidHz: 1300, voicedRatio: 0.6, quality: 0.8, durationSec: 5 }
+                : null,
+            };
+            const params = mapBiometricsToAura(input);
+            if (params.primaryColorId === id) {
+              const voice = withVoice ? ` · voice ${Math.round(variance * 100)}% var, ${Math.round(stability * 100)}% steady` : ' · no voice';
+              return { params, reachable: true, readings: `${bpm} bpm · HRV ${rmssd} ms${voice}` };
+            }
+          }
+        }
+      }
+    }
+  }
+  const base = mapBiometricsToAura(PRESETS.coherent!);
+  const sw = SWATCH_HSL[id];
+  return {
+    params: { ...base, hue: sw.h, saturation: sw.s, lightness: sw.l, primaryColorId: id, secondaryColorId: id, turbulence: 0.4, accentStrength: 0.3, seed: (base.seed ^ (sw.h * 2654435761)) >>> 0 },
+    reachable: false,
+    readings: 'not reachable under the current rules',
+  };
+}
 
 const PRESETS: Record<string, BiometricInput> = {
   activated: {
@@ -35,6 +74,11 @@ declare global {
     __aura: {
       setPreset(name: string): unknown;
       setPaper(on: boolean): void;
+      colorIds(): string[];
+      setColor(id: string): { reachable: boolean; readings: string; hue: number; saturation: number; lightness: number };
+      setMask(w: number, h: number, b64: string): void;
+      setStill(url: string): Promise<void>;
+      resize(w: number, h: number): void;
       run(frames: number, dt?: number): void;
       presets(): string[];
       info(): unknown;
@@ -85,6 +129,37 @@ function main() {
     setPreset: (name) => apply(name),
     setPaper: (on) => {
       sim.paper = on;
+    },
+    colorIds: () => [...AURA_COLOR_IDS],
+    setColor: (id) => {
+      const r = paramsForColor(id as AuraColorId);
+      sim.setParams(r.params);
+      return { reachable: r.reachable, readings: r.readings, hue: r.params.hue, saturation: r.params.saturation, lightness: r.params.lightness };
+    },
+    setMask: (w, h, b64) => {
+      const bin = atob(b64);
+      const data = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) data[i] = bin.charCodeAt(i);
+      sim.setMask({ width: w, height: h, data, imageAspect: w / h });
+    },
+    setStill: (url) =>
+      new Promise<void>((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          sim.setStill(img);
+          resolve();
+        };
+        img.onerror = () => reject(new Error('still failed to load'));
+        img.src = url;
+      }),
+    resize: (w, h) => {
+      for (const el of [canvas, bg, document.getElementById('stage') as HTMLElement]) {
+        el.style.width = `${w}px`;
+        el.style.height = `${h}px`;
+      }
+      canvas.width = bg.width = w;
+      canvas.height = bg.height = h;
+      sim.resize(w, h);
     },
     run: (frames, dt = 1 / 60) => {
       for (let i = 0; i < frames; i++) sim.step(dt);
