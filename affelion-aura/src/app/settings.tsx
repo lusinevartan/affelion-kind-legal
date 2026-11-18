@@ -31,6 +31,7 @@ export default function Settings() {
       <Text variant="display" style={{ marginTop: space.xl }}>
         Settings
       </Text>
+      <Button label="How it works" variant="ghost" onPress={() => router.push('/how')} style={{ marginTop: space.md }} />
 
       <Card style={{ marginTop: space.xl }}>
         <Text variant="eyebrow" color={colors.bone60}>

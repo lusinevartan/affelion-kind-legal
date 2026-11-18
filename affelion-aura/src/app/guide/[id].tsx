@@ -100,7 +100,7 @@ export default function GuideScreen() {
           value={input}
           onChangeText={setInput}
           placeholder={`Ask ${GUIDE_NAME} about this portrait`}
-          placeholderTextColor={colors.fg30}
+          placeholderTextColor={colors.fg60}
           style={styles.input}
           returnKeyType="send"
           onSubmitEditing={() => void send(input)}

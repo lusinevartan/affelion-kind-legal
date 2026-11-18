@@ -7,7 +7,6 @@ import { Button, Text } from '../ui/components';
 import { colors, space } from '../ui/theme';
 import { useAppActions } from '../features/store/AppStore';
 import { AuraView } from '../render/fluid/AuraView';
-import { placeholderMask } from '../render/fluid/FluidSim';
 import { PREVIEW_PARAMS } from '../features/scan/previewParams';
 
 /**
@@ -26,7 +25,6 @@ export default function Onboarding() {
   const [page, setPage] = React.useState(0);
   const width = Dimensions.get('window').width;
   const scrollRef = React.useRef<React.ComponentRef<typeof ScrollView>>(null);
-  const mask = React.useMemo(() => placeholderMask(), []);
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const p = Math.round(e.nativeEvent.contentOffset.x / width);
@@ -43,7 +41,7 @@ export default function Onboarding() {
   return (
     <View style={styles.root}>
       <StatusBar style="light" />
-      <AuraView params={PREVIEW_PARAMS} mask={mask} quality="low" style={StyleSheet.absoluteFill} />
+      <AuraView params={PREVIEW_PARAMS} mask={null} quality="low" style={StyleSheet.absoluteFill} />
       <View style={styles.shade} pointerEvents="none" />
       <View style={[styles.top, { paddingTop: insets.top + space.lg }]}>
         <Text variant="eyebrow" color={colors.stageFg}>

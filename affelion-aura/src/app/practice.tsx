@@ -14,7 +14,6 @@ import { AuraView, type AuraViewRef } from '../render/fluid/AuraView';
 import { PolaroidCard } from '../render/polaroid/PolaroidCard';
 import { PRACTICE, PRACTICE_COPY } from '../core/practice/practiceMachine';
 import { AURA_COLORS } from '../core/color/palette';
-import { placeholderMask } from '../render/fluid/FluidSim';
 import type { PracticeMode } from '../core/practice/practiceMachine';
 
 /**
@@ -28,7 +27,7 @@ export default function PracticeScreen() {
   const { recordPractice, setResonanceRate } = useAppActions();
   const insets = useSafeAreaInsets();
   const scan = React.useMemo(() => (scanId ? scans.find((s) => s.id === scanId) ?? null : scans[0] ?? null), [scanId, scans]);
-  const mask = React.useMemo(() => (scan ? getCachedMask(scan.id) ?? placeholderMask() : placeholderMask()), [scan]);
+  const mask = React.useMemo(() => (scan ? getCachedMask(scan.id) : null), [scan]);
   const session = usePracticeSession(scan);
   const auraRef = React.useRef<AuraViewRef>(null);
   const [mode, setMode] = React.useState<PracticeMode>('practice');
@@ -148,7 +147,7 @@ export default function PracticeScreen() {
           {resonanceRate ? <Text variant="caption" color={colors.bone50}>Your found rate: {resonanceRate} breaths per minute.</Text> : null}
         </Card>
         <Button label="Begin" onPress={() => void begin()} block style={{ marginTop: space.xl }} />
-        <Text variant="caption" color={colors.bone30} align="center" style={{ marginTop: space.lg }}>
+        <Text variant="caption" color={colors.fg60} align="center" style={{ marginTop: space.lg }}>
           Not a medical device. Stop if you feel light-headed and breathe normally.
         </Text>
       </Screen>
@@ -190,6 +189,9 @@ export default function PracticeScreen() {
           Portraits are rendered from the first and last 45 seconds of this session using the same colour rules as a scan. Short-term changes vary from day to day; the trend over many sessions is what matters.
         </Text>
         <Button label="Done" onPress={() => router.replace('/home')} block style={{ marginTop: space.xl }} />
+        {!entitlement.isPro ? (
+          <Button label="Unlimited practice with Pro" variant="ghost" onPress={() => router.push('/paywall')} style={{ marginTop: space.sm }} />
+        ) : null}
       </Screen>
     );
   }
@@ -212,7 +214,7 @@ export default function PracticeScreen() {
   return (
     <View style={styles.root}>
       <View style={styles.stage}>
-        <AuraView ref={auraRef} params={aura} mask={mask} stillUri={scan?.stillUri ?? null} quality="medium" style={StyleSheet.absoluteFill} />
+        <AuraView ref={auraRef} params={aura} mask={mask} stillUri={scan?.stillUri ?? null} quality="medium" motion="always" style={StyleSheet.absoluteFill} />
         <View style={[styles.topBar, { paddingTop: insets.top + space.sm }]}>
           <StatusPill label={state.phase === 'settle' ? 'Finding pulse' : `${Math.round(state.elapsed)} s of ${state.durationSec} s · ${state.breathsPerMinute}/min`} tone={state.covered ? 'live' : 'warn'} />
           <Pressable accessibilityRole="button" accessibilityLabel="Stop session" onPress={confirmStop} hitSlop={12} style={styles.cancel}>

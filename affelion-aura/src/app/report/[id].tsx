@@ -7,7 +7,6 @@ import { colors, space } from '../../ui/theme';
 import { useAppActions, useAppState } from '../../features/store/AppStore';
 import { getCachedMask } from '../../features/scan/sessionCache';
 import { AuraView } from '../../render/fluid/AuraView';
-import { placeholderMask } from '../../render/fluid/FluidSim';
 import { AURA_COLOR_IDS } from '../../core/color/palette';
 import { usePolaroidExport } from '../../features/portrait/usePolaroidExport';
 import { scanInsight } from '../../core/insight/baseline';
@@ -22,7 +21,7 @@ export default function ReportScreen() {
   const { scans, entitlement, frameStyle } = useAppState();
   const { refreshScans, setFrameStyle } = useAppActions();
   const record = scans.find((s) => s.id === id) ?? null;
-  const mask = React.useMemo(() => (id ? getCachedMask(id) ?? placeholderMask() : placeholderMask()), [id]);
+  const mask = React.useMemo(() => (id ? getCachedMask(id) : null), [id]);
   const exportOpts = React.useMemo(() => ({ clean: true, exportWidth: 720, onSaved: refreshScans, frame: frameStyle }), [refreshScans, frameStyle]);
   const { auraRef, busy, run: exportHiRes, exportCard } = usePolaroidExport(record, exportOpts);
 

@@ -48,6 +48,7 @@ export default function RootLayout() {
               <Stack.Screen name="history" />
               <Stack.Screen name="guide/[id]" />
               <Stack.Screen name="settings" />
+              <Stack.Screen name="how" />
             </Stack>
           </Gate>
         </AppStoreProvider>

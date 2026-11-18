@@ -8,7 +8,6 @@ import { colors, space } from '../../ui/theme';
 import { useAppActions, useAppState } from '../../features/store/AppStore';
 import { getCachedMask } from '../../features/scan/sessionCache';
 import { AuraView } from '../../render/fluid/AuraView';
-import { placeholderMask } from '../../render/fluid/FluidSim';
 import { AURA_COLORS } from '../../core/color/palette';
 import type { AuraRegion } from '../../core/types';
 import { usePolaroidExport } from '../../features/portrait/usePolaroidExport';
@@ -27,7 +26,7 @@ export default function PortraitScreen() {
   const insets = useSafeAreaInsets();
   const record = scans.find((s) => s.id === id) ?? null;
   const plateNo = record ? String(scans.length - scans.indexOf(record)).padStart(3, '0') : '000';
-  const mask = React.useMemo(() => (id ? getCachedMask(id) ?? placeholderMask() : placeholderMask()), [id]);
+  const mask = React.useMemo(() => (id ? getCachedMask(id) : null), [id]);
   const [region, setRegion] = React.useState<AuraRegion | null>(null);
   const exportOpts = React.useMemo(() => ({ clean: entitlement.isPro, exportWidth: entitlement.isPro ? 720 : 480, onSaved: refreshScans }), [entitlement.isPro, refreshScans]);
   const { auraRef, busy, run: exportPortrait, exportCard } = usePolaroidExport(record, exportOpts);
@@ -59,13 +58,14 @@ export default function PortraitScreen() {
       <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + space.xxl }}>
         <View style={[styles.plate, { width, height: plateH }]}>
           <AuraView ref={auraRef} params={aura} mask={mask} stillUri={record.stillUri} style={StyleSheet.absoluteFill} />
+          <View style={styles.scrimTop} pointerEvents="none" />
           <View style={[styles.top, { paddingTop: insets.top + space.md }]}>
             <Pressable accessibilityRole="button" accessibilityLabel="Home" hitSlop={16} onPress={() => router.replace('/home')}>
               <Text variant="eyebrow" color={colors.stageFg}>
                 ← Home
               </Text>
             </Pressable>
-            <Text variant="eyebrow" color={colors.stageFg70}>
+            <Text variant="eyebrow" color={colors.stageFg}>
               No. {plateNo} · {formatDate(record.createdAt)}
             </Text>
           </View>
@@ -135,6 +135,9 @@ export default function PortraitScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.ground },
   plate: { backgroundColor: colors.stage, overflow: 'hidden' },
+  // Labels sit on the picture; these keep them readable over even the brightest aura.
+  scrimTop: { position: 'absolute', left: 0, right: 0, top: 0, height: 120, experimental_backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0))' },
+  scrimBottom: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 90, experimental_backgroundImage: 'linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0))' },
   top: { position: 'absolute', left: space.xl, right: space.xl, top: 0, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   sheet: { paddingHorizontal: space.xl, paddingTop: space.xl },
   marker: { position: 'absolute', width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },

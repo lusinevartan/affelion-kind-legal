@@ -8,11 +8,6 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "backgroundColor": "#000000",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#000000"
-    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.affelion.aura",
@@ -89,7 +84,9 @@
             "targetSdkVersion": 36
           }
         }
-      ]
+      ],
+      "expo-sharing",
+      "expo-status-bar"
     ]
   }
 }

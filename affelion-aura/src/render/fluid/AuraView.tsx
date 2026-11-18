@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { AccessibilityInfo, Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { GLView, type ExpoWebGLRenderingContext } from 'expo-gl';
 import type { AuraParams } from '../../core/types';
 import { FluidSim, QUALITY_PRESETS, type FluidQuality, type SilhouetteMask } from './FluidSim';
@@ -17,6 +17,12 @@ export interface AuraViewProps {
    * black and white on a black stage and the aura is the only colour in the frame.
    */
   stillUri?: string | null;
+  /**
+   * 'auto' (default) holds a still, developed frame when the person has asked their device to
+   * reduce motion. 'always' keeps moving regardless; use it only where the movement is the
+   * information, as in the live practice feedback.
+   */
+  motion?: 'auto' | 'always';
   style?: StyleProp<ViewStyle>;
   onReady?: () => void;
 }
@@ -31,9 +37,24 @@ export interface AuraViewRef {
  * Rendering is driven by requestAnimationFrame and paced by the device refresh rate (60 fps target).
  */
 export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function AuraView(
-  { params, mask, quality = 'medium', paused = false, paper = false, stillUri = null, style, onReady },
+  { params, mask, quality = 'medium', paused: pausedProp = false, paper = false, stillUri = null, motion = 'auto', style, onReady },
   ref,
 ) {
+  const [reduceMotion, setReduceMotion] = React.useState(false);
+  React.useEffect(() => {
+    let cancelled = false;
+    AccessibilityInfo.isReduceMotionEnabled()
+      .then((on) => {
+        if (!cancelled) setReduceMotion(on);
+      })
+      .catch(() => {});
+    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
+    return () => {
+      cancelled = true;
+      sub.remove();
+    };
+  }, []);
+  const paused = pausedProp || (motion === 'auto' && reduceMotion);
   const glViewRef = React.useRef<GLView>(null);
   const simRef = React.useRef<FluidSim | null>(null);
   const glRef = React.useRef<ExpoWebGLRenderingContext | null>(null);

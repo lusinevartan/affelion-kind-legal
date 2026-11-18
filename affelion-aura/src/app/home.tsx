@@ -9,7 +9,6 @@ import { useAppState } from '../features/store/AppStore';
 import { AURA_COLORS } from '../core/color/palette';
 import { scanInsight } from '../core/insight/baseline';
 import { AuraView } from '../render/fluid/AuraView';
-import { placeholderMask } from '../render/fluid/FluidSim';
 import { getCachedMask } from '../features/scan/sessionCache';
 import { PREVIEW_PARAMS } from '../features/scan/previewParams';
 import { formatDate } from '../ui/format';
@@ -23,7 +22,8 @@ export default function Home() {
   const insets = useSafeAreaInsets();
   const latest = scans[0] ?? null;
   const insight = latest ? scanInsight(latest, scans) : null;
-  const mask = React.useMemo(() => (latest ? getCachedMask(latest.id) ?? placeholderMask() : placeholderMask()), [latest]);
+  // No outline yet means no silhouette: the aura is drawn as a soft cloud, never around a stand-in figure.
+  const mask = React.useMemo(() => (latest ? getCachedMask(latest.id) : null), [latest]);
   const params = latest?.aura ?? PREVIEW_PARAMS;
   const openLatest = () => latest && router.push({ pathname: '/portrait/[id]', params: { id: latest.id } });
 
@@ -38,6 +38,8 @@ export default function Home() {
         onPress={openLatest}
       >
         <AuraView params={params} mask={mask} stillUri={latest?.stillUri ?? null} quality="medium" style={StyleSheet.absoluteFill} />
+        <View style={styles.scrimTop} pointerEvents="none" />
+        <View style={styles.scrimBottom} pointerEvents="none" />
         <View style={[styles.top, { paddingTop: insets.top + space.md }]}>
           <Text variant="eyebrow" color={colors.stageFg}>
             Affelion Aura
@@ -49,11 +51,11 @@ export default function Home() {
           </Pressable>
         </View>
         <View style={styles.stageCaption}>
-          <Text variant="eyebrow" color={colors.stageFg70}>
+          <Text variant="eyebrow" color={colors.stageFg}>
             {latest ? `Latest · ${formatDate(latest.createdAt)}` : 'Preview'}
           </Text>
           {latest ? (
-            <Text variant="eyebrow" color={colors.stageFg70}>
+            <Text variant="eyebrow" color={colors.stageFg}>
               Open →
             </Text>
           ) : null}
@@ -94,6 +96,7 @@ export default function Home() {
               <Button label={practices.length ? 'Practice' : 'First practice, free'} variant="ghost" onPress={() => router.push({ pathname: '/practice', params: { scanId: latest.id } })} />
             ) : null}
             {scans.length > 0 ? <Button label="History" variant="ghost" onPress={() => router.push('/history')} /> : null}
+            {!latest ? <Button label="How it works" variant="ghost" onPress={() => router.push('/how')} /> : null}
           </View>
           <Text variant="caption" color={colors.fg60}>
             {entitlement.isPro ? 'Pro · unlimited' : left > 0 ? `${left} of 3 free scans left` : 'Free scans used'} · Not a medical device
@@ -107,6 +110,9 @@ export default function Home() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.ground },
   stage: { flex: 1, backgroundColor: colors.stage, overflow: 'hidden' },
+  // Labels sit on the picture; these keep them readable over even the brightest aura.
+  scrimTop: { position: 'absolute', left: 0, right: 0, top: 0, height: 120, experimental_backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0))' },
+  scrimBottom: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 90, experimental_backgroundImage: 'linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0))' },
   top: { position: 'absolute', left: space.xl, right: space.xl, top: 0, flexDirection: 'row', justifyContent: 'space-between' },
   stageCaption: { position: 'absolute', left: space.xl, right: space.xl, bottom: space.lg, flexDirection: 'row', justifyContent: 'space-between' },
   sheet: { paddingHorizontal: space.xl, paddingTop: space.xl },

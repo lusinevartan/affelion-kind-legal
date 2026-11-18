@@ -11,6 +11,22 @@ a personal baseline across scans. It does not claim to capture anything invisibl
 numbers always produce the same portrait, and all copy (including AI responses) is checked against
 an honesty rule set. It is not a medical device.
 
+## Reviewing it
+
+- **Screens:** `docs/screens/` holds a capture of every screen from the web review build, plus
+  the twenty-colour sheet. The person in them is a stock photograph standing in for your own.
+- **Click through it in a browser:** `npx expo export --platform web --output-dir /tmp/aura-web`,
+  then `npx serve -s /tmp/aura-web` and open it at phone width. In the browser console run
+  `localStorage.setItem('aura.demo','1')` (add `aura.pro` = `1` for the Pro screens) and reload.
+  The camera, flash and microphone steps need a phone, so the scan itself cannot run there.
+- **On your phone:** `npx eas-cli@latest build --profile development --platform ios` (or
+  `android`), install the build, then `npx expo start --dev-client`. This is the only way to
+  check the scan, the practice and the real portrait. `docs/ARCHITECTURE.md` lists what to look
+  at on the first run.
+- **What is not verified:** nothing has run on a physical device. The native camera, flash,
+  microphone and segmentation modules, purchases against the stores, and the Sasha server
+  against a live key are untested outside this repository's unit tests and bundles.
+
 ## Stack
 
 - Expo SDK 58 / React Native 0.88 / React 19, TypeScript strict, Expo Router.
@@ -32,7 +48,7 @@ src/
   features/    scan orchestration (native modules → processors → record), app store, history widgets
   services/    SQLite storage, entitlements/purchases, grounded AI guide (Sasha), export
   ui/          design tokens and components
-  app/         Expo Router screens (onboarding → home → scan → portrait → paywall → report/history/guide/settings)
+  app/         Expo Router screens (onboarding → home → scan → portrait → paywall → report/history/guide/practice/how/settings)
 modules/       local Expo native modules (ios/, android/, src/)
 web-harness/   browser harness that renders the shader with esbuild + Playwright
 docs/          architecture, colour system, reference renders
@@ -56,6 +72,7 @@ Build-time environment (EAS secrets or `.env`):
 
 | Variable | Purpose |
 | --- | --- |
+| `EXPO_PUBLIC_ALLOW_SIMULATED_PURCHASES` | Set to `1` only for an internal test build without store keys; release builds must not set it |
 | `EXPO_PUBLIC_GUIDE_ENDPOINT` | URL of the Sasha server (`server/sasha`); without it the guide answers from grounded local templates |
 | `EXPO_PUBLIC_GUIDE_TOKEN` | Optional shared secret the Sasha server expects as a Bearer header |
 | `EXPO_PUBLIC_RC_IOS_KEY`, `EXPO_PUBLIC_RC_ANDROID_KEY` | RevenueCat public SDK keys; without them purchases are simulated and the paywall says so |

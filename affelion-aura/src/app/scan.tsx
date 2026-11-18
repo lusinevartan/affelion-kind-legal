@@ -128,7 +128,7 @@ export default function ScanScreen() {
         ) : null}
         {state.phase === 'face' ? (
           <>
-            <AuraView params={PREVIEW_PARAMS} mask={session.mask} quality="low" style={StyleSheet.absoluteFill} />
+            <AuraView params={PREVIEW_PARAMS} mask={session.mask} quality="low" motion="always" style={StyleSheet.absoluteFill} />
             <View pointerEvents="none" style={[styles.oval, live.faceDetected && styles.ovalActive]} />
           </>
         ) : null}
