@@ -1,5 +1,5 @@
 import Purchases, { LOG_LEVEL, PURCHASES_ERROR_CODE, type CustomerInfo, type PurchasesPackage } from 'react-native-purchases';
-import { NO_ENTITLEMENT, PLANS, type Entitlement, type PlanId, type PurchaseProvider } from '../entitlements';
+import { NO_ENTITLEMENT, PLANS, type Entitlement, type PlanId, type PlanPrices, type PurchaseProvider } from '../entitlements';
 
 /**
  * Store-backed purchases through RevenueCat. Configure with the public SDK keys
@@ -39,13 +39,38 @@ export class RevenueCatPurchaseProvider implements PurchaseProvider {
     }
   }
 
+  private async packages(): Promise<PurchasesPackage[]> {
+    const offerings = await Purchases.getOfferings();
+    return [...(offerings.current?.availablePackages ?? []), ...Object.values(offerings.all).flatMap((o) => o.availablePackages)];
+  }
+
+  private static matches(pkg: PurchasesPackage, productId: string): boolean {
+    return pkg.product.identifier === productId || pkg.product.identifier.startsWith(productId);
+  }
+
   private async findPackage(plan: PlanId): Promise<PurchasesPackage> {
     const productId = PLANS.find((p) => p.id === plan)!.productId;
-    const offerings = await Purchases.getOfferings();
-    const packages = [...(offerings.current?.availablePackages ?? []), ...Object.values(offerings.all).flatMap((o) => o.availablePackages)];
-    const pkg = packages.find((p) => p.product.identifier === productId || p.product.identifier.startsWith(productId));
+    const pkg = (await this.packages()).find((p) => RevenueCatPurchaseProvider.matches(p, productId));
     if (!pkg) throw new Error(`Product ${productId} is not configured in the store yet.`);
     return pkg;
+  }
+
+  /** Localised prices from the store. A plan the store does not list yet is simply left out. */
+  async getPrices(): Promise<PlanPrices> {
+    await this.ensure();
+    const prices: PlanPrices = {};
+    try {
+      const packages = await this.packages();
+      for (const plan of PLANS) {
+        const pkg = packages.find((p) => RevenueCatPurchaseProvider.matches(p, plan.productId));
+        if (!pkg) continue;
+        // Only the annual plan is framed per month; the others show their own period.
+        prices[plan.id] = { price: pkg.product.priceString, perMonth: plan.id === 'annual' ? pkg.product.pricePerMonthString : null };
+      }
+    } catch {
+      // No connection or no offerings yet: the paywall falls back to the listed prices.
+    }
+    return prices;
   }
 
   async purchase(plan: PlanId): Promise<Entitlement> {

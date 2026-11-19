@@ -52,7 +52,9 @@ export const PLANS: Plan[] = [
     id: 'lifetime',
     productId: 'com.affelion.aura.pro.lifetime',
     title: 'Lifetime',
-    price: '$89',
+    // More than two and a half years of the annual plan, so the annual plan stays the natural
+    // choice and a one-time buyer still covers the running cost of the guide.
+    price: '$149',
     period: 'one time',
     perMonth: null,
     note: 'A single purchase. No renewal.',
@@ -69,9 +71,17 @@ export interface Entitlement {
 
 export const NO_ENTITLEMENT: Entitlement = { isPro: false, plan: null, expiresAt: null, source: 'none' };
 
+/** Prices as the store will charge them, formatted for the person's country and currency. */
+export type PlanPrices = Partial<Record<PlanId, { price: string; perMonth: string | null }>>;
+
 export interface PurchaseProvider {
   readonly name: string;
   getEntitlement(): Promise<Entitlement>;
+  /**
+   * The store's own prices, when a store is connected. The paywall shows these in place of the
+   * figures in PLANS, so what a person reads is always what they are charged.
+   */
+  getPrices?(): Promise<PlanPrices>;
   purchase(plan: PlanId): Promise<Entitlement>;
   restore(): Promise<Entitlement>;
   /** Opens the platform's subscription management page so cancelling is one tap away. */

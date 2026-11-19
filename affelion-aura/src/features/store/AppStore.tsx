@@ -12,6 +12,7 @@ import {
   NO_ENTITLEMENT,
   type Entitlement,
   type PlanId,
+  type PlanPrices,
   type PurchaseProvider,
 } from '../../services/entitlements';
 import { clearSettings, deleteAllScans, getSetting, listMasks, listPractices, listScans, saveMask, savePractice, saveScan, setSetting } from '../../services/storage';
@@ -34,6 +35,8 @@ export interface AppState {
   /** Breathing rate found by the resonance finder, breaths per minute, or null. */
   resonanceRate: number | null;
   frameStyle: FrameStyleId;
+  /** The store's own localised prices, where a store is connected; empty otherwise. */
+  prices: PlanPrices;
   /** Derived: Pro, or free scans remaining. */
   canScan: boolean;
   freeScansLeft: number;
@@ -75,7 +78,22 @@ export function AppStoreProvider({ children, provider }: { children: React.React
     practices: [],
     resonanceRate: null,
     frameStyle: 'classic',
+    prices: {},
   });
+
+  // Store prices arrive on their own; the app never waits on the network to open.
+  React.useEffect(() => {
+    let cancelled = false;
+    purchases
+      .getPrices?.()
+      .then((prices) => {
+        if (!cancelled) setState((s) => ({ ...s, prices }));
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [purchases]);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -98,7 +116,8 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         // A missing outline falls back to the neutral silhouette.
       }
       if (cancelled) return;
-      setState({
+      setState((prev) => ({
+        prices: prev.prices,
         ready: true,
         onboardingDone: onboarding === '1',
         entitlement,
@@ -108,7 +127,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         practices,
         resonanceRate: resonance ? Number(resonance) || null : null,
         frameStyle: (frame as FrameStyleId | null) ?? 'classic',
-      });
+      }));
     })().catch((e) => {
       console.warn('App store failed to load', e);
       if (!cancelled) setState((s) => ({ ...s, ready: true }));
@@ -178,7 +197,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         await clearSettings([FREE_SCANS_USED_KEY, FREE_PRACTICE_USED_KEY, ENTITLEMENT_KEY]);
         await setSetting(ONBOARDING_KEY, '1');
         const entitlement = await purchases.getEntitlement();
-        setState((s) => ({ ready: true, onboardingDone: true, entitlement, freeScansUsed: s.freeScansUsed, freePracticeUsed: s.freePracticeUsed, scans: [], practices: [], resonanceRate: null, frameStyle: 'classic' }));
+        setState((s) => ({ ready: true, onboardingDone: true, entitlement, freeScansUsed: s.freeScansUsed, freePracticeUsed: s.freePracticeUsed, scans: [], practices: [], resonanceRate: null, frameStyle: 'classic', prices: s.prices }));
       },
     }),
     [purchases],

@@ -12,7 +12,7 @@ import { useAppActions, useAppState } from '../features/store/AppStore';
  */
 export default function Paywall() {
   const { from } = useLocalSearchParams<{ from?: string }>();
-  const { entitlement } = useAppState();
+  const { entitlement, prices } = useAppState();
   const { purchase, restore, manageSubscriptions } = useAppActions();
   const [plan, setPlan] = React.useState<PlanId>('annual');
   const [busy, setBusy] = React.useState(false);
@@ -54,7 +54,10 @@ export default function Paywall() {
 
       <View style={{ marginTop: space.xxl }}>
         <Rule />
-        {PLANS.map((p) => {
+        {PLANS.map((listed) => {
+          // The store's own price, in the person's currency, wins over the listed figure.
+          const store = prices[listed.id];
+          const p = store ? { ...listed, price: store.price, perMonth: store.perMonth ? `${store.perMonth} / month` : listed.id === 'annual' ? null : listed.perMonth } : listed;
           const selected = p.id === plan;
           return (
             <View key={p.id}>

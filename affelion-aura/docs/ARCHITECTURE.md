@@ -9,7 +9,7 @@
    - Voice (5 s, min 2.5 s voiced, skippable): `AffelionAudio` streams PCM to `VoiceAnalyzer`.
    - Computing: `PpgProcessor.finish()` + `VoiceAnalyzer.finish()` → `mapBiometricsToAura()` → `ScanRecord` saved to SQLite.
 3. Portrait teaser (free): Polaroid with the live aura, one grounded sentence, two tappable regions.
-4. Soft paywall, only after a portrait exists. Plans: $8.99 monthly, $54 annual (recommended), $89 lifetime. Restore and manage/cancel are on the paywall and in Settings.
+4. Soft paywall, only after a portrait exists. Plans: $8.99 monthly, $54 annual (recommended), $149 lifetime. Where a store is connected the paywall shows the store's own localised prices instead of these figures. Restore and manage/cancel are on the paywall and in Settings.
 5. Pro: full breakdown (every colour tied to a measurement), history and trends, the guide, clean hi-res export, unlimited practice sessions with before/after portraits and the personal baseline. The first practice session is free so the live feedback is experienced before the paywall.
 
 ## Design system: Stage (`src/ui/theme.ts`)
