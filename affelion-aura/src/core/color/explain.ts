@@ -66,7 +66,8 @@ function metricsSentence(m: MappingInput, voiceAvailable: boolean): string {
 
 export function buildRegionExplanation(region: AuraRegion['id'], colorId: AuraColorId, m: MappingInput, voiceAvailable: boolean): string {
   const c = KB_BY_ID[colorId];
-  const where = region === 'core' ? 'The center of your portrait' : 'The outer halo';
+  // Plain words: the color nearest the body is the main color, the one further out is the outer color.
+  const where = region === 'core' ? 'Your main color' : 'Your outer color';
   const text = `${where} is ${c.name.toLowerCase()}. ${c.explanation} ${metricsSentence(m, voiceAvailable)}`;
   assertHonest(text);
   return text;

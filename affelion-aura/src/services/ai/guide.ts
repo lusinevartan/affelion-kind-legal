@@ -26,7 +26,7 @@ Rules you must follow:
 1. Only speak about the numbers provided and what the Affelion color system maps them to. Tie every statement to a specific measurement.
 2. The portrait is a translation of physiology and voice into color. Never describe it as detecting, reading or sensing energy, energy fields, chakras, spirits, intentions, destiny or anything that cannot be measured. Never make predictions.
 3. Never diagnose, name a medical condition, or give medical advice. If asked, say the app is not a medical device and suggest speaking to a clinician for health concerns.
-4. Be warm, concise and plain. Two to five sentences unless asked for more. No emojis. You are an AI assistant named Sasha, not a person; if asked, say so. The app shows a portrait for you; it is a generated image, not a photograph of anyone, and if asked you say that too.
+4. Use everyday words a teenager would know. Say "heartbeat variation" and explain it in a few words the first time, rather than HRV or RMSSD. Say "main color" for the color nearest the body and "outer color" for the one further out. Give a number only when it helps. Be warm, concise and plain. Two to five sentences unless asked for more. No emojis. You are an AI assistant named Sasha, not a person; if asked, say so. The app shows a portrait for you; it is a generated image, not a photograph of anyone, and if asked you say that too.
 5. If a question is outside the scan data, say so briefly and return to what the data shows.
 
 Color knowledge base (the only meanings and explanations you may use; quote them, do not extend them):
@@ -44,7 +44,7 @@ export function buildScanContext(record: ScanRecord): string {
       ? `Voice: dominant pitch ${voice.dominantPitchHz.toFixed(0)} Hz, variance ${(voice.variance * 100).toFixed(0)}/100, stability ${(voice.stability * 100).toFixed(0)}/100, voiced ${(voice.voicedRatio * 100).toFixed(0)}% of the sample`
       : 'Voice: no usable sample (skipped or too quiet); vocal variance treated as 0 and stability as neutral',
     `Color family rule applied: ${aura.family}`,
-    `Portrait: center ${AURA_COLORS[aura.primaryColorId].name} (${AURA_COLORS[aura.primaryColorId].primary}), halo ${AURA_COLORS[aura.secondaryColorId].name} (${AURA_COLORS[aura.secondaryColorId].primary})${
+    `Portrait: main color ${AURA_COLORS[aura.primaryColorId].name} (${AURA_COLORS[aura.primaryColorId].primary}), outer color ${AURA_COLORS[aura.secondaryColorId].name} (${AURA_COLORS[aura.secondaryColorId].primary})${
       aura.accentStrength > 0 ? `, brighter accents from vocal variance` : ''
     }`,
     `Shader parameters: hue ${aura.hue}°, saturation ${aura.saturation}, lightness ${aura.lightness}, turbulence ${aura.turbulence}, pulse ${aura.pulseSpeed} Hz`,
@@ -73,22 +73,22 @@ export function localGuideAnswer(question: string, record: ScanRecord): string {
   if (/(doctor|medical|medic|health|disease|diagnos|sick|ill\b|illness|anxiety|depress|condition|symptom|blood pressure|heart attack|arrhythm|dying|die\b)/.test(q)) {
     return 'Affelion Aura is not a medical device and cannot assess health conditions. It visualizes a short pulse and voice sample. If you have a health concern, please speak with a clinician.';
   }
-  if (/(hrv|variab|rmssd|coheren|halo|edge)/.test(q)) {
-    return `Your HRV (RMSSD) was ${heart.rmssd.toFixed(0)} ms. The halo is ${sec.name.toLowerCase()}: ${sec.explanation} HRV of 55 ms or more with a pulse of 78 bpm or less selects greens and teals with low turbulence; HRV of 28 ms or less selects reds and oranges with more turbulence.`;
+  if (/(hrv|variab|rmssd|coheren|halo|edge|outer|steady)/.test(q)) {
+    return `Your heartbeat variation was ${heart.rmssd.toFixed(0)} ms. That is how much the gap between beats changes from one beat to the next. Your outer color is ${sec.name.toLowerCase()}: ${sec.explanation} Strong variation with a calm pulse gives greens and teals. Low variation gives reds and oranges.`;
   }
   if (/(voice|pitch|speak|accent|sound)/.test(q)) {
     if (voice && voice.quality > 0.2) {
-      return `Your voice sample had a dominant pitch of ${voice.dominantPitchHz.toFixed(0)} Hz, variance ${Math.round(voice.variance * 100)}% and stability ${Math.round(voice.stability * 100)}%. Variance raises saturation${
-        aura.accentStrength > 0 ? ' and triggered brighter accents' : ''
-      }; stability sets lightness. Nothing you said was stored or transcribed; only pitch and loudness statistics were used.`;
+      return `Your voice sat around ${voice.dominantPitchHz.toFixed(0)} Hz. It moved around by ${Math.round(voice.variance * 100)}% and was ${Math.round(voice.stability * 100)}% steady. A livelier voice makes the color stronger${
+        aura.accentStrength > 0 ? ' and added brighter flecks' : ''
+      }. A steadier voice makes it lighter. Nothing you said was saved or written down. Only how high and how loud your voice was got used.`;
     }
-    return 'The voice step was skipped or too quiet to analyze, so only your pulse and HRV shaped this portrait. Saturation stayed at its baseline.';
+    return 'The voice step was skipped or too quiet to use, so only your heartbeat shaped this portrait.';
   }
-  if (/(red|orange|stress|activ|fast|heart rate|bpm|pulse)/.test(q)) {
-    return `Your pulse averaged ${heart.bpm.toFixed(0)} bpm. The center of the portrait is ${dom.name.toLowerCase()}: ${dom.explanation} A pulse of 92 bpm or more, or HRV of 28 ms or less, selects reds and oranges with higher turbulence and pulse speed; a pulse of 62 bpm or less selects blues and indigos.`;
+  if (/(red|orange|stress|activ|fast|heart rate|bpm|pulse|main|why am i)/.test(q)) {
+    return `Your pulse averaged ${heart.bpm.toFixed(0)} beats a minute. Your main color is ${dom.name.toLowerCase()}: ${dom.explanation} A fast pulse, 92 or more, or very low heartbeat variation gives reds and oranges. A slow pulse, 62 or less, gives blues and purples.`;
   }
-  if (/(mean|why|what|explain|color|color)/.test(q)) {
-    return `${aura.summary} ${dom.explanation} The halo follows your HRV (${heart.rmssd.toFixed(0)} ms) and the saturation and brightness follow your voice. Every color in the portrait maps to one of those measurements and nothing else.`;
+  if (/(mean|why|what|explain|colour|color|teal|move|shift|change)/.test(q)) {
+    return `${aura.summary} ${dom.explanation} The outer color follows your heartbeat variation, which was ${heart.rmssd.toFixed(0)} ms. How strong and how light the color is follows your voice. Every color comes from one of those readings and nothing else.`;
   }
   return SAFE_FALLBACK;
 }
