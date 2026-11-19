@@ -6,6 +6,7 @@ import { Button, Screen, Text } from '../../ui/components';
 import { colors, space } from '../../ui/theme';
 import { useAppState } from '../../features/store/AppStore';
 import { askGuide, GUIDE_NAME, type GuideMessage } from '../../services/ai/guide';
+import { SASHA_ROLE, SashaAvatar, SashaStage } from '../../features/guide/Sasha';
 
 const SUGGESTIONS = ['Why is my centre this colour?', 'What does the halo mean?', 'How did my voice change the portrait?', 'What would move this toward teal?'];
 
@@ -60,14 +61,18 @@ export default function GuideScreen() {
             ← Back
           </Text>
         </Pressable>
-        <Text variant="eyebrow" color={colors.bone50}>
-          {GUIDE_NAME}
-        </Text>
+        <View style={styles.who} accessible accessibilityLabel={`${GUIDE_NAME}, ${SASHA_ROLE}`}>
+          <Text variant="eyebrow" color={colors.fg60}>
+            {GUIDE_NAME} · {SASHA_ROLE}
+          </Text>
+          <SashaAvatar size={28} />
+        </View>
       </View>
       <ScrollView ref={scrollRef} contentContainerStyle={styles.thread} keyboardShouldPersistTaps="handled">
+        <SashaStage style={styles.stage} />
         <View style={styles.assistant}>
           <Text variant="bodySmall" color={colors.bone70}>
-            {`I'm ${GUIDE_NAME}, your guide. I can explain this portrait using only what was measured: a pulse of ${record.heart.bpm.toFixed(0)} bpm, variability of ${record.heart.rmssd.toFixed(0)} ms, and your voice sample. I won't guess about anything that wasn't measured, and I'm not a substitute for a clinician.`}
+            {`I'm ${GUIDE_NAME}, your AI guide. I can explain this portrait using only what was measured: a pulse of ${record.heart.bpm.toFixed(0)} bpm, variability of ${record.heart.rmssd.toFixed(0)} ms, and your voice sample. I won't guess about anything that wasn't measured, and I'm not a substitute for a clinician.`}
           </Text>
         </View>
         {messages.map((m, i) => (
@@ -114,6 +119,9 @@ export default function GuideScreen() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: space.xl, paddingBottom: space.md },
+  who: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  // The portrait runs edge to edge, past the thread's side padding.
+  stage: { marginHorizontal: -space.xl, marginBottom: space.sm },
   thread: { paddingHorizontal: space.xl, gap: space.md, paddingBottom: space.xl },
   assistant: { alignSelf: 'flex-start', maxWidth: '88%', backgroundColor: colors.ground2, padding: space.lg, borderRadius: 20 },
   user: { alignSelf: 'flex-end', maxWidth: '88%', backgroundColor: colors.fg, padding: space.lg, borderRadius: 20 },

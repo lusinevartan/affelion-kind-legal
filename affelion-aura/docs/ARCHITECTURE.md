@@ -164,6 +164,11 @@ effort with server-side refusal fallbacks, and filters the reply through the hon
 app points at it with `EXPO_PUBLIC_GUIDE_ENDPOINT` and, optionally, `EXPO_PUBLIC_GUIDE_TOKEN`.
 It stores nothing; the app never sends images or audio.
 
+Sasha has a face: `assets/sasha.jpg` and `assets/sasha-avatar.jpg`, shown by
+`src/features/guide/Sasha.tsx` on the guide screen and the report. The portrait is a generated
+image, not a photograph of anyone. Wherever it appears it carries the words "AI guide", Settings
+says the portrait is generated, and Sasha's instructions tell her to say so if asked.
+
 The server owns the system prompt (`server/sasha/src/systemPrompt.ts`), generated from this
 app's knowledge base by `npm run sync:guide-prompt`; a test fails if they drift. The app sends
 only the scan's numbers and the conversation. A prompt sent by a client is ignored, because the

@@ -9,6 +9,7 @@ import { getCachedMask } from '../../features/scan/sessionCache';
 import { AuraView } from '../../render/fluid/AuraView';
 import { AURA_COLOR_IDS } from '../../core/color/palette';
 import { usePolaroidExport } from '../../features/portrait/usePolaroidExport';
+import { SashaAvatar } from '../../features/guide/Sasha';
 import { scanInsight } from '../../core/insight/baseline';
 import { FRAME_STYLE_IDS, FRAME_STYLES } from '../../render/polaroid/styles';
 
@@ -166,6 +167,15 @@ export default function ReportScreen() {
       </Card>
 
       <View style={{ marginTop: space.xl, gap: space.md }}>
+        <View style={styles.sasha} accessible accessibilityLabel="Sasha, an AI guide who answers only from your readings">
+          <SashaAvatar size={56} />
+          <View style={{ flex: 1 }}>
+            <Text variant="heading">Sasha</Text>
+            <Text variant="bodySmall" color={colors.fg70}>
+              An AI guide. She answers only from your readings.
+            </Text>
+          </View>
+        </View>
         <Button label="Ask Sasha" onPress={() => router.push({ pathname: '/guide/[id]', params: { id: record.id } })} block />
         <View style={{ flexDirection: 'row', gap: space.md }}>
           <Button label="Save clean export" variant="secondary" onPress={() => void exportHiRes('save')} loading={busy === 'save'} style={{ flex: 1 }} />
@@ -183,5 +193,6 @@ export default function ReportScreen() {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   plate: { backgroundColor: colors.stage, overflow: 'hidden' },
+  sasha: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
   frameRow: { flexDirection: 'row', gap: space.lg, marginTop: space.md, flexWrap: 'wrap' },
 });
