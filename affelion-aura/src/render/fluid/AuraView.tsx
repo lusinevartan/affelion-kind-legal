@@ -69,8 +69,18 @@ export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function Au
     async snapshot() {
       const view = glViewRef.current;
       if (!view) throw new Error('Aura view is not mounted');
-      const snap = await view.takeSnapshotAsync({ format: 'png', flip: false });
-      return { uri: typeof snap.uri === 'string' ? snap.uri : String(snap.uri), width: snap.width, height: snap.height };
+      // Draw a fresh frame and read it before it is handed to the screen. Once a frame has been
+      // presented, the drawing buffer may already be cleared and the snapshot comes back black.
+      const sim = simRef.current;
+      const gl = glRef.current;
+      if (sim && gl) sim.step(0.001);
+      const pending = view.takeSnapshotAsync({ format: 'png', flip: false });
+      if (gl) gl.endFrameEXP();
+      const snap = await pending;
+      // Phones return a file address. Browsers return the image itself, which needs an address to display.
+      const raw = snap.uri as unknown;
+      const uri = typeof raw === 'string' ? raw : typeof Blob !== 'undefined' && raw instanceof Blob ? URL.createObjectURL(raw) : String(raw);
+      return { uri, width: snap.width, height: snap.height };
     },
   }));
 

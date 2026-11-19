@@ -3,6 +3,7 @@ import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, View } from 'reac
 import { router, useLocalSearchParams } from 'expo-router';
 import { Camera } from 'expo-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 import { Button, Card, MetricRow, Screen, StatusPill, Text } from '../ui/components';
 import { colors, space } from '../ui/theme';
 import { useAppActions, useAppState } from '../features/store/AppStore';
@@ -164,9 +165,10 @@ export default function PracticeScreen() {
       <Screen scroll>
         <Text variant="eyebrow" color={colors.bone60}>SESSION COMPLETE</Text>
         <Text variant="title" style={{ marginTop: space.sm }}>{PRACTICE_COPY.done.body}</Text>
+        {/* Each card is drawn from the colors its caption names, so the picture and the words always agree. */}
         <View style={{ flexDirection: 'row', gap: space.md, marginTop: space.xl, justifyContent: 'center' }}>
-          <PolaroidCard width={w} stillUri={scan?.stillUri ?? null} aura={beforeShot ? { kind: 'image', uri: beforeShot } : { kind: 'live', params: result.beforeAura, mask, paused: true }} caption="Before" subcaption={AURA_COLORS[result.beforeAura.primaryColorId].name} showWordmark={false} />
-          <PolaroidCard width={w} stillUri={scan?.stillUri ?? null} aura={afterShot ? { kind: 'image', uri: afterShot } : { kind: 'live', params: result.afterAura, mask, paused: true }} caption="After" subcaption={AURA_COLORS[result.afterAura.primaryColorId].name} showWordmark={false} />
+          <PolaroidCard width={w} stillUri={scan?.stillUri ?? null} aura={{ kind: 'live', params: result.beforeAura, mask, paused: true }} caption="Before" subcaption={AURA_COLORS[result.beforeAura.primaryColorId].name} showWordmark={false} />
+          <PolaroidCard width={w} stillUri={scan?.stillUri ?? null} aura={{ kind: 'live', params: result.afterAura, mask, paused: true }} caption="After" subcaption={AURA_COLORS[result.afterAura.primaryColorId].name} showWordmark={false} />
         </View>
         <Card style={{ marginTop: space.xl }}>
           <Text variant="eyebrow" color={colors.bone60}>WHAT CHANGED</Text>
@@ -213,6 +215,7 @@ export default function PracticeScreen() {
   const tint = aura ? AURA_COLORS[aura.primaryColorId].hex : colors.stageFg;
   return (
     <View style={styles.root}>
+      <StatusBar style="light" />
       <View style={styles.stage}>
         <AuraView ref={auraRef} params={aura} mask={mask} stillUri={scan?.stillUri ?? null} quality="medium" motion="always" style={StyleSheet.absoluteFill} />
         <View style={[styles.topBar, { paddingTop: insets.top + space.sm }]}>

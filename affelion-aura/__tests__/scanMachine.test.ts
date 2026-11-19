@@ -29,6 +29,17 @@ describe('scan state machine', () => {
     expect(s.totalProgress).toBeGreaterThan(0.84);
   });
 
+  test('the first seconds of a pulse reading are not blamed on movement', () => {
+    let s = scanReducer(initialScanState, { type: 'START' });
+    s = scanReducer(s, { type: 'FACE_DETECTED', detected: true });
+    s = run(s, ticks(SCAN_TIMING.faceSec * 2));
+    s = scanReducer(s, { type: 'FINGER_COVERAGE', covered: true, reason: 'ok' });
+    s = run(s, ticks(24)); // 12 s covered, still too few beats for a quality reading
+    expect(s.guidance).toBe('fingerHold');
+    s = run(s, ticks(8)); // past the grace period with no usable signal
+    expect(s.guidance).toBe('fingerSteady');
+  });
+
   test('good quality lets the finger phase finish early', () => {
     let s = scanReducer(initialScanState, { type: 'START' });
     s = scanReducer(s, { type: 'FACE_DETECTED', detected: true });

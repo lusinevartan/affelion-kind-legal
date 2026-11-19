@@ -16,6 +16,11 @@ export const SCAN_TIMING = {
   fingerTargetSec: 40,
   /** Hard cap on wall time spent in the finger phase before we fail with guidance. */
   fingerMaxWallSec: 90,
+  /**
+   * Covered seconds before a weak signal is blamed on movement. The pulse reader needs about
+   * five beats before it can judge quality, which takes ten seconds or more at a slow pulse.
+   */
+  fingerSteadyAfterSec: 15,
   voiceSec: 5,
   /** Minimum voiced seconds required to accept the voice sample. */
   voiceMinVoicedSec: 2.5,
@@ -211,7 +216,7 @@ function tick(state: ScanState, dt: number): ScanState {
       if (!covered) {
         guidance = reason === 'saturated' ? 'fingerPressLighter' : reason === 'tooDark' ? 'fingerTooDark' : 'fingerPlace';
       } else {
-        guidance = state.fingerQuality < 0.35 && fingerCovered > 6 ? 'fingerSteady' : 'fingerHold';
+        guidance = state.fingerQuality < 0.35 && fingerCovered > SCAN_TIMING.fingerSteadyAfterSec ? 'fingerSteady' : 'fingerHold';
       }
       const enough =
         fingerCovered >= SCAN_TIMING.fingerTargetSec ||

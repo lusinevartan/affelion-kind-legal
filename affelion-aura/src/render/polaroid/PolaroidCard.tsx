@@ -83,11 +83,8 @@ export const PolaroidCard = React.forwardRef<PolaroidCardHandle, PolaroidCardPro
 
 const styles = StyleSheet.create({
   paper: {
-    shadowColor: '#000',
-    shadowOpacity: 0.45,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 14 },
-    elevation: 12,
+    // boxShadow renders the same on iOS and Android; elevation would draw a different shadow.
+    boxShadow: '0px 14px 24px rgba(0, 0, 0, 0.45)',
   },
   window: { backgroundColor: '#000000', overflow: 'hidden' },
   captionArea: { justifyContent: 'space-between', paddingTop: 10 },

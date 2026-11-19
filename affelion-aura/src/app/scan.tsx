@@ -3,6 +3,7 @@ import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Camera } from 'expo-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 import { AffelionSilhouetteView, type AffelionSilhouetteViewRef } from '../../modules/affelion-silhouette';
 import { Button, ProgressBar, Screen, Text } from '../ui/components';
 import { colors, space } from '../ui/theme';
@@ -113,6 +114,7 @@ export default function ScanScreen() {
 
   return (
     <View style={styles.root}>
+      <StatusBar style="light" />
       {/* Stage */}
       <View style={styles.stage}>
         {state.phase === 'face' || state.phase === 'idle' ? (
@@ -147,7 +149,7 @@ export default function ScanScreen() {
               <Waveform samples={live.waveform} tint={live.coverage === 'ok' ? colors.stageFg : colors.stageFg50} />
             </View>
             <Text variant="caption" color={colors.stageFg50} style={{ marginTop: space.lg }}>
-              {Math.round(state.fingerCovered)} s of {SCAN_TIMING.fingerTargetSec} s · signal {Math.round(state.fingerQuality * 100)}%
+              {Math.round(state.fingerCovered)} s of {SCAN_TIMING.fingerTargetSec} s · {live.bpm == null ? 'finding your pulse' : `signal ${Math.round(state.fingerQuality * 100)}%`}
             </Text>
           </View>
         ) : null}

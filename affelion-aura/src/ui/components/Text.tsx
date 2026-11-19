@@ -17,6 +17,9 @@ export interface TextProps extends RNTextProps {
  */
 const MAX_SCALE: Partial<Record<Variant, number>> = { hero: 1.15, display: 1.25, title: 1.5, serifCaption: 1.5 };
 
+/** Android pads text for accents above the line by default, which shifts it a few pixels against iOS. */
+const FLAT: TextStyle = { includeFontPadding: false };
+
 export function Text({ variant = 'body', color = colors.fg, align, style, maxFontSizeMultiplier, ...rest }: TextProps) {
-  return <RNText maxFontSizeMultiplier={maxFontSizeMultiplier ?? MAX_SCALE[variant]} {...rest} style={[type[variant], { color, textAlign: align }, style]} />;
+  return <RNText maxFontSizeMultiplier={maxFontSizeMultiplier ?? MAX_SCALE[variant]} {...rest} style={[type[variant], { color, textAlign: align }, FLAT, style]} />;
 }
