@@ -6,7 +6,7 @@ import { Button, Screen, Text } from '../../ui/components';
 import { colors, space } from '../../ui/theme';
 import { useAppState } from '../../features/store/AppStore';
 import { askGuide, GUIDE_NAME, type GuideMessage } from '../../services/ai/guide';
-import { SASHA_ROLE, SashaAvatar, SashaStage } from '../../features/guide/Sasha';
+import { SashaAvatar, SashaStage } from '../../features/guide/Sasha';
 
 const SUGGESTIONS = ['Why is my center this color?', 'What does the halo mean?', 'How did my voice change the portrait?', 'What would move this toward teal?'];
 
@@ -61,9 +61,9 @@ export default function GuideScreen() {
             ← Back
           </Text>
         </Pressable>
-        <View style={styles.who} accessible accessibilityLabel={`${GUIDE_NAME}, ${SASHA_ROLE}`}>
+        <View style={styles.who} accessible accessibilityLabel={GUIDE_NAME}>
           <Text variant="eyebrow" color={colors.fg60}>
-            {GUIDE_NAME} · {SASHA_ROLE}
+            {GUIDE_NAME}
           </Text>
           <SashaAvatar size={28} />
         </View>
@@ -72,7 +72,7 @@ export default function GuideScreen() {
         <SashaStage style={styles.stage} />
         <View style={styles.assistant}>
           <Text variant="bodySmall" color={colors.bone70}>
-            {`I'm ${GUIDE_NAME}, your AI guide. I can explain this portrait using only what was measured: a pulse of ${record.heart.bpm.toFixed(0)} bpm, variability of ${record.heart.rmssd.toFixed(0)} ms, and your voice sample. I won't guess about anything that wasn't measured, and I'm not a substitute for a clinician.`}
+            {`I'm ${GUIDE_NAME}, your guide. I'm an AI, so I explain this portrait using only what was measured: a pulse of ${record.heart.bpm.toFixed(0)} bpm, variability of ${record.heart.rmssd.toFixed(0)} ms, and your voice sample. I won't guess about anything that wasn't measured, and I'm not a substitute for a clinician.`}
           </Text>
         </View>
         {messages.map((m, i) => (

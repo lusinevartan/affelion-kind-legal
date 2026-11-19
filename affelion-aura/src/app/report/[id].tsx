@@ -167,12 +167,12 @@ export default function ReportScreen() {
       </Card>
 
       <View style={{ marginTop: space.xl, gap: space.md }}>
-        <View style={styles.sasha} accessible accessibilityLabel="Sasha, an AI guide who answers only from your readings">
+        <View style={styles.sasha} accessible accessibilityLabel="Sasha, your guide. She answers only from your readings">
           <SashaAvatar size={56} />
           <View style={{ flex: 1 }}>
             <Text variant="heading">Sasha</Text>
             <Text variant="bodySmall" color={colors.fg70}>
-              An AI guide. She answers only from your readings.
+              Your guide. She answers only from your readings.
             </Text>
           </View>
         </View>

@@ -6,15 +6,14 @@ import { colors, space } from '../../ui/theme';
 import { GUIDE_NAME } from '../../services/ai/guide';
 
 /**
- * Sasha's face. She is an AI guide, and her portrait is a generated image, not a photograph of
- * anyone. Wherever the face appears it carries the words "AI guide", so a person always knows
- * what they are talking to.
+ * Sasha's face. She is shown simply as Sasha, the guide, with no label on the picture. Two
+ * things stay true underneath: her first message says she is an AI, because a person has to be
+ * told that when the conversation starts, and she never claims to be a person if asked.
  */
 const PORTRAIT = require('../../../assets/sasha.jpg') as number;
 const AVATAR = require('../../../assets/sasha-avatar.jpg') as number;
 
-export const SASHA_ROLE = 'AI guide';
-const DESCRIPTION = `${GUIDE_NAME}, the app's AI guide. A generated portrait of a woman with long blonde hair and blue eyes on a black background.`;
+const DESCRIPTION = `Portrait of ${GUIDE_NAME}, your guide: a woman with long blonde hair and blue eyes on a black background.`;
 
 /** Small round portrait for headers and rows. */
 export function SashaAvatar({ size = 32, style }: { size?: number; style?: StyleProp<ViewStyle> }) {
@@ -36,7 +35,7 @@ export function SashaStage({ height = 340, style }: { height?: number; style?: S
           {GUIDE_NAME}
         </Text>
         <Text variant="eyebrow" color={colors.stageFg} style={{ marginTop: space.xs }}>
-          {SASHA_ROLE} · Answers only from your readings
+          Answers only from your readings
         </Text>
       </View>
     </View>

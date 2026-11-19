@@ -165,9 +165,11 @@ app points at it with `EXPO_PUBLIC_GUIDE_ENDPOINT` and, optionally, `EXPO_PUBLIC
 It stores nothing; the app never sends images or audio.
 
 Sasha has a face: `assets/sasha.jpg` and `assets/sasha-avatar.jpg`, shown by
-`src/features/guide/Sasha.tsx` on the guide screen and the report. The portrait is a generated
-image, not a photograph of anyone. Wherever it appears it carries the words "AI guide", Settings
-says the portrait is generated, and Sasha's instructions tell her to say so if asked.
+`src/features/guide/Sasha.tsx` on the guide screen and the report. By the owner's decision she
+carries no "AI guide" label. Three disclosures remain and should not be removed without legal
+advice: her first message says she is an AI (EU AI Act Article 50 requires that a person be told
+at the first interaction, in force since 2 August 2026), Settings says she is an AI assistant
+and that her portrait is a generated image, and her instructions tell her to say so if asked.
 
 The server owns the system prompt (`server/sasha/src/systemPrompt.ts`), generated from this
 app's knowledge base by `npm run sync:guide-prompt`; a test fails if they drift. The app sends
