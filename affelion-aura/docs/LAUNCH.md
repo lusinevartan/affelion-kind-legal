@@ -50,7 +50,14 @@ scan, one practice session, one saved portrait and one export work on at least t
    `pro`, attach all three products, put them in the default offering.
 4. Put the RevenueCat iOS public key in the build: `npx eas-cli@latest env:create` for
    `EXPO_PUBLIC_RC_IOS_KEY` (production and preview).
-5. Test with a sandbox Apple account on a preview build: buy each plan, restore, cancel.
+5. **Free trial (recommended).** On the annual subscription in App Store Connect, add an
+   introductory offer of type "Free" for one week. Nothing else is needed: the paywall then shows
+   "7 days free, then $69.99 per year" and the button reads "Start 7-day free trial", only for
+   people the store says are eligible. Remove the offer in the store and the app goes back to
+   the plain price. A trial is the usual way subscription apps lift the share of people who
+   start paying, at the cost of some who cancel inside the week.
+6. Test with a sandbox Apple account on a preview build: buy each plan, start and cancel the
+   trial, restore, cancel.
 
 Never set `EXPO_PUBLIC_ALLOW_SIMULATED_PURCHASES` on a production build. Without store keys a
 release build shows "Purchases are not available in this build" and takes no money.
@@ -89,8 +96,8 @@ day.
   Before turning it on, add an in-app consent step: Apple requires clear permission before
   personal data is sent to a third-party AI service, and scan numbers count. Update the
   privacy page and the App Privacy answers at the same time.
-- **Revenue levers not built yet:** a free trial on the annual plan, sharing the first portrait
-  before the paywall, a one-time single-report purchase.
+- **Revenue levers not built yet:** sharing the first portrait before the paywall, and a
+  one-time single-report purchase. (The free trial is built; see step 3.)
 
 ## Honest timeline
 

@@ -14,7 +14,7 @@ device.
 ## State in one paragraph
 
 The app is feature complete in code and has never run on a physical phone. Type check, lint and
-90 unit tests pass; iOS, Android and web bundles build. The three native modules (pulse, outline,
+95 unit tests pass; iOS, Android and web bundles build. The three native modules (pulse, outline,
 microphone), store purchases and the Sasha server have not been exercised on real hardware or
 against live accounts. First device run is the gate to everything else.
 
@@ -66,7 +66,9 @@ The scan needs a phone: camera, flash and microphone do not exist in the browser
 ## Business model as built
 
 Three free scans and one free practice, then Aura Pro: $12.99 a month, $69.99 a year (shown as
-$5.83 a month, marked best value), $199 lifetime. Product IDs are in `entitlements.ts`. The
+$5.83 a month, marked best value), $199 lifetime. Product IDs are in `entitlements.ts`. A free
+trial is supported but off until one is added to a product in the store (`src/services/trial.ts`;
+the app shows a trial only when the store offers one to that person). The
 RevenueCat entitlement must be named `pro`. Free-use counters and the entitlement survive
 "Delete all data" on purpose, so deleting data does not reset the free scans.
 

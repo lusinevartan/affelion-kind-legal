@@ -1,4 +1,6 @@
-import Purchases, { LOG_LEVEL, PURCHASES_ERROR_CODE, type CustomerInfo, type PurchasesPackage } from 'react-native-purchases';
+import { Platform } from 'react-native';
+import Purchases, { INTRO_ELIGIBILITY_STATUS, LOG_LEVEL, PURCHASES_ERROR_CODE, type CustomerInfo, type PurchasesPackage } from 'react-native-purchases';
+import { trialFromIntro } from '../trial';
 import { NO_ENTITLEMENT, PLANS, type Entitlement, type PlanId, type PlanPrices, type PurchaseProvider } from '../entitlements';
 
 /**
@@ -59,13 +61,22 @@ export class RevenueCatPurchaseProvider implements PurchaseProvider {
   async getPrices(): Promise<PlanPrices> {
     await this.ensure();
     const prices: PlanPrices = {};
+    const offered: [PlanId, string][] = [];
     try {
       const packages = await this.packages();
       for (const plan of PLANS) {
         const pkg = packages.find((p) => RevenueCatPurchaseProvider.matches(p, plan.productId));
         if (!pkg) continue;
         // Only the annual plan is framed per month; the others show their own period.
-        prices[plan.id] = { price: pkg.product.priceString, perMonth: plan.id === 'annual' ? pkg.product.pricePerMonthString : null };
+        prices[plan.id] = { price: pkg.product.priceString, perMonth: plan.id === 'annual' ? pkg.product.pricePerMonthString : null, trial: trialFromIntro(pkg.product.introPrice) };
+        if (prices[plan.id]!.trial) offered.push([plan.id, pkg.product.identifier]);
+      }
+      // A trial is shown only to someone the store says can still have it.
+      if (offered.length && Platform.OS === 'ios') {
+        const eligibility = await Purchases.checkTrialOrIntroductoryPriceEligibility(offered.map(([, id]) => id)).catch(() => null);
+        for (const [planId, id] of offered) {
+          if (eligibility?.[id]?.status !== INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE) prices[planId]!.trial = null;
+        }
       }
     } catch {
       // No connection or no offerings yet: the paywall falls back to the listed prices.

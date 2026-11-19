@@ -6,6 +6,7 @@ import { colors, space } from '../ui/theme';
 import { PLANS, purchasesAreSimulated, purchasesAvailable, type PlanId } from '../services/entitlements';
 import { useAppActions, useAppState } from '../features/store/AppStore';
 import { PRIVACY_URL, TERMS_URL, openLink } from '../services/links';
+import { trialAdjective, trialTerms } from '../services/trial';
 
 /**
  * Soft paywall, set like a price list on the table: no countdowns, no badges shouting, the
@@ -17,6 +18,8 @@ export default function Paywall() {
   const { purchase, restore, manageSubscriptions } = useAppActions();
   const [plan, setPlan] = React.useState<PlanId>('annual');
   const [busy, setBusy] = React.useState(false);
+  // A free trial appears only when the store offers one on the chosen plan to this person.
+  const trial = prices[plan]?.trial ?? null;
 
   const buy = async () => {
     try {
@@ -60,12 +63,13 @@ export default function Paywall() {
           const store = prices[listed.id];
           const p = store ? { ...listed, price: store.price, perMonth: store.perMonth ? `${store.perMonth} / month` : listed.id === 'annual' ? null : listed.perMonth } : listed;
           const selected = p.id === plan;
+          const offer = store?.trial ?? null;
           return (
             <View key={p.id}>
               <Pressable
                 accessibilityRole="radio"
                 accessibilityState={{ selected }}
-                accessibilityLabel={`${p.title}, ${p.price} ${p.period}${p.recommended ? ', best value' : ''}`}
+                accessibilityLabel={`${p.title}, ${offer ? trialTerms(offer, p.price, p.period) : `${p.price} ${p.period}`}${p.recommended ? ', best value' : ''}`}
                 onPress={() => setPlan(p.id)}
                 style={styles.plan}
               >
@@ -79,7 +83,7 @@ export default function Paywall() {
                       {p.recommended ? <Text variant="mono" color={colors.fg60}>{'   best value'}</Text> : null}
                     </Text>
                     <Text variant="caption" color={colors.bone50} style={{ marginTop: 2 }}>
-                      {p.note}
+                      {offer ? trialTerms(offer, p.price, p.period) : p.note}
                     </Text>
                   </View>
                 </View>
@@ -99,7 +103,7 @@ export default function Paywall() {
       </View>
 
       <Button
-        label={entitlement.isPro ? 'You already have Pro' : !purchasesAvailable() ? 'Purchases are not available in this build' : `Continue with ${PLANS.find((p) => p.id === plan)?.title}`}
+        label={entitlement.isPro ? 'You already have Pro' : !purchasesAvailable() ? 'Purchases are not available in this build' : trial ? `Start ${trialAdjective(trial)} free trial` : `Continue with ${PLANS.find((p) => p.id === plan)?.title}`}
         onPress={() => void buy()}
         loading={busy}
         disabled={entitlement.isPro || !purchasesAvailable()}

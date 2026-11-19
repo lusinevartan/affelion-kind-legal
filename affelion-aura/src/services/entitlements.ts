@@ -1,5 +1,6 @@
 import { Linking, Platform } from 'react-native';
 import { getSetting, setSetting } from './storage';
+import type { Trial } from './trial';
 
 /**
  * Prices sit level with the leading meditation apps (about $13 a month, $70 a year). They are
@@ -75,7 +76,7 @@ export interface Entitlement {
 export const NO_ENTITLEMENT: Entitlement = { isPro: false, plan: null, expiresAt: null, source: 'none' };
 
 /** Prices as the store will charge them, formatted for the person's country and currency. */
-export type PlanPrices = Partial<Record<PlanId, { price: string; perMonth: string | null }>>;
+export type PlanPrices = Partial<Record<PlanId, { price: string; perMonth: string | null; /** A free trial the store offers this person on the plan. */ trial?: Trial | null }>>;
 
 export interface PurchaseProvider {
   readonly name: string;

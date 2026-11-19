@@ -88,7 +88,7 @@ Build-time environment (EAS secrets or `.env`):
 
 ## Status
 
-What is verified in this repository: the engine and signal processing (90 unit tests), the
+What is verified in this repository: the engine and signal processing (95 unit tests), the
 shader and fluid simulation (rendered in headless Chromium; see `docs/renders`), and the TypeScript
 build of the whole app including native module bindings.
 
