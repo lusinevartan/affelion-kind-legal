@@ -25,7 +25,7 @@ export interface ScanInsight {
   rmssdDelta: number | null;
   /** HRV trend across the baseline window. */
   trend: Trend | null;
-  /** Knowledge-base colour used to present the trend (display only, never the portrait). */
+  /** Knowledge-base color used to present the trend (display only, never the portrait). */
   trendColorId: AuraColorId | null;
   /** One grounded sentence. */
   sentence: string;
@@ -78,7 +78,7 @@ export function scanInsight(scan: ScanRecord, allScans: readonly ScanRecord[]): 
   const bpmDelta = (scan.heart.bpm - baseline.bpm) / baseline.bpm;
   const rmssdDelta = (scan.heart.rmssd - baseline.rmssd) / Math.max(1, baseline.rmssd);
   // Lime: "improving HRV or recovering from activation"; emerald: "solid HRV with calm-to-moderate BPM";
-  // earth brown: "moderate-low BPM with reduced HRV". Display colours only.
+  // earth brown: "moderate-low BPM with reduced HRV". Display colors only.
   const trendColorId: AuraColorId | null = trend === 'improving' ? 'lime' : trend === 'steady' ? 'emerald' : trend === 'declining' ? 'earth_brown' : null;
   const hrvWord = rmssdDelta > 0.08 ? `${pct(rmssdDelta)} above` : rmssdDelta < -0.08 ? `${pct(rmssdDelta)} below` : 'close to';
   const bpmWord = bpmDelta > 0.05 ? `${pct(bpmDelta)} faster than` : bpmDelta < -0.05 ? `${pct(bpmDelta)} slower than` : 'about the same as';

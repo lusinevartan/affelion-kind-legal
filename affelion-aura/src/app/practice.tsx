@@ -186,7 +186,7 @@ export default function PracticeScreen() {
           </Card>
         ) : null}
         <Text variant="caption" color={colors.bone50} style={{ marginTop: space.lg }}>
-          Portraits are rendered from the first and last 45 seconds of this session using the same colour rules as a scan. Short-term changes vary from day to day; the trend over many sessions is what matters.
+          Portraits are rendered from the first and last 45 seconds of this session using the same color rules as a scan. Short-term changes vary from day to day; the trend over many sessions is what matters.
         </Text>
         <Button label="Done" onPress={() => router.replace('/home')} block style={{ marginTop: space.xl }} />
         {!entitlement.isPro ? (
@@ -221,7 +221,7 @@ export default function PracticeScreen() {
             <Text variant="eyebrow" color={colors.stageFg70}>Stop</Text>
           </Pressable>
         </View>
-        <View style={styles.centre} pointerEvents="none">
+        <View style={styles.center} pointerEvents="none">
           {state.phase === 'breathe' ? <BreathPacer phase={state.breathPhase} breathing={state.breathing} tint={colors.stageFg} /> : null}
         </View>
       </View>
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
   stage: { flex: 1, backgroundColor: colors.stage, overflow: 'hidden' },
   topBar: { position: 'absolute', left: space.lg, right: space.lg, top: 0, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cancel: { paddingHorizontal: space.md, paddingVertical: 8, backgroundColor: colors.overlay },
-  centre: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
+  center: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
   panel: { maxHeight: 260, paddingHorizontal: space.xl, paddingTop: space.lg, backgroundColor: colors.stage },
   liveRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
   liveStat: { alignItems: 'center', gap: 2, minWidth: 90 },

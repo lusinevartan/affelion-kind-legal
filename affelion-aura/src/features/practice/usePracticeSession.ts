@@ -84,9 +84,9 @@ export function usePracticeSession(scan: ScanRecord | null): PracticeSession {
   // Camera + analysis while active.
   React.useEffect(() => {
     if (!active) return;
-    let cancelled = false;
+    let canceled = false;
     const sub = AffelionPpg.addListener('onSample', (s: PpgSampleEvent) => {
-      if (cancelled || !s.locked) return;
+      if (canceled || !s.locked) return;
       const cov = ppg.push({ t: s.t, r: s.r, g: s.g, b: s.b });
       dispatch({ type: 'COVERAGE', covered: cov.covered });
     });
@@ -94,7 +94,7 @@ export function usePracticeSession(scan: ScanRecord | null): PracticeSession {
       if (st.state === 'error') dispatch({ type: 'FAIL', reason: st.message ?? 'Camera error' });
     });
     AffelionPpg.start({ torchLevel: 0.6, fps: 30, roi: 0.5, warmupSeconds: 1.2 }).catch((e: unknown) => {
-      if (!cancelled) dispatch({ type: 'FAIL', reason: e instanceof Error ? e.message : 'Could not start the rear camera' });
+      if (!canceled) dispatch({ type: 'FAIL', reason: e instanceof Error ? e.message : 'Could not start the rear camera' });
     });
     const analysis = setInterval(() => {
       const l = ppg.live();
@@ -125,7 +125,7 @@ export function usePracticeSession(scan: ScanRecord | null): PracticeSession {
       }
     }, ANALYSIS_MS);
     return () => {
-      cancelled = true;
+      canceled = true;
       clearInterval(analysis);
       sub.remove();
       statusSub.remove();

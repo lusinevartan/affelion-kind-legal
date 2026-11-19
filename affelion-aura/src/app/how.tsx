@@ -8,14 +8,14 @@ import type { AuraColorId } from '../core/color/knowledgeBase';
 import { useAppState } from '../features/store/AppStore';
 
 /**
- * How it works, in plain words. What the app measures, what the person does, what the colours
+ * How it works, in plain words. What the app measures, what the person does, what the colors
  * mean and how to change them. Written to be read once, by anyone, without a glossary.
  */
 const STEPS: { title: string; body: string }[] = [
   { title: 'Face the camera', body: 'Hold your phone in front of you so your head and shoulders fit in the oval. This gives the app your outline and one photo.' },
   { title: 'Cover the back camera with your fingertip', body: 'Rest it gently over the lens and the flash, and hold still for about 40 seconds. The light shines through your finger so the camera can see each heartbeat.' },
   { title: 'Say a few words', body: 'Talk in your normal voice for five seconds. The app listens to how high and how steady your voice is. It does not record or keep your words.' },
-  { title: 'See your portrait', body: 'Your photo appears in black and white with your colour around it.' },
+  { title: 'See your portrait', body: 'Your photo appears in black and white with your color around it.' },
 ];
 
 const MEANINGS: { ids: AuraColorId[]; name: string; body: string }[] = [
@@ -25,7 +25,7 @@ const MEANINGS: { ids: AuraColorId[]; name: string; body: string }[] = [
   { ids: ['sky_blue'], name: 'Sky blue', body: 'Somewhere in between.' },
   { ids: ['golden_yellow', 'magenta'], name: 'Yellow and magenta', body: 'An active heartbeat with a lively voice.' },
   { ids: ['lime'], name: 'Lime green', body: 'Your heartbeat settled while you were being scanned.' },
-  { ids: ['soft_white', 'muted_gray', 'charcoal'], name: 'White, pearl, grey, brown and charcoal', body: 'Very strong readings, or very quiet ones. A quiet portrait is common when you are tired.' },
+  { ids: ['soft_white', 'muted_gray', 'charcoal'], name: 'White, pearl, gray, brown and charcoal', body: 'Very strong readings, or very quiet ones. A quiet portrait is common when you are tired.' },
 ];
 
 const TIPS = ['Sit down and rest for a minute first.', 'Press lightly. Pressing hard blocks the signal.', 'Find a quiet spot for the voice step.', 'Scan at the same time each day if you want to compare.'];
@@ -57,7 +57,7 @@ export default function HowItWorks() {
         How it works
       </Text>
       <Text variant="body" color={colors.fg70} style={{ marginTop: space.md }}>
-        Affelion Aura makes a picture of how your body is doing right now. It reads your heartbeat and your voice, then turns those numbers into colour around your photo. It is not magic and it does not see invisible light. It is not a medical device.
+        Affelion Aura makes a picture of how your body is doing right now. It reads your heartbeat and your voice, then turns those numbers into color around your photo. It is not magic and it does not see invisible light. It is not a medical device.
       </Text>
 
       <Section label="What you do">
@@ -78,7 +78,7 @@ export default function HowItWorks() {
         ))}
       </Section>
 
-      <Section label="What the colour means">
+      <Section label="What the color means">
         {MEANINGS.map((m) => (
           <View key={m.name} style={styles.meaning} accessible accessibilityLabel={`${m.name}. ${m.body}`}>
             <View style={styles.swatches}>
@@ -95,13 +95,13 @@ export default function HowItWorks() {
           </View>
         ))}
         <Text variant="bodySmall" color={colors.fg70} style={{ marginTop: space.md }}>
-          Your voice changes how bright and how strong the colour is. The same numbers always make the same picture. Tap a number on your portrait to see which reading made that colour.
+          Your voice changes how bright and how strong the color is. The same numbers always make the same picture. Tap a number on your portrait to see which reading made that color.
         </Text>
       </Section>
 
       <Section label="How to change it">
         <Text variant="bodySmall" color={colors.fg70}>
-          Open Practice. Keep your fingertip on the back camera and breathe slowly with the circle: in as it grows, out as it shrinks. As your heartbeat steadies, your colour shifts while you watch. At the end you see a before and an after.
+          Open Practice. Keep your fingertip on the back camera and breathe slowly with the circle: in as it grows, out as it shrinks. As your heartbeat steadies, your color shifts while you watch. At the end you see a before and an after.
         </Text>
       </Section>
 

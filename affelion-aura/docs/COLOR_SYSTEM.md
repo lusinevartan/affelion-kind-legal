@@ -1,9 +1,9 @@
-# The Affelion Aura colour knowledge base
+# The Affelion Aura color knowledge base
 
 Single source of truth: `src/core/color/knowledgeBase.ts`, which holds the specification's twenty
 entries verbatim (id, name, hue range, primary meaning, biometric condition, explanation). Every
 visual, tappable explanation, summary and AI response uses only this text. `SWATCH_HSL` in the same
-file supplies presentation colours for legends; the portrait itself is coloured by the mapping output.
+file supplies presentation colors for legends; the portrait itself is colored by the mapping output.
 
 ## Mapping rules (as specified)
 
@@ -18,7 +18,7 @@ and an optional `recovery` (0–1, measured inside the reading; see below).
 | 4 | otherwise | sky blue | 195–215 | moderate |
 
 `vocalVariance` raises saturation (+0.32 × variance) and, at 0.6 or above, triggers a brighter
-accent (the primary colour lifted in lightness). `vocalStability` sets lightness (0.40 + 0.22 ×
+accent (the primary color lifted in lightness). `vocalStability` sets lightness (0.40 + 0.22 ×
 stability). Rules are evaluated in order; the first that matches wins.
 
 ## Shade refinement (secondary signals, quoting each entry's biometric description)
@@ -39,7 +39,7 @@ stability). Rules are evaluated in order; the first that matches wins.
 | blues/indigos | sky blue | otherwise |
 
 Two shades carry bounds that give them the character their names promise, so they can be told
-apart from their neighbours: deep red is held to the red end of its range (hue 0–8), kept dark
+apart from their neighbors: deep red is held to the red end of its range (hue 0–8), kept dark
 (lightness at most 0.44) and paired with a crimson halo; lavender is pale (lightness at least
 0.68, saturation at most 0.46). Vocal stability still sets lightness inside those bounds.
 
@@ -48,7 +48,7 @@ descriptions, with precedence charcoal → muted gray → earth brown → soft w
 expressed through saturation and lightness. Low-energy tones never override the greens/teals family.
 Thresholds live in `selectAchromatic()` in `src/core/color/mapping.ts`.
 
-## The three colours outside the family ranges
+## The three colors outside the family ranges
 
 Golden yellow (48–65), lime green (75–110) and magenta (300–330) have hues that none of the four
 family ranges contain. So that every entry in the knowledge base can appear, each is selected by
@@ -73,12 +73,12 @@ portrait uses the same score across the session (`recoveryFromChange`). Readings
 recovery was measured have none and map exactly as they did.
 
 A test (`__tests__/mapping.test.ts`) fails if any of the twenty entries stops being reachable.
-Lime, emerald and earth brown are also used as display colours for the personal HRV trend
+Lime, emerald and earth brown are also used as display colors for the personal HRV trend
 (`src/core/insight/baseline.ts`).
 
 ## Honesty rules
 
 `src/core/color/explain.ts` holds the banned-phrase list (energy fields, invisible light, chakras,
 psychic, predict, destiny, diagnose, and so on). Generated copy asserts against it in tests; AI
-replies are filtered through `sanitiseGuideReply` and replaced with a grounded fallback if they
+replies are filtered through `sanitizeGuideReply` and replaced with a grounded fallback if they
 cross the line.

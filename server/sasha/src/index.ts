@@ -6,7 +6,7 @@ import { SYSTEM_PROMPT } from './systemPrompt.js';
 /**
  * Sasha, the guide. POST /guide with { context, messages } as the app sends it.
  *
- * The system prompt lives here (`systemPrompt.ts`, generated from the app's colour knowledge
+ * The system prompt lives here (`systemPrompt.ts`, generated from the app's color knowledge
  * base). A prompt sent by a client is ignored: the app's token ships inside the app and is
  * therefore public, so nothing a client sends may steer the model beyond a scan's numbers and a
  * question. This service adds the model key, enforces size and rate limits, sends the request
@@ -120,7 +120,7 @@ const server = createServer(async (req, res) => {
   const ip = (forwarded ?? req.socket.remoteAddress ?? 'unknown').trim();
   if (req.method === 'GET' && req.url === '/health') return json(res, 200, { ok: true, model: MODEL });
   if (req.method !== 'POST' || req.url !== '/guide') return json(res, 404, { error: 'not found' });
-  if (API_TOKEN && req.headers.authorization !== `Bearer ${API_TOKEN}`) return json(res, 401, { error: 'unauthorised' });
+  if (API_TOKEN && req.headers.authorization !== `Bearer ${API_TOKEN}`) return json(res, 401, { error: 'unauthorized' });
   if (rateLimited(ip)) return json(res, 429, { error: 'slow down' });
   let body: GuideRequest | null;
   try {

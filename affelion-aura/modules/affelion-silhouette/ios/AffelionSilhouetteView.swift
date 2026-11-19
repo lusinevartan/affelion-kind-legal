@@ -10,7 +10,7 @@ import UIKit
 
  Two frame sources share one pipeline:
    • ARKit (`ARFaceTrackingConfiguration`) on TrueDepth devices: face anchor gives a robust
-     face centre, size and head pose; `ARSCNView` renders the camera feed.
+     face center, size and head pose; `ARSCNView` renders the camera feed.
    • AVFoundation fallback: `AVCaptureVideoPreviewLayer` plus `VNDetectFaceRectanglesRequest`.
 
  Both run `VNGeneratePersonSegmentationRequest` on the camera buffer and emit a low-resolution
@@ -119,7 +119,7 @@ protocol FrameSourceDelegate: AnyObject {
 }
 
 struct FaceObservation {
-  /// Normalised to the displayed (portrait, mirrored) image. Origin top-left.
+  /// Normalized to the displayed (portrait, mirrored) image. Origin top-left.
   var cx: Double
   var cy: Double
   var width: Double
@@ -181,7 +181,7 @@ final class ARKitFrameSource: NSObject, FrameSource, ARSessionDelegate {
     let faceAnchor = frame.anchors.compactMap { $0 as? ARFaceAnchor }.first(where: { $0.isTracked })
     var face: FaceObservation? = nil
     if let anchor = faceAnchor {
-      // Project the face centre and an approximate head-height point into portrait image space.
+      // Project the face center and an approximate head-height point into portrait image space.
       let imageSize = CGSize(width: CGFloat(CVPixelBufferGetHeight(frame.capturedImage)), height: CGFloat(CVPixelBufferGetWidth(frame.capturedImage)))
       let center = anchor.transform.columns.3
       let centerPoint = frame.camera.projectPoint(SIMD3<Float>(center.x, center.y, center.z), orientation: .portrait, viewportSize: imageSize)
@@ -255,7 +255,7 @@ final class AVFrameSource: NSObject, FrameSource, AVCaptureVideoDataOutputSample
       let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .leftMirrored, options: [:])
       try? handler.perform([faceRequest])
       if let f = (faceRequest.results)?.first {
-        let bb = f.boundingBox // normalised, origin bottom-left
+        let bb = f.boundingBox // normalized, origin bottom-left
         lastFace = FaceObservation(cx: bb.midX, cy: 1 - bb.midY, width: bb.width, height: bb.height,
                                    yaw: Double(truncating: f.yaw ?? 0), pitch: Double(truncating: f.pitch ?? 0), roll: Double(truncating: f.roll ?? 0))
       } else {

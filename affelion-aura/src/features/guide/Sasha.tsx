@@ -25,7 +25,7 @@ export function SashaAvatar({ size = 32, style }: { size?: number; style?: Style
   );
 }
 
-/** Her portrait on the black stage, named and labelled, to open the conversation. */
+/** Her portrait on the black stage, named and labeled, to open the conversation. */
 export function SashaStage({ height = 340, style }: { height?: number; style?: StyleProp<ViewStyle> }) {
   return (
     <View style={[styles.stage, { height }, style]}>

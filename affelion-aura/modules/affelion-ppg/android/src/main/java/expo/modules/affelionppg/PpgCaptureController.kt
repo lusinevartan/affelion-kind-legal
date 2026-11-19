@@ -24,7 +24,7 @@ import kotlin.math.min
 /**
  * Camera2 pipeline for fingertip PPG: rear camera, torch on, small YUV stream, auto-exposure for a
  * short warm-up and then AE/AWB locked so the only thing changing frame to frame is blood volume.
- * Reports the centre-region mean colour per frame as normalised R, G, B.
+ * Reports the center-region mean color per frame as normalized R, G, B.
  */
 class PpgCaptureController(private val context: Context) {
   var onSample: ((t: Double, r: Double, g: Double, b: Double, locked: Boolean) -> Unit)? = null

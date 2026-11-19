@@ -1,9 +1,9 @@
 export interface PpgStartOptions {
-  /** Torch brightness 0..1 (iOS honours levels; Android torch is on/off). Default 0.6. */
+  /** Torch brightness 0..1 (iOS honors levels; Android torch is on/off). Default 0.6. */
   torchLevel?: number;
   /** Requested frames per second. Default 30. */
   fps?: number;
-  /** Fraction of frame width/height used as the centre region of interest. Default 0.5. */
+  /** Fraction of frame width/height used as the center region of interest. Default 0.5. */
   roi?: number;
   /** Seconds of auto exposure before locking exposure and white balance. Default 1.2. */
   warmupSeconds?: number;

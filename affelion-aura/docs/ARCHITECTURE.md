@@ -4,23 +4,23 @@
 
 1. Onboarding (3 screens: what it is, what it measures, what it is not). Permissions are explained here and requested when the scan starts.
 2. Scan (60–90 s, `src/core/scan/scanMachine.ts` + `src/features/scan/useScanSession.ts`):
-   - Face (8 s of framed face): `AffelionSilhouetteView` runs the front camera, emits masks at 15 fps and face metrics; a still is captured after 2.5 s of steady framing. A neutral preview aura (derived through the same mapping from a resting input) is layered over the live feed so the user sees the fluid wrap their silhouette; the guidance says plainly that real colours arrive after the pulse reading.
+   - Face (8 s of framed face): `AffelionSilhouetteView` runs the front camera, emits masks at 15 fps and face metrics; a still is captured after 2.5 s of steady framing. A neutral preview aura (derived through the same mapping from a resting input) is layered over the live feed so the user sees the fluid wrap their silhouette; the guidance says plainly that real colors arrive after the pulse reading.
    - Finger (30–40 s covered, max 90 s wall): `AffelionPpg` runs the rear camera with torch. Samples before exposure lock are discarded. The timer advances only while a fingertip actually covers the lens (`estimateCoverage`). Guidance reacts to saturation (press lighter), darkness (cover the flash too) and low quality (hold steadier).
    - Voice (5 s, min 2.5 s voiced, skippable): `AffelionAudio` streams PCM to `VoiceAnalyzer`.
    - Computing: `PpgProcessor.finish()` + `VoiceAnalyzer.finish()` → `mapBiometricsToAura()` → `ScanRecord` saved to SQLite.
 3. Portrait teaser (free): Polaroid with the live aura, one grounded sentence, two tappable regions.
-4. Soft paywall, only after a portrait exists. Plans: $8.99 monthly, $54 annual (recommended), $149 lifetime. Where a store is connected the paywall shows the store's own localised prices instead of these figures. Restore and manage/cancel are on the paywall and in Settings.
-5. Pro: full breakdown (every colour tied to a measurement), history and trends, the guide, clean hi-res export, unlimited practice sessions with before/after portraits and the personal baseline. The first practice session is free so the live feedback is experienced before the paywall.
+4. Soft paywall, only after a portrait exists. Plans: $12.99 monthly, $69.99 annual (recommended), $199 lifetime. Where a store is connected the paywall shows the store's own localized prices instead of these figures. Restore and manage/cancel are on the paywall and in Settings.
+5. Pro: full breakdown (every color tied to a measurement), history and trends, the guide, clean hi-res export, unlimited practice sessions with before/after portraits and the personal baseline. The first practice session is free so the live feedback is experienced before the paywall.
 
 ## Design system: Stage (`src/ui/theme.ts`)
 
-The app is greyscale and the person's colour is the only colour. There are two fields. The
-canvas is pale grey (#F0F0F0) with charcoal type (#2A2A2A), grey captions and one-pixel rules;
+The app is grayscale and the person's color is the only color. There are two fields. The
+canvas is pale gray (#F0F0F0) with charcoal type (#2A2A2A), gray captions and one-pixel rules;
 it holds words, numbers and actions. The stage is black; it holds the camera and every
 portrait. One typeface, Inter Tight, mostly at weight 300, set large with tight tracking;
 hierarchy comes from scale, never from a second family, a fill or a shadow. Actions are
 capsules: solid charcoal on the canvas, solid white on the stage, a one-pixel outline for
-secondary. Media is square-edged. There is no brand colour and no destructive red; a
+secondary. Media is square-edged. There is no brand color and no destructive red; a
 destructive action is an outlined capsule with a confirmation.
 
 A portrait is developed inside the fluid display pass (`AuraView` `stillUri`): the still is
@@ -28,18 +28,18 @@ converted to black and white, the room is dropped to the black stage using the s
 the aura is added as light with a screen blend, so it also spills onto the edge of the body.
 The outline that belongs to a still is persisted with the scan (`scan_masks`) and restored at
 launch, so a saved portrait always redraws around the same person. References: Josephmark and
-Dash Digital, as catalogued on Refero. Screen captures from the web review build are in
-`docs/screens/`; the person in them is a stock photograph (Unsplash licence) standing in for
+Dash Digital, as cataloged on Refero. Screen captures from the web review build are in
+`docs/screens/`; the person in them is a stock photograph (Unsplash license) standing in for
 the user's own still and must not be used in store listings or marketing.
 
-## Biometric → colour engine (`src/core/color`)
+## Biometric → color engine (`src/core/color`)
 
 `knowledgeBase.ts` is the single source of truth: the twenty specified entries verbatim.
 `mapping.ts` implements the specified rules in order (greens/teals, reds/oranges, blues/indigos,
 sky blue), refines the shade from secondary signals, applies the achromatic tones by their stated
 biometric descriptions, and always returns `hue, saturation, lightness, turbulence, pulseSpeed,
-primaryColorId` (plus `secondaryColorId`, `family`, `accentStrength`). Inputs are quantised (1 bpm,
-1 ms, 1 Hz, 0.02 on the vocal scales) and the fluid seed is a hash of the quantised inputs, so
+primaryColorId` (plus `secondaryColorId`, `family`, `accentStrength`). Inputs are quantized (1 bpm,
+1 ms, 1 Hz, 0.02 on the vocal scales) and the fluid seed is a hash of the quantized inputs, so
 identical measurements produce identical portraits. Full rule tables: `docs/COLOR_SYSTEM.md`.
 
 `explain.ts` builds every sentence from the knowledge base's own explanation text plus the user's
@@ -48,7 +48,7 @@ measured numbers, and asserts against a banned-phrase list; the same list guards
 ## PPG (`src/core/signal/ppg.ts`, `modules/affelion-ppg`)
 
 Native: back wide camera, 640×480 (iOS) / smallest ≥320×240 YUV (Android), 30 fps, torch on,
-nearest focus, auto exposure for 1.2 s then AE/AWB locked. Mean R, G, B of the centre 50 % region per
+nearest focus, auto exposure for 1.2 s then AE/AWB locked. Mean R, G, B of the center 50 % region per
 frame, with the camera timestamp. Android converts the YUV means with BT.601 (linear, so the mean
 is exact).
 
@@ -61,7 +61,7 @@ duration). Synthetic tests hold BPM within 1.5 bpm and distinguish RSA from a me
 Each stretch of continuous coverage is a segment, filtered and searched for beats on its own. A
 break longer than 0.5 s starts a new segment; shorter flickers are bridged. So lifting the finger
 never becomes a ramp in the signal or a beat that did not happen, and RMSSD and pNN50 only
-difference intervals that were true neighbours. `recovery` (0..1) compares the first half of the
+difference intervals that were true neighbors. `recovery` (0..1) compares the first half of the
 reading with the second; it is what lets lime green appear (see `docs/COLOR_SYSTEM.md`).
 
 ## Voice (`src/core/signal/voice.ts`, `modules/affelion-audio`)
@@ -74,7 +74,7 @@ plus the raw statistics, voiced ratio and quality. Nothing is transcribed or sto
 
 ## Silhouette (`modules/affelion-silhouette`)
 
-iOS uses `ARFaceTrackingConfiguration` on TrueDepth devices (face anchor → centre/size/pose) with
+iOS uses `ARFaceTrackingConfiguration` on TrueDepth devices (face anchor → center/size/pose) with
 `VNGeneratePersonSegmentationRequest` on each captured frame, and falls back to AVFoundation +
 `VNDetectFaceRectanglesRequest` elsewhere. Android uses CameraX with ML Kit Selfie Segmentation
 (stream mode, raw 256×256 mask) and ML Kit Face Detection. ARCore Augmented Faces was deliberately
@@ -94,7 +94,7 @@ six breaths per minute (or their own rate, found by the resonance finder). Every
 beats feed `CoherenceAnalyzer`, which resamples the last 32 s of beat intervals at 4 Hz, detrends,
 windows and FFTs them, and reports how much slow-band (0.04–0.26 Hz) power sits at one rhythm
 (peak ÷ remainder, scored 0–1), the peak frequency, the respiratory sinus arrhythmia amplitude,
-and a breathing-sync value against the pacer frequency. The same deterministic colour mapping is
+and a breathing-sync value against the pacer frequency. The same deterministic color mapping is
 applied to the sliding bpm/HRV window (`auraFromWindow`), coherence halves turbulence on top of
 the family rule, and `blendAuraParams` eases the shader parameters so the portrait settles
 visibly as the rhythm settles. `practiceMachine.ts` is a pure reducer: settle (needs 10 steady
@@ -111,8 +111,8 @@ measured from the fingertip. No other effect is claimed.
 
 Each scan is read against the median of the user's last seven scans (minimum three): HRV and
 pulse deltas as percentages, and a Theil–Sen trend of HRV across the window. The trend is
-presented with knowledge-base colours (lime for improving, emerald for steady, earth brown for
-declining) as a display colour only; it never changes the portrait.
+presented with knowledge-base colors (lime for improving, emerald for steady, earth brown for
+declining) as a display color only; it never changes the portrait.
 
 ## Fluid aura (`src/render/fluid`)
 
@@ -141,7 +141,7 @@ Pro, captured at device scale) with that PNG layered over the still, captures it
 directly, which avoids SurfaceView capture failures on Android. Free exports carry the wordmark;
 Pro exports are clean.
 
-## Monetisation
+## Monetization
 
 `PurchaseProvider` interface in `src/services/entitlements.ts`. With `EXPO_PUBLIC_RC_IOS_KEY` /
 `EXPO_PUBLIC_RC_ANDROID_KEY` set in the build, `RevenueCatPurchaseProvider`
@@ -176,7 +176,7 @@ app's token ships inside the app and is public.
 
 ## Premium frames (`src/render/polaroid/styles.ts`)
 
-Classic (free), Noir, Clean and Film. Styles change paper, margins and caption colour only; the
+Classic (free), Noir, Clean and Film. Styles change paper, margins and caption color only; the
 aura is never altered by a style, so every export remains a faithful translation of the numbers.
 
 ## Privacy
@@ -190,7 +190,7 @@ question only.
 - iOS Vision orientation for the front camera: `.leftMirrored` is used for segmentation, face
   detection and the still. If the mask appears rotated or mirrored relative to the preview, change
   this constant in `AffelionSilhouetteView.swift` (one place for each path).
-- ARSCNView mirroring (`transform scaleX: -1`) and the projected face centre mirroring.
+- ARSCNView mirroring (`transform scaleX: -1`) and the projected face center mirroring.
 - Torch level 0.6 on iOS: raise if the PPG signal amplitude is low on a given device, lower if the lens heats.
 - Android Camera2 devices that refuse `FLASH_MODE_TORCH` with `CONTROL_AE_MODE_ON`: fall back to `CONTROL_AE_MODE_OFF` with manual exposure.
 - Segmentation throughput: `maskFps` 15 and `maskSize` 160 are starting points.

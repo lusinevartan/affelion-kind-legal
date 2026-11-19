@@ -46,7 +46,7 @@ export default function Paywall() {
       </View>
 
       <Text variant="display" style={{ marginTop: space.xxxl }}>
-        The numbers behind every colour.
+        The numbers behind every color.
       </Text>
       <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.md, maxWidth: 330 }}>
         The free portrait shows you the picture. Pro shows the measurements, how they move across scans, unlimited practice, Sasha, premium frames and clean exports.
@@ -107,7 +107,7 @@ export default function Paywall() {
       />
 
       <Text variant="caption" color={colors.bone50} style={{ marginTop: space.lg }}>
-        Subscriptions renew until cancelled. Cancel any time from your App Store or Google Play subscriptions; access continues to the end of the paid period.
+        Subscriptions renew until canceled. Cancel any time from your App Store or Google Play subscriptions; access continues to the end of the paid period.
       </Text>
       <View style={{ flexDirection: 'row', gap: space.xl, marginTop: space.sm }}>
         <Button label="Restore" variant="ghost" onPress={() => void restore().then((e) => Alert.alert(e.isPro ? 'Restored' : 'Nothing to restore', e.isPro ? 'Pro is active.' : 'No previous purchase was found for this account.'))} />

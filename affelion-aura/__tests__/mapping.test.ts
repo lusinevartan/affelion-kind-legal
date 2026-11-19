@@ -190,7 +190,7 @@ describe('determinism and copy', () => {
     expect(b).toEqual(a);
   });
 
-  test('inputs within the quantisation step are identical', () => {
+  test('inputs within the quantization step are identical', () => {
     const a = mapBiometricsToAura(input(heart(72.2, 45.3)));
     const b = mapBiometricsToAura(input(heart(71.8, 44.7)));
     expect(b.hue).toBe(a.hue);
@@ -245,10 +245,10 @@ describe('determinism and copy', () => {
   });
 });
 
-describe('every colour in the knowledge base can appear', () => {
+describe('every color in the knowledge base can appear', () => {
   const withRecovery = (bpm: number, hrv: number, recovery: number, vv = 0.3, vs = 0.6): MappingInput => ({ ...m(bpm, hrv, vv, vs), recovery });
 
-  test('all twenty entries are reachable as a primary colour, with or without a voice', () => {
+  test('all twenty entries are reachable as a primary color, with or without a voice', () => {
     const seen = new Set<string>();
     for (const voiceAvailable of [true, false]) {
       for (let bpm = 42; bpm <= 124; bpm += 2) {

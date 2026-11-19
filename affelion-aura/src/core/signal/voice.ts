@@ -24,7 +24,7 @@ export interface VoiceLiveState {
   pitchHz: number | null;
   /** Seconds of voiced audio so far. */
   voicedSec: number;
-  /** Seconds analysed so far. */
+  /** Seconds analyzed so far. */
   durationSec: number;
   /** True if the input appears to be clipping. */
   clipping: boolean;
@@ -75,13 +75,13 @@ export class VoiceAnalyzer {
     merged.set(pcm, this.pending.length);
     let offset = 0;
     while (offset + this.frameSize <= merged.length) {
-      this.analyseFrame(merged.subarray(offset, offset + this.frameSize));
+      this.analyzeFrame(merged.subarray(offset, offset + this.frameSize));
       offset += this.hopSize;
     }
     this.pending = merged.slice(offset);
   }
 
-  private analyseFrame(frame: Float32Array) {
+  private analyzeFrame(frame: Float32Array) {
     this.frameCount++;
     let sum = 0;
     let clipped = 0;

@@ -17,8 +17,8 @@ export interface ButtonProps extends Omit<PressableProps, 'style'> {
 }
 
 /**
- * Capsules. The primary is solid: charcoal on the grey canvas, white on the black stage. The
- * secondary is a one-pixel outline. Ghost is text with an arrow. No colour, no shadow.
+ * Capsules. The primary is solid: charcoal on the gray canvas, white on the black stage. The
+ * secondary is a one-pixel outline. Ghost is text with an arrow. No color, no shadow.
  */
 export function Button({ label, variant = 'primary', loading, disabled, style, block, hint, onPress, onPaper = true, ...rest }: ButtonProps) {
   const isDisabled = disabled || loading;

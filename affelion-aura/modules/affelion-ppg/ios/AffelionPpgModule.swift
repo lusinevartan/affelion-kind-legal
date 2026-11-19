@@ -6,7 +6,7 @@ struct PpgStartOptions: Record {
   @Field var torchLevel: Double = 0.6
   /// Frames per second to request from the camera.
   @Field var fps: Int = 30
-  /// Fraction of width/height used for the centre region of interest.
+  /// Fraction of width/height used for the center region of interest.
   @Field var roi: Double = 0.5
   /// Seconds of auto exposure before locking exposure and white balance.
   @Field var warmupSeconds: Double = 1.2
@@ -62,7 +62,7 @@ public class AffelionPpgModule: Module {
 }
 
 /// Owns an AVCaptureSession on the rear wide camera with the torch on. Per frame it averages the
-/// centre region of the BGRA buffer and reports normalised mean red/green/blue with a timestamp.
+/// center region of the BGRA buffer and reports normalized mean red/green/blue with a timestamp.
 final class PpgCaptureController: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
   var onSample: (([String: Any]) -> Void)?
   var onStatus: (([String: Any]) -> Void)?

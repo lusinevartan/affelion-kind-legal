@@ -112,7 +112,7 @@ class AffelionSilhouetteView(context: Context, appContext: AppContext) : ExpoVie
           .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
           .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
           .build()
-        analysis.setAnalyzer(analysisExecutor) { proxy -> analyse(proxy) }
+        analysis.setAnalyzer(analysisExecutor) { proxy -> analyze(proxy) }
         val capture = ImageCapture.Builder()
           .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
           .setTargetRotation(android.view.Surface.ROTATION_0)
@@ -140,7 +140,7 @@ class AffelionSilhouetteView(context: Context, appContext: AppContext) : ExpoVie
   }
 
   @SuppressLint("UnsafeOptInUsageError")
-  private fun analyse(proxy: ImageProxy) {
+  private fun analyze(proxy: ImageProxy) {
     val media = proxy.image
     if (media == null || !active) { proxy.close(); return }
     val rotation = proxy.imageInfo.rotationDegrees

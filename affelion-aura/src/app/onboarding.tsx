@@ -16,7 +16,7 @@ import { PREVIEW_PARAMS } from '../features/scan/previewParams';
 const PAGES = [
   { n: '01', title: 'Grounding you can see.', body: 'Affelion Aura translates your real heart rate, HRV, and voice into a living color portrait. It does not capture invisible light.' },
   { n: '02', title: 'One minute. Three readings.', body: 'Fingertip on the rear camera for your pulse and HRV. Front camera for your outline. Five seconds of your voice for pitch and variance. All of it stays on your phone.' },
-  { n: '03', title: 'Breathe. Watch it settle.', body: 'A few minutes of paced breathing, and the portrait moves with your heart rhythm. Every colour follows a fixed rule from a measurement. Nothing is predicted or diagnosed. Not a medical device.' },
+  { n: '03', title: 'Breathe. Watch it settle.', body: 'A few minutes of paced breathing, and the portrait moves with your heart rhythm. Every color follows a fixed rule from a measurement. Nothing is predicted or diagnosed. Not a medical device.' },
 ];
 
 export default function Onboarding() {

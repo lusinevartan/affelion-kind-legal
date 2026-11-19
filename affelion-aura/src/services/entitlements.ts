@@ -2,13 +2,16 @@ import { Linking, Platform } from 'react-native';
 import { getSetting, setSetting } from './storage';
 
 /**
+ * Prices sit level with the leading meditation apps (about $13 a month, $70 a year). They are
+ * the figures shown when no store is connected; the stores' own prices replace them otherwise.
+ *
  * Free tier: 3 scans with the basic portrait. Paid: unlimited scans, full report, history
  * and trends, the AI guide, premium styles and clean exports.
  *
  * Billing goes through a `PurchaseProvider`. The app ships with a development provider that
  * simulates purchases locally so the whole flow can be exercised without store accounts.
  * For production, implement the same interface with RevenueCat or expo-iap (see
- * docs/ARCHITECTURE.md → Monetisation) and swap it in `createPurchaseProvider`.
+ * docs/ARCHITECTURE.md → Monetization) and swap it in `createPurchaseProvider`.
  */
 
 export const FREE_SCAN_LIMIT = 3;
@@ -19,7 +22,7 @@ export interface Plan {
   id: PlanId;
   productId: string;
   title: string;
-  /** Display price string. Real providers return localised strings from the store. */
+  /** Display price string. Real providers return localized strings from the store. */
   price: string;
   period: string;
   /** Per-month framing for comparison. */
@@ -33,7 +36,7 @@ export const PLANS: Plan[] = [
     id: 'monthly',
     productId: 'com.affelion.aura.pro.monthly',
     title: 'Monthly',
-    price: '$8.99',
+    price: '$12.99',
     period: 'per month',
     perMonth: null,
     note: 'Cancel any time in your App Store or Google Play subscriptions.',
@@ -42,9 +45,9 @@ export const PLANS: Plan[] = [
     id: 'annual',
     productId: 'com.affelion.aura.pro.annual',
     title: 'Annual',
-    price: '$54',
+    price: '$69.99',
     period: 'per year',
-    perMonth: '$4.50 / month',
+    perMonth: '$5.83 / month',
     recommended: true,
     note: 'Billed once a year. Cancel any time; access continues to the end of the period.',
   },
@@ -52,9 +55,9 @@ export const PLANS: Plan[] = [
     id: 'lifetime',
     productId: 'com.affelion.aura.pro.lifetime',
     title: 'Lifetime',
-    // More than two and a half years of the annual plan, so the annual plan stays the natural
-    // choice and a one-time buyer still covers the running cost of the guide.
-    price: '$149',
+    // Close to three years of the annual plan, so the annual plan stays the natural choice and
+    // a one-time buyer still covers the running cost of the guide.
+    price: '$199',
     period: 'one time',
     perMonth: null,
     note: 'A single purchase. No renewal.',
@@ -84,7 +87,7 @@ export interface PurchaseProvider {
   getPrices?(): Promise<PlanPrices>;
   purchase(plan: PlanId): Promise<Entitlement>;
   restore(): Promise<Entitlement>;
-  /** Opens the platform's subscription management page so cancelling is one tap away. */
+  /** Opens the platform's subscription management page so canceling is one tap away. */
   openManageSubscriptions(): Promise<void>;
 }
 
@@ -92,7 +95,7 @@ export const ENTITLEMENT_KEY = 'entitlement.dev';
 
 /**
  * Simulated purchases exist so the flow can be exercised without store accounts. They are only
- * honoured in development, in the web review build, or when a build opts in explicitly with
+ * honored in development, in the web review build, or when a build opts in explicitly with
  * EXPO_PUBLIC_ALLOW_SIMULATED_PURCHASES=1 (for an internal test build). A release build that is
  * missing its store keys must never hand out Pro for free.
  */
@@ -100,7 +103,7 @@ export function simulatedPurchasesAllowed(): boolean {
   return __DEV__ || Platform.OS === 'web' || process.env.EXPO_PUBLIC_ALLOW_SIMULATED_PURCHASES === '1';
 }
 
-/** Local simulation for development builds. Clearly labelled in the UI. */
+/** Local simulation for development builds. Clearly labeled in the UI. */
 export class DevPurchaseProvider implements PurchaseProvider {
   readonly name = 'dev';
 

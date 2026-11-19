@@ -1,7 +1,7 @@
 import { PpgProcessor, estimateCoverage, recoveryFromChange } from '../src/core/signal';
 
-/** Synthesise a realistic torch-PPG red channel: baseline + pulse waveform + drift + noise. */
-function synthesise(bpmFn: (t: number) => number, seconds: number, fps = 29.7, noise = 0.004) {
+/** Synthesize a realistic torch-PPG red channel: baseline + pulse waveform + drift + noise. */
+function synthesize(bpmFn: (t: number) => number, seconds: number, fps = 29.7, noise = 0.004) {
   const samples = [];
   let phase = 0;
   let t = 0;
@@ -42,7 +42,7 @@ describe('coverage detection', () => {
 describe('PpgProcessor', () => {
   test('recovers a steady heart rate within 1.5 bpm', () => {
     const p = new PpgProcessor();
-    for (const s of synthesise(() => 72, 40)) p.push(s);
+    for (const s of synthesize(() => 72, 40)) p.push(s);
     const m = p.finish();
     expect(m).not.toBeNull();
     expect(Math.abs(m!.bpm - 72)).toBeLessThan(1.5);
@@ -52,24 +52,24 @@ describe('PpgProcessor', () => {
 
   test('tracks a fast heart rate', () => {
     const p = new PpgProcessor();
-    for (const s of synthesise(() => 118, 35)) p.push(s);
+    for (const s of synthesize(() => 118, 35)) p.push(s);
     const m = p.finish()!;
     expect(Math.abs(m.bpm - 118)).toBeLessThan(2.5);
   });
 
   test('tracks a slow heart rate', () => {
     const p = new PpgProcessor();
-    for (const s of synthesise(() => 48, 45)) p.push(s);
+    for (const s of synthesize(() => 48, 45)) p.push(s);
     const m = p.finish()!;
     expect(Math.abs(m.bpm - 48)).toBeLessThan(1.5);
   });
 
   test('a perfectly regular rhythm has near-zero RMSSD, a variable one does not', () => {
     const steady = new PpgProcessor();
-    for (const s of synthesise(() => 66, 40)) steady.push(s);
+    for (const s of synthesize(() => 66, 40)) steady.push(s);
     const variable = new PpgProcessor();
     // Respiratory sinus arrhythmia: ±8 bpm at 0.25 Hz breathing.
-    for (const s of synthesise((t) => 66 + 8 * Math.sin(2 * Math.PI * 0.25 * t), 40)) variable.push(s);
+    for (const s of synthesize((t) => 66 + 8 * Math.sin(2 * Math.PI * 0.25 * t), 40)) variable.push(s);
     const a = steady.finish()!;
     const b = variable.finish()!;
     expect(a.rmssd).toBeLessThan(12);
@@ -79,7 +79,7 @@ describe('PpgProcessor', () => {
 
   test('live state reports coverage time and a bpm estimate', () => {
     const p = new PpgProcessor();
-    const samples = synthesise(() => 80, 12);
+    const samples = synthesize(() => 80, 12);
     for (const s of samples) p.push(s);
     const live = p.live();
     expect(live.coveredSec).toBeGreaterThan(11);
@@ -99,9 +99,9 @@ describe('PpgProcessor', () => {
 describe('finger lifts and missed beats', () => {
   test('a lifted finger does not invent beats or distort the reading', () => {
     const clean = new PpgProcessor();
-    for (const s of synthesise(() => 70, 50)) clean.push(s);
+    for (const s of synthesize(() => 70, 50)) clean.push(s);
     const lifted = new PpgProcessor();
-    for (const s of synthesise(() => 70, 50)) {
+    for (const s of synthesize(() => 70, 50)) {
       // Six seconds with the finger off the lens: an ordinary room, not a red frame.
       if (s.t > 20 && s.t < 26) lifted.push({ t: s.t, r: 0.4, g: 0.38, b: 0.36 });
       else lifted.push(s);
@@ -118,7 +118,7 @@ describe('finger lifts and missed beats', () => {
 
   test('a short flicker of coverage is bridged, not split', () => {
     const p = new PpgProcessor();
-    for (const s of synthesise(() => 70, 30)) {
+    for (const s of synthesize(() => 70, 30)) {
       if (s.t > 12 && s.t < 12.2) p.push({ t: s.t, r: 0.4, g: 0.38, b: 0.36 });
       else p.push(s);
     }
@@ -130,11 +130,11 @@ describe('finger lifts and missed beats', () => {
   test('recovery is measured when the pulse slows and variability rises through the reading', () => {
     const settling = new PpgProcessor();
     // 88 bpm easing to 72, with breathing variability growing from 1 to 7 bpm.
-    for (const s of synthesise((t) => 88 - 16 * Math.min(1, t / 40) + (1 + 6 * Math.min(1, t / 40)) * Math.sin(2 * Math.PI * 0.2 * t), 42)) settling.push(s);
+    for (const s of synthesize((t) => 88 - 16 * Math.min(1, t / 40) + (1 + 6 * Math.min(1, t / 40)) * Math.sin(2 * Math.PI * 0.2 * t), 42)) settling.push(s);
     const steady = new PpgProcessor();
-    for (const s of synthesise(() => 80, 42)) steady.push(s);
+    for (const s of synthesize(() => 80, 42)) steady.push(s);
     const rising = new PpgProcessor();
-    for (const s of synthesise((t) => 70 + 14 * Math.min(1, t / 40), 42)) rising.push(s);
+    for (const s of synthesize((t) => 70 + 14 * Math.min(1, t / 40), 42)) rising.push(s);
     expect(settling.finish()!.recovery).toBeGreaterThan(0.35);
     expect(steady.finish()!.recovery).toBe(0);
     expect(rising.finish()!.recovery).toBe(0);

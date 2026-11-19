@@ -12,7 +12,7 @@ export interface MaskEvent {
 
 export interface FaceEvent {
   detected: boolean;
-  /** Normalised centre and size relative to the full camera image (display orientation). */
+  /** Normalized center and size relative to the full camera image (display orientation). */
   cx?: number;
   cy?: number;
   width?: number;

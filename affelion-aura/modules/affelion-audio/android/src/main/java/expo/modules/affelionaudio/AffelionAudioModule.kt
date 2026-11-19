@@ -72,7 +72,7 @@ class AffelionAudioModule : Module() {
     }
     if (usable.state != AudioRecord.STATE_INITIALIZED) {
       usable.release()
-      throw IllegalStateException("AudioRecord could not be initialised")
+      throw IllegalStateException("AudioRecord could not be initialized")
     }
     record = usable
     running = true

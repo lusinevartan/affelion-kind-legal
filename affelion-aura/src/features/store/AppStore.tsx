@@ -35,7 +35,7 @@ export interface AppState {
   /** Breathing rate found by the resonance finder, breaths per minute, or null. */
   resonanceRate: number | null;
   frameStyle: FrameStyleId;
-  /** The store's own localised prices, where a store is connected; empty otherwise. */
+  /** The store's own localized prices, where a store is connected; empty otherwise. */
   prices: PlanPrices;
   /** Derived: Pro, or free scans remaining. */
   canScan: boolean;
@@ -83,20 +83,20 @@ export function AppStoreProvider({ children, provider }: { children: React.React
 
   // Store prices arrive on their own; the app never waits on the network to open.
   React.useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     purchases
       .getPrices?.()
       .then((prices) => {
-        if (!cancelled) setState((s) => ({ ...s, prices }));
+        if (!canceled) setState((s) => ({ ...s, prices }));
       })
       .catch(() => {});
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [purchases]);
 
   React.useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     (async () => {
       const [onboarding, entitlement, used, scans, practices, resonance, frame, practiceUsed] = await Promise.all([
         getSetting(ONBOARDING_KEY),
@@ -115,7 +115,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
       } catch {
         // A missing outline falls back to the neutral silhouette.
       }
-      if (cancelled) return;
+      if (canceled) return;
       setState((prev) => ({
         prices: prev.prices,
         ready: true,
@@ -130,10 +130,10 @@ export function AppStoreProvider({ children, provider }: { children: React.React
       }));
     })().catch((e) => {
       console.warn('App store failed to load', e);
-      if (!cancelled) setState((s) => ({ ...s, ready: true }));
+      if (!canceled) setState((s) => ({ ...s, ready: true }));
     });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [purchases]);
 

@@ -1,20 +1,20 @@
 # Affelion Aura
 
-A premium biometric visualiser for iOS and Android. It measures heart rate and heart-rate
+A premium biometric visualizer for iOS and Android. It measures heart rate and heart-rate
 variability from a fingertip on the rear camera (torch on), analyses a few seconds of voice for
-pitch and variation, and translates those numbers into a living fluid-dynamics colour field that
+pitch and variation, and translates those numbers into a living fluid-dynamics color field that
 wraps the user's silhouette. The result is a soft, glowing Polaroid-style portrait.
 
 After a scan, a guided breathing practice keeps the finger on the camera and lets the portrait
 respond live to heart-rhythm coherence, with before-and-after portraits from the same session and
-a personal baseline across scans. It does not claim to capture anything invisible. Every colour maps to a measured number, the same
+a personal baseline across scans. It does not claim to capture anything invisible. Every color maps to a measured number, the same
 numbers always produce the same portrait, and all copy (including AI responses) is checked against
 an honesty rule set. It is not a medical device.
 
 ## Reviewing it
 
 - **Screens:** `docs/screens/` holds a capture of every screen from the web review build, plus
-  the twenty-colour sheet. The person in them is a stock photograph standing in for your own.
+  the twenty-color sheet. The person in them is a stock photograph standing in for your own.
 - **Click through it in a browser:** `npx expo export --platform web --output-dir /tmp/aura-web`,
   then `npx serve -s /tmp/aura-web` and open it at phone width. In the browser console run
   `localStorage.setItem('aura.demo','1')` (add `aura.pro` = `1` for the Pro screens) and reload.
@@ -30,7 +30,7 @@ an honesty rule set. It is not a medical device.
 ## Stack
 
 - Expo SDK 58 / React Native 0.88 / React 19, TypeScript strict, Expo Router.
-- Design system "Stage": a greyscale app (pale grey canvas, charcoal type, one typeface) around a black stage where each portrait is developed in black and white with the aura as the only colour (`src/ui/theme.ts`, `src/render/fluid`).
+- Design system "Stage": a grayscale app (pale gray canvas, charcoal type, one typeface) around a black stage where each portrait is developed in black and white with the aura as the only color (`src/ui/theme.ts`, `src/render/fluid`).
 - Three local Expo modules (Swift + Kotlin) in `modules/`:
   - `affelion-ppg`: rear camera + torch photoplethysmography (AVFoundation / Camera2), locked exposure, per-frame mean RGB.
   - `affelion-silhouette`: front-camera preview with person segmentation and face metrics (ARKit + Vision on iOS, CameraX + ML Kit on Android). Emits 8-bit masks in display orientation.
@@ -42,7 +42,7 @@ an honesty rule set. It is not a medical device.
 
 ```
 src/
-  core/        colour knowledge base, deterministic mapping, explanations, signal processing (PPG, voice, coherence),
+  core/        color knowledge base, deterministic mapping, explanations, signal processing (PPG, voice, coherence),
                scan and practice state machines, personal baseline
   render/      fluid simulation (GLSL + engine), AuraView (expo-gl), Polaroid card
   features/    scan orchestration (native modules → processors → record), app store, history widgets
@@ -51,7 +51,7 @@ src/
   app/         Expo Router screens (onboarding → home → scan → portrait → paywall → report/history/guide/practice/how/settings)
 modules/       local Expo native modules (ios/, android/, src/)
 web-harness/   browser harness that renders the shader with esbuild + Playwright
-docs/          architecture, colour system, reference renders
+docs/          architecture, color system, reference renders
 ```
 
 ## Commands

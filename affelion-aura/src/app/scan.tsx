@@ -38,11 +38,11 @@ export default function ScanScreen() {
 
   // Ask for both permissions up front with the reasons already explained in onboarding.
   React.useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     (async () => {
       const cam = await Camera.requestCameraPermissionsAsync();
       const mic = await Camera.requestMicrophonePermissionsAsync();
-      if (cancelled) return;
+      if (canceled) return;
       if (cam.granted) {
         setPermission('granted');
         if (!mic.granted) {
@@ -54,7 +54,7 @@ export default function ScanScreen() {
       }
     })().catch(() => setPermission('denied'));
     return () => {
-      cancelled = true;
+      canceled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -74,7 +74,7 @@ export default function ScanScreen() {
   const guidance = GUIDANCE_COPY[state.guidance];
   const phaseLabel =
     state.phase === 'face'
-      ? '01 / 03  Outline · preview colours'
+      ? '01 / 03  Outline · preview colors'
       : state.phase === 'finger'
         ? '02 / 03  Pulse'
         : state.phase === 'voice'

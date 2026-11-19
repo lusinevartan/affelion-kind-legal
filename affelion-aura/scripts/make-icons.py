@@ -1,6 +1,6 @@
 """App icons for Affelion Aura: a dark disc with a corona of light on black.
 
-One mark, one family of colour (teal into blue), no figure. Usage: make_icons.py <out dir>
+One mark, one family of color (teal into blue), no figure. Usage: make_icons.py <out dir>
 """
 import sys, numpy as np
 from PIL import Image, ImageFilter
@@ -49,7 +49,7 @@ for name, radius in [('splash-icon.png', 215), ('android-icon-foreground.png', 1
     rgb = np.clip(m / np.maximum(alpha[..., None], 1e-3), 0, 1)
     Image.fromarray((np.dstack([rgb, alpha]) * 255).astype(np.uint8), 'RGBA').save(out + '/' + name)
 
-# Android themed icon: the corona in one tone; the system supplies the colour.
+# Android themed icon: the corona in one tone; the system supplies the color.
 m, _ = corona(150, grain=False)
 alpha = np.clip(m.max(-1) * 1.8, 0, 1)
 Image.fromarray((np.dstack([np.ones((S, S, 3)), alpha]) * 255).astype(np.uint8), 'RGBA').save(out + '/android-icon-monochrome.png')

@@ -1,11 +1,11 @@
-import type { AuraParams, AuraRegion, BiometricInput, ColorFamily, MappingInput, NormalisedState } from '../types';
+import type { AuraParams, AuraRegion, BiometricInput, ColorFamily, MappingInput, NormalizedState } from '../types';
 import { clamp, clamp01, fnv1a, lerp, norm, quantize } from '../math';
 import { COLOR_KNOWLEDGE_BASE, type AuraColorId } from './knowledgeBase';
 import { hueRangeDistance } from './palette';
 import { buildRegionExplanation, buildSummary } from './explain';
 
 /**
- * Deterministic biometric → colour mapping. Implements the specification's rules exactly:
+ * Deterministic biometric → color mapping. Implements the specification's rules exactly:
  *
  *   1. hrv >= 55 and bpm <= 78           → greens/teals, hue 140–190, low turbulence
  *   2. bpm >= 92 or hrv <= 28            → reds/oranges, hue 0–40, higher turbulence and pulse speed
@@ -17,10 +17,10 @@ import { buildRegionExplanation, buildSummary } from './explain';
  *
  * Rules are evaluated in the order listed, so a reading that satisfies more than one takes the
  * first. Every output carries a `primaryColorId` from the knowledge base. There is no randomness:
- * inputs are quantised, the same inputs always give the same outputs, and the fluid simulation's
- * seed is a hash of the quantised inputs.
+ * inputs are quantized, the same inputs always give the same outputs, and the fluid simulation's
+ * seed is a hash of the quantized inputs.
  *
- * Three knowledge-base colours have hues outside all four family ranges: golden yellow (48–65),
+ * Three knowledge-base colors have hues outside all four family ranges: golden yellow (48–65),
  * lime green (75–110) and magenta (300–330). So that every entry can appear, each is selected by
  * its own stated biometric description as a refinement, and only inside the "otherwise" band
  * (or, for lime, the mild edge of reds/oranges). The family rule that applied is still reported.
@@ -32,7 +32,7 @@ import { buildRegionExplanation, buildSummary } from './explain';
  *     recovery (see `recoveryOf` in the PPG processor) at 0.35 or more.
  *   Precedence where more than one applies: lime, magenta, golden yellow.
  *
- * Assumptions made where the specification is silent (documented, not invented behaviour):
+ * Assumptions made where the specification is silent (documented, not invented behavior):
  *   • Crimson's range is 345–360, adjacent to 0 on the hue circle; it is treated as part of the
  *     reds/oranges family so the knowledge-base case "high BPM with moderate-to-high vocal
  *     variance" is reachable.
@@ -72,8 +72,8 @@ export function toMappingInput(input: BiometricInput): MappingInput & { voiceAva
   };
 }
 
-/** Quantise so near-identical readings map to identical portraits. */
-export function quantiseInput<T extends MappingInput>(m: T): T {
+/** Quantize so near-identical readings map to identical portraits. */
+export function quantizeInput<T extends MappingInput>(m: T): T {
   return {
     ...m,
     bpm: quantize(m.bpm, 1),
@@ -111,7 +111,7 @@ interface FamilyResult {
 export const RECOVERY_THRESHOLD = 0.35;
 
 /**
- * The three colours whose hues sit outside every family range. Returns null when none applies.
+ * The three colors whose hues sit outside every family range. Returns null when none applies.
  * `redsIntensity` is the reds/oranges intensity (0..1) when that family was selected.
  */
 function resolveOutsideFamily(family: ColorFamily, m: MappingInput, voiceAvailable: boolean, redsIntensity: number): FamilyResult | null {
@@ -209,7 +209,7 @@ function resolveFamily(family: ColorFamily, m: MappingInput): FamilyResult {
         primary = 'violet'; // "very calm BPM + clear, steady voice"
         hue = clamp(Math.max(hue, 260), 260, 270);
       } else if (hue >= 255 && m.vocalVariance <= 0.25) {
-        // "calm metrics with low vocal variance": soft and gentle, so pale and lightly coloured.
+        // "calm metrics with low vocal variance": soft and gentle, so pale and lightly colored.
         return { hue: 270, turbulence: lerp(0.2, 0.1, calm), pulseMultiplier: 1, primary: 'lavender', lightnessMin: 0.68, saturationMax: 0.46 };
       } else if (hue >= 230) {
         primary = 'indigo'; // "low BPM or strong parasympathetic markers"
@@ -273,7 +273,7 @@ function selectSecondary(family: ColorFamily, hue: number, primary: AuraColorId)
   return best;
 }
 
-export function normalise(m: MappingInput, voiceAvailable: boolean): NormalisedState {
+export function normalize(m: MappingInput, voiceAvailable: boolean): NormalizedState {
   return {
     activation: norm(m.bpm, 45, 120),
     coherence: norm(Math.log(clamp(m.hrv, 1, 400)), Math.log(12), Math.log(100)),
@@ -297,7 +297,7 @@ export interface MappingOutput {
 
 /** The core function named by the specification. Pure and deterministic. */
 export function mapBiometricsToColor(raw: MappingInput, voiceAvailable = true): MappingOutput {
-  const m = quantiseInput(raw);
+  const m = quantizeInput(raw);
   const family = selectFamily(m);
   const fam = resolveOutsideFamily(family, m, voiceAvailable, family === 'redsOranges' ? redsIntensityOf(m) : 0) ?? resolveFamily(family, m);
   const achromatic = selectAchromatic(m, voiceAvailable);
@@ -369,9 +369,9 @@ export function mapBiometricsToColor(raw: MappingInput, voiceAvailable = true): 
 /** Full aura parameters for the renderer and UI, including grounded copy. */
 export function mapBiometricsToAura(input: BiometricInput): AuraParams {
   const { voiceAvailable, ...mapping } = toMappingInput(input);
-  const m = quantiseInput(mapping);
+  const m = quantizeInput(mapping);
   const out = mapBiometricsToColor(m, voiceAvailable);
-  const state = normalise(m, voiceAvailable);
+  const state = normalize(m, voiceAvailable);
 
   const regions: AuraRegion[] = [
     {

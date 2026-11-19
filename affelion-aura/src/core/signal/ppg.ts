@@ -6,18 +6,18 @@ import { bandpassZeroPhase, detrend } from './filters';
  * Rear-camera photoplethysmography.
  *
  * The native module delivers one sample per camera frame: the mean red/green/blue of a
- * centre region while the torch is on and a fingertip covers the lens. Blood volume in the
+ * center region while the torch is on and a fingertip covers the lens. Blood volume in the
  * fingertip rises with each heartbeat and absorbs more light, so the mean red value dips
  * once per beat. We resample to a uniform rate, band-pass between 0.7 and 3.5 Hz
  * (42–210 bpm), detect beats with an adaptive threshold, time each beat at its upstroke, reject
- * artefacts, and compute heart rate and HRV from the surviving intervals. Every stretch of
+ * artifacts, and compute heart rate and HRV from the surviving intervals. Every stretch of
  * continuous coverage is processed on its own, so lifting the finger never invents a beat.
  */
 
 export interface PpgSample {
   /** Seconds, monotonic (any origin). */
   t: number;
-  /** Mean channel values normalised 0..1. */
+  /** Mean channel values normalized 0..1. */
   r: number;
   g: number;
   b: number;
@@ -55,7 +55,7 @@ export interface PpgLiveState {
   bpm: number | null;
   /** Latest signal quality estimate 0..1. */
   quality: number;
-  /** Normalised waveform (last ~4 s) for the UI, values roughly −1..1. */
+  /** Normalized waveform (last ~4 s) for the UI, values roughly −1..1. */
   waveform: Float32Array;
   /** Time of the last detected beat (seconds, sample clock) for haptics / pulse UI. */
   lastBeatAt: number | null;
@@ -100,7 +100,7 @@ interface Analysis {
   /** Filtered signal of the most recent segment, for the waveform. */
   latest: Prepared | null;
   snr: number;
-  /** Seconds of usable signal analysed. */
+  /** Seconds of usable signal analyzed. */
   durationSec: number;
 }
 
@@ -116,7 +116,7 @@ export class PpgProcessor {
   /**
    * Covered samples, split wherever the finger left the lens. Each segment is filtered and
    * searched for beats on its own, so a lift never becomes a ramp in the signal, a beat that
-   * did not happen, or a difference between two intervals that were not neighbours.
+   * did not happen, or a difference between two intervals that were not neighbors.
    */
   private segments: PpgSample[][] = [];
   private coveredSec = 0;
@@ -184,11 +184,11 @@ export class PpgProcessor {
     }
     detrend(x);
     const filtered = bandpassZeroPhase(x, this.fs, this.minBpm / 60, this.maxBpm / 60);
-    // Discard the filter transient at both ends (1.5 s) so boundary artefacts never become beats.
+    // Discard the filter transient at both ends (1.5 s) so boundary artifacts never become beats.
     const trim = Math.round(1.5 * this.fs);
     if (filtered.length <= trim * 2 + this.fs) return null;
     const y = filtered.slice(trim, filtered.length - trim);
-    // Normalise by robust amplitude.
+    // Normalize by robust amplitude.
     const absMed = median(Array.from(y, Math.abs)) || 1e-6;
     for (let i = 0; i < y.length; i++) y[i] = y[i]! / (absMed * 2.5);
     return { x: y, t0: t0 + trim / this.fs };
@@ -246,7 +246,7 @@ export class PpgProcessor {
   /**
    * Intervals between consecutive beats of one segment, with implausible ones and those more
    * than 20 % from the local median removed. Each survivor records whether the interval just
-   * before it also survived, because variability is only defined between true neighbours.
+   * before it also survived, because variability is only defined between true neighbors.
    */
   private intervals(beats: Beat[]): { accepted: Interval[]; total: number } {
     const lo = (60 / this.maxBpm) * 1000;
@@ -289,7 +289,7 @@ export class PpgProcessor {
   }
 
   /** Filter, find beats and collect intervals for every segment long enough to use. */
-  private analyse(): Analysis {
+  private analyze(): Analysis {
     const intervals: Interval[] = [];
     const beats: number[] = [];
     let total = 0;
@@ -314,7 +314,7 @@ export class PpgProcessor {
 
   /** Current live state for the scan UI. Cheap enough to call a few times per second. */
   live(): PpgLiveState {
-    const a = this.analyse();
+    const a = this.analyze();
     const waveLen = this.fs * 4;
     const waveform = a.latest ? a.latest.x.slice(Math.max(0, a.latest.x.length - waveLen)) : new Float32Array(0);
     let bpm: number | null = null;
@@ -330,12 +330,12 @@ export class PpgProcessor {
 
   /** Final metrics over the whole buffered window. Returns null if the window is unusable. */
   finish(): HeartMetrics | null {
-    const a = this.analyse();
+    const a = this.analyze();
     if (a.intervals.length < 8) return null;
     const ms = a.intervals.map((i) => i.ms);
     const bpm = 60000 / mean(ms);
     const rmssd = rmssdOf(a.intervals);
-    const diffs = neighbourDiffs(a.intervals);
+    const diffs = neighborDiffs(a.intervals);
     const sdnn = stddev(ms);
     const pnn50 = diffs.length ? (100 * diffs.filter((d) => Math.abs(d) > 50).length) / diffs.length : 0;
     const acceptRatio = a.total ? a.intervals.length / a.total : 0;
@@ -344,15 +344,15 @@ export class PpgProcessor {
   }
 }
 
-/** Differences between intervals that were true neighbours. */
-function neighbourDiffs(intervals: readonly Interval[]): number[] {
+/** Differences between intervals that were true neighbors. */
+function neighborDiffs(intervals: readonly Interval[]): number[] {
   const diffs: number[] = [];
   for (let i = 1; i < intervals.length; i++) if (intervals[i]!.adjacent) diffs.push(intervals[i]!.ms - intervals[i - 1]!.ms);
   return diffs;
 }
 
 function rmssdOf(intervals: readonly Interval[]): number {
-  const diffs = neighbourDiffs(intervals);
+  const diffs = neighborDiffs(intervals);
   return diffs.length ? Math.sqrt(mean(diffs.map((d) => d * d))) : 0;
 }
 

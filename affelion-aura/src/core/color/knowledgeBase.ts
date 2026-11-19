@@ -1,7 +1,7 @@
 /**
- * The Affelion Aura colour knowledge base. Single source of truth for all visuals, tappable
+ * The Affelion Aura color knowledge base. Single source of truth for all visuals, tappable
  * explanations, summaries and AI responses. The data below is the specification, verbatim.
- * Nothing in the app may describe a colour in words that are not in this file.
+ * Nothing in the app may describe a color in words that are not in this file.
  */
 
 export type AuraColorId =
@@ -66,9 +66,9 @@ export const KB_BY_ID: Record<AuraColorId, KnowledgeBaseColor> = Object.fromEntr
 export const AURA_COLOR_IDS: readonly AuraColorId[] = COLOR_KNOWLEDGE_BASE.map((c) => c.id);
 
 /**
- * Representative swatch for UI legends and placeholders. Chromatic entries use the centre of
+ * Representative swatch for UI legends and placeholders. Chromatic entries use the center of
  * their hue range; achromatic entries use fixed HSL that matches the tone's name. These are
- * presentation values only; the portrait itself is coloured by the mapping output.
+ * presentation values only; the portrait itself is colored by the mapping output.
  */
 export const SWATCH_HSL: Record<AuraColorId, { h: number; s: number; l: number }> = {
   deep_red: { h: 6, s: 0.7, l: 0.42 },

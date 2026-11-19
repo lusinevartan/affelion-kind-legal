@@ -254,8 +254,8 @@ function tick(state: ScanState, dt: number): ScanState {
 }
 
 export const GUIDANCE_COPY: Record<ScanGuidance, { title: string; body: string }> = {
-  faceFraming: { title: 'Frame your face', body: 'Centre yourself in the oval with your shoulders visible. Soft, even light works best.' },
-  faceHold: { title: 'Hold still', body: 'Mapping your outline. The colours you see now are a neutral preview; your own arrive after the pulse reading.' },
+  faceFraming: { title: 'Frame your face', body: 'Center yourself in the oval with your shoulders visible. Soft, even light works best.' },
+  faceHold: { title: 'Hold still', body: 'Mapping your outline. The colors you see now are a neutral preview; your own arrive after the pulse reading.' },
   fingerPlace: { title: 'Cover the rear camera', body: 'Place your fingertip over the rear camera and flash together. The flash will turn on; it is safe and will feel slightly warm.' },
   fingerHold: { title: 'Reading your pulse', body: 'Keep your finger still and relaxed. Breathe normally.' },
   fingerPressLighter: { title: 'Press a little lighter', body: 'Too much pressure blocks blood flow. Rest your fingertip gently on the lens.' },
@@ -264,7 +264,7 @@ export const GUIDANCE_COPY: Record<ScanGuidance, { title: string; body: string }
   voiceSpeak: { title: 'Say a few words', body: 'Speak or hum at a normal volume for about five seconds. Nothing you say is recorded or kept.' },
   voiceLouder: { title: 'A little louder', body: 'We can only hear a faint signal. Move the phone closer or speak up slightly.' },
   voiceGood: { title: 'Listening', body: 'Keep going for a few more seconds.' },
-  computing: { title: 'Composing your portrait', body: 'Translating your pulse, variability and voice into colour.' },
+  computing: { title: 'Composing your portrait', body: 'Translating your pulse, variability and voice into color.' },
   done: { title: 'Ready', body: 'Your portrait is ready.' },
   failedFinger: { title: 'Pulse reading failed', body: 'Cover the rear camera and flash fully, press lightly, and keep still.' },
   failedVoice: { title: 'Voice sample too quiet', body: 'Try again at a normal volume, or skip the voice step.' },

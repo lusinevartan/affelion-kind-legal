@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { askGuide, buildScanContext, GUIDE_NAME, GUIDE_SYSTEM_PROMPT, localGuideAnswer, sanitiseGuideReply } from '../src/services/ai/guide';
+import { askGuide, buildScanContext, GUIDE_NAME, GUIDE_SYSTEM_PROMPT, localGuideAnswer, sanitizeGuideReply } from '../src/services/ai/guide';
 import { mapBiometricsToAura } from '../src/core/color';
 import type { ScanRecord } from '../src/core/types';
 
@@ -30,31 +30,31 @@ describe('guide guardrails', () => {
     expect(ctx).toContain('78 bpm');
     expect(ctx).toContain('RMSSD 34 ms');
     expect(ctx).toContain('175 Hz');
-    expect(ctx).toContain('Colour family rule applied');
+    expect(ctx).toContain('Color family rule applied');
   });
 
   test('psychic or predictive replies are replaced', () => {
-    expect(sanitiseGuideReply('Your energy field is strong and your destiny is bright.')).not.toContain('energy field');
-    expect(sanitiseGuideReply('I can read your energy through the camera.')).not.toContain('read your energy');
-    expect(sanitiseGuideReply('This could diagnose anxiety.')).not.toContain('diagnos');
+    expect(sanitizeGuideReply('Your energy field is strong and your destiny is bright.')).not.toContain('energy field');
+    expect(sanitizeGuideReply('I can read your energy through the camera.')).not.toContain('read your energy');
+    expect(sanitizeGuideReply('This could diagnose anxiety.')).not.toContain('diagnos');
   });
 
   test('grounded replies pass through unchanged', () => {
     const ok = 'Your pulse averaged 78 bpm, which the knowledge base maps to sky blue.';
-    expect(sanitiseGuideReply(ok)).toBe(ok);
+    expect(sanitizeGuideReply(ok)).toBe(ok);
   });
 
   test('local answers are grounded and honest for every suggestion', () => {
-    for (const q of ['Why is my centre this colour?', 'What does the halo mean?', 'How did my voice change the portrait?', 'Am I sick?', 'Tell me my future']) {
+    for (const q of ['Why is my center this color?', 'What does the halo mean?', 'How did my voice change the portrait?', 'Am I sick?', 'Tell me my future']) {
       const a = localGuideAnswer(q, record);
-      expect(sanitiseGuideReply(a)).toBe(a);
+      expect(sanitizeGuideReply(a)).toBe(a);
       expect(a.length).toBeGreaterThan(20);
     }
     expect(localGuideAnswer('What does the halo mean?', record)).toContain('34 ms');
     expect(localGuideAnswer('Am I sick?', record)).toContain('not a medical device');
   });
 
-  test('remote replies are sanitised and failures fall back locally', async () => {
+  test('remote replies are sanitized and failures fall back locally', async () => {
     const bad = async () => new Response(JSON.stringify({ reply: 'Your chakra is open.' }), { status: 200 });
     const r1 = await askGuide('hello', record, [], { endpoint: 'https://example.invalid/guide', fetchImpl: bad as unknown as typeof fetch });
     expect(r1).not.toContain('chakra');
@@ -85,7 +85,7 @@ describe('the server owns the prompt', () => {
       sent = JSON.parse(String(init?.body));
       return { ok: true, json: async () => ({ reply: 'Your pulse averaged 78 bpm.' }) };
     }) as unknown as typeof fetch;
-    await askGuide('What does my centre mean?', record, [], { endpoint: 'https://example.invalid/guide', fetchImpl });
+    await askGuide('What does my center mean?', record, [], { endpoint: 'https://example.invalid/guide', fetchImpl });
     expect(sent.system).toBeUndefined();
     expect(String(sent.context)).toContain('78 bpm');
   });

@@ -3,22 +3,22 @@ import { Platform } from 'react-native';
 /**
  * Affelion Aura design tokens: "Stage".
  *
- * The app itself is greyscale. Colour belongs to the person: it only ever appears inside a
+ * The app itself is grayscale. Color belongs to the person: it only ever appears inside a
  * portrait, on a black stage, as light around a black-and-white photograph. Everything else is
- * a pale grey canvas, charcoal type and hairlines. One typeface, light, set large and tight;
+ * a pale gray canvas, charcoal type and hairlines. One typeface, light, set large and tight;
  * hierarchy comes from scale and line breaks, not weight, boxes or a second family. Actions
- * are capsules: charcoal on grey, white on the stage. Media is square-edged.
+ * are capsules: charcoal on gray, white on the stage. Media is square-edged.
  *
- * References: Josephmark (black theatrical canvas, light grotesk, colour only in the work) and
- * Dash Digital (pale grey and charcoal, tiny captions against large media).
+ * References: Josephmark (black theatrical canvas, light grotesk, color only in the work) and
+ * Dash Digital (pale gray and charcoal, tiny captions against large media).
  */
 export const colors = {
-  /** The app is greyscale. Pale grey canvas, charcoal ink, grey captions, hairline rules. */
+  /** The app is grayscale. Pale gray canvas, charcoal ink, gray captions, hairline rules. */
   ground: '#F0F0F0',
   ground2: '#E6E6E6',
   white: '#FAFAFA',
   fg: '#2A2A2A',
-  // Every text grey holds at least 4.5:1 on the canvas; control outlines hold at least 3:1.
+  // Every text gray holds at least 4.5:1 on the canvas; control outlines hold at least 3:1.
   fg70: '#585858',
   fg60: '#6B6B6B',
   fg50: '#6B6B6B',
@@ -26,7 +26,7 @@ export const colors = {
   fg30: 'rgba(42, 42, 42, 0.3)',
   hairline: '#D6D6D6',
   hairlineStrong: '#858585',
-  /** The stage is black. It is where colour lives: the camera and every portrait. */
+  /** The stage is black. It is where color lives: the camera and every portrait. */
   stage: '#000000',
   stage2: '#161616',
   stageFg: '#FFFFFF',
@@ -34,7 +34,7 @@ export const colors = {
   stageFg50: 'rgba(255, 255, 255, 0.62)',
   stageHairline: 'rgba(255, 255, 255, 0.3)',
   overlay: 'rgba(0, 0, 0, 0.55)',
-  /** No brand colour. These exist only so older call sites stay neutral. */
+  /** No brand color. These exist only so older call sites stay neutral. */
   accent: '#FFFFFF',
   clay: '#2A2A2A',
   danger: '#2A2A2A',
@@ -85,7 +85,7 @@ export const fonts = {
 const tabular = ['tabular-nums'] as 'tabular-nums'[];
 
 export const type = {
-  /** The voice: light, large, tight. Colour names, statements, prices. */
+  /** The voice: light, large, tight. Color names, statements, prices. */
   hero: { fontFamily: fonts.groteskLight, fontSize: 68, lineHeight: 64, letterSpacing: -2.6 },
   display: { fontFamily: fonts.groteskLight, fontSize: 44, lineHeight: 44, letterSpacing: -1.5 },
   title: { fontFamily: fonts.groteskLight, fontSize: 30, lineHeight: 33, letterSpacing: -0.9 },
@@ -96,7 +96,7 @@ export const type = {
   /** Measurements in running text: same family, tabular figures. */
   mono: { fontFamily: fonts.grotesk, fontSize: 13, lineHeight: 18, letterSpacing: -0.05, fontVariant: tabular },
   monoLarge: { fontFamily: fonts.grotesk, fontSize: 15, lineHeight: 20, fontVariant: tabular },
-  /** Tiny catalogue caption. */
+  /** Tiny catalog caption. */
   eyebrow: { fontFamily: fonts.groteskMedium, fontSize: 11, lineHeight: 14, letterSpacing: 0.5, textTransform: 'uppercase' as const },
   caption: { fontFamily: fonts.grotesk, fontSize: 12, lineHeight: 16, letterSpacing: -0.05 },
   serifCaption: { fontFamily: fonts.groteskLight, fontSize: 30, lineHeight: 33, letterSpacing: -0.9 },

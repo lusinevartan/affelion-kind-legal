@@ -260,7 +260,7 @@ uniform float vignette;
 uniform int hasMask;
 uniform float paper;          // 1 = composite as pigment on a light ground
 uniform sampler2D uStill;     // the person's photograph, same framing as the mask
-uniform int hasStill;         // 1 = develop the still in greyscale under the aura (opaque output)
+uniform int hasStill;         // 1 = develop the still in grayscale under the aura (opaque output)
 
 float hash (vec2 p) {
   return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
@@ -300,12 +300,12 @@ void main () {
   float lumIn = dot(color, vec3(0.299, 0.587, 0.114));
   float lum = lumIn / (0.7 + lumIn);
   color *= lum / max(lumIn, 0.0001);
-  // Bring out-of-range colour back by scaling, never by clipping one channel: clipping red
+  // Bring out-of-range color back by scaling, never by clipping one channel: clipping red
   // alone while green passes through is what turns a deep red orange.
   color /= max(1.0, max(color.r, max(color.g, color.b)));
   float alpha = clamp(lum * 1.6, 0.0, 1.0) * shape;
   if (paper > 0.5) {
-    // Pigment on paper: deepen and saturate so the colour holds against a light ground.
+    // Pigment on paper: deepen and saturate so the color holds against a light ground.
     float l2 = dot(color, vec3(0.299, 0.587, 0.114));
     color = clamp(mix(vec3(l2), color, 1.35) * 0.74, 0.0, 1.0);
     alpha = clamp(lum * 2.0, 0.0, 1.0) * shape;
@@ -321,8 +321,8 @@ void main () {
 
   if (hasStill == 1) {
     // Developed portrait: the person in black and white on a black stage, and the aura as the
-    // only colour, added as light. The room falls away; colour spills onto the edge of the
-    // body where the interior tint lets it, the way a coloured lamp would.
+    // only color, added as light. The room falls away; color spills onto the edge of the
+    // body where the interior tint lets it, the way a colored lamp would.
     vec3 s = texture2D(uStill, cuv).rgb;
     float g = dot(s, vec3(0.299, 0.587, 0.114));
     g = clamp((g - 0.04) * 1.12, 0.0, 1.0);

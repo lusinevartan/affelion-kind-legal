@@ -6,7 +6,7 @@ import type { AuraColorId as KbColorId } from './color/knowledgeBase';
  * Everything the app shows is derived from measured physical signals:
  * heart rate and heart-rate variability from rear-camera photoplethysmography (PPG),
  * and pitch / variation of the voice from a short recording. The app translates those
- * numbers into colour and motion. It does not measure, detect or claim anything invisible.
+ * numbers into color and motion. It does not measure, detect or claim anything invisible.
  */
 
 /** Summary of the finger PPG measurement. */
@@ -36,9 +36,9 @@ export interface HeartMetrics {
 export interface VoiceMetrics {
   /** Dominant (median) fundamental frequency in Hz over voiced frames. */
   dominantPitchHz: number;
-  /** Pitch variance normalised 0..1 (0 = monotone, 1 = highly varied). */
+  /** Pitch variance normalized 0..1 (0 = monotone, 1 = highly varied). */
   variance: number;
-  /** Stability normalised 0..1 (1 = very steady pitch and level frame to frame). */
+  /** Stability normalized 0..1 (1 = very steady pitch and level frame to frame). */
   stability: number;
   /** Raw: standard deviation of pitch in semitones over voiced frames. */
   pitchVarianceSemitones: number;
@@ -50,11 +50,11 @@ export interface VoiceMetrics {
   voicedRatio: number;
   /** Signal quality estimate 0..1 (voiced coverage, level, clipping). */
   quality: number;
-  /** Seconds of audio analysed. */
+  /** Seconds of audio analyzed. */
   durationSec: number;
 }
 
-/** Inputs to the biometric-to-colour engine. */
+/** Inputs to the biometric-to-color engine. */
 export interface BiometricInput {
   heart: HeartMetrics;
   voice: VoiceMetrics | null;
@@ -91,11 +91,11 @@ export interface RGB {
   b: number;
 }
 
-/** Which rule of the specification selected the colour family. */
+/** Which rule of the specification selected the color family. */
 export type ColorFamily = 'greensTeals' | 'redsOranges' | 'bluesIndigos' | 'skyBlue';
 
-/** Normalised state derived from the raw metrics. All values 0..1 unless noted. */
-export interface NormalisedState {
+/** Normalized state derived from the raw metrics. All values 0..1 unless noted. */
+export interface NormalizedState {
   /** Heart-rate driven activation. 0 = very low BPM, 1 = very high BPM. */
   activation: number;
   /** HRV driven coherence. 0 = very low variability, 1 = very high variability. */
@@ -132,16 +132,16 @@ export interface AuraParams {
   turbulence: number;
   /** Pulses per second driving the fluid injection rhythm. */
   pulseSpeed: number;
-  /** Knowledge-base id of the primary colour. */
+  /** Knowledge-base id of the primary color. */
   primaryColorId: KbColorId;
-  /** Knowledge-base id of the secondary (halo) colour. */
+  /** Knowledge-base id of the secondary (halo) color. */
   secondaryColorId: KbColorId;
   family: ColorFamily;
   /** 0..1 strength of the brighter accent triggered by vocal variance. */
   accentStrength: number;
   regions: AuraRegion[];
-  state: NormalisedState;
-  /** 32-bit seed derived from the quantised input, for the fluid simulation's PRNG. */
+  state: NormalizedState;
+  /** 32-bit seed derived from the quantized input, for the fluid simulation's PRNG. */
   seed: number;
   /** One-sentence honest summary for the teaser Polaroid. */
   summary: string;

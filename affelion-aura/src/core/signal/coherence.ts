@@ -14,7 +14,7 @@ import { fft, hannWindow } from './fft';
  */
 
 export interface CoherenceOptions {
-  /** Seconds of beats to analyse. */
+  /** Seconds of beats to analyze. */
   windowSec?: number;
   /** Resampling rate for the interval series (Hz). */
   fs?: number;

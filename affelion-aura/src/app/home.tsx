@@ -14,8 +14,8 @@ import { PREVIEW_PARAMS } from '../features/scan/previewParams';
 import { formatDate } from '../ui/format';
 
 /**
- * Home is two fields. A black stage with the latest portrait, the only colour on the screen,
- * and a grey sheet that names it in one large word and offers one action.
+ * Home is two fields. A black stage with the latest portrait, the only color on the screen,
+ * and a gray sheet that names it in one large word and offers one action.
  */
 export default function Home() {
   const { scans, entitlement, canScan, freeScansLeft: left, practices } = useAppState();

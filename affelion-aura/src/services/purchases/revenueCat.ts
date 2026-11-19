@@ -55,7 +55,7 @@ export class RevenueCatPurchaseProvider implements PurchaseProvider {
     return pkg;
   }
 
-  /** Localised prices from the store. A plan the store does not list yet is simply left out. */
+  /** Localized prices from the store. A plan the store does not list yet is simply left out. */
   async getPrices(): Promise<PlanPrices> {
     await this.ensure();
     const prices: PlanPrices = {};

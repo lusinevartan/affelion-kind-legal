@@ -14,7 +14,7 @@ export interface AuraViewProps {
   paper?: boolean;
   /**
    * The person's photograph. When given, the view is opaque: the still is developed in
-   * black and white on a black stage and the aura is the only colour in the frame.
+   * black and white on a black stage and the aura is the only color in the frame.
    */
   stillUri?: string | null;
   /**
@@ -42,15 +42,15 @@ export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function Au
 ) {
   const [reduceMotion, setReduceMotion] = React.useState(false);
   React.useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     AccessibilityInfo.isReduceMotionEnabled()
       .then((on) => {
-        if (!cancelled) setReduceMotion(on);
+        if (!canceled) setReduceMotion(on);
       })
       .catch(() => {});
     const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
     return () => {
-      cancelled = true;
+      canceled = true;
       sub.remove();
     };
   }, []);
@@ -160,17 +160,17 @@ export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function Au
       redrawIfPaused();
       return;
     }
-    let cancelled = false;
+    let canceled = false;
     const img = new (globalThis as unknown as { Image: new () => HTMLImageElement }).Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      if (cancelled) return;
+      if (canceled) return;
       simRef.current?.setStill(img);
       redrawIfPaused();
     };
     img.src = stillUri;
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [stillUri, ready]);
 

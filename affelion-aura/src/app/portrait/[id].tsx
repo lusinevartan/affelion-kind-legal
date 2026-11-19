@@ -14,8 +14,8 @@ import { usePolaroidExport } from '../../features/portrait/usePolaroidExport';
 import { formatDate } from '../../ui/format';
 
 /**
- * The portrait. A black stage edge to edge with the developed picture, then a grey sheet that
- * names the colour in one large word, gives the three readings and one action. Two numbered
+ * The portrait. A black stage edge to edge with the developed picture, then a gray sheet that
+ * names the color in one large word, gives the three readings and one action. Two numbered
  * markers on the stage open knowledge-base explanations. The paywall is only offered from
  * here, after the portrait exists.
  */
@@ -114,7 +114,7 @@ export default function PortraitScreen() {
           </View>
         ) : (
           <Text variant="caption" color={colors.inkText50} style={{ marginTop: space.md }}>
-            Tap a number on the portrait to see which reading made that colour.
+            Tap a number on the portrait to see which reading made that color.
           </Text>
         )}
 

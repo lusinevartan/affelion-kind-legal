@@ -1,6 +1,6 @@
 /**
  * Honesty rules shared with the app (affelion-aura/src/core/color/explain.ts). Keep the two lists
- * identical; the app also filters every reply client-side, so the server list is defence in depth.
+ * identical; the app also filters every reply client-side, so the server list is defense in depth.
  */
 export const BANNED_PHRASES: readonly string[] = [
   'energy field', 'energetic field', 'chakra', 'psychic', 'spirit guide', 'spirits', 'your soul',
@@ -18,4 +18,4 @@ export function findBannedPhrase(text: string): string | null {
 }
 
 export const SAFE_FALLBACK =
-  'I can only speak to what was measured in this scan: your pulse, its variability, and the shape of your voice. Tap a region of the portrait to see exactly which number produced which colour.';
+  'I can only speak to what was measured in this scan: your pulse, its variability, and the shape of your voice. Tap a region of the portrait to see exactly which number produced which color.';

@@ -387,7 +387,7 @@ export class FluidSim {
       s: clamp01(Math.min(haloDef.s, params.saturation + 0.15) * lerp(0.45, 1.0, params.saturation)),
       l: clamp01(lerp(haloDef.l, params.lightness, 0.5)),
     });
-    // The brighter accent is the primary colour lifted in lightness; it carries no new meaning.
+    // The brighter accent is the primary color lifted in lightness; it carries no new meaning.
     const accent =
       params.accentStrength > 0
         ? hslToRgb({ h: params.hue, s: clamp01(params.saturation + 0.1), l: clamp01(params.lightness + 0.25) })
@@ -396,8 +396,8 @@ export class FluidSim {
   }
 
   /**
-   * Upload the person's photograph. It is developed in greyscale inside the display pass, so
-   * the aura is the only colour in the picture and a snapshot contains the whole portrait.
+   * Upload the person's photograph. It is developed in grayscale inside the display pass, so
+   * the aura is the only color in the picture and a snapshot contains the whole portrait.
    * `source` is whatever the platform's texImage2D accepts: an image element on web, or
    * `{ localUri }` with expo-gl on device. Pass null to go back to a transparent aura layer.
    */
@@ -632,7 +632,7 @@ export class FluidSim {
       const vy = (e.ny + e.nx * swirl) * speed * -1; // mask y is top-down, view y is bottom-up
       const radius = lerp(0.3, 0.17, turbulence) * (1 + 0.5 * beat);
 
-      // Colour: core near the body centre line, halo toward the shoulders/edges, accents rarely.
+      // Color: core near the body center line, halo toward the shoulders/edges, accents rarely.
       const r = this.rng();
       let color: RGB;
       if (pal.accent && r < 0.14 * p.accentStrength) color = pal.accent;
@@ -826,7 +826,7 @@ export class FluidSim {
 /**
  * Sample the silhouette boundary: for a set of rows find the leftmost/rightmost person pixel,
  * and for a set of columns the topmost one. Normals point away from the body.
- * Coordinates are normalised to the mask (origin top-left).
+ * Coordinates are normalized to the mask (origin top-left).
  */
 export function extractEdges(mask: SilhouetteMask, rows = 28, cols = 14): EdgePoint[] {
   const { width: w, height: h, data } = mask;
@@ -880,7 +880,7 @@ export function extractEdges(mask: SilhouetteMask, rows = 28, cols = 14): EdgePo
       }
     }
   }
-  // Normalise normals.
+  // Normalize normals.
   for (const p of pts) {
     const l = Math.hypot(p.nx, p.ny) || 1;
     p.nx /= l;
@@ -912,7 +912,7 @@ export function placeholderMask(width = 180, height = 240): SilhouetteMask {
     for (let x = 0; x < width; x++) {
       const u = (x + 0.5) / width - 0.5;
       const v = (y + 0.5) / height;
-      // Head: ellipse, signed distance approximated in normalised units.
+      // Head: ellipse, signed distance approximated in normalized units.
       const he = Math.hypot(u / 0.16, (v - 0.3) / 0.19);
       const head = (he - 1) * 0.16;
       // Neck: rounded box.

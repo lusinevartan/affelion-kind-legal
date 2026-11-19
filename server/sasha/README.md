@@ -15,7 +15,7 @@ Deploy anywhere that runs Node 20+ (Fly, Render, Railway, a VPS). Set in the app
 the app as a Bearer header (see `src/services/ai/guide.ts`).
 
 The system prompt is the server's own (`src/systemPrompt.ts`). It is generated from the app's
-colour knowledge base with `npm run sync:guide-prompt` in `affelion-aura`, and a test in the app
+color knowledge base with `npm run sync:guide-prompt` in `affelion-aura`, and a test in the app
 fails if the two drift. A prompt sent by a client is ignored, because the app token is public.
 Set `SASHA_TRUST_PROXY=1` only when a proxy in front of the service sets `X-Forwarded-For`.
 

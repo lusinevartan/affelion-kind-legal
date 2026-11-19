@@ -9,8 +9,8 @@ import type { AuraParams, BiometricInput } from '../src/core/types';
 import { FluidSim, QUALITY_PRESETS, placeholderMask } from '../src/render/fluid/FluidSim';
 
 /**
- * Find real readings that the mapping turns into a given knowledge-base colour, so a swatch
- * sheet shows what the rules actually produce. Colours no reading reaches come back as
+ * Find real readings that the mapping turns into a given knowledge-base color, so a swatch
+ * sheet shows what the rules actually produce. Colors no reading reaches come back as
  * `reachable: false` with parameters taken straight from the swatch, for reference only.
  */
 function paramsForColor(id: AuraColorId): { params: AuraParams; reachable: boolean; readings: string } {

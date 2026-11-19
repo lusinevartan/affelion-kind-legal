@@ -7,7 +7,7 @@ import { buildRegionExplanation, buildSummary } from './explain';
  * Live aura during a practice session. The same deterministic mapping is applied to a sliding
  * window of heart metrics, then eased toward the new values so the portrait evolves smoothly
  * instead of jumping. Coherence reduces turbulence on top of the family rule, which is the
- * visible "settling" the user is practising toward. The vocal inputs are held from the scan.
+ * visible "settling" the user is practicing toward. The vocal inputs are held from the scan.
  */
 export interface LiveWindow {
   bpm: number;

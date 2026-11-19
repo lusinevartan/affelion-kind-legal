@@ -31,7 +31,7 @@ export function yinPitch(
     }
     d[tau] = s;
   }
-  // Cumulative mean normalised difference.
+  // Cumulative mean normalized difference.
   const cmnd = new Float32Array(maxTau + 1);
   let running = 0;
   for (let tau = minTau; tau <= maxTau; tau++) {

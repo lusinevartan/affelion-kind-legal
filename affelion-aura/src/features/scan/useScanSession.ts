@@ -126,10 +126,10 @@ export function useScanSession(): ScanSession {
   // Finger phase: rear camera + torch.
   React.useEffect(() => {
     if (state.phase !== 'finger') return;
-    let cancelled = false;
+    let canceled = false;
     ppg.reset();
     const sub = AffelionPpg.addListener('onSample', (s: PpgSampleEvent) => {
-      if (cancelled || !s.locked) return; // ignore warm-up frames before exposure lock
+      if (canceled || !s.locked) return; // ignore warm-up frames before exposure lock
       const cov = ppg.push({ t: s.t, r: s.r, g: s.g, b: s.b });
       dispatch({ type: 'FINGER_COVERAGE', covered: cov.covered, reason: cov.reason });
     });
@@ -137,7 +137,7 @@ export function useScanSession(): ScanSession {
       if (st.state === 'error') dispatch({ type: 'FAIL', reason: st.message ?? 'Camera error' });
     });
     AffelionPpg.start({ torchLevel: 0.6, fps: 30, roi: 0.5, warmupSeconds: 1.2 }).catch((e: unknown) => {
-      if (!cancelled) dispatch({ type: 'FAIL', reason: e instanceof Error ? e.message : 'Could not start the rear camera' });
+      if (!canceled) dispatch({ type: 'FAIL', reason: e instanceof Error ? e.message : 'Could not start the rear camera' });
     });
     const liveId = setInterval(() => {
       const l = ppg.live();
@@ -149,7 +149,7 @@ export function useScanSession(): ScanSession {
       }
     }, 500);
     return () => {
-      cancelled = true;
+      canceled = true;
       clearInterval(liveId);
       sub.remove();
       statusSub.remove();
@@ -164,14 +164,14 @@ export function useScanSession(): ScanSession {
       dispatch({ type: 'SKIP_VOICE' });
       return;
     }
-    let cancelled = false;
+    let canceled = false;
     voice.reset();
     const sub = AffelionAudio.addListener('onPcm', (e) => {
-      if (cancelled) return;
+      if (canceled) return;
       voice.push(pcmToFloat32(e.data));
     });
     AffelionAudio.start().catch((e: unknown) => {
-      if (!cancelled) dispatch({ type: 'FAIL', reason: e instanceof Error ? e.message : 'Could not start the microphone' });
+      if (!canceled) dispatch({ type: 'FAIL', reason: e instanceof Error ? e.message : 'Could not start the microphone' });
     });
     const liveId = setInterval(() => {
       const l = voice.live();
@@ -179,14 +179,14 @@ export function useScanSession(): ScanSession {
       setLive((prev) => ({ ...prev, voiceLevel: l.level, voicePitch: l.pitchHz }));
     }, 200);
     return () => {
-      cancelled = true;
+      canceled = true;
       clearInterval(liveId);
       sub.remove();
       AffelionAudio.stop().catch(() => {});
     };
   }, [state.phase, voice]);
 
-  // Computing: finalise metrics and build the record. Runs in a task, not synchronously in
+  // Computing: finalize metrics and build the record. Runs in a task, not synchronously in
   // the effect body, because finishing the processors is real work and updates state.
   const voiceSkipped = state.voiceSkipped;
   const phase = state.phase;

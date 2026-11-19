@@ -14,8 +14,8 @@ import { scanInsight } from '../../core/insight/baseline';
 import { FRAME_STYLE_IDS, FRAME_STYLES } from '../../render/polaroid/styles';
 
 /**
- * Paid full breakdown. Every colour in the portrait is tied to a number from this scan, in the
- * language of the colour system. Nothing is added that was not measured.
+ * Paid full breakdown. Every color in the portrait is tied to a number from this scan, in the
+ * language of the color system. Nothing is added that was not measured.
  */
 export default function ReportScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -157,7 +157,7 @@ export default function ReportScreen() {
 
       <Card style={{ marginTop: space.lg }}>
         <Text variant="eyebrow" color={colors.bone60}>
-          THE COLOUR KNOWLEDGE BASE
+          THE COLOR KNOWLEDGE BASE
         </Text>
         <View style={{ marginTop: space.sm }}>
           {AURA_COLOR_IDS.map((cid) => (
