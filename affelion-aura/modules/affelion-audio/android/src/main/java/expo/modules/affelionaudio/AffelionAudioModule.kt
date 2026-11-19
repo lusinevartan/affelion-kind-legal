@@ -30,7 +30,7 @@ class AffelionAudioModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("AffelionAudio")
 
-    Events("onPcm", "onStatus")
+    Events("onPcm", "onAudioStatus")
 
     OnDestroy { stop() }
 
@@ -77,7 +77,7 @@ class AffelionAudioModule : Module() {
     record = usable
     running = true
     usable.startRecording()
-    sendEvent("onStatus", mapOf("state" to "running"))
+    sendEvent("onAudioStatus", mapOf("state" to "running"))
     worker = thread(name = "affelion-audio", isDaemon = true) {
       val floats = FloatArray(1024)
       val bytes = ByteBuffer.allocate(floats.size * 4).order(ByteOrder.LITTLE_ENDIAN)
@@ -101,6 +101,6 @@ class AffelionAudioModule : Module() {
     try { record?.release() } catch (_: Exception) {}
     record = null
     worker = null
-    sendEvent("onStatus", mapOf("state" to "stopped"))
+    sendEvent("onAudioStatus", mapOf("state" to "stopped"))
   }
 }

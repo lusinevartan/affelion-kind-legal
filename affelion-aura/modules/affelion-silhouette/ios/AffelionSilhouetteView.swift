@@ -67,15 +67,22 @@ final class AffelionSilhouetteView: ExpoView {
   }
 
   private func stop() {
+    guard source != nil else { return }
     source?.stop()
     source?.view.removeFromSuperview()
     source = nil
     onStatus(["state": "stopped"])
   }
 
-  override func removeFromSuperview() {
-    stop()
-    super.removeFromSuperview()
+  // The camera follows the view on and off screen. If the same view is put back while it is
+  // still meant to be active, the preview starts again instead of staying black.
+  override func didMoveToWindow() {
+    super.didMoveToWindow()
+    if window == nil {
+      stop()
+    } else if active, source == nil {
+      start()
+    }
   }
 
   // MARK: - Still capture
@@ -150,7 +157,7 @@ final class ARKitFrameSource: NSObject, FrameSource, ARSessionDelegate {
     arView.automaticallyUpdatesLighting = false
     arView.rendersContinuously = true
     arView.scene = SCNScene()
-    arView.transform = CGAffineTransform(scaleX: -1, y: 1)
+    // ARKit's front camera view is already mirrored, like the mask and the still. No extra flip.
     arView.session.delegate = self
     arView.session.delegateQueue = DispatchQueue(label: "com.affelion.aura.silhouette.ar", qos: .userInitiated)
   }

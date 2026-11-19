@@ -31,6 +31,7 @@ buyer sees on day one. Android and the Sasha server follow in 1.1.
 cd affelion-aura
 npm install
 npx eas-cli@latest login
+npx eas-cli@latest init          # links this code to the owner's Expo account, once
 npx eas-cli@latest build --profile development --platform ios
 # install the build on the phone, then:
 npx expo start --dev-client

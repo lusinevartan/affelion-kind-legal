@@ -48,7 +48,7 @@ public class AffelionPpgModule: Module {
     AsyncFunction("start") { (options: PpgStartOptions, promise: Promise) in
       controller.start(options: options) { error in
         if let error = error {
-          promise.reject("E_PPG_START", error)
+          promise.reject("E_PPG_START", error.localizedDescription)
         } else {
           promise.resolve(nil)
         }
@@ -106,8 +106,11 @@ final class PpgCaptureController: NSObject, AVCaptureVideoDataOutputSampleBuffer
       self.torchLevel = Float(min(max(options.torchLevel, 0.1), 1.0))
       self.locked = false
 
+      // Tracks whether a configuration block is open, so a failure closes it exactly once.
+      var configuring = false
       do {
         self.session.beginConfiguration()
+        configuring = true
         self.session.sessionPreset = .vga640x480
         for input in self.session.inputs { self.session.removeInput(input) }
         for out in self.session.outputs { self.session.removeOutput(out) }
@@ -123,6 +126,7 @@ final class PpgCaptureController: NSObject, AVCaptureVideoDataOutputSampleBuffer
         self.session.addOutput(output)
         self.output = output
         self.session.commitConfiguration()
+        configuring = false
 
         try device.lockForConfiguration()
         // Fixed frame rate for uniform sampling.
@@ -145,15 +149,24 @@ final class PpgCaptureController: NSObject, AVCaptureVideoDataOutputSampleBuffer
 
         self.session.startRunning()
         try device.lockForConfiguration()
-        try device.setTorchModeOn(level: self.torchLevel)
-        device.unlockForConfiguration()
+        do {
+          defer { device.unlockForConfiguration() }
+          do {
+            try device.setTorchModeOn(level: self.torchLevel)
+          } catch {
+            // The level asked for is above what the phone allows right now, for example when it is warm.
+            try device.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
+          }
+        }
 
         self.startedAt = CACurrentMediaTime()
         self.running = true
         self.onStatus?(["state": "running"])
         completion(nil)
       } catch {
-        self.session.commitConfiguration()
+        // Leave nothing half started: close the configuration and switch the camera back off.
+        if configuring { self.session.commitConfiguration() }
+        if self.session.isRunning { self.session.stopRunning() }
         self.onStatus?(["state": "error", "message": error.localizedDescription])
         completion(error)
       }
@@ -164,8 +177,8 @@ final class PpgCaptureController: NSObject, AVCaptureVideoDataOutputSampleBuffer
     sessionQueue.async { [weak self] in
       guard let self = self, self.running else { return }
       self.running = false
-      if let device = self.device, device.hasTorch {
-        try? device.lockForConfiguration()
+      // Device settings may only be changed while the lock is held.
+      if let device = self.device, device.hasTorch, (try? device.lockForConfiguration()) != nil {
         device.torchMode = .off
         if device.isExposureModeSupported(.continuousAutoExposure) { device.exposureMode = .continuousAutoExposure }
         if device.isWhiteBalanceModeSupported(.continuousAutoWhiteBalance) { device.whiteBalanceMode = .continuousAutoWhiteBalance }

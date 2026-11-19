@@ -11,7 +11,8 @@ export interface AudioStatusEvent {
 
 export type AudioModuleEvents = {
   onPcm(event: PcmEvent): void;
-  onStatus(event: AudioStatusEvent): void;
+  /** Named apart from the pulse module's `onStatus`: iOS delivers an event to every module that declares its name. */
+  onAudioStatus(event: AudioStatusEvent): void;
 };
 
 export type AudioPermissionStatus = 'granted' | 'denied' | 'undetermined';

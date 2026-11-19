@@ -189,6 +189,8 @@ question only.
 
 ## To verify on first device run
 
+- Mirror check on a Face ID iPhone: raise one hand during the face step. The live preview, the outline and the saved photo must all show it on the same side. The extra flip on the ARKit preview was removed after a code review found it un-mirrored the preview against the outline; if they disagree, revisit `ARKitFrameSource` in `modules/affelion-silhouette/ios/AffelionSilhouetteView.swift` (and the `cx` value it reports).
+- Warm phone: the flash falls back to the highest level the phone allows if the requested level is refused. Confirm a pulse still reads after several scans in a row.
 - iOS Vision orientation for the front camera: `.leftMirrored` is used for segmentation, face
   detection and the still. If the mask appears rotated or mirrored relative to the preview, change
   this constant in `AffelionSilhouetteView.swift` (one place for each path).

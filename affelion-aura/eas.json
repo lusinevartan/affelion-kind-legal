@@ -9,12 +9,10 @@
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview",
       "env": { "EXPO_PUBLIC_GUIDE_ENDPOINT": "" }
     },
     "production": {
       "autoIncrement": true,
-      "channel": "production",
       "env": { "EXPO_PUBLIC_GUIDE_ENDPOINT": "" }
     }
   },

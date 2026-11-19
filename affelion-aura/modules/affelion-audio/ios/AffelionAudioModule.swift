@@ -10,7 +10,7 @@ public class AffelionAudioModule: Module {
   public func definition() -> ModuleDefinition {
     Name("AffelionAudio")
 
-    Events("onPcm", "onStatus")
+    Events("onPcm", "onAudioStatus")
 
     OnDestroy { self.stopEngine() }
 
@@ -46,6 +46,8 @@ public class AffelionAudioModule: Module {
     if running { return }
     let session = AVAudioSession.sharedInstance()
     try session.setCategory(.record, mode: .measurement, options: [])
+    // Without this iOS mutes the vibration that marks the end of the scan while the microphone is on.
+    try session.setAllowHapticsAndSystemSoundsDuringRecording(true)
     try session.setActive(true, options: [])
 
     let input = engine.inputNode
@@ -65,7 +67,7 @@ public class AffelionAudioModule: Module {
     engine.prepare()
     try engine.start()
     running = true
-    sendEvent("onStatus", ["state": "running"])
+    sendEvent("onAudioStatus", ["state": "running"])
   }
 
   private func handle(buffer: AVAudioPCMBuffer, outFormat: AVAudioFormat) {
@@ -96,6 +98,6 @@ public class AffelionAudioModule: Module {
     running = false
     converter = nil
     try? AVAudioSession.sharedInstance().setActive(false, options: [.notifyOthersOnDeactivation])
-    sendEvent("onStatus", ["state": "stopped"])
+    sendEvent("onAudioStatus", ["state": "stopped"])
   }
 }
