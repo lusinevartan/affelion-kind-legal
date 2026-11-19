@@ -1,0 +1,105 @@
+# Handoff
+
+For whoever picks this up next. Read this, then `docs/LAUNCH.md`.
+
+## What this is
+
+Affelion Aura is an iPhone and Android app (Expo SDK 58, React Native 0.88, TypeScript). In one
+minute it reads pulse from a fingertip on the rear camera, analyzes a few seconds of voice,
+takes a portrait, and turns the measurements into one of twenty colors moving around the person.
+A breathing practice then shows the color changing live. It is honest about what it is: a
+visual translation of measured numbers, not a camera for invisible things and not a medical
+device.
+
+## State in one paragraph
+
+The app is feature complete in code and has never run on a physical phone. Type check, lint and
+90 unit tests pass; iOS, Android and web bundles build. The three native modules (pulse, outline,
+microphone), store purchases and the Sasha server have not been exercised on real hardware or
+against live accounts. First device run is the gate to everything else.
+
+## Where things are
+
+| What | Where |
+| --- | --- |
+| The app | `affelion-aura/` |
+| Screens (Expo Router) | `affelion-aura/src/app/` |
+| Color rules and the 20-color knowledge base (single source of truth, do not reword) | `affelion-aura/src/core/color/` |
+| Pulse, voice and coherence processing | `affelion-aura/src/core/signal/` |
+| The moving color field (WebGL) | `affelion-aura/src/render/fluid/` |
+| Native modules (Swift and Kotlin) | `affelion-aura/modules/` |
+| Prices, plans, purchases | `affelion-aura/src/services/entitlements.ts`, `src/services/purchases/` |
+| Sasha, the guide (app side) | `affelion-aura/src/services/ai/guide.ts`, `src/features/guide/` |
+| Sasha server (optional, not deployed) | `server/sasha/` |
+| Design system "Stage" | `affelion-aura/src/ui/theme.ts`, `src/ui/components/` |
+| Tests | `affelion-aura/__tests__/` |
+| Architecture, color system, first-device checklist | `affelion-aura/docs/ARCHITECTURE.md`, `docs/COLOR_SYSTEM.md` |
+| Launch steps, store text | `affelion-aura/docs/LAUNCH.md`, `docs/STORE_LISTING.md` |
+| Every screen as an image, and all twenty colors | `affelion-aura/docs/screens/` |
+| Privacy and support pages | `aura-privacy.html`, `aura-support.html` at the repository root |
+
+## Run it
+
+```bash
+cd affelion-aura
+npm install
+npm run typecheck && npm run lint && npm test
+npx expo export --platform web --output-dir /tmp/aura-web   # click-through review build
+npx eas-cli@latest build --profile development --platform ios   # the real thing, on a phone
+```
+
+The scan needs a phone: camera, flash and microphone do not exist in the browser build.
+
+## Rules that must survive any change
+
+1. **Honesty.** The app never claims to see energy, predict, diagnose or treat. All copy,
+   including Sasha's replies, passes the honesty checks in `src/services/ai/` and
+   `server/sasha/src/honesty.ts`. Tests enforce this.
+2. **Deterministic color.** The same measurements always give the same color. All twenty colors
+   must stay reachable; a test fails otherwise.
+3. **Grayscale app, color only from the aura.** One typeface (Inter Tight), no brand color.
+4. **On-device by default.** Frames and audio are processed on the phone and discarded.
+5. **Plain American English** in everything the user reads: "main color" and "outer color".
+6. **Sasha says she is an AI** in her first message and in Settings. Removing that needs legal
+   advice first (EU transparency rules).
+
+## Business model as built
+
+Three free scans and one free practice, then Aura Pro: $12.99 a month, $69.99 a year (shown as
+$5.83 a month, marked best value), $199 lifetime. Product IDs are in `entitlements.ts`. The
+RevenueCat entitlement must be named `pro`. Free-use counters and the entitlement survive
+"Delete all data" on purpose, so deleting data does not reset the free scans.
+
+Rough math for the owner's target: the stores keep 15 to 30 percent, so an annual subscriber
+brings in about $4 to $5 a month. $15,000 a month therefore needs roughly 3,000 to 3,700 active
+annual subscribers, and $50,000 a month roughly 10,000 to 12,000.
+
+## Open decisions (owner)
+
+1. The app's final name.
+2. Approve or remove the three added color rules (lime, magenta, golden yellow). See
+   `docs/COLOR_SYSTEM.md`.
+3. Whether to credit the friend who inspired Sasha, with her consent.
+4. The app icon (a restrained teal corona is in `assets/`).
+5. When the paywall appears (now: after the third free scan).
+6. A gentler line for a dim first portrait.
+7. Move the app source out of this repository, which also hosts public legal pages.
+8. Whether the twenty color descriptions get a plain-English rewrite. They are verbatim from
+   the original brief today.
+
+## Known gaps
+
+- No device testing of any kind.
+- No store products, no RevenueCat project, no keys.
+- Sasha server not deployed. Without it Sasha answers from built-in text, which is the
+  recommended setup for 1.0. Turning the server on later needs an in-app consent step.
+- Listing screenshots do not exist. The images in `docs/screens/` use a stock photograph that
+  must not be used in the listing or in marketing.
+- The privacy and support pages still say "Draft, not yet published".
+- No analytics or crash reporting. Add crash reporting before a wide release.
+
+## Marketing material
+
+Instagram teaser reels are delivered separately from this repository, because they contain the
+owner's photographs and this repository is public. They are renderings: the colors and names
+come from the app's real rules, the moments are staged and labeled "Reenactment".

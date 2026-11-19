@@ -27,6 +27,12 @@ an honesty rule set. It is not a medical device.
   microphone and segmentation modules, purchases against the stores, and the Sasha server
   against a live key are untested outside this repository's unit tests and bundles.
 
+## Shipping it
+
+- `docs/HANDOFF.md`: where everything is, what is finished, what is not, and the open decisions.
+- `docs/LAUNCH.md`: the ordered steps from this repository to a live, paid app.
+- `docs/STORE_LISTING.md`: listing text, privacy answers and review notes, ready to paste.
+
 ## Stack
 
 - Expo SDK 58 / React Native 0.88 / React 19, TypeScript strict, Expo Router.
@@ -76,12 +82,13 @@ Build-time environment (EAS secrets or `.env`):
 | `EXPO_PUBLIC_GUIDE_ENDPOINT` | URL of the Sasha server (`server/sasha`); without it the guide answers from grounded local templates |
 | `EXPO_PUBLIC_GUIDE_TOKEN` | Optional shared secret the Sasha server expects as a Bearer header |
 | `EXPO_PUBLIC_RC_IOS_KEY`, `EXPO_PUBLIC_RC_ANDROID_KEY` | RevenueCat public SDK keys; without them purchases are simulated and the paywall says so |
+| `EXPO_PUBLIC_PRIVACY_URL`, `EXPO_PUBLIC_SUPPORT_URL`, `EXPO_PUBLIC_TERMS_URL` | Optional. Addresses of the privacy, support and terms pages linked from the paywall and Settings (`src/services/links.ts` holds the defaults) |
 
 `eas.json` has development, preview and production profiles.
 
 ## Status
 
-What is verified in this repository: the engine and signal processing (71 unit tests), the
+What is verified in this repository: the engine and signal processing (90 unit tests), the
 shader and fluid simulation (rendered in headless Chromium; see `docs/renders`), and the TypeScript
 build of the whole app including native module bindings.
 

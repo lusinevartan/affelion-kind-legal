@@ -5,6 +5,7 @@ import { Button, Rule, Screen, Text } from '../ui/components';
 import { colors, space } from '../ui/theme';
 import { PLANS, purchasesAreSimulated, purchasesAvailable, type PlanId } from '../services/entitlements';
 import { useAppActions, useAppState } from '../features/store/AppStore';
+import { PRIVACY_URL, TERMS_URL, openLink } from '../services/links';
 
 /**
  * Soft paywall, set like a price list on the table: no countdowns, no badges shouting, the
@@ -112,6 +113,10 @@ export default function Paywall() {
       <View style={{ flexDirection: 'row', gap: space.xl, marginTop: space.sm }}>
         <Button label="Restore" variant="ghost" onPress={() => void restore().then((e) => Alert.alert(e.isPro ? 'Restored' : 'Nothing to restore', e.isPro ? 'Pro is active.' : 'No previous purchase was found for this account.'))} />
         <Button label="Manage or cancel" variant="ghost" onPress={() => void manageSubscriptions()} />
+      </View>
+      <View style={{ flexDirection: 'row', gap: space.xl }}>
+        <Button label="Terms of Use" variant="ghost" onPress={() => openLink(TERMS_URL)} />
+        <Button label="Privacy Policy" variant="ghost" onPress={() => openLink(PRIVACY_URL)} />
       </View>
       {purchasesAreSimulated() ? (
         <Text variant="mono" color={colors.bone30} style={{ marginTop: space.xl }}>
