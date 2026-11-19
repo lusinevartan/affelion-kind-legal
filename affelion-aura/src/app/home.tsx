@@ -69,7 +69,7 @@ export default function Home() {
               {AURA_COLORS[latest.aura.primaryColorId].name}
             </Text>
             <Text variant="mono" color={colors.fg60} style={{ marginTop: space.sm }}>
-              {Math.round(latest.heart.bpm)} bpm · HRV {Math.round(latest.heart.rmssd)} ms
+              {Math.round(latest.heart.bpm)} bpm · variation {Math.round(latest.heart.rmssd)} ms
               {latest.voice && latest.voice.quality > 0.2 ? ` · voice ${Math.round(latest.voice.variance * 100)}%` : ''}
             </Text>
             {insight?.baseline ? (

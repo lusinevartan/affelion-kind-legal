@@ -29,8 +29,14 @@ the aura is added as light with a screen blend, so it also spills onto the edge 
 The outline that belongs to a still is persisted with the scan (`scan_masks`) and restored at
 launch, so a saved portrait always redraws around the same person. References: Josephmark and
 Dash Digital, as cataloged on Refero. Screen captures from the web review build are in
-`docs/screens/`; the person in them is a stock photograph (Unsplash license) standing in for
-the user's own still and must not be used in store listings or marketing.
+`docs/screens/`; the person in them is a generated image of a fictional woman standing in for
+the user's own still.
+
+The browser build doubles as a review build. With localStorage `aura.demo` = `1` (plus
+`aura.demoStill` and `aura.demoMask` for the photo and its outline), the web versions of the
+three native modules play a fingertip pulse, a speech-like voice and a fixed outline, so a full
+scan and a full practice run through the app's real signal processing in a browser. Captures can
+set `aura.insets` to a phone's safe areas. None of this exists in a phone build.
 
 ## Biometric → color engine (`src/core/color`)
 

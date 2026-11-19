@@ -26,9 +26,13 @@ export function Screen({ children, scroll = false, padded = true, style, content
     <View style={[styles.root, style]}>
       <StatusBar style="dark" />
       {scroll ? (
-        <ScrollView contentContainerStyle={[padding, contentStyle]} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          {children}
-        </ScrollView>
+        <>
+          <ScrollView contentContainerStyle={[padding, contentStyle]} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            {children}
+          </ScrollView>
+          {/* A solid band behind the status bar, so scrolled text never runs under the clock. */}
+          <View pointerEvents="none" style={[styles.statusBand, { height: insets.top }]} />
+        </>
       ) : (
         <View style={[styles.fill, padding, contentStyle]}>{children}</View>
       )}
@@ -39,4 +43,5 @@ export function Screen({ children, scroll = false, padded = true, style, content
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.ground },
   fill: { flex: 1 },
+  statusBand: { position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: colors.ground },
 });

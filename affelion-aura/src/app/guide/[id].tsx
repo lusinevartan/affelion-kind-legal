@@ -104,7 +104,7 @@ export default function GuideScreen() {
           accessibilityLabel={`Ask ${GUIDE_NAME} about this portrait`}
           value={input}
           onChangeText={setInput}
-          placeholder={`Ask ${GUIDE_NAME} about this portrait`}
+          placeholder={`Ask ${GUIDE_NAME} a question`}
           placeholderTextColor={colors.fg60}
           style={styles.input}
           returnKeyType="send"

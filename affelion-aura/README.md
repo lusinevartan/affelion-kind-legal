@@ -13,8 +13,9 @@ an honesty rule set. It is not a medical device.
 
 ## Reviewing it
 
-- **Screens:** `docs/screens/` holds a capture of every screen from the web review build, plus
-  the twenty-color sheet. The person in them is a stock photograph standing in for your own.
+- **Screens:** `docs/screens/all-screens-iphone.png` and `all-screens-android.png` show every
+  screen at phone size with that phone's status bar and home bar, plus `21-all-colors.png`. The
+  person in them is a generated image of a fictional woman, made for previews and the store.
 - **Click through it in a browser:** `npx expo export --platform web --output-dir /tmp/aura-web`,
   then `npx serve -s /tmp/aura-web` and open it at phone width. In the browser console run
   `localStorage.setItem('aura.demo','1')` (add `aura.pro` = `1` for the Pro screens) and reload.

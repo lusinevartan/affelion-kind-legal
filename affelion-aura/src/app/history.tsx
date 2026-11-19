@@ -76,7 +76,7 @@ export default function History() {
               <View style={{ flex: 1 }}>
                 <Text variant="bodySmall">{formatDate(p.createdAt)} · {Math.round(p.durationSec / 60)} min at {p.breathsPerMinute}/min</Text>
                 <Text variant="caption" color={colors.bone50}>
-                  HRV {Math.round(p.before.rmssd)} → {Math.round(p.after.rmssd)} ms · {Math.round(p.highCoherenceSec)} s at high coherence
+                  variation {Math.round(p.before.rmssd)} → {Math.round(p.after.rmssd)} ms · {Math.round(p.highCoherenceSec)} s in a steady rhythm
                 </Text>
               </View>
               <Text variant="heading">{Math.round(p.before.coherence * 100)} → {Math.round(p.after.coherence * 100)}</Text>
@@ -108,7 +108,7 @@ export default function History() {
                 </Text>
                 <Text variant="heading">{AURA_COLORS[s.aura.primaryColorId].name}</Text>
                 <Text variant="mono" color={colors.bone70}>
-                  {s.heart.bpm.toFixed(0)} bpm · HRV {s.heart.rmssd.toFixed(0)} ms
+                  {s.heart.bpm.toFixed(0)} bpm · variation {s.heart.rmssd.toFixed(0)} ms
                 </Text>
               </View>
               <Text variant="label" color={colors.bone50}>→</Text>

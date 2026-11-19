@@ -73,9 +73,10 @@ release build shows "Purchases are not available in this build" and takes no mon
 
 ## 5. Store listing (owner and developer, half a day)
 
-Everything to paste is in `docs/STORE_LISTING.md`. Screenshots must be taken from the real app
-on a real phone with the owner's own portrait. The stock photograph in `docs/screens/` is for
-review only and must not appear in the listing or any marketing.
+Everything to paste is in `docs/STORE_LISTING.md`. The screenshots, feature graphic and icons
+are in the separate store kit: App Store 6.9-inch at 1320 × 2868, Google Play phone at
+1080 × 1920, the 1024 × 500 feature graphic, and 1024 and 512 icons. They show the real app
+with a generated, fictional model; nothing in them is a real customer.
 
 ## 6. Submit
 

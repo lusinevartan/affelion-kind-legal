@@ -100,8 +100,8 @@ annual subscribers, and $50,000 a month roughly 10,000 to 12,000.
 - No store products, no RevenueCat project, no keys.
 - Sasha server not deployed. Without it Sasha answers from built-in text, which is the
   recommended setup for 1.0. Turning the server on later needs an in-app consent step.
-- Listing screenshots do not exist. The images in `docs/screens/` use a stock photograph that
-  must not be used in the listing or in marketing.
+- Store screenshots, the feature graphic and store icons exist as a separate kit (not in this
+  public repository). They show the real app with a generated, fictional model.
 - The privacy and support pages still say "Draft, not yet published".
 - No analytics or crash reporting. Add crash reporting before a wide release.
 
