@@ -98,8 +98,8 @@ export default function PortraitScreen() {
         <Rule onPaper style={{ marginTop: space.xl }} />
         <View style={styles.figures}>
           <Figure label="Pulse" value={Math.round(heart.bpm).toString()} unit="bpm" />
-          <Figure label="HRV" value={Math.round(heart.rmssd).toString()} unit="ms" />
-          <Figure label="Voice" value={voice && voice.quality > 0.2 ? `${Math.round(voice.variance * 100)}` : '—'} unit={voice && voice.quality > 0.2 ? '% var' : undefined} onPaper />
+          <Figure label="Variation" value={Math.round(heart.rmssd).toString()} unit="ms" />
+          <Figure label="Voice" value={voice && voice.quality > 0.2 ? `${Math.round(voice.variance * 100)}` : '—'} unit={voice && voice.quality > 0.2 ? '% moved' : undefined} onPaper />
         </View>
         <Rule onPaper />
 

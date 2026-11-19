@@ -106,7 +106,7 @@ describe('baseline and trend', () => {
     expect(insight.trend).toBe('improving');
     expect(insight.trendColorId).toBe('lime');
     expect(insight.sentence).toContain('62 ms');
-    expect(insight.sentence).toContain('trending up');
+    expect(insight.sentence).toContain('going up');
   });
   test('steady and declining', () => {
     const flat = [scan(3, 70, 50), scan(2, 71, 51), scan(1, 69, 49)];

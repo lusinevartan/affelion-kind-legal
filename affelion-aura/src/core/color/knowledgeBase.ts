@@ -1,7 +1,9 @@
 /**
  * The Affelion Aura color knowledge base. Single source of truth for all visuals, tappable
- * explanations, summaries and AI responses. The data below is the specification, verbatim.
- * Nothing in the app may describe a color in words that are not in this file.
+ * explanations, summaries and AI responses. `COLOR_KNOWLEDGE_BASE` is the specification,
+ * verbatim. `PLAIN_WORDS` says the same thing for each color at a high school reading level,
+ * and is what people read in the app. Nothing in the app may describe a color in words that
+ * are not in this file.
  */
 
 export type AuraColorId =
@@ -91,4 +93,32 @@ export const SWATCH_HSL: Record<AuraColorId, { h: number; s: number; l: number }
   muted_gray: { h: 210, s: 0.06, l: 0.52 },
   earth_brown: { h: 28, s: 0.28, l: 0.36 },
   charcoal: { h: 220, s: 0.06, l: 0.2 },
+};
+
+/**
+ * Each color in everyday words: a short meaning, and why it appeared. These restate the
+ * specification above without adding to it. Short sentences, no technical terms. A test keeps
+ * them that way.
+ */
+export const PLAIN_WORDS: Record<AuraColorId, { meaning: string; why: string }> = {
+  deep_red: { meaning: 'Strong stress or intensity', why: 'Deep red shows up when your heart is beating fast or your heartbeat variation is very low. Your body was working hard or under strain.' },
+  crimson: { meaning: 'Strong, forceful energy', why: 'Crimson shows intense energy. Your heart was beating fast and your voice was lively.' },
+  bright_orange: { meaning: 'Energy and drive', why: 'Bright orange means your body was switched on. Your pulse was up, which is a sign of physical or mental drive during the scan.' },
+  amber: { meaning: 'Warm, creative energy', why: 'Amber shows up with warm, active energy. It often goes with a pulse that is a little raised and a voice that sounds engaged.' },
+  golden_yellow: { meaning: 'Clear thinking and optimism', why: 'Golden yellow shows bright mental energy. Your pulse was balanced to active and your voice was lively, which often goes with focus and new ideas.' },
+  lime: { meaning: 'Fresh energy and recovery', why: 'Lime green means things were settling. Your readings showed your body moving back toward balance.' },
+  emerald: { meaning: 'Balance and rest', why: 'Emerald shows balanced, restful energy. Your heartbeat variation was solid and your pulse was calm to moderate.' },
+  teal: { meaning: 'Calm focus', why: 'Teal shows up when your heartbeat variation is strong and your pulse is calm. That is a clear sign of a steady heart rhythm and focused calm.' },
+  aqua: { meaning: 'Ease and open expression', why: 'Aqua shows relaxed clarity. Your heartbeat variation was good and your voice was open and steady.' },
+  sky_blue: { meaning: 'Calm and present', why: 'Sky blue shows a calm, present state. Your pulse was on the lower side and your voice was steady, which points to low tension.' },
+  cobalt: { meaning: 'Deep calm and steadiness', why: 'Cobalt blue shows up in quiet, steady states. Your pulse was low and your voice was very steady.' },
+  indigo: { meaning: 'Deep rest and inner focus', why: 'Indigo means a very quiet, inward state. Your pulse was low and your body was in rest mode.' },
+  violet: { meaning: 'Quiet insight', why: 'Violet shows up with deep calm and a clear, steady voice. It often goes with a thoughtful mood.' },
+  lavender: { meaning: 'Soft and gentle', why: 'Lavender shows gentle, soft energy. Your numbers were calm and your voice was smooth and even.' },
+  magenta: { meaning: 'A mix of feeling and creativity', why: 'Magenta shows up when feeling and creative energy mix. Your pulse was somewhat raised and your voice was expressive.' },
+  soft_white: { meaning: 'Everything in step', why: 'Bright or near-white areas mean your signals lined up. Your heartbeat variation was strong and your other numbers were balanced.' },
+  pearl: { meaning: 'Clear but shifting', why: 'Pearl tones show a clear state that is still moving. Your heartbeat variation was high and your voice varied a little.' },
+  muted_gray: { meaning: 'Low energy or tiredness', why: 'Muted gray shows up when energy is low. Your pulse and voice pointed to tiredness or a need for rest.' },
+  earth_brown: { meaning: 'Grounded but heavy', why: 'Earth tones show a grounded but heavier state. Your pulse was on the lower side, with less heartbeat variation or a flat voice.' },
+  charcoal: { meaning: 'Very low energy', why: 'Dark tones mean very low energy. Your numbers pointed to deep tiredness or pulling inward.' },
 };

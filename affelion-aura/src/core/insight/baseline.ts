@@ -72,7 +72,7 @@ export function scanInsight(scan: ScanRecord, allScans: readonly ScanRecord[]): 
       rmssdDelta: null,
       trend: null,
       trendColorId: null,
-      sentence: left > 0 ? `Your personal baseline appears after ${left} more scan${left === 1 ? '' : 's'}.` : 'Your personal baseline is being established.',
+      sentence: left > 0 ? `Your usual numbers appear after ${left} more scan${left === 1 ? '' : 's'}.` : 'Your usual numbers are being worked out.',
     };
   }
   const bpmDelta = (scan.heart.bpm - baseline.bpm) / baseline.bpm;
@@ -82,7 +82,7 @@ export function scanInsight(scan: ScanRecord, allScans: readonly ScanRecord[]): 
   const trendColorId: AuraColorId | null = trend === 'improving' ? 'lime' : trend === 'steady' ? 'emerald' : trend === 'declining' ? 'earth_brown' : null;
   const hrvWord = rmssdDelta > 0.08 ? `${pct(rmssdDelta)} above` : rmssdDelta < -0.08 ? `${pct(rmssdDelta)} below` : 'close to';
   const bpmWord = bpmDelta > 0.05 ? `${pct(bpmDelta)} faster than` : bpmDelta < -0.05 ? `${pct(bpmDelta)} slower than` : 'about the same as';
-  const trendWord = trend === 'improving' ? 'Across your last scans, HRV is trending up.' : trend === 'declining' ? 'Across your last scans, HRV is trending down.' : 'Across your last scans, HRV has been steady.';
-  const sentence = `HRV ${r0(scan.heart.rmssd)} ms is ${hrvWord} your baseline of ${r0(baseline.rmssd)} ms, and your pulse was ${bpmWord} usual (${r0(baseline.bpm)} bpm). ${trendWord}`;
+  const trendWord = trend === 'improving' ? 'Across your last scans, your heartbeat variation has been going up.' : trend === 'declining' ? 'Across your last scans, your heartbeat variation has been going down.' : 'Across your last scans, your heartbeat variation has been steady.';
+  const sentence = `Your heartbeat variation of ${r0(scan.heart.rmssd)} ms is ${hrvWord} your usual ${r0(baseline.rmssd)} ms, and your pulse was ${bpmWord} usual (${r0(baseline.bpm)} bpm). ${trendWord}`;
   return { baseline, bpmDelta, rmssdDelta, trend, trendColorId, sentence };
 }

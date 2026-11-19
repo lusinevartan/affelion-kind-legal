@@ -43,12 +43,12 @@ export default function History() {
             </View>
             <View>
               <Text variant="eyebrow" color={colors.bone60}>
-                VARIABILITY · RMSSD MS
+                HEARTBEAT VARIATION · MS
               </Text>
               <Sparkline values={rmssd} tint={colors.clay} />
             </View>
             <Text variant="caption" color={colors.bone50}>
-              Trends compare scans taken under similar conditions best: same time of day, seated, after a minute of rest.
+              Trends work best when your scans are alike: same time of day, sitting down, after a minute of rest.
             </Text>
           </Card>
         ) : (
@@ -60,7 +60,7 @@ export default function History() {
         <Card style={{ marginTop: space.xl }}>
           <Text variant="heading">Trends are part of Pro</Text>
           <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.sm }}>
-            See how your pulse and variability move across scans.
+            See how your pulse and heartbeat variation change from scan to scan.
           </Text>
           <Button label="See plans" variant="secondary" onPress={() => router.push('/paywall')} style={{ marginTop: space.lg }} />
         </Card>
@@ -72,7 +72,7 @@ export default function History() {
             PRACTICE SESSIONS
           </Text>
           {practices.slice(0, 8).map((p) => (
-            <View key={p.id} style={styles.practiceRow} accessible accessibilityLabel={`Practice on ${formatDate(p.createdAt)}, coherence ${Math.round(p.before.coherence * 100)} to ${Math.round(p.after.coherence * 100)}`}>
+            <View key={p.id} style={styles.practiceRow} accessible accessibilityLabel={`Practice on ${formatDate(p.createdAt)}, steady rhythm score ${Math.round(p.before.coherence * 100)} to ${Math.round(p.after.coherence * 100)}`}>
               <View style={{ flex: 1 }}>
                 <Text variant="bodySmall">{formatDate(p.createdAt)} · {Math.round(p.durationSec / 60)} min at {p.breathsPerMinute}/min</Text>
                 <Text variant="caption" color={colors.bone50}>

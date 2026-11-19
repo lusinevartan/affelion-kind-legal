@@ -65,7 +65,7 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
         await opts.onSaved?.();
         if (mode === 'save') {
           const ok = await saveToPhotos(uri);
-          Alert.alert(ok ? 'Saved' : 'Not saved', ok ? 'Your portrait is in your photo library.' : 'Photo library permission was not granted.');
+          Alert.alert(ok ? 'Saved' : 'Not saved', ok ? 'Your portrait is in your photo library.' : 'Aura is not allowed to save to your photos. You can turn that on in Settings.');
         } else {
           await sharePortrait(uri);
         }

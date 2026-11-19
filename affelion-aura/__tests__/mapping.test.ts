@@ -5,6 +5,7 @@ import {
   selectAchromatic,
   AURA_COLORS,
   COLOR_KNOWLEDGE_BASE,
+  PLAIN_WORDS,
   KB_BY_ID,
   findBannedPhrase,
   FAMILY_HUE,
@@ -216,7 +217,7 @@ describe('determinism and copy', () => {
           expect(p.regions).toHaveLength(2);
           for (const r of p.regions) {
             expect(findBannedPhrase(r.explanation)).toBeNull();
-            expect(r.explanation).toContain(KB_BY_ID[r.colorId].explanation);
+            expect(r.explanation).toContain(PLAIN_WORDS[r.colorId].why);
           }
           expect(findBannedPhrase(p.summary)).toBeNull();
         }
@@ -227,9 +228,9 @@ describe('determinism and copy', () => {
   test('explanations quote the knowledge base and the actual numbers', () => {
     const p = mapBiometricsToAura(input(heart(88, 23), voice(0.4, 0.7, 165)));
     const core = p.regions.find((r) => r.id === 'core')!;
-    expect(core.explanation).toContain(KB_BY_ID[p.primaryColorId].explanation);
+    expect(core.explanation).toContain(PLAIN_WORDS[p.primaryColorId].why);
     expect(core.explanation).toContain('88 bpm');
-    expect(core.explanation).toContain('HRV 23 ms');
+    expect(core.explanation).toContain('heartbeat variation of 23 ms');
     expect(core.explanation).toContain('165 Hz');
     expect(p.summary).toContain(KB_BY_ID[p.primaryColorId].name);
     const noVoice = mapBiometricsToAura(input(heart(88, 23), null));

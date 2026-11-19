@@ -94,7 +94,7 @@ export default function PracticeScreen() {
       <Screen>
         <Text variant="title">Practice is part of Pro</Text>
         <Text variant="body" color={colors.bone70} style={{ marginTop: space.md }}>
-          Your free session is used. Pro includes unlimited guided practice with live feedback, before-and-after portraits, and your personal baseline.
+          Your free session is used. Pro includes unlimited guided practice with live feedback, before-and-after portraits, and a record of your usual numbers.
         </Text>
         <Button label="See plans" onPress={() => router.push('/paywall')} style={{ marginTop: space.xl }} block />
         <Button label="Back" variant="ghost" onPress={() => router.back()} style={{ marginTop: space.sm }} block />
@@ -114,7 +114,7 @@ export default function PracticeScreen() {
         </View>
         <Text variant="display" style={{ marginTop: space.xl }}>Steady your rhythm</Text>
         <Text variant="body" color={colors.bone70} style={{ marginTop: space.md }}>
-          Breathe slowly with the light, fingertip on the rear camera. As your heart rhythm steadies, the portrait settles. What is measured: heart-rate variability and coherence.
+          Breathe slowly with the light, fingertip on the rear camera. As your heart rhythm steadies, the portrait settles. What is measured: how much your heartbeat varies and how steady its rhythm is.
         </Text>
         <Card style={{ marginTop: space.xl, gap: space.md }}>
           <Text variant="eyebrow" color={colors.bone60}>MODE</Text>
@@ -170,11 +170,11 @@ export default function PracticeScreen() {
         </View>
         <Card style={{ marginTop: space.xl }}>
           <Text variant="eyebrow" color={colors.bone60}>WHAT CHANGED</Text>
-          <MetricRow label="Coherence" value={`${Math.round(result.before.coherence * 100)} → ${Math.round(result.after.coherence * 100)}`} unit="/100" note={dCoh >= 0.05 ? 'Your heart rhythm became more regular with your breath' : dCoh <= -0.05 ? 'Less regular than at the start' : 'About the same'} />
-          <MetricRow label="HRV (RMSSD)" value={`${Math.round(result.before.rmssd)} → ${Math.round(result.after.rmssd)}`} unit="ms" note={dHrv > 3 ? 'Variability rose' : dHrv < -3 ? 'Variability fell' : 'About the same'} />
+          <MetricRow label="Steady rhythm" value={`${Math.round(result.before.coherence * 100)} → ${Math.round(result.after.coherence * 100)}`} unit="/100" note={dCoh >= 0.05 ? 'Your heart rhythm became more regular with your breath' : dCoh <= -0.05 ? 'Less regular than at the start' : 'About the same'} />
+          <MetricRow label="Heartbeat variation" value={`${Math.round(result.before.rmssd)} → ${Math.round(result.after.rmssd)}`} unit="ms" note={dHrv > 3 ? 'Variation rose' : dHrv < -3 ? 'Variation fell' : 'About the same'} />
           <MetricRow label="Heart rate" value={`${Math.round(result.before.bpm)} → ${Math.round(result.after.bpm)}`} unit="bpm" note={dBpm < -2 ? 'Pulse slowed' : dBpm > 2 ? 'Pulse rose' : 'About the same'} />
-          <MetricRow label="Heart wave size" value={Math.round(result.after.rsaMs).toString()} unit="ms" note="Peak-to-peak heart-rate swing per breath" />
-          <MetricRow label="Time at high coherence" value={Math.round(result.highCoherenceSec).toString()} unit="s" note={`of ${result.durationSec} s`} />
+          <MetricRow label="Heart wave size" value={Math.round(result.after.rsaMs).toString()} unit="ms" note="How far your heart rate swings with each breath" />
+          <MetricRow label="Time in a steady rhythm" value={Math.round(result.highCoherenceSec).toString()} unit="s" note={`of ${result.durationSec} s`} />
           <MetricRow label="Breathing sync" value={Math.round(result.breathingSync * 100).toString()} unit="%" note={`at ${result.breathsPerMinute} breaths per minute`} />
         </Card>
         {session.resonance ? (
@@ -229,7 +229,7 @@ export default function PracticeScreen() {
         <View style={styles.liveRow}>
           <View style={styles.liveStat}>
             <Text variant="display" color={colors.stageFg}>{Math.round(live.coherence * 100)}</Text>
-            <Text variant="caption" color={colors.stageFg50}>COHERENCE</Text>
+            <Text variant="caption" color={colors.stageFg50}>STEADY RHYTHM</Text>
           </View>
           <View style={styles.liveStat}>
             <Text variant="display" color={colors.stageFg}>{live.bpm ? Math.round(live.bpm) : '—'}</Text>

@@ -72,7 +72,7 @@ export default function GuideScreen() {
         <SashaStage style={styles.stage} />
         <View style={styles.assistant}>
           <Text variant="bodySmall" color={colors.bone70}>
-            {`I'm ${GUIDE_NAME}, your guide. I'm an AI, so I explain this portrait using only what was measured: a pulse of ${record.heart.bpm.toFixed(0)} bpm, variability of ${record.heart.rmssd.toFixed(0)} ms, and your voice sample. I won't guess about anything that wasn't measured, and I'm not a substitute for a clinician.`}
+            {`I'm ${GUIDE_NAME}, your guide. I'm an AI, so I explain this portrait using only what was measured: a pulse of ${record.heart.bpm.toFixed(0)} bpm, heartbeat variation of ${record.heart.rmssd.toFixed(0)} ms, and your voice sample. I won't guess about anything that wasn't measured, and I'm not a replacement for a doctor.`}
           </Text>
         </View>
         {messages.map((m, i) => (

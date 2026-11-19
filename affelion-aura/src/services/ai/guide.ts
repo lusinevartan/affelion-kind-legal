@@ -25,13 +25,13 @@ export const GUIDE_SYSTEM_PROMPT = `You are Sasha, the Affelion Aura guide. You 
 Rules you must follow:
 1. Only speak about the numbers provided and what the Affelion color system maps them to. Tie every statement to a specific measurement.
 2. The portrait is a translation of physiology and voice into color. Never describe it as detecting, reading or sensing energy, energy fields, chakras, spirits, intentions, destiny or anything that cannot be measured. Never make predictions.
-3. Never diagnose, name a medical condition, or give medical advice. If asked, say the app is not a medical device and suggest speaking to a clinician for health concerns.
-4. Use everyday words a teenager would know. Say "heartbeat variation" and explain it in a few words the first time, rather than HRV or RMSSD. Say "main color" for the color nearest the body and "outer color" for the one further out. Give a number only when it helps. Be warm, concise and plain. Two to five sentences unless asked for more. No emojis. You are an AI assistant named Sasha, not a person; if asked, say so. The app shows a portrait for you; it is a generated image, not a photograph of anyone, and if asked you say that too.
+3. Never diagnose, name a medical condition, or give medical advice. If asked, say the app is not a medical device and suggest talking to a doctor about health concerns.
+4. Use everyday words a teenager would know. Say "heartbeat variation" and explain it in a few words the first time, rather than HRV or RMSSD. Say "main color" for the color nearest the body and "outer color" for the one further out. Give a number only when it helps. Write at a high school reading level: short sentences, common words, one idea at a time. Say \"steady heart rhythm\" rather than coherence, \"your usual\" rather than baseline, and \"how much your voice moved\" rather than vocal variance. Be warm, brief and plain. Two to five sentences unless asked for more. No emojis. You are an AI assistant named Sasha, not a person; if asked, say so. The app shows a portrait for you; it is a generated image, not a photograph of anyone, and if asked you say that too.
 5. If a question is outside the scan data, say so briefly and return to what the data shows.
 
-Color knowledge base (the only meanings and explanations you may use; quote them, do not extend them):
+Color knowledge base (the only meanings and explanations you may use; do not extend them). When you speak, use the \"Plain\" wording, which says the same thing in everyday words:
 ${Object.values(AURA_COLORS)
-  .map((c) => `- ${c.name} [${c.id}]: ${c.primary}. Biometric: ${c.biometric}. Explanation: ${c.explanation}`)
+  .map((c) => `- ${c.name} [${c.id}]: ${c.primary}. Biometric: ${c.biometric}. Explanation: ${c.explanation} Plain: ${c.meaning}. ${c.why}`)
   .join('\n')}`;
 
 export function buildScanContext(record: ScanRecord): string {
@@ -54,7 +54,7 @@ export function buildScanContext(record: ScanRecord): string {
 }
 
 const SAFE_FALLBACK =
-  'I can only speak to what was measured in this scan: your pulse, its variability, and the shape of your voice. Tap a region of the portrait to see exactly which number produced which color.';
+  'I can only talk about what this scan measured: your pulse, how much it varies, and your voice. Tap a part of the portrait to see which number led to which color.';
 
 /** Reject anything that crosses the honesty line; return a safe substitute instead. */
 export function sanitizeGuideReply(text: string): string {
@@ -71,10 +71,10 @@ export function localGuideAnswer(question: string, record: ScanRecord): string {
   const sec = AURA_COLORS[aura.secondaryColorId];
   // Health questions are answered first, whatever else the question mentions.
   if (/(doctor|medical|medic|health|disease|diagnos|sick|ill\b|illness|anxiety|depress|condition|symptom|blood pressure|heart attack|arrhythm|dying|die\b)/.test(q)) {
-    return 'Affelion Aura is not a medical device and cannot assess health conditions. It visualizes a short pulse and voice sample. If you have a health concern, please speak with a clinician.';
+    return 'Affelion Aura is not a medical device and cannot assess health conditions. It visualizes a short pulse and voice sample. If you have a health concern, please talk to a doctor.';
   }
   if (/(hrv|variab|rmssd|coheren|halo|edge|outer|steady)/.test(q)) {
-    return `Your heartbeat variation was ${heart.rmssd.toFixed(0)} ms. That is how much the gap between beats changes from one beat to the next. Your outer color is ${sec.name.toLowerCase()}: ${sec.explanation} Strong variation with a calm pulse gives greens and teals. Low variation gives reds and oranges.`;
+    return `Your heartbeat variation was ${heart.rmssd.toFixed(0)} ms. That is how much the gap between beats changes from one beat to the next. Your outer color is ${sec.name.toLowerCase()}: ${sec.why} Strong variation with a calm pulse gives greens and teals. Low variation gives reds and oranges.`;
   }
   if (/(voice|pitch|speak|accent|sound)/.test(q)) {
     if (voice && voice.quality > 0.2) {
@@ -85,10 +85,10 @@ export function localGuideAnswer(question: string, record: ScanRecord): string {
     return 'The voice step was skipped or too quiet to use, so only your heartbeat shaped this portrait.';
   }
   if (/(red|orange|stress|activ|fast|heart rate|bpm|pulse|main|why am i)/.test(q)) {
-    return `Your pulse averaged ${heart.bpm.toFixed(0)} beats a minute. Your main color is ${dom.name.toLowerCase()}: ${dom.explanation} A fast pulse, 92 or more, or very low heartbeat variation gives reds and oranges. A slow pulse, 62 or less, gives blues and purples.`;
+    return `Your pulse averaged ${heart.bpm.toFixed(0)} beats a minute. Your main color is ${dom.name.toLowerCase()}: ${dom.why} A fast pulse, 92 or more, or very low heartbeat variation gives reds and oranges. A slow pulse, 62 or less, gives blues and purples.`;
   }
   if (/(mean|why|what|explain|colour|color|teal|move|shift|change)/.test(q)) {
-    return `${aura.summary} ${dom.explanation} The outer color follows your heartbeat variation, which was ${heart.rmssd.toFixed(0)} ms. How strong and how light the color is follows your voice. Every color comes from one of those readings and nothing else.`;
+    return `${aura.summary} ${dom.why} The outer color follows your heartbeat variation, which was ${heart.rmssd.toFixed(0)} ms. How strong and how light the color is follows your voice. Every color comes from one of those readings and nothing else.`;
   }
   return SAFE_FALLBACK;
 }

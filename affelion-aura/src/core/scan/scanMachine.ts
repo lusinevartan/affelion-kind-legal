@@ -264,7 +264,7 @@ export const GUIDANCE_COPY: Record<ScanGuidance, { title: string; body: string }
   voiceSpeak: { title: 'Say a few words', body: 'Speak or hum at a normal volume for about five seconds. Nothing you say is recorded or kept.' },
   voiceLouder: { title: 'A little louder', body: 'We can only hear a faint signal. Move the phone closer or speak up slightly.' },
   voiceGood: { title: 'Listening', body: 'Keep going for a few more seconds.' },
-  computing: { title: 'Composing your portrait', body: 'Translating your pulse, variability and voice into color.' },
+  computing: { title: 'Composing your portrait', body: 'Turning your pulse, how much it varies and your voice into color.' },
   done: { title: 'Ready', body: 'Your portrait is ready.' },
   failedFinger: { title: 'Pulse reading failed', body: 'Cover the rear camera and flash fully, press lightly, and keep still.' },
   failedVoice: { title: 'Voice sample too quiet', body: 'Try again at a normal volume, or skip the voice step.' },

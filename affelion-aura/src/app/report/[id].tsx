@@ -86,8 +86,8 @@ export default function ReportScreen() {
       <Rule style={{ marginTop: space.xl }} />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Figure label="Pulse" value={heart.bpm.toFixed(0)} unit="bpm" />
-        <Figure label="HRV" value={heart.rmssd.toFixed(0)} unit="ms" />
-        <Figure label="Voice" value={voice && voice.quality > 0.2 ? Math.round(voice.variance * 100).toString() : '—'} unit={voice && voice.quality > 0.2 ? '% var' : undefined} />
+        <Figure label="Variation" value={heart.rmssd.toFixed(0)} unit="ms" />
+        <Figure label="Voice" value={voice && voice.quality > 0.2 ? Math.round(voice.variance * 100).toString() : '—'} unit={voice && voice.quality > 0.2 ? '% moved' : undefined} />
       </View>
       <Rule />
 
@@ -96,16 +96,16 @@ export default function ReportScreen() {
           MEASUREMENTS
         </Text>
         <MetricRow label="Heart rate" value={heart.bpm.toFixed(0)} unit="bpm" note={`${heart.beatCount} beats over ${heart.durationSec.toFixed(0)} s`} />
-        <MetricRow label="Variability (RMSSD)" value={heart.rmssd.toFixed(0)} unit="ms" note={`${hrvWord} for this pulse`} />
-        <MetricRow label="Variability (SDNN)" value={heart.sdnn.toFixed(0)} unit="ms" />
-        <MetricRow label="pNN50" value={heart.pnn50.toFixed(0)} unit="%" note="Beats differing by more than 50 ms" />
+        <MetricRow label="Heartbeat variation" value={heart.rmssd.toFixed(0)} unit="ms" note={`${hrvWord} for this pulse · RMSSD`} />
+        <MetricRow label="Variation over the whole scan" value={heart.sdnn.toFixed(0)} unit="ms" note="SDNN" />
+        <MetricRow label="Big jumps between beats" value={heart.pnn50.toFixed(0)} unit="%" note="Share of beats that differ by more than 50 ms · pNN50" />
         <MetricRow label="Signal quality" value={`${Math.round(heart.quality * 100)}`} unit="%" />
         {voice && voice.quality > 0.2 ? (
           <>
-            <MetricRow label="Dominant pitch" value={voice.dominantPitchHz.toFixed(0)} unit="Hz" />
-            <MetricRow label="Vocal variance" value={Math.round(voice.variance * 100).toString()} unit="%" note={`${voice.pitchVarianceSemitones.toFixed(1)} semitones of pitch spread`} />
-            <MetricRow label="Vocal stability" value={Math.round(voice.stability * 100).toString()} unit="%" />
-            <MetricRow label="Voiced" value={Math.round(voice.voicedRatio * 100).toString()} unit="% of sample" />
+            <MetricRow label="Main pitch" value={voice.dominantPitchHz.toFixed(0)} unit="Hz" />
+            <MetricRow label="Voice movement" value={Math.round(voice.variance * 100).toString()} unit="%" note={`Your pitch ranged over ${voice.pitchVarianceSemitones.toFixed(1)} half steps`} />
+            <MetricRow label="Voice steadiness" value={Math.round(voice.stability * 100).toString()} unit="%" />
+            <MetricRow label="Time speaking" value={Math.round(voice.voicedRatio * 100).toString()} unit="% of the sample" />
           </>
         ) : (
           <MetricRow label="Voice" value="—" note="Skipped or too quiet; only the pulse shaped this portrait" />
@@ -114,7 +114,7 @@ export default function ReportScreen() {
 
       <Card style={{ marginTop: space.lg }}>
         <Text variant="eyebrow" color={colors.bone60}>
-          AGAINST YOUR BASELINE
+          AGAINST YOUR USUAL
         </Text>
         {insight.trendColorId ? (
           <View style={{ marginTop: space.sm }}>
@@ -143,15 +143,15 @@ export default function ReportScreen() {
 
       <Card style={{ marginTop: space.lg }}>
         <Text variant="eyebrow" color={colors.bone60}>
-          SHADER PARAMETERS
+          HOW THE PORTRAIT IS DRAWN
         </Text>
         <MetricRow label="Hue" value={`${aura.hue}`} unit="°" />
-        <MetricRow label="Saturation" value={aura.saturation.toFixed(2)} note="Raised by vocal variance" />
-        <MetricRow label="Lightness" value={aura.lightness.toFixed(2)} note="Set by vocal stability" />
-        <MetricRow label="Turbulence" value={aura.turbulence.toFixed(2)} note="Higher for elevated BPM or low HRV" />
-        <MetricRow label="Pulse" value={aura.pulseSpeed.toFixed(2)} unit="Hz" note="The fluid breathes at your heart rate" />
+        <MetricRow label="Color strength" value={aura.saturation.toFixed(2)} note="Stronger when your voice moves more" />
+        <MetricRow label="Lightness" value={aura.lightness.toFixed(2)} note="Lighter when your voice is steadier" />
+        <MetricRow label="Motion" value={aura.turbulence.toFixed(2)} note="More when your pulse is fast or its variation is low" />
+        <MetricRow label="Pulse" value={aura.pulseSpeed.toFixed(2)} unit="Hz" note="The color beats at your heart rate" />
         <Text variant="caption" color={colors.bone50} style={{ marginTop: space.md }}>
-          Identical measurements always produce identical parameters.
+          The same numbers always draw the same portrait.
         </Text>
       </Card>
 

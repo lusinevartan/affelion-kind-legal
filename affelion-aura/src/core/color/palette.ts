@@ -1,11 +1,15 @@
 import type { HSL, RGB } from '../types';
-import { COLOR_KNOWLEDGE_BASE, KB_BY_ID, SWATCH_HSL, type AuraColorId, type KnowledgeBaseColor } from './knowledgeBase';
+import { COLOR_KNOWLEDGE_BASE, KB_BY_ID, PLAIN_WORDS, SWATCH_HSL, type AuraColorId, type KnowledgeBaseColor } from './knowledgeBase';
 
-export { COLOR_KNOWLEDGE_BASE, KB_BY_ID, AURA_COLOR_IDS, SWATCH_HSL } from './knowledgeBase';
+export { COLOR_KNOWLEDGE_BASE, KB_BY_ID, AURA_COLOR_IDS, PLAIN_WORDS, SWATCH_HSL } from './knowledgeBase';
 export type { AuraColorId, KnowledgeBaseColor } from './knowledgeBase';
 
 /** Knowledge-base entry plus presentation values, for legends, swatches and placeholders. */
 export interface AuraColorDef extends KnowledgeBaseColor {
+  /** The meaning in everyday words. This, not `primary`, is what people read. */
+  meaning: string;
+  /** Why the color appeared, in everyday words. This, not `explanation`, is what people read. */
+  why: string;
   hex: string;
   hsl: HSL;
 }
@@ -13,7 +17,7 @@ export interface AuraColorDef extends KnowledgeBaseColor {
 export const AURA_COLORS: Record<AuraColorId, AuraColorDef> = Object.fromEntries(
   COLOR_KNOWLEDGE_BASE.map((c) => {
     const hsl = SWATCH_HSL[c.id];
-    return [c.id, { ...c, hsl, hex: hslToHex(hsl) }];
+    return [c.id, { ...c, ...PLAIN_WORDS[c.id], hsl, hex: hslToHex(hsl) }];
   }),
 ) as Record<AuraColorId, AuraColorDef>;
 

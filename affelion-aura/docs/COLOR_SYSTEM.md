@@ -82,3 +82,12 @@ Lime, emerald and earth brown are also used as display colors for the personal H
 psychic, predict, destiny, diagnose, and so on). Generated copy asserts against it in tests; AI
 replies are filtered through `sanitizeGuideReply` and replaced with a grounded fallback if they
 cross the line.
+
+## Plain words
+
+The knowledge base above is the specification and stays verbatim in `knowledgeBase.ts`. What
+people read in the app is `PLAIN_WORDS` in the same file: the same meaning for each color at a
+high school reading level, as a short meaning and one or two sentences on why it appeared. For
+example, teal reads "Calm focus. Teal shows up when your heartbeat variation is strong and your
+pulse is calm. That is a clear sign of a steady heart rhythm and focused calm." Sasha is given
+both and told to speak in the plain wording.

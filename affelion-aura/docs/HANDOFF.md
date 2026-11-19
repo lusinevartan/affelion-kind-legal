@@ -14,7 +14,7 @@ device.
 ## State in one paragraph
 
 The app is feature complete in code and has never run on a physical phone. Type check, lint and
-95 unit tests pass; iOS, Android and web bundles build. The three native modules (pulse, outline,
+98 unit tests pass; iOS, Android and web bundles build. The three native modules (pulse, outline,
 microphone), store purchases and the Sasha server have not been exercised on real hardware or
 against live accounts. First device run is the gate to everything else.
 
@@ -59,7 +59,12 @@ The scan needs a phone: camera, flash and microphone do not exist in the browser
    must stay reachable; a test fails otherwise.
 3. **Grayscale app, color only from the aura.** One typeface (Inter Tight), no brand color.
 4. **On-device by default.** Frames and audio are processed on the phone and discarded.
-5. **Plain American English** in everything the user reads: "main color" and "outer color".
+5. **Plain American English at a high school reading level** in everything the user reads.
+   The app's word list: "main color" and "outer color", "heartbeat variation" (not HRV),
+   "steady rhythm" (not coherence), "your usual" (not baseline), "how much your voice moved"
+   (not vocal variance). The original color descriptions stay in the code as the specification;
+   people read the plain versions beside them (`PLAIN_WORDS` in `knowledgeBase.ts`). A test
+   (`__tests__/plainWords.test.ts`) fails if technical terms or long sentences come back.
 6. **Sasha says she is an AI** in her first message and in Settings. Removing that needs legal
    advice first (EU transparency rules).
 
@@ -86,8 +91,8 @@ annual subscribers, and $50,000 a month roughly 10,000 to 12,000.
 5. When the paywall appears (now: after the third free scan).
 6. A gentler line for a dim first portrait.
 7. Move the app source out of this repository, which also hosts public legal pages.
-8. Whether the twenty color descriptions get a plain-English rewrite. They are verbatim from
-   the original brief today.
+8. Read the plain versions of the twenty color descriptions (`PLAIN_WORDS`) and adjust any
+   wording you would say differently. They restate the original brief; they do not add to it.
 
 ## Known gaps
 

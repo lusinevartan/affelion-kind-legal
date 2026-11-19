@@ -1,5 +1,5 @@
 import type { AuraRegion, MappingInput } from '../types';
-import { KB_BY_ID, type AuraColorId } from './knowledgeBase';
+import { PLAIN_WORDS, KB_BY_ID, type AuraColorId } from './knowledgeBase';
 
 /**
  * Grounded copy. Every sentence is either the knowledge base's own text or a statement of the
@@ -59,24 +59,24 @@ const pct = (n: number) => `${Math.round(n * 100)}%`;
 
 function metricsSentence(m: MappingInput, voiceAvailable: boolean): string {
   const voice = voiceAvailable
-    ? ` Your voice had a dominant pitch of ${r0(m.vocalPitchHz)} Hz, variance ${pct(m.vocalVariance)} and stability ${pct(m.vocalStability)}.`
+    ? ` Your voice sat around ${r0(m.vocalPitchHz)} Hz, moved around by ${pct(m.vocalVariance)} and was ${pct(m.vocalStability)} steady.`
     : ' No usable voice sample was recorded, so only your pulse shaped this portrait.';
-  return `Measured: ${r0(m.bpm)} bpm, HRV ${r0(m.hrv)} ms.${voice}`;
+  return `Measured: a pulse of ${r0(m.bpm)} bpm and heartbeat variation of ${r0(m.hrv)} ms.${voice}`;
 }
 
 export function buildRegionExplanation(region: AuraRegion['id'], colorId: AuraColorId, m: MappingInput, voiceAvailable: boolean): string {
   const c = KB_BY_ID[colorId];
   // Plain words: the color nearest the body is the main color, the one further out is the outer color.
   const where = region === 'core' ? 'Your main color' : 'Your outer color';
-  const text = `${where} is ${c.name.toLowerCase()}. ${c.explanation} ${metricsSentence(m, voiceAvailable)}`;
+  const text = `${where} is ${c.name.toLowerCase()}. ${PLAIN_WORDS[colorId].why} ${metricsSentence(m, voiceAvailable)}`;
   assertHonest(text);
   return text;
 }
 
 export function buildSummary(primary: AuraColorId, m: MappingInput, voiceAvailable: boolean): string {
   const c = KB_BY_ID[primary];
-  const voice = voiceAvailable ? `, voice variance ${pct(m.vocalVariance)}` : '';
-  const text = `${c.name}: ${c.primary.toLowerCase()}. From ${r0(m.bpm)} bpm and HRV ${r0(m.hrv)} ms${voice}.`;
+  const voice = voiceAvailable ? `, with a voice that moved around by ${pct(m.vocalVariance)}` : '';
+  const text = `${c.name}: ${PLAIN_WORDS[primary].meaning.toLowerCase()}. From a pulse of ${r0(m.bpm)} bpm and heartbeat variation of ${r0(m.hrv)} ms${voice}.`;
   assertHonest(text);
   return text;
 }
