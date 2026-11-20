@@ -24,6 +24,17 @@ Claude will add exact step-by-step instructions next to each item.
   3. Submit. Apple emails a confirmation; the 15% rate starts at the beginning of the next fiscal month after approval.
   4. Tell Claude "M1 SBP submitted". Then M1 is done.
 - [ ] **Approve pricing and create/approve live products:** annual $69.99 with 7-day free trial, monthly $12.99, lifetime $199 (M2)
+  The IDs below are the ones in the app's code. Type them exactly; a single wrong character means the button can't buy.
+  1. App Store Connect → Apps → Affelion Aura → **Monetization → Subscriptions** → create group **Aura Pro**.
+  2. In that group, create **`com.affelion.aura.pro.annual`**. Reference name: Aura Pro Annual. Duration: 1 year. Price: **$69.99** (USD base; let Apple fill other countries). Localization (English US): display name **Aura Pro – Yearly**, description **Unlimited check-ins, breakdown, history and Sasha**.
+  3. On that annual product: **Subscription Prices → Introductory Offers → +** → all countries, type **Free**, duration **1 week**, no end date.
+  4. In the same group, create **`com.affelion.aura.pro.monthly`**. Reference name: Aura Pro Monthly. Duration: 1 month. Price: **$12.99**. No introductory offer. Display name **Aura Pro – Monthly**, description **Unlimited check-ins, breakdown, history and Sasha**.
+  5. Put annual at level 1 and monthly at level 2 in the group (higher level = more value), so switching between them is handled as an upgrade or downgrade.
+  6. **Monetization → In-App Purchases → +** → type **Non-Consumable**, product ID **`com.affelion.aura.pro.lifetime`**, reference name Aura Pro Lifetime, price **$199**, display name **Aura Pro – Lifetime**, description **Every Pro feature, one payment, no renewal**.
+  7. Each product needs a **Review screenshot**: use `launch/review/paywall-review.png` (Claude adds it under M11) and the review note "Shown on the paywall after the first portrait."
+  8. RevenueCat (free tier, no card needed): create project Affelion Aura → add the iOS app (bundle ID from `app.json`) → upload the App Store Connect in-app purchase key it asks for → **Products**: import the three IDs → **Entitlements**: create **`pro`** and attach all three → **Offerings**: the offering **`default`** with packages **Annual**, **Monthly**, **Lifetime**, each pointing at its product → mark it **Current**.
+  9. Copy the RevenueCat **Apple public SDK key** (starts with `appl_`) and send it to Claude, or add it yourself: `npx eas-cli@latest env:create --name EXPO_PUBLIC_RC_IOS_KEY --value appl_... --environment production --environment preview`. The public key is safe in the app; it is not a secret.
+  10. When you upload the 1.0 build, open the version page → **In-App Purchases and Subscriptions** → **+** → select all three, so they are reviewed with the app.
 - [ ] **Publish** privacy policy and terms on affelion.com (Claude drafts them) (M10)
 - [ ] **Enter or approve** App Privacy and age rating answers in App Store Connect (M10)
 - [ ] **Record or approve** the 60-second scan video for Review Notes (M11)
@@ -41,7 +52,7 @@ Claude will add exact step-by-step instructions next to each item.
 | # | Item | Blocks | Status | Evidence / notes |
 |---|---|---|---|---|
 | M1 | Apple agreements + Small Business Program | Revenue | Needs Lusine | Steps written under Needs Lusine. Nothing for Claude to build. |
-| M2 | Subscription products + 7-day trial in App Store Connect, attached to build | Revenue + Review | Not started | |
+| M2 | Subscription products + 7-day trial in App Store Connect, attached to build | Revenue + Review | Needs Lusine | Spec written under Needs Lusine. Code IDs `com.affelion.aura.pro.annual / .monthly / .lifetime`, entitlement `pro`; locked by `__tests__/products.test.ts` so code can't drift from the store. Done when the three products show Ready to Submit and are attached to 1.0. |
 | M3 | RevenueCat wired; buy / restore / cancel tested in Sandbox/TestFlight | Revenue | Not started | |
 | M4 | Paywall shows price, period, trial terms, Restore, Terms, Privacy, close button | Review | Not started | |
 | M5 | Paywall appears in the first session | Revenue | Not started | |
