@@ -12,17 +12,8 @@
 
 Claude will add exact step-by-step instructions next to each item.
 
-- [ ] **Accept agreements:** Apple Paid Apps agreement, tax forms and banking in App Store Connect (M1)
-  1. Go to appstoreconnect.apple.com and sign in as the Account Holder for Affelion LLC.
-  2. Open **Business** (top menu). Under **Agreements**, find **Paid Apps**. If it says "New" or "Pending", click **View and Agree to Terms**, read, and accept.
-  3. On the same page, under **Tax Forms**, click **Set Up Tax Forms** and complete the U.S. Form W-9 for Affelion LLC (use the LLC's EIN, not your SSN, unless the LLC is a single-member disregarded entity and your accountant says otherwise).
-  4. Under **Bank Accounts**, click **Add Bank Account** and enter the LLC's business checking account.
-  5. Wait until Paid Apps shows **Active** (usually minutes to a day). Tell Claude "M1 agreements active".
-- [ ] **Enroll** in the App Store Small Business Program (M1)
-  1. Do this after Paid Apps is Active. Go to developer.apple.com/app-store/small-business-program and click **Enroll**.
-  2. Sign in as the Account Holder. List any associated developer accounts (you have none besides Affelion LLC unless you own another).
-  3. Submit. Apple emails a confirmation; the 15% rate starts at the beginning of the next fiscal month after approval.
-  4. Tell Claude "M1 SBP submitted". Then M1 is done.
+- [x] ~~Agreements, tax, banking, Small Business Program~~ Already active on the Affelion LLC Apple and Google accounts (confirmed by Lusine, Nov 20). Nothing new for Aura.
+- [ ] **App record (Aura only).** The iOS record exists (App Store Connect app ID 6817953783). Check it has bundle ID `com.affelion.aura`, primary language English (U.S.), SKU of your choice. For Google, Play Console → **Create app** → name Affelion Aura, default language English (United States), App, Free (it has in-app purchases), accept the declarations for this app only.
 - [ ] **Approve pricing and create/approve live products:** annual $69.99 with 7-day free trial, monthly $12.99, lifetime $199 (M2)
   The IDs below are the ones in the app's code. Type them exactly; a single wrong character means the button can't buy.
   1. App Store Connect → Apps → Affelion Aura → **Monetization → Subscriptions** → create group **Aura Pro**.
@@ -59,7 +50,7 @@ Claude will add exact step-by-step instructions next to each item.
 
 | # | Item | Blocks | Status | Evidence / notes |
 |---|---|---|---|---|
-| M1 | Apple agreements + Small Business Program | Revenue | Needs Lusine | Steps written under Needs Lusine. Nothing for Claude to build. |
+| M1 | Apple agreements + Small Business Program | Revenue | Done | Already active on the Affelion LLC accounts (Lusine, Nov 20). |
 | M2 | Subscription products + 7-day trial in App Store Connect, attached to build | Revenue + Review | Needs Lusine | Spec written under Needs Lusine. Code IDs `com.affelion.aura.pro.annual / .monthly / .lifetime`, entitlement `pro`; locked by `__tests__/products.test.ts` so code can't drift from the store. Done when the three products show Ready to Submit and are attached to 1.0. |
 | M3 | RevenueCat wired; buy / restore / cancel tested in Sandbox/TestFlight | Revenue | Code done, sandbox test Needs Lusine | Purchases go through RevenueCat when `EXPO_PUBLIC_RC_IOS_KEY` is in the build (M2 step 9); entitlement `pro`; offering `default`, falling back to any offering that lists the product. Restore needs no account. Added: Pro is re-checked with the store whenever the app comes back to the front, so an expired subscription locks without a restart (d). In a store build the paywall never shows built-in prices: offline it says "We could not load prices" with Try again, and the buy button is disabled (e). Gating tests in `__tests__/gating.test.ts` (access rules, store answer to Pro, price status). 120 tests pass. Simulated purchases are off in Release unless `EXPO_PUBLIC_ALLOW_SIMULATED_PURCHASES=1`, which is not set in `eas.json`. Not yet run on a device: (a)–(e) in sandbox. |
 | M4 | Paywall shows price, period, trial terms, Restore, Terms, Privacy, close button | Review | Not started | |

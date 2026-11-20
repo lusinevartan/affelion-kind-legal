@@ -271,7 +271,7 @@ export const GUIDANCE_COPY: Record<ScanGuidance, { title: string; body: string }
   voiceGood: { title: 'Listening', body: 'Keep going for a few more seconds.' },
   computing: { title: 'Composing your portrait', body: 'Turning your pulse, how much it varies and your voice into color.' },
   done: { title: 'Ready', body: 'Your portrait is ready.' },
-  failedFinger: { title: 'Let us try the pulse again', body: 'Cover the rear camera and flash fully, press lightly, and keep still.' },
+  failedFinger: { title: "Let's try that again", body: 'Cover the back camera and flash fully with your fingertip, press lightly, and keep still.' },
   failedVoice: { title: 'Voice sample too quiet', body: 'Try again at a normal volume, or skip the voice step.' },
   failedCamera: { title: 'Camera unavailable', body: 'Check camera permission in Settings and try again.' },
 };
