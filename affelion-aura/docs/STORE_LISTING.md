@@ -78,8 +78,9 @@ sent for app functionality, and name the AI provider in the privacy page.
 >
 > No account or login is needed. To test: complete onboarding, tap Scan, cover the rear camera
 > and flash with a fingertip for about 40 seconds, speak when asked, then hold still for the
-> photo. Three scans are free. Subscriptions and the lifetime purchase are on the paywall, with
-> Restore, Terms of Use and Privacy Policy links. Sasha, the in-app guide, is an AI assistant
+> photo. The first scan is free, then one free scan a week. The paywall opens once, two seconds
+> after the first portrait, and can be closed with "Not now". Subscriptions are listed on it, and
+> the lifetime purchase sits behind "Prefer to pay once?", with Restore, Terms of Use and Privacy Policy links. Sasha, the in-app guide, is an AI assistant
 > and says so; in this version her answers are generated on the device from the user's own
 > readings, and nothing is sent to a server.
 

@@ -3,6 +3,7 @@ import { AppState as RNAppState } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { AffelionPpg, type PpgSampleEvent } from '../../../modules/affelion-ppg';
 import { AffelionAudio, pcmToFloat32 } from '../../../modules/affelion-audio';
+import { readingProblem } from '../../core/scan/readingGate';
 import type { FaceEvent, MaskEvent, StillResult } from '../../../modules/affelion-silhouette';
 import { base64ToBytes } from '../../native/base64';
 import { PpgProcessor, VoiceAnalyzer } from '../../core/signal';
@@ -198,7 +199,13 @@ export function useScanSession(): ScanSession {
       const heart: HeartMetrics | null = ppg.finish();
       if (!heart) {
         computed.current = false;
-        dispatch({ type: 'FAIL', reason: 'The pulse signal was too noisy to measure. Try again with a lighter, steadier touch.' });
+        dispatch({ type: 'FAIL', reason: 'We could not get a clear pulse that time. Rest your fingertip lightly over the camera and keep still. This try did not use your free scan.' });
+        return;
+      }
+      const problem = readingProblem(heart);
+      if (problem) {
+        computed.current = false;
+        dispatch({ type: 'FAIL', reason: problem });
         return;
       }
       const voiceMetrics: VoiceMetrics | null = voiceSkipped ? null : voice.finish();

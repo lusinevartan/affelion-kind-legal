@@ -5,6 +5,7 @@ import type { ScanRecord } from '../../core/types';
 import { AURA_COLORS } from '../../core/color/palette';
 import type { AuraViewRef } from '../../render/fluid/AuraView';
 import { PolaroidCard, type PolaroidCardHandle } from '../../render/polaroid/PolaroidCard';
+import { StoryCard } from '../../render/polaroid/StoryCard';
 import { capturePolaroid, saveToPhotos, sharePortrait } from '../../services/export';
 import { updatePortraitUri } from '../../services/storage';
 import { deleteFiles } from '../../services/files';
@@ -15,13 +16,17 @@ import type { FrameStyleId } from '../../render/polaroid/styles';
  *   1. snapshot the on-screen aura GL view to a PNG with alpha,
  *   2. render an off-screen Polaroid at export size with that PNG layered over the still,
  *   3. capture that card as a bitmap, persist and save/share.
+ * 'story' does the same with the 9:16 share card and shares it without replacing the saved
+ * portrait.
  */
 export function usePolaroidExport(record: ScanRecord | null, opts: { clean: boolean; exportWidth: number; onSaved?: () => Promise<void> | void; frame?: FrameStyleId }) {
   const auraRef = React.useRef<AuraViewRef>(null);
   const exportCardRef = React.useRef<PolaroidCardHandle>(null);
   const [auraImageUri, setAuraImageUri] = React.useState<string | null>(null);
-  const [busy, setBusy] = React.useState<'save' | 'share' | null>(null);
+  const [busy, setBusy] = React.useState<'save' | 'share' | 'story' | null>(null);
   const pending = React.useRef<((uri: string) => void) | null>(null);
+  // The last story card made. Kept until the next one, because a share sheet can still be reading it.
+  const lastStory = React.useRef<string | null>(null);
 
   // Capture once the off-screen card has actually drawn the aura image. A fixed delay is not
   // enough for a large image on a slow phone, so the image's own load event triggers it, with a
@@ -49,7 +54,7 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
   }, [auraImageUri, capture]);
 
   const run = React.useCallback(
-    async (mode: 'save' | 'share') => {
+    async (mode: 'save' | 'share' | 'story') => {
       if (!record || busy) return;
       try {
         setBusy(mode);
@@ -59,6 +64,12 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
           pending.current = resolve;
           setAuraImageUri(snap.uri);
         });
+        if (mode === 'story') {
+          if (lastStory.current && lastStory.current !== uri) deleteFiles([lastStory.current]);
+          lastStory.current = uri;
+          await sharePortrait(uri);
+          return;
+        }
         const previous = record.portraitUri;
         await updatePortraitUri(record.id, uri);
         if (previous && previous !== uri) deleteFiles([previous]);
@@ -82,6 +93,19 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
   const exportCard =
     record && auraImageUri ? (
       <View style={styles.offscreen} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+        {busy === 'story' ? (
+          <StoryCard
+            ref={exportCardRef}
+            width={opts.exportWidth}
+            auraUri={auraImageUri}
+            colorName={AURA_COLORS[record.aura.primaryColorId].name}
+            colorHex={AURA_COLORS[record.aura.primaryColorId].hex}
+            meaning={AURA_COLORS[record.aura.primaryColorId].meaning}
+            date={formatDate(record.createdAt)}
+            showWordmark={!opts.clean}
+            onImageLoad={capture}
+          />
+        ) : (
         <PolaroidCard
           ref={exportCardRef}
           width={opts.exportWidth}
@@ -93,6 +117,7 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
           frame={opts.frame ?? 'classic'}
           onAuraImageLoad={capture}
         />
+        )}
       </View>
     ) : null;
 

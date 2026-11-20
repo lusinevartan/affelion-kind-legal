@@ -3,6 +3,7 @@ import { Dimensions, Pressable, ScrollView, StyleSheet, View } from 'react-nativ
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import * as Haptics from 'expo-haptics';
 import { Button, Figure, Rule, Text } from '../../ui/components';
 import { colors, space } from '../../ui/theme';
 import { useAppActions, useAppState } from '../../features/store/AppStore';
@@ -17,10 +18,12 @@ import { formatDate } from '../../ui/format';
  * The portrait. A black stage edge to edge with the developed picture, then a gray sheet that
  * names the color in one large word, gives the three readings and one action. Two numbered
  * markers on the stage open knowledge-base explanations. The paywall is only offered from
- * here, after the portrait exists.
+ * here, after the portrait exists:
+ * once on its own, two seconds after a free person's very first portrait, and after that only
+ * when they ask for more.
  */
 export default function PortraitScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, fresh } = useLocalSearchParams<{ id: string; fresh?: string }>();
   const { scans, entitlement } = useAppState();
   const { refreshScans } = useAppActions();
   const insets = useSafeAreaInsets();
@@ -30,6 +33,28 @@ export default function PortraitScreen() {
   const [region, setRegion] = React.useState<AuraRegion | null>(null);
   const exportOpts = React.useMemo(() => ({ clean: entitlement.isPro, exportWidth: entitlement.isPro ? 720 : 480, onSaved: refreshScans }), [entitlement.isPro, refreshScans]);
   const { auraRef, busy, run: exportPortrait, exportCard } = usePolaroidExport(record, exportOpts);
+
+  // The first portrait gets two seconds on its own, then Pro is offered once. "Not now" returns here.
+  const offered = React.useRef(false);
+  const firstFresh = fresh === '1' && !entitlement.isPro && scans.length === 1 && !!record;
+  React.useEffect(() => {
+    if (!firstFresh || offered.current) return;
+    const t = setTimeout(() => {
+      offered.current = true;
+      router.push({ pathname: '/paywall', params: { from: id } });
+    }, 2000);
+    return () => clearTimeout(t);
+  }, [firstFresh, id]);
+
+  // The reveal: four soft taps at the person's own pulse, once, when the portrait first appears.
+  const bpm = record?.heart.bpm ?? 0;
+  React.useEffect(() => {
+    if (fresh !== '1' || !(bpm >= 40 && bpm <= 140)) return;
+    const gap = 60000 / bpm;
+    const timers = [0, 1, 2, 3].map((i) => setTimeout(() => void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {}), 400 + i * gap));
+    return () => timers.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fresh, id]);
 
   const width = Dimensions.get('window').width;
   const plateH = Math.round(Math.min(width * 1.25, Dimensions.get('window').height * 0.62));
@@ -97,7 +122,7 @@ export default function PortraitScreen() {
 
         <Rule onPaper style={{ marginTop: space.xl }} />
         <View style={styles.figures}>
-          <Figure label="Pulse" value={Math.round(heart.bpm).toString()} unit="bpm" />
+          <Figure label="Pulse, approx." value={Math.round(heart.bpm).toString()} unit="bpm" />
           <Figure label="Variation" value={Math.round(heart.rmssd).toString()} unit="ms" />
           <Figure label="Voice" value={voice && voice.quality > 0.2 ? `${Math.round(voice.variance * 100)}` : '—'} unit={voice && voice.quality > 0.2 ? '% moved' : undefined} onPaper />
         </View>
@@ -122,8 +147,11 @@ export default function PortraitScreen() {
           <Button label={entitlement.isPro ? 'Full breakdown' : 'See the full breakdown'} onPress={openFull} block />
           <View style={styles.links}>
             <Button label="Save" variant="ghost" onPaper onPress={() => void exportPortrait('save')} loading={busy === 'save'} />
-            <Button label="Share" variant="ghost" onPaper onPress={() => void exportPortrait('share')} loading={busy === 'share'} />
+            <Button label="Share my color" variant="ghost" onPaper onPress={() => void exportPortrait('story')} loading={busy === 'story'} />
           </View>
+          <Text variant="caption" color={colors.inkText50}>
+            For reflection and wellness, not a medical reading. The pulse is an estimate from your phone camera.
+          </Text>
         </View>
         </View>
       </ScrollView>

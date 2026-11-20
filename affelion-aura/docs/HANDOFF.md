@@ -70,12 +70,16 @@ The scan needs a phone: camera, flash and microphone do not exist in the browser
 
 ## Business model as built
 
-Three free scans and one free practice, then Aura Pro: $12.99 a month, $69.99 a year (shown as
-$5.83 a month, marked best value), $199 lifetime. Product IDs are in `entitlements.ts`. A free
+The first scan is free, then one free scan a week, plus one free practice. Aura Pro: $12.99 a month, $69.99 a year (shown as
+$5.83 a month, marked best value), $199 lifetime (hidden behind "Prefer to pay once?"). The paywall,
+titled "Keep your Aura", opens once by itself two seconds after a free person's first portrait.
+A reading with a shaky signal or a pulse outside 40 to 140 is not saved and does not use the free
+scan (`src/core/scan/readingGate.ts`). "Share my color" makes a 9:16 story card
+(`src/render/polaroid/StoryCard.tsx`), with the app name on it for free users. Product IDs are in `entitlements.ts`. A free
 trial is supported but off until one is added to a product in the store (`src/services/trial.ts`;
 the app shows a trial only when the store offers one to that person). The
 RevenueCat entitlement must be named `pro`. Free-use counters and the entitlement survive
-"Delete all data" on purpose, so deleting data does not reset the free scans.
+"Delete all data" on purpose, so deleting data does not reset the free week.
 
 Rough math for the owner's target: the stores keep 15 to 30 percent, so an annual subscriber
 brings in about $4 to $5 a month. $15,000 a month therefore needs roughly 3,000 to 3,700 active

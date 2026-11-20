@@ -8,9 +8,19 @@ import { useAppActions, useAppState } from '../features/store/AppStore';
 import { PRIVACY_URL, TERMS_URL, openLink } from '../services/links';
 import { trialAdjective, trialTerms } from '../services/trial';
 
+/** What Pro adds, in plain words. Four lines, no more. */
+const BENEFITS = [
+  'Unlimited scans, any day you like.',
+  'The full breakdown behind every color.',
+  'Your history, so you can see how you change.',
+  'Guided practice with Sasha, and clean exports.',
+];
+
 /**
  * Soft paywall, set like a price list on the table: no countdowns, no badges shouting, the
- * annual plan marked best value in words, cancel and restore in plain sight.
+ * annual plan marked best value in words, cancel and restore in plain sight. Annual and
+ * monthly are listed; the one-time purchase sits behind a quiet link so the choice stays
+ * simple.
  */
 export default function Paywall() {
   const { from } = useLocalSearchParams<{ from?: string }>();
@@ -18,6 +28,11 @@ export default function Paywall() {
   const { purchase, restore, manageSubscriptions } = useAppActions();
   const [plan, setPlan] = React.useState<PlanId>('annual');
   const [busy, setBusy] = React.useState(false);
+  const [showOnce, setShowOnce] = React.useState(false);
+  const listedPlans = React.useMemo(() => {
+    const order: PlanId[] = showOnce ? ['annual', 'monthly', 'lifetime'] : ['annual', 'monthly'];
+    return order.map((id) => PLANS.find((p) => p.id === id)).filter((p): p is (typeof PLANS)[number] => !!p);
+  }, [showOnce]);
   // A free trial appears only when the store offers one on the chosen plan to this person.
   const trial = prices[plan]?.trial ?? null;
 
@@ -50,15 +65,24 @@ export default function Paywall() {
       </View>
 
       <Text variant="display" style={{ marginTop: space.xxxl }}>
-        The numbers behind every color.
+        Keep your Aura.
       </Text>
-      <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.md, maxWidth: 330 }}>
-        The free portrait shows you the picture. Pro shows the measurements, how they move across scans, unlimited practice, Sasha, premium frames and clean exports.
-      </Text>
+      <View style={{ marginTop: space.lg, gap: space.sm, maxWidth: 340 }}>
+        {BENEFITS.map((b) => (
+          <View key={b} style={styles.benefit}>
+            <Text variant="mono" color={colors.bone50}>
+              +
+            </Text>
+            <Text variant="bodySmall" color={colors.bone70} style={{ flex: 1 }}>
+              {b}
+            </Text>
+          </View>
+        ))}
+      </View>
 
       <View style={{ marginTop: space.xxl }}>
         <Rule />
-        {PLANS.map((listed) => {
+        {listedPlans.map((listed) => {
           // The store's own price, in the person's currency, wins over the listed figure.
           const store = prices[listed.id];
           const p = store ? { ...listed, price: store.price, perMonth: store.perMonth ? `${store.perMonth} / month` : listed.id === 'annual' ? null : listed.perMonth } : listed;
@@ -102,13 +126,17 @@ export default function Paywall() {
         })}
       </View>
 
+      {!showOnce ? (
+        <Button label="Prefer to pay once?" variant="ghost" onPress={() => setShowOnce(true)} style={{ alignSelf: 'flex-start', marginTop: space.sm }} />
+      ) : null}
+
       <Button
         label={entitlement.isPro ? 'You already have Pro' : !purchasesAvailable() ? 'Purchases are not available in this build' : trial ? `Start ${trialAdjective(trial)} free trial` : `Continue with ${PLANS.find((p) => p.id === plan)?.title}`}
         onPress={() => void buy()}
         loading={busy}
         disabled={entitlement.isPro || !purchasesAvailable()}
         block
-        style={{ marginTop: space.xl }}
+        style={{ marginTop: space.lg }}
       />
 
       <Text variant="caption" color={colors.bone50} style={{ marginTop: space.lg }}>
@@ -134,5 +162,6 @@ export default function Paywall() {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   plan: { flexDirection: 'row', alignItems: 'center', gap: space.lg, paddingVertical: space.lg, minHeight: 72 },
+  benefit: { flexDirection: 'row', gap: space.sm, alignItems: 'flex-start' },
   planLeft: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md, flex: 1 },
 });

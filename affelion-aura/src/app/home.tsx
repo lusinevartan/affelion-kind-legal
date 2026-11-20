@@ -12,19 +12,25 @@ import { AuraView } from '../render/fluid/AuraView';
 import { getCachedMask } from '../features/scan/sessionCache';
 import { PREVIEW_PARAMS } from '../features/scan/previewParams';
 import { formatDate } from '../ui/format';
+import { freeScanStatus } from '../services/entitlements';
+import { isToday, weeklyStreak } from '../core/insight/streak';
+import { useNow } from '../ui/useNow';
 
 /**
  * Home is two fields. A black stage with the latest portrait, the only color on the screen,
  * and a gray sheet that names it in one large word and offers one action.
  */
 export default function Home() {
-  const { scans, entitlement, canScan, freeScansLeft: left, practices } = useAppState();
+  const { scans, entitlement, canScan, nextFreeScanAt, practices } = useAppState();
   const insets = useSafeAreaInsets();
   const latest = scans[0] ?? null;
   const insight = latest ? scanInsight(latest, scans) : null;
   // No outline yet means no silhouette: the aura is drawn as a soft cloud, never around a stand-in figure.
   const mask = React.useMemo(() => (latest ? getCachedMask(latest.id) : null), [latest]);
   const params = latest?.aura ?? PREVIEW_PARAMS;
+  const now = useNow();
+  const streak = React.useMemo(() => weeklyStreak(scans.map((s) => s.createdAt), now), [scans, now]);
+  const when = latest ? (isToday(latest.createdAt, now) ? "Today's color" : `Latest · ${formatDate(latest.createdAt)}`) : 'Preview';
   const openLatest = () => latest && router.push({ pathname: '/portrait/[id]', params: { id: latest.id } });
 
   return (
@@ -52,7 +58,7 @@ export default function Home() {
         </View>
         <View style={styles.stageCaption}>
           <Text variant="eyebrow" color={colors.stageFg}>
-            {latest ? `Latest · ${formatDate(latest.createdAt)}` : 'Preview'}
+            {streak >= 2 ? `${when} · ${streak} weeks in a row` : when}
           </Text>
           {latest ? (
             <Text variant="eyebrow" color={colors.stageFg}>
@@ -99,7 +105,7 @@ export default function Home() {
             {!latest ? <Button label="How it works" variant="ghost" onPress={() => router.push('/how')} /> : null}
           </View>
           <Text variant="caption" color={colors.fg60}>
-            {entitlement.isPro ? 'Pro · unlimited' : left > 0 ? `${left} of 3 free scans left` : 'Free scans used'} · Not a medical device
+            {entitlement.isPro ? 'Pro · unlimited' : freeScanStatus(nextFreeScanAt, now)} · Not a medical device
           </Text>
         </View>
       </View>

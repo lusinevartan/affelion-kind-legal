@@ -5,16 +5,18 @@ import { router } from 'expo-router';
 import { Button, Card, Screen, Text } from '../ui/components';
 import { colors, space } from '../ui/theme';
 import { useAppActions, useAppState } from '../features/store/AppStore';
-import { PLANS } from '../services/entitlements';
+import { PLANS, freeScanStatus } from '../services/entitlements';
+import { useNow } from '../ui/useNow';
 import { PRIVACY_URL, SUPPORT_URL, TERMS_URL, openLink } from '../services/links';
 
 export default function Settings() {
-  const { entitlement, freeScansUsed } = useAppState();
+  const { entitlement, nextFreeScanAt } = useAppState();
+  const now = useNow();
   const { manageSubscriptions, restore, deleteAllData } = useAppActions();
   const plan = PLANS.find((p) => p.id === entitlement.plan);
 
   const confirmDelete = () => {
-    Alert.alert('Delete all data?', 'Every scan, photo, portrait, practice session and setting on this device will be removed. This cannot be undone. Your plan and the free scans you have already used are not affected.', [
+    Alert.alert('Delete all data?', 'Every scan, photo, portrait, practice session and setting on this device will be removed. This cannot be undone. Your plan and your free-scan week are not affected.', [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Delete everything', style: 'destructive', onPress: () => void deleteAllData() },
     ]);
@@ -46,7 +48,7 @@ export default function Settings() {
             ? entitlement.expiresAt
               ? `Renews or ends ${formatDate(entitlement.expiresAt)}. You can cancel any time and keep Pro until that date.`
               : 'Lifetime access. Nothing renews.'
-            : `${Math.max(0, 3 - freeScansUsed)} of 3 free scans left.`}
+            : `${freeScanStatus(nextFreeScanAt, now)}. One free scan a week, or go Pro for unlimited.`}
         </Text>
         <View style={{ flexDirection: 'row', gap: space.md, marginTop: space.lg }}>
           {entitlement.isPro ? (

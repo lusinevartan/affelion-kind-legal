@@ -1,13 +1,18 @@
 import { Linking, Platform } from 'react-native';
 import { getSetting, setSetting } from './storage';
 import type { Trial } from './trial';
+import { FREE_SCAN_INTERVAL_MS, freeScanStatus, freeScansRemaining, nextFreeScanAt } from './freeTier';
+
+export { FREE_SCAN_INTERVAL_MS, freeScanStatus, freeScansRemaining, nextFreeScanAt };
 
 /**
  * Prices sit level with the leading meditation apps (about $13 a month, $70 a year). They are
  * the figures shown when no store is connected; the stores' own prices replace them otherwise.
  *
- * Free tier: 3 scans with the basic portrait. Paid: unlimited scans, full report, history
- * and trends, the AI guide, premium styles and clean exports.
+ * Free tier: the first scan is free, then one free scan a week, each with the basic portrait.
+ * Pro: unlimited scans, full report, history and trends, the AI guide, premium styles and clean
+ * exports. (The launch plan's recommendation; test it against three scans total once there is
+ * traffic.)
  *
  * Billing goes through a `PurchaseProvider`. The app ships with a development provider that
  * simulates purchases locally so the whole flow can be exercised without store accounts.
@@ -15,7 +20,6 @@ import type { Trial } from './trial';
  * docs/ARCHITECTURE.md → Monetization) and swap it in `createPurchaseProvider`.
  */
 
-export const FREE_SCAN_LIMIT = 3;
 
 export type PlanId = 'monthly' | 'annual' | 'lifetime';
 
@@ -189,6 +193,18 @@ export async function incrementFreeScansUsed(): Promise<number> {
 /** Set once the single free practice session has been used. Survives "delete all data". */
 export const FREE_PRACTICE_USED_KEY = 'freePracticeUsed';
 
-export function freeScansRemaining(used: number): number {
-  return Math.max(0, FREE_SCAN_LIMIT - used);
+/** When the last free scan was taken (Unix ms). Survives "delete all data", like the count. */
+export const FREE_SCAN_LAST_KEY = 'freeScanLastAt';
+
+export async function getLastFreeScanAt(): Promise<number | null> {
+  const raw = await getSetting(FREE_SCAN_LAST_KEY);
+  const n = raw ? Number(raw) : NaN;
+  return Number.isFinite(n) && n > 0 ? n : null;
 }
+
+export async function markFreeScanUsed(at: number): Promise<void> {
+  await setSetting(FREE_SCAN_LAST_KEY, String(at));
+}
+
+
+

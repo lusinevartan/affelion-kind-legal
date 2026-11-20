@@ -67,7 +67,7 @@ export default function ScanScreen() {
     const record = session.result;
     cacheMask(record.id, session.stillMask ?? session.mask);
     recordScan(record)
-      .then(() => router.replace({ pathname: '/portrait/[id]', params: { id: record.id } }))
+      .then(() => router.replace({ pathname: '/portrait/[id]', params: { id: record.id, fresh: '1' } }))
       .catch((e) => Alert.alert('Could not save', e instanceof Error ? e.message : 'Unknown error'));
   }, [session.state.phase, session.result, session.mask, session.stillMask, recordScan]);
 

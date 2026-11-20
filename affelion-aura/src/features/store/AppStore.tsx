@@ -1,6 +1,7 @@
 import * as React from 'react';
 import type { PracticeRecord, ScanRecord } from '../../core/types';
 import type { FrameStyleId } from '../../render/polaroid/styles';
+import { useNow } from '../../ui/useNow';
 import {
   createPurchaseProvider,
   ENTITLEMENT_KEY,
@@ -14,6 +15,10 @@ import {
   type PlanId,
   type PlanPrices,
   type PurchaseProvider,
+  FREE_SCAN_LAST_KEY,
+  getLastFreeScanAt,
+  markFreeScanUsed,
+  nextFreeScanAt,
 } from '../../services/entitlements';
 import { clearSettings, deleteAllScans, getSetting, listMasks, listPractices, listScans, saveMask, savePractice, saveScan, setSetting } from '../../services/storage';
 import { deleteFiles } from '../../services/files';
@@ -28,6 +33,8 @@ export interface AppState {
   onboardingDone: boolean;
   entitlement: Entitlement;
   freeScansUsed: number;
+  /** When the last free scan was taken, or null if none yet. */
+  lastFreeScanAt: number | null;
   /** True once the single free practice session has been used. */
   freePracticeUsed: boolean;
   scans: ScanRecord[];
@@ -37,9 +44,11 @@ export interface AppState {
   frameStyle: FrameStyleId;
   /** The store's own localized prices, where a store is connected; empty otherwise. */
   prices: PlanPrices;
-  /** Derived: Pro, or free scans remaining. */
+  /** Derived: Pro, or a free scan available this week. */
   canScan: boolean;
   freeScansLeft: number;
+  /** Derived: when the next free scan arrives, if one is not available now. */
+  nextFreeScanAt: number | null;
   /** Derived: Pro, or the single free practice session not yet used. */
   canPractice: boolean;
 }
@@ -57,7 +66,7 @@ export interface AppActions {
   deleteAllData(): Promise<void>;
 }
 
-type StoredState = Omit<AppState, 'canScan' | 'freeScansLeft' | 'canPractice'>;
+type StoredState = Omit<AppState, 'canScan' | 'freeScansLeft' | 'canPractice' | 'nextFreeScanAt'>;
 
 const StateContext = React.createContext<AppState | null>(null);
 const ActionsContext = React.createContext<AppActions | null>(null);
@@ -73,6 +82,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
     onboardingDone: false,
     entitlement: NO_ENTITLEMENT,
     freeScansUsed: 0,
+    lastFreeScanAt: null,
     freePracticeUsed: false,
     scans: [],
     practices: [],
@@ -98,7 +108,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
   React.useEffect(() => {
     let canceled = false;
     (async () => {
-      const [onboarding, entitlement, used, scans, practices, resonance, frame, practiceUsed] = await Promise.all([
+      const [onboarding, entitlement, used, scans, practices, resonance, frame, practiceUsed, lastFree] = await Promise.all([
         getSetting(ONBOARDING_KEY),
         purchases.getEntitlement(),
         getFreeScansUsed(),
@@ -107,6 +117,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         getSetting(RESONANCE_KEY),
         getSetting(FRAME_KEY),
         getSetting(FREE_PRACTICE_USED_KEY),
+        getLastFreeScanAt(),
       ]);
       // Outlines are restored before the first portrait draws, so a saved still and its aura
       // always line up.
@@ -122,6 +133,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         onboardingDone: onboarding === '1',
         entitlement,
         freeScansUsed: used,
+        lastFreeScanAt: lastFree,
         freePracticeUsed: practiceUsed === '1' || practices.length > 0,
         scans,
         practices,
@@ -156,10 +168,12 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         await saveScan(record);
         const mask = getCachedMask(record.id);
         if (mask) await saveMask({ scanId: record.id, ...mask }).catch(() => {});
+        // Only a saved portrait uses the free scan. A reading that failed was never saved.
         const isPro = stateRef.current.entitlement.isPro;
         const used = isPro ? stateRef.current.freeScansUsed : await incrementFreeScansUsed();
+        if (!isPro) await markFreeScanUsed(record.createdAt);
         const scans = await listScans();
-        setState((s) => ({ ...s, scans, freeScansUsed: used }));
+        setState((s) => ({ ...s, scans, freeScansUsed: used, lastFreeScanAt: isPro ? s.lastFreeScanAt : record.createdAt }));
       },
       async recordPractice(record) {
         await savePractice(record);
@@ -194,24 +208,26 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         clearCachedMasks();
         // What the person has already used of the free tier, and what they have paid for, is
         // not their data to delete; everything else goes.
-        await clearSettings([FREE_SCANS_USED_KEY, FREE_PRACTICE_USED_KEY, ENTITLEMENT_KEY]);
+        await clearSettings([FREE_SCANS_USED_KEY, FREE_SCAN_LAST_KEY, FREE_PRACTICE_USED_KEY, ENTITLEMENT_KEY]);
         await setSetting(ONBOARDING_KEY, '1');
         const entitlement = await purchases.getEntitlement();
-        setState((s) => ({ ready: true, onboardingDone: true, entitlement, freeScansUsed: s.freeScansUsed, freePracticeUsed: s.freePracticeUsed, scans: [], practices: [], resonanceRate: null, frameStyle: 'classic', prices: s.prices }));
+        setState((s) => ({ ready: true, onboardingDone: true, entitlement, freeScansUsed: s.freeScansUsed, lastFreeScanAt: s.lastFreeScanAt, freePracticeUsed: s.freePracticeUsed, scans: [], practices: [], resonanceRate: null, frameStyle: 'classic', prices: s.prices }));
       },
     }),
     [purchases],
   );
 
+  const now = useNow();
   const derived = React.useMemo<AppState>(() => {
-    const freeScansLeft = freeScansRemaining(state.freeScansUsed);
+    const freeScansLeft = freeScansRemaining(state.lastFreeScanAt, now);
     return {
       ...state,
       freeScansLeft,
+      nextFreeScanAt: nextFreeScanAt(state.lastFreeScanAt, now),
       canScan: state.entitlement.isPro || freeScansLeft > 0,
       canPractice: state.entitlement.isPro || !state.freePracticeUsed,
     };
-  }, [state]);
+  }, [state, now]);
 
   return (
     <StateContext.Provider value={derived}>
