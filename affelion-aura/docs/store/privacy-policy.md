@@ -49,6 +49,10 @@ No account or sign-up. No advertising. No tracking across other apps or websites
 crash-reporting tools. We do not sell or share your information. Halo does not use HealthKit or
 Health Connect.
 
+## Our website
+
+Our public privacy and support pages are hosted on Replit. Replit may process visit and connection information, such as IP addresses, browser and device details, and pages viewed, and may use cookies or similar technologies under its own privacy policy. See https://replit.com/privacy-policy.
+
 ## Deleting your information
 
 Settings → **Delete all data** removes every check-in, photo, portrait, practice session and setting
