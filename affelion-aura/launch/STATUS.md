@@ -40,10 +40,15 @@ In order. Each step has the exact clicks.
   5. When it finishes: `npx eas-cli@latest submit --platform ios --profile production --latest`. This only **uploads to TestFlight**; it does not send anything to App Review. In App Store Connect → TestFlight, add yourself as an internal tester and install it on your iPhone.
   6. Android: `npx eas-cli@latest build --platform android --profile production` gives an `.aab`. Google requires the very first upload by hand: Play Console → Affelion Halo → Testing → **Internal testing** → Create release → upload the `.aab` → add yourself as a tester. Later uploads can use `eas submit`.
   7. Tell Claude the build numbers. Claude can then take over builds if you add an `EXPO_TOKEN` (Expo → Account settings → Access tokens) to this environment's secrets.
-- [ ] **4. Publish three pages on affelion.com (M10).** Today all three return 404.
-  1. Read and edit `docs/store/privacy-policy.md`, `docs/store/terms.md` (fill in [STATE] and the date; a lawyer's read is worth it) and `docs/store/support.md`.
-  2. In your website builder, create three normal pages (not PDFs) at exactly **affelion.com/halo/privacy**, **affelion.com/halo/terms** and **affelion.com/halo/support**, and paste each one in. Ready-to-paste HTML is in `docs/store/web/` (privacy.html, terms.html, support.html) if your builder takes HTML; otherwise paste the text from the `.md` files.
-  3. Publish, then open each address in a private browser window to check it loads. Tell Claude, who will re-check them (must return 200) and tick M10.
+- [ ] **4. Publish three pages on affelion.com (M10).** Today all three return 404. Everything is filled in except two values.
+  1. Open `docs/store/web/privacy.html` and `docs/store/web/terms.html` and fill in: **[DATE OF PUBLISHING]** (both pages: the day you publish, for example November 21, 2026) and **[STATE]** (terms page only: the state where Affelion LLC is registered). A lawyer's read of the terms is worth it but optional.
+  2. In your website builder, create three normal pages (not PDFs, not downloads) at exactly:
+     - **affelion.com/halo/privacy** → paste `docs/store/web/privacy.html`
+     - **affelion.com/halo/terms** → paste `docs/store/web/terms.html`
+     - **affelion.com/halo/support** → paste `docs/store/web/support.html`
+     If your builder takes HTML, use an HTML/embed block and paste the whole file. If it only takes text, paste the matching `.md` text from `docs/store/` (privacy-policy.md, terms.md, support.md) and keep the headings.
+  3. Turn off any password, "coming soon" or members-only setting on those three pages, publish, and open each address in a private browser window.
+  4. Tell Claude "pages live". Claude checks each returns a normal page (HTTP 200) and ticks M10. The app already links to these three addresses.
 - [ ] **5. Enter the App Privacy and age rating answers (M10).** App Store Connect → Affelion Halo → **App Privacy** → Get Started → use `docs/store/app-privacy.md` (one data type: Purchase History, not linked, not tracking, for App Functionality and Analytics) → Publish. Then **App Information → Age Rating → Edit** → use `docs/store/age-rating.md` (only "Health or wellness topics" is Yes; expected 9+). Set the **Privacy Policy URL** in App Information to https://www.affelion.com/halo/privacy.
 - [ ] **6. Sandbox purchase test, about 15 minutes, on a TestFlight build (M3).** Needs M2 done and the RevenueCat key in the build.
   1. iPhone Settings → App Store → scroll to **Sandbox Account** → sign in with a sandbox tester (create one in App Store Connect → Users and Access → Sandbox → Testers; any new email works).

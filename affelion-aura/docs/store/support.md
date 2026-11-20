@@ -16,7 +16,8 @@ on a new phone: Settings → Restore Purchases. To cancel: your Apple ID or Goog
 settings.
 
 **Your data.** Check-ins stay on your phone. Settings → Delete all data removes them. See the
-Privacy Policy: https://www.affelion.com/halo/privacy
+Privacy Policy: https://www.affelion.com/halo/privacy and the Terms of Use:
+https://www.affelion.com/halo/terms
 
 **Contact.** hello@affelion.com. Tell us your phone model and app version. Please don't send health
 records, passwords or card details.
