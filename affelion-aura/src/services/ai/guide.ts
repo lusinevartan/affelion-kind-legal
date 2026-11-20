@@ -71,7 +71,7 @@ export function localGuideAnswer(question: string, record: ScanRecord): string {
   const sec = AURA_COLORS[aura.secondaryColorId];
   // Health questions are answered first, whatever else the question mentions.
   if (/(doctor|medical|medic|health|disease|diagnos|sick|ill\b|illness|anxiety|depress|condition|symptom|blood pressure|heart attack|arrhythm|dying|die\b)/.test(q)) {
-    return 'Affelion Aura is not a medical device and cannot assess health conditions. It visualizes a short pulse and voice sample. If you have a health concern, please talk to a doctor.';
+    return 'Affelion Aura is for wellness and self-reflection. It is not a medical device and cannot tell you anything about a health condition. It turns a short pulse and voice sample into color. Talk to a doctor about any health concern.';
   }
   if (/(hrv|variab|rmssd|coheren|halo|edge|outer|steady)/.test(q)) {
     return `Your heartbeat variation was ${heart.rmssd.toFixed(0)} ms. That is how much the gap between beats changes from one beat to the next. Your outer color is ${sec.name.toLowerCase()}: ${sec.why} Strong variation with a calm pulse gives greens and teals. Low variation gives reds and oranges.`;
@@ -85,7 +85,7 @@ export function localGuideAnswer(question: string, record: ScanRecord): string {
     return 'The voice step was skipped or too quiet to use, so only your heartbeat shaped this portrait.';
   }
   if (/(red|orange|stress|activ|fast|heart rate|bpm|pulse|main|why am i)/.test(q)) {
-    return `Your pulse averaged ${heart.bpm.toFixed(0)} beats a minute. Your main color is ${dom.name.toLowerCase()}: ${dom.why} A fast pulse, 92 or more, or very low heartbeat variation gives reds and oranges. A slow pulse, 62 or less, gives blues and purples.`;
+    return `Your pulse was about ${heart.bpm.toFixed(0)} beats a minute, read through your phone camera. Your main color is ${dom.name.toLowerCase()}: ${dom.why} A fast pulse, 92 or more, or very low heartbeat variation gives reds and oranges. A slow pulse, 62 or less, gives blues and purples.`;
   }
   if (/(mean|why|what|explain|colour|color|teal|move|shift|change)/.test(q)) {
     return `${aura.summary} ${dom.why} The outer color follows your heartbeat variation, which was ${heart.rmssd.toFixed(0)} ms. How strong and how light the color is follows your voice. Every color comes from one of those readings and nothing else.`;

@@ -101,7 +101,7 @@ export const SWATCH_HSL: Record<AuraColorId, { h: number; s: number; l: number }
  * them that way.
  */
 export const PLAIN_WORDS: Record<AuraColorId, { meaning: string; why: string }> = {
-  deep_red: { meaning: 'Keyed up and intense', why: 'Deep red shows up when your heart is beating fast or your heartbeat variation is very low. Your body was working hard during the scan, which can come from exercise, coffee, nerves or a busy day.' },
+  deep_red: { meaning: 'Keyed up and intense', why: 'Deep red shows up when your heart is beating fast or your heartbeat variation is very low. Your body was working hard during the scan, which can come from exercise, coffee, excitement or a busy day.' },
   crimson: { meaning: 'Strong, forceful energy', why: 'Crimson shows intense energy. Your heart was beating fast and your voice was lively.' },
   bright_orange: { meaning: 'Energy and drive', why: 'Bright orange means your body was switched on. Your pulse was up, which is a sign of physical or mental drive during the scan.' },
   amber: { meaning: 'Warm, creative energy', why: 'Amber shows up with warm, active energy. It often goes with a pulse that is a little raised and a voice that sounds engaged.' },

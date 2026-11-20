@@ -9,8 +9,8 @@ All copy follows the wording rules in `CLAUDE-AURA-LAUNCH.md` section 4. Charact
 | Field | Copy | Count / limit |
 |---|---|---|
 | App name | Affelion Aura – Color Check-In | 30 / 30 |
-| Subtitle | Aura reading from your pulse | 28 / 30 |
-| Keywords | color,reading,heartbeat,pulse,vibe,mood,portrait,selfie,calm,breathing,check in,daily,glow,hrv | 94 / 100 |
+| Subtitle | Your heartbeat, in color | 24 / 30 (changed Nov 20 by Claude: "Aura reading" sits close to the fortune-telling category in guideline 4.3(b); the description already opens with this line) |
+| Keywords | color,check in,heartbeat,pulse,vibe,mood,portrait,selfie,calm,breathing,daily,glow,art,reflect | 94 / 100 (changed Nov 20: dropped "reading" and "hrv", a health metric, added "art" and "reflect") |
 | Promotional text | Your real heartbeat and voice, turned into one of twenty colors. A one-minute check-in that's beautiful, honest, and all yours. | under 170 |
 | Primary category | Lifestyle | judgment call |
 | Secondary category | Health & Fitness | |

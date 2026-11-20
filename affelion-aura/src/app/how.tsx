@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { DISCLAIMER } from '../core/disclaimer';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Button, Rule, Screen, Text } from '../ui/components';
@@ -57,7 +58,7 @@ export default function HowItWorks() {
         How it works
       </Text>
       <Text variant="body" color={colors.fg70} style={{ marginTop: space.md }}>
-        Affelion Aura makes a picture of how your body is doing right now. It reads your heartbeat and your voice, then turns those numbers into color around your photo. It is not magic and it does not see invisible light. It is not a medical device.
+        Affelion Aura is a one-minute check-in. It takes your approximate pulse and your voice and turns those numbers into color around your photo. Every color traces to a number. It does not see invisible light or read energy.
       </Text>
 
       <Section label="What you do">
@@ -120,8 +121,8 @@ export default function HowItWorks() {
       </Section>
 
       <Button label={canScan ? 'Begin scan' : 'See plans'} onPress={() => router.push(canScan ? '/scan' : '/paywall')} block style={{ marginTop: space.xxl }} />
-      <Text variant="caption" color={colors.fg60} align="center" style={{ marginTop: space.lg }}>
-        Not a medical device. For health concerns, speak with a clinician.
+      <Text variant="caption" color={colors.fg60} style={{ marginTop: space.lg }}>
+        {DISCLAIMER}
       </Text>
     </Screen>
   );

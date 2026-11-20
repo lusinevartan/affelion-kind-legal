@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { DISCLAIMER, PULSE_NOTE } from '../../core/disclaimer';
 import { formatDateTime } from '../../ui/format';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -183,8 +184,8 @@ export default function ReportScreen() {
         </View>
       </View>
       {exportCard}
-      <Text variant="caption" color={colors.bone30} style={{ marginTop: space.xxl }} align="center">
-        Not a medical device. For health concerns, speak with a clinician.
+      <Text variant="caption" color={colors.fg60} style={{ marginTop: space.xxl }}>
+        {DISCLAIMER} {PULSE_NOTE}
       </Text>
     </Screen>
   );

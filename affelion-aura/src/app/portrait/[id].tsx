@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { DISCLAIMER, PULSE_NOTE } from '../../core/disclaimer';
 import { Dimensions, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -150,7 +151,7 @@ export default function PortraitScreen() {
             <Button label="Share my color" variant="ghost" onPaper onPress={() => void exportPortrait('story')} loading={busy === 'story'} />
           </View>
           <Text variant="caption" color={colors.inkText50}>
-            For reflection and wellness, not a medical reading. The pulse is an estimate from your phone camera.
+            {DISCLAIMER} {PULSE_NOTE}
           </Text>
         </View>
         </View>
