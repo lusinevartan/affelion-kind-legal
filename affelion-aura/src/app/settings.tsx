@@ -58,7 +58,15 @@ export default function Settings() {
           ) : (
             <Button label="See plans" onPress={() => router.push('/paywall')} style={{ flex: 1 }} />
           )}
-          <Button label="Restore Purchases" variant="ghost" onPress={() => void restore()} />
+          <Button
+            label="Restore Purchases"
+            variant="ghost"
+            onPress={() =>
+              void restore()
+                .then((e) => Alert.alert(e.isPro ? 'Restored' : 'Nothing to restore', e.isPro ? 'Pro is active.' : 'No previous purchase was found for this Apple ID.'))
+                .catch(() => Alert.alert('Could not restore', 'Check your connection and try again.'))
+            }
+          />
         </View>
       </Card>
 

@@ -59,16 +59,7 @@ In order. Each step has the exact clicks.
   5. With a second sandbox tester, buy **Monthly**. Expect: Pro unlocks.
   6. Turn on Airplane Mode, delete and reinstall, open the paywall. Expect: "We could not load prices" with **Try again**, no crash, no blank screen. Turn Airplane Mode off, tap Try again, prices appear.
   7. Write pass or fail for each step in the M3 row, or tell Claude.
-- [ ] **7. Real-iPhone test, about 15 minutes per phone (M9).** Needs the TestFlight build. Use at least 3 iPhones: one older (iPhone 11 to 13 or SE 2nd/3rd gen), one recent (15 or newer), one in between. Borrow from friends; don't buy any. For each phone, fresh install, then:
-  1. **Good scan:** sitting, warm hands, elbow on the table. Time it from Begin scan to the portrait. Expect about a minute and a portrait.
-  2. **Finger lifted:** at the fingertip step, lift your finger halfway through. Expect guidance ("Cover the rear camera") and, if it can't recover, "Let's try that again" with one tip. No portrait from the bad part.
-  3. **Moving:** keep the finger on but wiggle the phone the whole time. Expect "Hold steadier" after about 15 seconds, then either a portrait from the steady part or "We couldn't get a clear reading."
-  4. **Flash half uncovered:** cover only the lens. Expect "Cover the flash too."
-  5. **Dark room / cold fingers:** lights off, or hands cooled under cold water. Expect a slower lock or the retry line, never a crash.
-  6. **Silent voice:** say nothing at the voice step. Expect "Voice sample too quiet" with **Try again** and **Skip voice**; skipping still gives a portrait.
-  7. **Free check-in not used by a failure:** on a fresh install, cause a failure first (step 2), then do a good scan. Expect the good scan to be your free one (Home shows the next free scan a week later, not "used" twice).
-  8. **Permissions:** in iPhone Settings → Affelion Halo, turn the camera off, open Begin scan. Expect "Camera access is needed" with **Open Settings**.
-  9. Fill one row per phone in the **Real-device test log** below (device, iOS version, pass/fail per column), or send Claude a note and Claude fills it in. Screen-record anything that fails.
+- [ ] **7. Real-iPhone test (M9), about 45 minutes per phone.** Use the TestFlight build from step 3 (`--profile testflight`, which has the Debug screen). Follow **`launch/DEVICE-TEST.md`** step by step: permissions, outline, pulse in normal/dim/bright light with the finger lifted or moving, flash half covered, cold fingers, voice in quiet/noisy/silent rooms, the portrait reveal and heartbeat taps, Share my color, the free weekly scan, the paywall after the first portrait, and sandbox purchase, restore, cancel and the offline paywall. When something fails, it tells you what to record and the message to send Claude. Aim for at least 3 iPhones (one older, one recent); borrow, don't buy. Fill one row per phone in the device test log below.
 - [ ] **8. Record the 60-second demo video (M11).** Script and shot list: `docs/store/demo-video-script.md`. Upload it unlisted and paste the link into `docs/store/review-notes.md` where it says [LINK TO VIDEO], or send it to Claude.
 - [ ] **9. Fill in the App Store listing and upload screenshots (M11).** App Store Connect → Affelion Halo → version 1.0:
   1. **Previews and Screenshots** → iPhone 6.9" → drag in the 7 files from `store/screenshots/app-store-6.9/` in order 1 to 7. Then 6.5" → the 7 files from `app-store-6.5/`. No iPad.
@@ -102,6 +93,8 @@ In order. Each step has the exact clicks.
 | M11 | Screenshots, listing, Review Notes, category, manual release | Review | Assets done; entry Needs Lusine (step 9) | App Store 6.9" and 6.5" (7 each), Google Play phone (7), feature graphic, Play icon 512 and Apple header/search/universal art, all with the magenta reading, the new paywall, the Corona icon and "Affelion Halo" as one name; no test text; iPhone-only so no iPad set. App icon: `assets/icon.png` 1024 RGB (no transparency), Android adaptive foreground/background/monochrome, splash, and the iOS size set in `store/icons/ios`, checked at 29 px. Subtitle "Your heartbeat, in color"; "aura" only in the description, as the trend. Review Notes `docs/store/review-notes.md`; demo script `docs/store/demo-video-script.md`. Files in `store/` (kept out of this public repo; delivered as a zip). |
 
 ### Real-device test log (M9)
+
+One row per phone. Test numbers refer to `launch/DEVICE-TEST.md`.
 
 | Device | iOS | Good scan | Finger lifted | Movement | Dark room | Silent voice | Notes |
 |---|---|---|---|---|---|---|---|
