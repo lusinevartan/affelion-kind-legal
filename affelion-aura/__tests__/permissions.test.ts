@@ -25,7 +25,7 @@ describe('permission text', () => {
   it('asks for no photo-reading permission, only saving', () => {
     expect(plugin('expo-media-library').photosPermission).toBe(false);
     expect(plugin('expo-media-library').granularPermissions).toEqual([]);
-    expect(app.android.blockedPermissions).toEqual(expect.arrayContaining(['android.permission.READ_EXTERNAL_STORAGE', 'android.permission.READ_MEDIA_IMAGES', 'android.permission.READ_MEDIA_VIDEO']));
+    expect(app.android.blockedPermissions).toEqual(expect.arrayContaining(['android.permission.READ_EXTERNAL_STORAGE', 'android.permission.READ_MEDIA_IMAGES', 'android.permission.READ_MEDIA_VIDEO', 'android.permission.SYSTEM_ALERT_WINDOW']));
     expect(app.android.permissions.join(' ')).not.toMatch(/LOCATION|CONTACTS|READ_MEDIA|READ_EXTERNAL/);
     expect(Object.keys(app.ios.infoPlist).join(' ')).not.toMatch(/NSLocation|NSContacts|NSPhotoLibraryUsage|NSUserTracking/);
   });
