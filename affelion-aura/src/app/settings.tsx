@@ -56,7 +56,7 @@ export default function Settings() {
           ) : (
             <Button label="See plans" onPress={() => router.push('/paywall')} style={{ flex: 1 }} />
           )}
-          <Button label="Restore" variant="ghost" onPress={() => void restore()} />
+          <Button label="Restore Purchases" variant="ghost" onPress={() => void restore()} />
         </View>
       </Card>
 

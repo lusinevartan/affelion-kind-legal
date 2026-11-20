@@ -1,20 +1,27 @@
 import * as React from 'react';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Button, Rule, Screen, Text } from '../ui/components';
 import { colors, space } from '../ui/theme';
 import { PLANS, purchasesAreSimulated, purchasesAvailable, type PlanId } from '../services/entitlements';
 import { useAppActions, useAppState } from '../features/store/AppStore';
 import { PRIVACY_URL, TERMS_URL, openLink } from '../services/links';
-import { trialAdjective, trialTerms } from '../services/trial';
+import { trialButton, trialTerms } from '../services/trial';
 
 /** What Pro adds, in plain words. Four lines, no more. */
-const BENEFITS = [
-  'Unlimited scans, any day you like.',
-  'The full breakdown behind every color.',
-  'Your history, so you can see how you change.',
-  'Guided practice with Sasha, and clean exports.',
+export const BENEFITS = [
+  'A new color every day, unlimited',
+  'The full breakdown behind your color',
+  'Your history, and how it moves',
+  'Sasha and clean, watermark-free exports',
 ];
+
+/** Closing always goes back to where the person was: the portrait, when it opened from one. */
+function close(from: string | undefined) {
+  if (router.canGoBack()) router.back();
+  else if (from) router.replace({ pathname: '/portrait/[id]', params: { id: from } });
+  else router.replace('/home');
+}
 
 /**
  * Soft paywall, set like a price list on the table: no countdowns, no badges shouting, the
@@ -22,6 +29,14 @@ const BENEFITS = [
  * monthly are listed; the one-time purchase sits behind a quiet link so the choice stays
  * simple.
  */
+/** The renewal sentence Apple and Google ask for, in plain words, at a readable size. */
+export function renewalTerms(plan: PlanId, trial: boolean): string {
+  const account = Platform.OS === 'android' ? 'Google Play account' : 'Apple ID';
+  if (plan === 'lifetime') return `One payment to your ${account}. It never renews.`;
+  if (trial) return `Payment is charged to your ${account} when the free trial ends unless you cancel at least 24 hours before. Renews automatically. Cancel anytime in Settings.`;
+  return `Payment is charged to your ${account} when you confirm. Renews automatically unless you cancel at least 24 hours before the period ends. Cancel anytime in Settings.`;
+}
+
 export default function Paywall() {
   const { from } = useLocalSearchParams<{ from?: string }>();
   const { entitlement, prices, pricesStatus } = useAppState();
@@ -47,7 +62,7 @@ export default function Paywall() {
       const e = await purchase(plan);
       if (e.isPro) {
         if (from) router.replace({ pathname: '/report/[id]', params: { id: from } });
-        else router.back();
+        else close(from);
       }
     } catch (err) {
       Alert.alert('Purchase did not complete', err instanceof Error ? err.message : 'Please try again.');
@@ -62,9 +77,12 @@ export default function Paywall() {
         <Text variant="eyebrow" color={colors.bone70}>
           Affelion Aura Pro
         </Text>
-        <Pressable accessibilityRole="button" accessibilityLabel="Not now" hitSlop={12} onPress={() => router.back()}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Not now, close" hitSlop={12} onPress={() => close(from)} style={styles.close}>
           <Text variant="eyebrow" color={colors.bone70}>
             Not now
+          </Text>
+          <Text variant="heading" color={colors.bone} style={{ fontSize: 20, lineHeight: 22 }}>
+            ✕
           </Text>
         </Pressable>
       </View>
@@ -153,7 +171,7 @@ export default function Paywall() {
       ) : null}
 
       <Button
-        label={entitlement.isPro ? 'You already have Pro' : !purchasesAvailable() ? 'Purchases are not available in this build' : trial ? `Start ${trialAdjective(trial)} free trial` : `Continue with ${PLANS.find((p) => p.id === plan)?.title}`}
+        label={entitlement.isPro ? 'You already have Pro' : !purchasesAvailable() ? 'Purchases are not available in this build' : trial ? trialButton(trial) : 'Continue'}
         onPress={() => void buy()}
         loading={busy}
         disabled={entitlement.isPro || !purchasesAvailable() || !pricesReady}
@@ -161,11 +179,11 @@ export default function Paywall() {
         style={{ marginTop: space.lg }}
       />
 
-      <Text variant="caption" color={colors.bone50} style={{ marginTop: space.lg }}>
-        Subscriptions renew until canceled. Cancel any time from your App Store or Google Play subscriptions; access continues to the end of the paid period.
+      <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.lg }}>
+        {renewalTerms(plan, !!trial)}
       </Text>
       <View style={{ flexDirection: 'row', gap: space.xl, marginTop: space.sm }}>
-        <Button label="Restore" variant="ghost" onPress={() => void restore().then((e) => Alert.alert(e.isPro ? 'Restored' : 'Nothing to restore', e.isPro ? 'Pro is active.' : 'No previous purchase was found for this account.'))} />
+        <Button label="Restore Purchases" variant="ghost" onPress={() => void restore().then((e) => Alert.alert(e.isPro ? 'Restored' : 'Nothing to restore', e.isPro ? 'Pro is active.' : 'No previous purchase was found for this account.'))} />
         <Button label="Manage or cancel" variant="ghost" onPress={() => void manageSubscriptions()} />
       </View>
       <View style={{ flexDirection: 'row', gap: space.xl }}>
@@ -183,6 +201,7 @@ export default function Paywall() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  close: { flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 44 },
   plan: { flexDirection: 'row', alignItems: 'center', gap: space.lg, paddingVertical: space.lg, minHeight: 72 },
   benefit: { flexDirection: 'row', gap: space.sm, alignItems: 'flex-start' },
   planLeft: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md, flex: 1 },

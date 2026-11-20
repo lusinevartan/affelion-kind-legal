@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@react-native/jest-preset": "^0.88.1",
+    "@testing-library/react-native": "^14.1.0",
     "@types/jest": "^30.0.0",
     "@types/react": "~19.3.0",
     "esbuild": "^0.28.2",
@@ -65,7 +66,8 @@
   "jest": {
     "preset": "jest-expo",
     "testMatch": [
-      "**/__tests__/**/*.test.ts"
+      "**/__tests__/**/*.test.ts",
+      "**/__tests__/**/*.test.tsx"
     ],
     "transformIgnorePatterns": [
       "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg)"

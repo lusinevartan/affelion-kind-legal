@@ -33,6 +33,11 @@ export function trialLength(t: Trial): string {
   return `${t.count} ${t.unit}${t.count === 1 ? '' : 's'}`;
 }
 
+/** The buy button while a trial is offered: "Start my free week" for the usual seven days. */
+export function trialButton(t: Trial): string {
+  return (t.unit === 'day' && t.count === 7) || (t.unit === 'week' && t.count === 1) ? 'Start my free week' : `Start ${trialAdjective(t)} free trial`;
+}
+
 /** "7-day", "1-month": for "Start 7-day free trial". */
 export function trialAdjective(t: Trial): string {
   return `${t.count}-${t.unit}`;
@@ -40,5 +45,5 @@ export function trialAdjective(t: Trial): string {
 
 /** The sentence a person must be able to read before starting: what is free, then what is charged. */
 export function trialTerms(t: Trial, price: string, period: string): string {
-  return `${trialLength(t)} free, then ${price} ${period}. Cancel before the trial ends and you pay nothing.`;
+  return `${trialLength(t)} free, then ${price} ${period}. Cancel anytime in Settings.`;
 }

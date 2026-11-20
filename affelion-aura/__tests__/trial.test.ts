@@ -27,6 +27,6 @@ describe('free trials reported by the store', () => {
     expect(trialLength(t)).toBe('7 days');
     expect(trialLength({ count: 1, unit: 'month' })).toBe('1 month');
     expect(trialAdjective(t)).toBe('7-day');
-    expect(trialTerms(t, '$69.99', 'per year')).toBe('7 days free, then $69.99 per year. Cancel before the trial ends and you pay nothing.');
+    expect(trialTerms(t, '$69.99', 'per year')).toBe('7 days free, then $69.99 per year. Cancel anytime in Settings.');
   });
 });
