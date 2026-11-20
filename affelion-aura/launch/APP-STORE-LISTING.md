@@ -103,6 +103,8 @@ Prices must come live from the store, never hardcoded.
 
 ## 6. Notes for App Review (paste into App Store Connect)
 
+**Superseded Nov 20 by the final version in `docs/store/review-notes.md`** (adds how to reach the paywall, the free plan, restore, and the on-device Sasha note). Use that one.
+
 Affelion Aura is a wellness and self-reflection app. It turns a one-minute check-in into a color portrait. It does not diagnose, treat or monitor any condition and makes no medical claims; the app and listing say it is not a medical device and remind users to see a doctor about health concerns.
 
 How to test a check-in:
