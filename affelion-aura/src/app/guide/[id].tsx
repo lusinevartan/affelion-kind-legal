@@ -8,7 +8,7 @@ import { useAppState } from '../../features/store/AppStore';
 import { askGuide, GUIDE_NAME, type GuideMessage } from '../../services/ai/guide';
 import { SashaAvatar, SashaStage } from '../../features/guide/Sasha';
 
-const SUGGESTIONS = ['Why am I this color?', 'What does the outer color mean?', 'How did my voice change it?', 'How can I move toward teal?'];
+const SUGGESTIONS = ['Why am I this color?', 'What does the outer color mean?', 'How did my voice change it?', 'What would change my color?'];
 
 /** Sasha, the guide: grounded answers about this scan only. */
 export default function GuideScreen() {
