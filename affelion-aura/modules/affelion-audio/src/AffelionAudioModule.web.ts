@@ -36,7 +36,7 @@ class AffelionAudioModule extends NativeModule<AudioModuleEvents> {
       const out = new Float32Array(CHUNK);
       for (let i = 0; i < CHUNK; i++, n++) {
         const t = n / RATE;
-        const f0 = 175 + 22 * Math.sin(2 * Math.PI * 0.6 * t) + 9 * Math.sin(2 * Math.PI * 2.1 * t);
+        const f0 = 175 + 40 * Math.sin(2 * Math.PI * 0.6 * t) + 15 * Math.sin(2 * Math.PI * 2.1 * t);
         phase += (2 * Math.PI * f0) / RATE;
         const syllable = 0.5 + 0.5 * Math.sin(2 * Math.PI * 3.2 * t);
         const env = 0.22 * Math.pow(syllable, 0.6) * (0.75 + 0.25 * Math.sin(2 * Math.PI * 0.35 * t));

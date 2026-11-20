@@ -67,7 +67,7 @@ function seed(store: Store) {
     const voice = { dominantPitchHz: 172, variance, stability, pitchVarianceSemitones: variance * 4, energyVariance: variance * 0.8, spectralCentroidHz: 1300, voicedRatio: 0.6, quality: 0.8, durationSec: 5 };
     return { id: `demo_${i}`, createdAt: Date.now() - i * 86_400_000, heart, voice, aura: mapBiometricsToAura({ heart, voice }), portraitUri: null, stillUri: demoStill() };
   };
-  store.scans = [mk(0, 66, 61, 0.42, 0.72), mk(1, 71, 52, 0.3, 0.66), mk(2, 74, 47, 0.35, 0.6), mk(3, 69, 44, 0.2, 0.7)];
+  store.scans = [mk(0, 84, 62, 0.62, 0.6), mk(1, 71, 52, 0.3, 0.66), mk(2, 74, 47, 0.35, 0.6), mk(3, 69, 44, 0.2, 0.7)];
   store.kv.onboardingDone = '1';
   try {
     if (globalThis.localStorage?.getItem('aura.pro') === '1') {
