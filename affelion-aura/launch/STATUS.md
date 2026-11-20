@@ -3,7 +3,7 @@
 **Goal:** submit iPhone 1.0 as soon as the 11 must-haves pass.
 > **Renamed Nov 20: the app is now Affelion Halo** (Lusine's decision). Changed in every screen, the paywall ("Keep your Halo", "Halo Pro"), permission text, listing, Review Notes, policies, docs, Sasha, store art and deck. Kept on purpose, because nobody sees them and changing them costs setup: bundle ID `com.affelion.aura`, product IDs `com.affelion.aura.pro.*`, the `affelion-aura/` folder and internal code names. **Before the listing goes live:** check the name. Amazon filed "HALO" for health services and devices (USPTO serial 90480178), and other companies hold health-related HALO marks. See Needs Lusine.
 
-**Current phase:** Must-have before submit (code side done for M2–M8; waiting on builds, device test and pages)
+**Current phase:** Everything Claude can do before submit is done. What is left is in **Needs Lusine**, steps 1–10.
 **Last updated by:** Claude, Nov 20, 2026 (branch `claude/affelion-aura-app-idarxq`, PR #5)
 
 > Claude ticks an item only when every acceptance criterion in `CLAUDE-HALO-LAUNCH.md` section 2 is met, and adds evidence below it.
@@ -14,9 +14,13 @@
 
 Claude will add exact step-by-step instructions next to each item.
 
-- [x] ~~Agreements, tax, banking, Small Business Program~~ Already active on the Affelion LLC Apple and Google accounts (confirmed by Lusine, Nov 20). Nothing new for Halo.
-- [ ] **App record (Halo only).** The iOS record exists (App Store Connect app ID 6817953783). Check it has bundle ID `com.affelion.aura`, primary language English (U.S.), SKU of your choice. For Google, Play Console → **Create app** → name Affelion Halo, default language English (United States), App, Free (it has in-app purchases), accept the declarations for this app only.
-- [ ] **Approve pricing and create/approve live products:** annual $69.99 with 7-day free trial, monthly $12.99, lifetime $199 (M2)
+In order. Each step has the exact clicks.
+
+- [ ] **1. Reserve "Affelion Halo – Color Check-In" in App Store Connect and Play Console (5 minutes, free).** Apple and Google hold a name for whoever saves it first.
+  1. App Store Connect → Apps → your app record (ID 6817953783) → **App Information** → Name: **Affelion Halo – Color Check-In** → Save. Subtitle: **Your heartbeat, in color**. Primary category **Lifestyle**, secondary **Health & Fitness**. Check the bundle ID is `com.affelion.aura` (users never see it; it stays).
+  2. Play Console → **Create app** → App name **Affelion Halo – Color Check-In**, default language English (United States), App, Free, accept the declarations → Create. Then Store presence → Main store listing → Save a draft with the name.
+  3. Tell Claude when both are saved.
+- [ ] **2. Approve pricing and create/approve live products:** annual $69.99 with 7-day free trial, monthly $12.99, lifetime $199 (M2)
   The IDs below are the ones in the app's code. Type them exactly; a single wrong character means the button can't buy.
   1. App Store Connect → Apps → Affelion Halo → **Monetization → Subscriptions** → create group **Halo Pro**.
   2. In that group, create **`com.affelion.aura.pro.annual`**. Reference name: Halo Pro Annual. Duration: 1 year. Price: **$69.99** (USD base; let Apple fill other countries). Localization (English US): display name **Halo Pro – Yearly**, description **Unlimited check-ins, breakdown, history and Sasha**.
@@ -28,16 +32,7 @@ Claude will add exact step-by-step instructions next to each item.
   8. RevenueCat (free tier, no card needed): create project Affelion Halo → add the iOS app (bundle ID from `app.json`) → upload the App Store Connect in-app purchase key it asks for → **Products**: import the three IDs → **Entitlements**: create **`pro`** and attach all three → **Offerings**: the offering **`default`** with packages **Annual**, **Monthly**, **Lifetime**, each pointing at its product → mark it **Current**.
   9. Copy the RevenueCat **Apple public SDK key** (starts with `appl_`) and send it to Claude, or add it yourself: `npx eas-cli@latest env:create --name EXPO_PUBLIC_RC_IOS_KEY --value appl_... --environment production --environment preview`. The public key is safe in the app; it is not a secret.
   10. When you upload the 1.0 build, open the version page → **In-App Purchases and Subscriptions** → **+** → select all three, so they are reviewed with the app.
-- [ ] **Fill in the App Store listing and upload screenshots (M11).** App Store Connect → Affelion Halo → version 1.0:
-  1. **Previews and Screenshots** → iPhone 6.9" → drag in the 7 files from `store/screenshots/app-store-6.9/` in order 1 to 7. Then 6.5" → the 7 files from `app-store-6.5/`. No iPad.
-  2. **Promotional Text, Description, Keywords, Support URL, Marketing URL**: paste from `launch/APP-STORE-LISTING.md` §1 and §2. "Aura" appears only once, in the description, as the trend; never in the name, subtitle, promotional text or keywords.
-  3. **App Information**: Name **Affelion Halo – Color Check-In**, Subtitle **Your heartbeat, in color**, Primary category **Lifestyle**, Secondary **Health & Fitness**, Privacy Policy URL https://www.affelion.com/halo/privacy.
-  4. **App Review Information**: Sign-in required **off**; paste `docs/store/review-notes.md`; add your contact details.
-  5. **Version Release**: choose **Manually release this version**.
-  6. Google Play later: upload `google-play/phone/` (7), `feature-graphic-1024x500.png` and `icon-512.png`; text from `docs/store/play-listing.md`.
-- [ ] **Pick the app icon.** Options are in "Affelion Halo - icon options.png" (sent in chat). Claude recommends **C, Two lights**: two crisp overlapping rings in magenta and violet with a gold beat, flat like the rest of the family and a cousin of Kind's overlap. The app still ships the original dark corona until you choose. Variant (variant.com) needs your sign-in, so Claude couldn't use it; a ready prompt is in "Affelion Halo - Variant prompt.txt" if you want to generate more there. Tell Claude the pick (or send a Variant export as a 1024 PNG) and Claude will make the iOS, Android adaptive and store icons from it.
-- [ ] **Protect the name (see `launch/NAME-CHECK.md`).** "Affelion Halo – Color Check-In" is free as an App Store name; "Halo" alone is crowded (Microsoft; Amazon's pending wellness application; Solera and Centene in wellness). Steps: (1) reserve the name now: App Store Connect → Affelion Halo → App Information → Name → **Affelion Halo – Color Check-In** → Save; Play Console → Create app with the same name. (2) Optional, about $350 per class in USPTO fees, so it needs your OK: a trademark attorney's knock-out search, or file **AFFELION HALO** in class 9 (and maybe 44). Rule for all art and posts: always "Affelion Halo", never "Halo" alone; the store art already pairs the two.
-- [ ] **First builds (item 11, about 30 minutes of your time, then EAS works for 20–40 minutes).** This session isn't logged in to Expo and the project isn't linked yet, so Claude can't start a build. On your computer, in the `affelion-aura` folder of this repo (branch `claude/affelion-aura-app-idarxq`):
+- [ ] **3. First builds (item 11, about 30 minutes of your time, then EAS works for 20–40 minutes).** This session isn't logged in to Expo and the project isn't linked yet, so Claude can't start a build. On your computer, in the `affelion-aura` folder of this repo (branch `claude/affelion-aura-app-idarxq`):
   1. `npx eas-cli@latest login` (your Expo account; free plan is fine, and the free plan includes a monthly allowance of builds; if EAS ever asks for payment, stop and tell Claude).
   2. `npx eas-cli@latest init` → choose your Expo account → it writes `extra.eas.projectId` into `app.json`. Commit that change (or send it to Claude).
   3. Add the RevenueCat public keys (M2 step 9): `npx eas-cli@latest env:create --name EXPO_PUBLIC_RC_IOS_KEY --value appl_XXXX --environment production --environment preview --visibility plaintext`, and the same with `EXPO_PUBLIC_RC_ANDROID_KEY` and the `goog_` key once Android is set up.
@@ -45,7 +40,20 @@ Claude will add exact step-by-step instructions next to each item.
   5. When it finishes: `npx eas-cli@latest submit --platform ios --profile production --latest`. This only **uploads to TestFlight**; it does not send anything to App Review. In App Store Connect → TestFlight, add yourself as an internal tester and install it on your iPhone.
   6. Android: `npx eas-cli@latest build --platform android --profile production` gives an `.aab`. Google requires the very first upload by hand: Play Console → Affelion Halo → Testing → **Internal testing** → Create release → upload the `.aab` → add yourself as a tester. Later uploads can use `eas submit`.
   7. Tell Claude the build numbers. Claude can then take over builds if you add an `EXPO_TOKEN` (Expo → Account settings → Access tokens) to this environment's secrets.
-- [ ] **Real-iPhone test, about 15 minutes per phone (M9).** Needs the TestFlight build. Use at least 3 iPhones: one older (iPhone 11 to 13 or SE 2nd/3rd gen), one recent (15 or newer), one in between. Borrow from friends; don't buy any. For each phone, fresh install, then:
+- [ ] **4. Publish three pages on affelion.com (M10).** Today all three return 404.
+  1. Read and edit `docs/store/privacy-policy.md`, `docs/store/terms.md` (fill in [STATE] and the date; a lawyer's read is worth it) and `docs/store/support.md`.
+  2. In your website builder, create three normal pages (not PDFs) at exactly **affelion.com/halo/privacy**, **affelion.com/halo/terms** and **affelion.com/halo/support**, and paste each one in. Ready-to-paste HTML is in `docs/store/web/` (privacy.html, terms.html, support.html) if your builder takes HTML; otherwise paste the text from the `.md` files.
+  3. Publish, then open each address in a private browser window to check it loads. Tell Claude, who will re-check them (must return 200) and tick M10.
+- [ ] **5. Enter the App Privacy and age rating answers (M10).** App Store Connect → Affelion Halo → **App Privacy** → Get Started → use `docs/store/app-privacy.md` (one data type: Purchase History, not linked, not tracking, for App Functionality and Analytics) → Publish. Then **App Information → Age Rating → Edit** → use `docs/store/age-rating.md` (only "Health or wellness topics" is Yes; expected 9+). Set the **Privacy Policy URL** in App Information to https://www.affelion.com/halo/privacy.
+- [ ] **6. Sandbox purchase test, about 15 minutes, on a TestFlight build (M3).** Needs M2 done and the RevenueCat key in the build.
+  1. iPhone Settings → App Store → scroll to **Sandbox Account** → sign in with a sandbox tester (create one in App Store Connect → Users and Access → Sandbox → Testers; any new email works).
+  2. Install the TestFlight build. Do one scan. The paywall opens two seconds after the portrait. Tap **Start 7-day free trial**, confirm. Expect: Pro unlocks (the breakdown opens). Sandbox trials last minutes, not days.
+  3. Delete the app, reinstall from TestFlight, open Settings in the app → **Restore**. Expect "Restored, Pro is active".
+  4. In iPhone Settings → App Store → Sandbox Account → Manage → cancel the subscription. Wait for it to end (a sandbox year is about an hour; a sandbox month is about five minutes). Leave the app and come back. Expect: Pro is locked again (Home shows the free-scan line).
+  5. With a second sandbox tester, buy **Monthly**. Expect: Pro unlocks.
+  6. Turn on Airplane Mode, delete and reinstall, open the paywall. Expect: "We could not load prices" with **Try again**, no crash, no blank screen. Turn Airplane Mode off, tap Try again, prices appear.
+  7. Write pass or fail for each step in the M3 row, or tell Claude.
+- [ ] **7. Real-iPhone test, about 15 minutes per phone (M9).** Needs the TestFlight build. Use at least 3 iPhones: one older (iPhone 11 to 13 or SE 2nd/3rd gen), one recent (15 or newer), one in between. Borrow from friends; don't buy any. For each phone, fresh install, then:
   1. **Good scan:** sitting, warm hands, elbow on the table. Time it from Begin scan to the portrait. Expect about a minute and a portrait.
   2. **Finger lifted:** at the fingertip step, lift your finger halfway through. Expect guidance ("Cover the rear camera") and, if it can't recover, "Let's try that again" with one tip. No portrait from the bad part.
   3. **Moving:** keep the finger on but wiggle the phone the whole time. Expect "Hold steadier" after about 15 seconds, then either a portrait from the steady part or "We couldn't get a clear reading."
@@ -55,27 +63,19 @@ Claude will add exact step-by-step instructions next to each item.
   7. **Free check-in not used by a failure:** on a fresh install, cause a failure first (step 2), then do a good scan. Expect the good scan to be your free one (Home shows the next free scan a week later, not "used" twice).
   8. **Permissions:** in iPhone Settings → Affelion Halo, turn the camera off, open Begin scan. Expect "Camera access is needed" with **Open Settings**.
   9. Fill one row per phone in the **Real-device test log** below (device, iOS version, pass/fail per column), or send Claude a note and Claude fills it in. Screen-record anything that fails.
-- [ ] **Sandbox purchase test, about 15 minutes, on a TestFlight build (M3).** Needs M2 done and the RevenueCat key in the build.
-  1. iPhone Settings → App Store → scroll to **Sandbox Account** → sign in with a sandbox tester (create one in App Store Connect → Users and Access → Sandbox → Testers; any new email works).
-  2. Install the TestFlight build. Do one scan. The paywall opens two seconds after the portrait. Tap **Start 7-day free trial**, confirm. Expect: Pro unlocks (the breakdown opens). Sandbox trials last minutes, not days.
-  3. Delete the app, reinstall from TestFlight, open Settings in the app → **Restore**. Expect "Restored, Pro is active".
-  4. In iPhone Settings → App Store → Sandbox Account → Manage → cancel the subscription. Wait for it to end (a sandbox year is about an hour; a sandbox month is about five minutes). Leave the app and come back. Expect: Pro is locked again (Home shows the free-scan line).
-  5. With a second sandbox tester, buy **Monthly**. Expect: Pro unlocks.
-  6. Turn on Airplane Mode, delete and reinstall, open the paywall. Expect: "We could not load prices" with **Try again**, no crash, no blank screen. Turn Airplane Mode off, tap Try again, prices appear.
-  7. Write pass or fail for each step in the M3 row, or tell Claude.
-- [ ] **Publish three pages on affelion.com (M10).** Today all three return 404.
-  1. Read and edit `docs/store/privacy-policy.md`, `docs/store/terms.md` (fill in [STATE] and the date; a lawyer's read is worth it) and `docs/store/support.md`.
-  2. In your website builder, create three normal pages (not PDFs) at exactly **affelion.com/halo/privacy**, **affelion.com/halo/terms** and **affelion.com/halo/support**, and paste each one in.
-  3. Publish, then open each address in a private browser window to check it loads. Tell Claude, who will re-check them (must return 200) and tick M10.
-- [ ] **Enter the App Privacy and age rating answers (M10).** App Store Connect → Affelion Halo → **App Privacy** → Get Started → use `docs/store/app-privacy.md` (one data type: Purchase History, not linked, not tracking, for App Functionality and Analytics) → Publish. Then **App Information → Age Rating → Edit** → use `docs/store/age-rating.md` (only "Health or wellness topics" is Yes; expected 9+). Set the **Privacy Policy URL** in App Information to https://www.affelion.com/halo/privacy.
-- [ ] **Enter or approve** App Privacy and age rating answers in App Store Connect (M10)
-- [ ] **Record or approve** the 60-second scan video for Review Notes (M11)
-- [ ] **Hold the test phones** for the real-device test script, if Claude can't run on devices (M9)
-- [ ] **Submit** iPhone 1.0 for review and **press Release** after approval
-- [ ] **Reply to App Review** if rejected (Claude drafts the reply)
-- [ ] **Approve any spending:** ads (cap $300), paid tools, creators, devices
-- [ ] **Approve any live pricing change:** hiding lifetime, free-tier change, Keepsake price, offer codes, win-back offers, price tests
-- [ ] **Approve or post** any social post, creator or press message (Claude drafts)
+- [ ] **8. Record the 60-second demo video (M11).** Script and shot list: `docs/store/demo-video-script.md`. Upload it unlisted and paste the link into `docs/store/review-notes.md` where it says [LINK TO VIDEO], or send it to Claude.
+- [ ] **9. Fill in the App Store listing and upload screenshots (M11).** App Store Connect → Affelion Halo → version 1.0:
+  1. **Previews and Screenshots** → iPhone 6.9" → drag in the 7 files from `store/screenshots/app-store-6.9/` in order 1 to 7. Then 6.5" → the 7 files from `app-store-6.5/`. No iPad.
+  2. **Promotional Text, Description, Keywords, Support URL, Marketing URL**: paste from `launch/APP-STORE-LISTING.md` §1 and §2. "Aura" appears only once, in the description, as the trend; never in the name, subtitle, promotional text or keywords.
+  3. **App Information**: Name **Affelion Halo – Color Check-In**, Subtitle **Your heartbeat, in color**, Primary category **Lifestyle**, Secondary **Health & Fitness**, Privacy Policy URL https://www.affelion.com/halo/privacy.
+  4. **App Review Information**: Sign-in required **off**; paste `docs/store/review-notes.md`; add your contact details.
+  5. **Version Release**: choose **Manually release this version**.
+  6. Google Play later: upload `google-play/phone/` (7), `feature-graphic-1024x500.png` and `icon-512.png`; text from `docs/store/play-listing.md`.
+- [ ] **10. Submit iPhone 1.0, then Release.** When 1–9 are done: App Store Connect → version 1.0 → **Add for Review** → **Submit**. After approval, press **Release This Version** (manual release is set). If Apple rejects, send Claude the message; Claude drafts the reply and the smallest fix.
+- [ ] **Optional, costs money (needs your OK): protect the name.** See `launch/NAME-CHECK.md`. A trademark attorney's knock-out search, or filing **AFFELION HALO** with the USPTO in class 9 (about $350 per class in USPTO fees; class 44 optional). Always say "Affelion Halo", never "Halo" alone; the app, art and listing already do.
+- [x] ~~Pick the app icon~~ Corona chosen Nov 20; built for iOS, Android and the stores.
+- [x] ~~Agreements, tax, banking, Small Business Program~~ Already active on the Affelion LLC accounts.
+- [ ] **Ongoing, only you:** reply to App Review (Claude drafts); approve any spending (ads capped at $300, paid tools, creators); approve any live pricing change (offer codes, win-back, Keepsake, price tests); post any social post or send any creator or press message (Claude drafts).
 
 ---
 
@@ -93,7 +93,7 @@ Claude will add exact step-by-step instructions next to each item.
 | M8 | Camera and microphone permission text; denial handled | Review | Done in code, confirm on device | Camera, microphone and add-to-Photos text now match APP-STORE-LISTING.md §7 word for word, on iOS and in the camera plugin for Android. Removed two permissions the photo library was adding by default: iOS "read your photos" (`NSPhotoLibraryUsageDescription`) and Android photo/video/audio read permissions; saving only needs add-to-Photos. Resolved config checked with `expo config --type introspect`. No location, contacts or tracking. A refused camera shows "Camera access is needed" with **Open Settings** and Back; a refused microphone skips the voice step with an Open Settings option; practice does the same. Locked by `__tests__/permissions.test.ts`. Note: `expo-dev-client` adds a local-network usage string that only development builds use; harmless in Release. |
 | M9 | Bad readings fail gracefully on 3+ real iPhones; all tests pass | Review | Code done, device test Needs Lusine | Any reading with signal quality under 0.5 or a pulse outside 40–140 is not saved, does not use the free check-in, and shows one neutral line: "We couldn't get a clear reading. Try again sitting still, with your fingertip covering the camera and flash." (`src/core/scan/readingGate.ts`, tested). Title "Let's try that again". 152 automated tests pass. **Risk to know:** the three native modules (pulse, outline, microphone) have never run on a real phone; expect some fixes after the first device run. Test script under Needs Lusine. |
 | M10 | Privacy policy, terms, privacy label, age rating | Review | Drafts done, Needs Lusine | Drafts in `docs/store/`: `privacy-policy.md`, `terms.md`, `support.md`, `app-privacy.md`, `age-rating.md`, `play-data-safety.md`. Built from the code: no analytics, crash or ad SDKs; every bundled privacy manifest declares no collected data or tracking; only RevenueCat sends data (purchase records, anonymous ID); Sasha server off. In-app Terms, Privacy and Support links now point to affelion.com/halo/terms, /privacy, /support (`src/services/links.ts`, tested). Those addresses return 404 today, so M10 stays open until they are published. |
-| M11 | Screenshots, listing, Review Notes, category, manual release | Review | Assets done; entry Needs Lusine | Screenshots re-captured with the magenta demo reading, the new paywall and the Affelion Halo name, no test text: App Store 6.9" (7 × 1320×2868) and 6.5" (7 × 1284×2778), Google Play phone (7 × 1080×1920), feature graphic 1024×500, Play icon 512, Apple header/search/universal art, raw screens for all three sizes, and the paywall for in-app purchase review. iPad not needed: the app is iPhone-only (`supportsTablet: false`). Captions are APP-STORE-LISTING.md §3, plus a 7th frame "First scan free, then one a week." Files are in `affelion-aura/store/screenshots/` (kept out of this public repo; delivered as a zip). Review Notes final in `docs/store/review-notes.md`; demo video script in `docs/store/demo-video-script.md`. Category, listing fields and manual release are entered in App Store Connect by Lusine (steps under Needs Lusine). |
+| M11 | Screenshots, listing, Review Notes, category, manual release | Review | Assets done; entry Needs Lusine (step 9) | App Store 6.9" and 6.5" (7 each), Google Play phone (7), feature graphic, Play icon 512 and Apple header/search/universal art, all with the magenta reading, the new paywall, the Corona icon and "Affelion Halo" as one name; no test text; iPhone-only so no iPad set. App icon: `assets/icon.png` 1024 RGB (no transparency), Android adaptive foreground/background/monochrome, splash, and the iOS size set in `store/icons/ios`, checked at 29 px. Subtitle "Your heartbeat, in color"; "aura" only in the description, as the trend. Review Notes `docs/store/review-notes.md`; demo script `docs/store/demo-video-script.md`. Files in `store/` (kept out of this public repo; delivered as a zip). |
 
 ### Real-device test log (M9)
 
@@ -103,14 +103,18 @@ Claude will add exact step-by-step instructions next to each item.
 
 ### Ready to submit
 
-_(Claude writes the build number, what was tested and any known issues here when M2–M11 pass and M1 is confirmed.)_
+**Not yet: waiting on Needs Lusine steps 1–9.** Claude's side is complete:
+- **Build:** version 1.0.0, build number set by EAS (`autoIncrement`), bundle `com.affelion.aura`, iPhone only, `ITSAppUsesNonExemptEncryption: false`, Corona icon, no simulated purchases or test text possible in Release (tested). No build has been made yet (step 3).
+- **Tested here:** 152 automated tests (paywall content and timing, restore through RevenueCat, gating, release safety, permissions text, disclaimer, reading gate, free plan, streak and more), typecheck, lint, `expo-doctor` 20/20, every screen at iPhone 6.9", 6.5" and Android sizes in the web review build.
+- **Not tested:** anything on a real phone. The pulse, outline and microphone modules have never run on hardware; expect fixes after the first device run (step 7). Purchases in sandbox (step 6).
+- **Known risks:** "Halo" is a crowded word in wellness (NAME-CHECK.md); the first device run may need native fixes.
 
 ---
 
 ## Post-launch phases
 
 ### Phase A — While in review
-- [ ] First update on a branch: story card, heartbeat haptic, today's color + streak, trial reminder, retry tips, failed scans don't count
+- [ ] First update on a branch. Already built into 1.0: 9:16 story card (free watermark, clean for Pro), heartbeat haptic on reveal, today's color with a weekly streak, neutral retry tips, failed scans never count. Still to do: the local trial-ending reminder (2 days before).
 - [ ] Pop and Bible "Try Halo" cards drafted
 - [ ] 12 reel scripts drafted
 

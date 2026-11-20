@@ -33,7 +33,7 @@ If you are unsure whether something crosses a guardrail, treat it as if it does.
 - Stack: **Expo / React Native**, native modules in Swift and Kotlin, **99 automated tests**, **RevenueCat** for purchases.
 - Pricing as built: Free (first scan free, then one free scan a week, plus 1 practice), **$12.99/month**, **$69.99/year** (7-day free trial ready), **$199 lifetime**.
 - Honest by design: no diagnosis, not a medical device, processing stays on the phone, no account.
-- Sister apps: Affelion Pop (iOS) and Affelion Bible (iOS + Google Play) are live; Kind and Lock are in progress.
+- Sister apps: Affelion Pop, Affelion Bible (also on Google Play) and Affelion Kind are live on the App Store; Lock and Grow are in development.
 - Lusine is paying down credit card debt. **Keep it cheap and low-risk.** No paid services without her approval.
 
 ---
