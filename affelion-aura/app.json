@@ -12,9 +12,9 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.affelion.aura",
       "infoPlist": {
-        "NSCameraUsageDescription": "Affelion Aura uses the front camera to frame your portrait and the rear camera with the flash to read your pulse from your fingertip. Frames are processed on your device and are not uploaded.",
-        "NSMicrophoneUsageDescription": "Affelion Aura listens for a few seconds so it can measure the pitch and variation of your voice. Audio is analyzed on your device and is not stored or uploaded.",
-        "NSPhotoLibraryAddUsageDescription": "Affelion Aura saves your Polaroid portrait to your photo library when you ask it to.",
+        "NSCameraUsageDescription": "Aura uses your front camera for your outline and one photo, and your back camera and flash to read your pulse from your fingertip. Camera frames stay on your phone.",
+        "NSMicrophoneUsageDescription": "Aura listens for 5 seconds to measure the pitch and steadiness of your voice. Audio stays on your phone and is never recorded.",
+        "NSPhotoLibraryAddUsageDescription": "Aura saves your portrait to your photos when you ask it to.",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
@@ -30,7 +30,15 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.READ_MEDIA_AUDIO",
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+        "android.permission.ACCESS_MEDIA_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -60,16 +68,18 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Affelion Aura uses the front camera to frame your portrait and the rear camera with the flash to read your pulse from your fingertip. Frames are processed on your device and are not uploaded.",
-          "microphonePermission": "Affelion Aura listens for a few seconds so it can measure the pitch and variation of your voice. Audio is analyzed on your device and is not stored or uploaded.",
+          "cameraPermission": "Aura uses your front camera for your outline and one photo, and your back camera and flash to read your pulse from your fingertip. Camera frames stay on your phone.",
+          "microphonePermission": "Aura listens for 5 seconds to measure the pitch and steadiness of your voice. Audio stays on your phone and is never recorded.",
           "recordAudioAndroid": true
         }
       ],
       [
         "expo-media-library",
         {
-          "savePhotosPermission": "Affelion Aura saves your Polaroid portrait to your photo library when you ask it to.",
-          "isAccessMediaLocationEnabled": false
+          "savePhotosPermission": "Aura saves your portrait to your photos when you ask it to.",
+          "isAccessMediaLocationEnabled": false,
+          "photosPermission": false,
+          "granularPermissions": []
         }
       ],
       [

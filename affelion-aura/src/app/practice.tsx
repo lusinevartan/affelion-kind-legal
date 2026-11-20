@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, View, Linking } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Camera } from 'expo-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -71,7 +71,10 @@ export default function PracticeScreen() {
   const begin = async () => {
     const cam = await Camera.requestCameraPermissionsAsync();
     if (!cam.granted) {
-      Alert.alert('Camera access is needed', 'The practice reads your pulse through the rear camera and flash.');
+      Alert.alert('Camera access is needed', 'The practice reads your pulse through the back camera and flash. Allow camera access in Settings, then try again.', [
+        { text: 'Not now', style: 'cancel' },
+        { text: 'Open Settings', onPress: () => void Linking.openSettings() },
+      ]);
       return;
     }
     shotTaken.current = false;

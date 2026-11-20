@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View, Linking } from 'react-native';
 import { router } from 'expo-router';
 import { Camera } from 'expo-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -47,7 +47,10 @@ export default function ScanScreen() {
       if (cam.granted) {
         setPermission('granted');
         if (!mic.granted) {
-          Alert.alert('Microphone off', 'The voice step will be skipped. You can enable the microphone later in Settings.');
+          Alert.alert('Microphone off', 'The voice step will be skipped. You can allow the microphone in Settings any time.', [
+            { text: 'Continue', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => void Linking.openSettings() },
+          ]);
         }
         session.start({ voice: mic.granted });
       } else {
@@ -105,9 +108,10 @@ export default function ScanScreen() {
       <Screen>
         <Text variant="title">Camera access is needed</Text>
         <Text variant="body" color={colors.bone70} style={{ marginTop: space.md }}>
-          The scan uses the front camera for your outline and the rear camera with the flash for your pulse. Allow camera access in Settings, then try again.
+          The scan uses the front camera for your outline and the back camera with the flash for your pulse. Camera frames stay on your phone. Allow camera access in Settings, then try again.
         </Text>
-        <Button label="Back" variant="secondary" onPress={() => router.back()} style={{ marginTop: space.xl }} />
+        <Button label="Open Settings" onPress={() => void Linking.openSettings()} block style={{ marginTop: space.xl }} />
+        <Button label="Back" variant="secondary" onPress={() => router.back()} block style={{ marginTop: space.md }} />
       </Screen>
     );
   }
