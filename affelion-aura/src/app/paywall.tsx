@@ -190,7 +190,8 @@ export default function Paywall() {
         <Button label="Terms of Use" variant="ghost" onPress={() => openLink(TERMS_URL)} />
         <Button label="Privacy Policy" variant="ghost" onPress={() => openLink(PRIVACY_URL)} />
       </View>
-      {purchasesAreSimulated() ? (
+      {/* Device test builds only. Never in Release (no simulation there) or the web review build. */}
+      {purchasesAreSimulated() && Platform.OS !== 'web' ? (
         <Text variant="mono" color={colors.bone30} style={{ marginTop: space.xl }}>
           Test build · purchases simulated · no payment taken
         </Text>
