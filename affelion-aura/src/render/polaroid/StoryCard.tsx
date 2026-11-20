@@ -9,7 +9,9 @@ export const STORY_ASPECT = 9 / 16;
 export interface StoryCardProps {
   width: number;
   /** The rendered aura with the black-and-white still already inside it. */
-  auraUri: string;
+  auraUri?: string;
+  /** A live aura instead of an image (preview screen only). */
+  auraNode?: React.ReactNode;
   colorName: string;
   colorHex: string;
   /** The plain meaning, e.g. "Calm and balanced". */
@@ -28,7 +30,7 @@ export type StoryCardHandle = React.ComponentRef<typeof View>;
  * Every measure is a fraction of the width, so the card reads the same at every size.
  */
 export const StoryCard = React.forwardRef<StoryCardHandle, StoryCardProps>(function StoryCard(
-  { width, auraUri, colorName, colorHex, meaning, date, showWordmark, onImageLoad },
+  { width, auraUri, auraNode, colorName, colorHex, meaning, date, showWordmark, onImageLoad },
   ref,
 ) {
   const height = Math.round(width / STORY_ASPECT);
@@ -47,11 +49,11 @@ export const StoryCard = React.forwardRef<StoryCardHandle, StoryCardProps>(funct
         </Text>
       </View>
       <View style={[styles.window, { width: imageW, height: imageH, marginTop: Math.round(16 * u) }]}>
-        <Image source={{ uri: auraUri }} style={StyleSheet.absoluteFill} contentFit="cover" onLoad={onImageLoad} onError={onImageLoad} />
+        {auraNode ?? (auraUri ? <Image source={{ uri: auraUri }} style={StyleSheet.absoluteFill} contentFit="cover" onLoad={onImageLoad} onError={onImageLoad} /> : null)}
       </View>
       <View style={{ marginTop: Math.round(22 * u) }}>
         <View style={[styles.swatch, { backgroundColor: colorHex, width: 28 * u, height: 4 * u, marginBottom: 12 * u }]} />
-        <Text variant="display" color={colors.stageFg} numberOfLines={1} adjustsFontSizeToFit style={{ fontSize: 44 * u, lineHeight: 46 * u, letterSpacing: -1.5 * u }}>
+        <Text variant="display" color={colors.stageFg} numberOfLines={1} adjustsFontSizeToFit style={{ fontSize: 44 * u, lineHeight: 54 * u, letterSpacing: -1.5 * u }}>
           {colorName}
         </Text>
         <Text variant="body" color={colors.stageFg70} numberOfLines={2} style={{ fontSize: 16 * u, lineHeight: 22 * u, marginTop: 6 * u }}>
@@ -61,7 +63,7 @@ export const StoryCard = React.forwardRef<StoryCardHandle, StoryCardProps>(funct
       <View style={styles.flex} />
       <View style={styles.row}>
         <Text variant="caption" color={colors.stageFg50} style={{ fontSize: 10 * u, lineHeight: 13 * u }}>
-          For reflection, not a medical reading
+          Made from my pulse and voice
         </Text>
         {showWordmark ? (
           <Text variant="eyebrow" color={colors.stageFg} style={{ fontSize: 11 * u, lineHeight: 14 * u, letterSpacing: 1.2 * u }}>
