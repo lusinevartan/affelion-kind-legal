@@ -9,8 +9,8 @@ All copy follows the wording rules in `CLAUDE-HALO-LAUNCH.md` section 4. Charact
 | Field | Copy | Count / limit |
 |---|---|---|
 | App name | Affelion Halo – Color Check-In | 30 / 30 |
-| Subtitle | Aura reading from your pulse | 28 / 30 |
-| Keywords | color,check in,heartbeat,pulse,vibe,mood,portrait,selfie,calm,breathing,daily,glow,art,reflect | 94 / 100 (Claude, Nov 20: "reading" and "aura" are already in the subtitle, which Apple also searches, so repeating them wastes space; dropped "hrv", a health metric, per the wording rules; added "art" and "reflect") |
+| Subtitle | Your heartbeat, in color | 24 / 30 (Lusine, Nov 20: no "aura reading" anywhere in store metadata, to stay clear of guideline 4.3(b)) |
+| Keywords | color,check in,heartbeat,pulse,vibe,mood,portrait,selfie,calm,breathing,daily,glow,art,reflect | 94 / 100 (no "aura" or "reading" in store metadata; "hrv" dropped as a health metric) |
 | Promotional text | Your real heartbeat and voice, turned into one of twenty colors. A one-minute check-in that's beautiful, honest, and all yours. | under 170 |
 | Primary category | Lifestyle | judgment call |
 | Secondary category | Health & Fitness | |
@@ -18,7 +18,7 @@ All copy follows the wording rules in `CLAUDE-HALO-LAUNCH.md` section 4. Charact
 | Marketing URL | https://www.affelion.com | |
 | Privacy policy URL | https://www.affelion.com/halo/privacy (to be published) | |
 
-Notes: words in the app name ("Halo", "Affelion") don't need repeating in keywords. Since the app is now called Halo, "aura" is no longer in the name, so the subtitle keeps "Aura reading" on purpose: it is the search term people use for the trend. If the subtitle changes, add "aura" to the keyword field instead. No competitor names or trademarks; never use "Halo" alone without "Affelion" in the name field (see NAME-CHECK.md).
+Notes: words in the app name ("Halo", "Affelion") don't need repeating in keywords. "Aura" appears only in the description, where it names the trend; it is not in the name, subtitle, promotional text or keywords (guideline 4.3(b)). In reels, captions and hashtags it is fine. No competitor names or trademarks; always "Affelion Halo", never "Halo" alone (see NAME-CHECK.md).
 
 ---
 
@@ -26,7 +26,9 @@ Notes: words in the app name ("Halo", "Affelion") don't need repeating in keywor
 
 Your heartbeat, in color.
 
-Affelion Halo turns one minute of you into a living portrait. Look at the camera, rest a fingertip on the back camera, and say a few words. Halo reads your approximate pulse and the steadiness of your voice, then paints one of twenty colors moving around a black-and-white photo of you, at the pace of your own heartbeat.
+Affelion Halo turns one minute of you into a living portrait. Look at the camera, rest a fingertip on the back camera, and say a few words. It reads your approximate pulse and the steadiness of your voice, then paints one of twenty colors moving around a black-and-white photo of you, at the pace of your own heartbeat.
+
+It's the aura trend, with a real heartbeat behind it.
 
 HONEST BY DESIGN
 • Every color traces back to a number you can tap and see.
@@ -51,7 +53,7 @@ Affelion Halo is for wellness and self-reflection. It is not a medical device an
 Terms of Use: https://www.affelion.com/halo/terms
 Privacy Policy: https://www.affelion.com/halo/privacy
 
-From Affelion, the makers of Affelion Pop and Affelion Bible.
+From Affelion, the makers of Affelion Pop, Affelion Bible and Affelion Kind.
 
 ---
 
@@ -66,7 +68,7 @@ Use a **magenta or violet** demo reading, captured from a Release build with no 
 5. Meet Sasha, your gentle guide
 6. See how your colors move over time
 
-App preview (optional, up to 30 seconds, autoplays muted): first 3 seconds = the aura blooming around a face.
+App preview (optional, up to 30 seconds, autoplays muted): first 3 seconds = the color blooming around a face.
 
 ---
 
@@ -114,7 +116,7 @@ How to test a check-in:
 4. Voice step: say a few words for 5 seconds. Audio is analyzed in memory for pitch and steadiness and is never recorded or stored.
 5. Your portrait appears with one of 20 colors.
 
-What's different from other aura apps: colors come from real measurements (approximate pulse, beat-to-beat variation and voice steadiness) through a fixed, published rulebook. The same numbers always produce the same color. It makes no claims about energy fields, the future or the supernatural.
+What's different from photo filters and color quizzes: colors come from real measurements (approximate pulse, beat-to-beat variation and voice steadiness) through a fixed, published rulebook. The same numbers always produce the same color. It makes no claims about energy fields, the future or the supernatural.
 
 Privacy: camera frames and audio are processed on the device and discarded. No account. Purchases are handled by Apple through RevenueCat.
 

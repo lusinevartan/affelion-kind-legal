@@ -30,8 +30,8 @@ Claude will add exact step-by-step instructions next to each item.
   10. When you upload the 1.0 build, open the version page → **In-App Purchases and Subscriptions** → **+** → select all three, so they are reviewed with the app.
 - [ ] **Fill in the App Store listing and upload screenshots (M11).** App Store Connect → Affelion Halo → version 1.0:
   1. **Previews and Screenshots** → iPhone 6.9" → drag in the 7 files from `store/screenshots/app-store-6.9/` in order 1 to 7. Then 6.5" → the 7 files from `app-store-6.5/`. No iPad.
-  2. **Promotional Text, Description, Keywords, Support URL, Marketing URL**: paste from `launch/APP-STORE-LISTING.md` §1 and §2 (subtitle and keywords as changed on Nov 20, or your originals if you prefer).
-  3. **App Information**: Name **Affelion Halo – Color Check-In**, Subtitle **Aura reading from your pulse** (your choice in the Nov 20 package; it carries the search term "aura". Claude's one flag: "aura reading" is close to the fortune-telling wording Apple screens under guideline 4.3(b). If Review pushes back, switch to **Your heartbeat, in color** and add "aura" to the keywords), Primary category **Lifestyle**, Secondary **Health & Fitness**, Privacy Policy URL https://www.affelion.com/halo/privacy.
+  2. **Promotional Text, Description, Keywords, Support URL, Marketing URL**: paste from `launch/APP-STORE-LISTING.md` §1 and §2. "Aura" appears only once, in the description, as the trend; never in the name, subtitle, promotional text or keywords.
+  3. **App Information**: Name **Affelion Halo – Color Check-In**, Subtitle **Your heartbeat, in color**, Primary category **Lifestyle**, Secondary **Health & Fitness**, Privacy Policy URL https://www.affelion.com/halo/privacy.
   4. **App Review Information**: Sign-in required **off**; paste `docs/store/review-notes.md`; add your contact details.
   5. **Version Release**: choose **Manually release this version**.
   6. Google Play later: upload `google-play/phone/` (7), `feature-graphic-1024x500.png` and `icon-512.png`; text from `docs/store/play-listing.md`.

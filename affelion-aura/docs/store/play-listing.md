@@ -18,7 +18,9 @@ account is a business account, so no closed test with testers is required before
 
 Your heartbeat, in color.
 
-Affelion Halo turns one minute of you into a living portrait. Look at the camera, rest a fingertip on the back camera, and say a few words. Halo reads your approximate pulse and the steadiness of your voice, then paints one of twenty colors moving around a black-and-white photo of you, at the pace of your own heartbeat.
+Affelion Halo turns one minute of you into a living portrait. Look at the camera, rest a fingertip on the back camera, and say a few words. It reads your approximate pulse and the steadiness of your voice, then paints one of twenty colors moving around a black-and-white photo of you, at the pace of your own heartbeat.
+
+It's the aura trend, with a real heartbeat behind it.
 
 HONEST BY DESIGN
 • Every color traces back to a number you can tap and see.
@@ -46,7 +48,7 @@ Privacy Policy: https://www.affelion.com/halo/privacy
 DEVICE COMPATIBILITY
 The fingertip pulse reading needs a phone with a back camera and a flash (torch). It works best on recent phones; results may vary by device model. [Tested models go here after the device test.]
 
-From Affelion, the makers of Affelion Pop and Affelion Bible.
+From Affelion, the makers of Affelion Pop, Affelion Bible and Affelion Kind.
 
 ## Graphics
 
