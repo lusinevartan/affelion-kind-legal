@@ -44,8 +44,13 @@ class AffelionPpgModule extends NativeModule<PpgModuleEvents> {
       const now = performance.now() / 1000 - origin;
       while (t < now) {
         const dt = 1 / FPS;
-        // Review build: a pulse near 84 with breathing-paced variation, so the demo reading is magenta.
-        const bpm = 84 + 3 * Math.sin(2 * Math.PI * 0.1 * t) + 10 * Math.sin(2 * Math.PI * 0.25 * t);
+        // Review build: a pulse near 84 with variation at an everyday breathing pace, so a scan reads
+        // magenta. After 45 seconds (only a practice session runs that long) the variation eases
+        // into the slow six-breaths-a-minute rhythm the practice teaches, so its after differs.
+        const ease = Math.min(1, Math.max(0, (t - 45) / 30));
+        const everyday = 3 * Math.sin(2 * Math.PI * 0.1 * t) + 10 * Math.sin(2 * Math.PI * 0.25 * t);
+        const slow = 10 * Math.sin(2 * Math.PI * 0.1 * t);
+        const bpm = 84 - 4 * ease + (1 - ease) * everyday + ease * slow;
         phase += (bpm / 60) * dt * 2 * Math.PI;
         const pulse = Math.sin(phase) + 0.3 * Math.sin(2 * phase + 0.8);
         if (!locked && t >= warmup) {
