@@ -5,7 +5,7 @@ scan guidance, paywall, notifications), the listing (`launch/APP-STORE-LISTING.m
 pages (`aura-support.html`, `aura-privacy.html`), the docs and the investor deck for: stress,
 anxiety, depression, diagnose, medical, health, heal, cure, treat, monitor, detect, energy field,
 spirit, chakra, psychic, predict, future, manifest, fortune, clinical, ECG, accurate, nervous
-system, blood pressure, disease, symptom, doctor. Rules: `launch/CLAUDE-AURA-LAUNCH.md` section 4.
+system, blood pressure, disease, symptom, doctor. Rules: `launch/CLAUDE-HALO-LAUNCH.md` section 4.
 
 The app sends no notifications in 1.0, so there were none to check.
 
@@ -30,7 +30,7 @@ The app sends no notifications in 1.0, so there were none to check.
 | Deep red, meaning | "Strong stress or intensity" | "Keyed up and intense" |
 | Deep red, why | "…Your body was working hard or under strain." | "…Your body was working hard during the scan, which can come from exercise, coffee, excitement or a busy day." |
 | Story card footer | "For reflection, not a medical reading" | "Made from my pulse and voice" |
-| Listing subtitle | "Aura reading from your pulse" | "Your heartbeat, in color" ("reading" sits near the fortune-telling category in 4.3(b)) |
+| Listing subtitle | "Aura reading from your pulse" | Kept as is (Lusine's choice in the Nov 20 package, for search). Flagged: "aura reading" is close to the fortune-telling wording Apple screens under 4.3(b); fallback "Your heartbeat, in color". |
 | Listing keywords | …reading…hrv | dropped "reading" and "hrv" (a health metric), added "art", "reflect" |
 | Support page, practice | "What it trains is heart-rate variability and coherence… for health concerns, speak with a clinician." | "You can watch how your heart rhythm follows slow breathing, with a before and after color…" + standard disclaimer |
 | Old listing draft (`docs/STORE_LISTING.md`) | Keywords "…stress…hrv…coherence…", category Health & Fitness first, age 4+ | Retired; points to the launch listing |

@@ -1,6 +1,6 @@
 # Affelion Halo — Store Listing Copy (draft for Lusine's approval)
 
-All copy follows the wording rules in `CLAUDE-AURA-LAUNCH.md` section 4. Character counts were checked against Apple's limits (name 30, subtitle 30, keywords 100, promotional text 170; source: https://developer.apple.com/app-store/product-page/). No prices appear in the description (Apple advises against it).
+All copy follows the wording rules in `CLAUDE-HALO-LAUNCH.md` section 4. Character counts were checked against Apple's limits (name 30, subtitle 30, keywords 100, promotional text 170; source: https://developer.apple.com/app-store/product-page/). No prices appear in the description (Apple advises against it).
 
 ---
 
@@ -9,16 +9,16 @@ All copy follows the wording rules in `CLAUDE-AURA-LAUNCH.md` section 4. Charact
 | Field | Copy | Count / limit |
 |---|---|---|
 | App name | Affelion Halo – Color Check-In | 30 / 30 |
-| Subtitle | Your heartbeat, in color | 24 / 30 (changed Nov 20 by Claude: "Aura reading" sits close to the fortune-telling category in guideline 4.3(b); the description already opens with this line) |
-| Keywords | aura,color,check in,heartbeat,pulse,vibe,mood,portrait,selfie,calm,breathing,daily,glow,art,reflect | 99 / 100 (changed Nov 20: dropped "reading" and "hrv", a health metric, added "art" and "reflect"; added "aura" back after the rename to Halo, since people search for it and it is no longer in the name) |
+| Subtitle | Aura reading from your pulse | 28 / 30 |
+| Keywords | color,check in,heartbeat,pulse,vibe,mood,portrait,selfie,calm,breathing,daily,glow,art,reflect | 94 / 100 (Claude, Nov 20: "reading" and "aura" are already in the subtitle, which Apple also searches, so repeating them wastes space; dropped "hrv", a health metric, per the wording rules; added "art" and "reflect") |
 | Promotional text | Your real heartbeat and voice, turned into one of twenty colors. A one-minute check-in that's beautiful, honest, and all yours. | under 170 |
 | Primary category | Lifestyle | judgment call |
 | Secondary category | Health & Fitness | |
-| Support URL | https://www.affelion.com (or a /aura/support page) | |
+| Support URL | https://www.affelion.com (or a /halo/support page) | |
 | Marketing URL | https://www.affelion.com | |
 | Privacy policy URL | https://www.affelion.com/halo/privacy (to be published) | |
 
-Notes: words in the app name ("Halo", "Affelion") don't need repeating in keywords. No competitor names or trademarks.
+Notes: words in the app name ("Halo", "Affelion") don't need repeating in keywords. Since the app is now called Halo, "aura" is no longer in the name, so the subtitle keeps "Aura reading" on purpose: it is the search term people use for the trend. If the subtitle changes, add "aura" to the keyword field instead. No competitor names or trademarks; never use "Halo" alone without "Affelion" in the name field (see NAME-CHECK.md).
 
 ---
 
