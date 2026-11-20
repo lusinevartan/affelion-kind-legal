@@ -26,7 +26,8 @@ describe('permission text', () => {
     expect(plugin('expo-media-library').photosPermission).toBe(false);
     expect(plugin('expo-media-library').granularPermissions).toEqual([]);
     expect(app.android.blockedPermissions).toEqual(expect.arrayContaining(['android.permission.READ_EXTERNAL_STORAGE', 'android.permission.READ_MEDIA_IMAGES', 'android.permission.READ_MEDIA_VIDEO']));
-    expect(JSON.stringify(app)).not.toMatch(/LOCATION|CONTACTS|NSContacts|NSLocation/);
+    expect(app.android.permissions.join(' ')).not.toMatch(/LOCATION|CONTACTS|READ_MEDIA|READ_EXTERNAL/);
+    expect(Object.keys(app.ios.infoPlist).join(' ')).not.toMatch(/NSLocation|NSContacts|NSPhotoLibraryUsage|NSUserTracking/);
   });
 
   it('a refused camera offers Open Settings', () => {
