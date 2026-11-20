@@ -49,3 +49,17 @@ describe('release builds', () => {
     expect(paywall).toMatch(/purchasesAreSimulated\(\) && Platform\.OS !== 'web' \?/);
   });
 });
+
+describe('store keys in the build config', () => {
+  it('any RevenueCat key in eas.json is a real public key, never a placeholder', () => {
+    const eas = JSON.parse(readFileSync(join(__dirname, '../eas.json'), 'utf8'));
+    for (const [name, profile] of Object.entries<{ env?: Record<string, string> }>(eas.build)) {
+      for (const k of ['EXPO_PUBLIC_RC_IOS_KEY', 'EXPO_PUBLIC_RC_ANDROID_KEY']) {
+        const v = profile.env?.[k];
+        if (v === undefined) continue;
+        const prefix = k.includes('IOS') ? 'appl_' : 'goog_';
+        expect({ profile: name, key: k, ok: v.startsWith(prefix) && /^[a-z]+_[A-Za-z0-9]{16,}$/.test(v) && !/x{6,}/i.test(v) }).toEqual({ profile: name, key: k, ok: true });
+      }
+    }
+  });
+});
