@@ -1,0 +1,206 @@
+import * as React from 'react';
+import { AccessibilityInfo, Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { GLView, type ExpoWebGLRenderingContext } from 'expo-gl';
+import type { AuraParams } from '../../core/types';
+import { FluidSim, QUALITY_PRESETS, type FluidQuality, type SilhouetteMask } from './FluidSim';
+
+export interface AuraViewProps {
+  params: AuraParams | null;
+  mask: SilhouetteMask | null;
+  quality?: keyof typeof QUALITY_PRESETS | FluidQuality;
+  /** Stop advancing the simulation (keeps the last frame). */
+  paused?: boolean;
+  /** Composite as pigment on a light ground. */
+  paper?: boolean;
+  /**
+   * The person's photograph. When given, the view is opaque: the still is developed in
+   * black and white on a black stage and the aura is the only color in the frame.
+   */
+  stillUri?: string | null;
+  /**
+   * 'auto' (default) holds a still, developed frame when the person has asked their device to
+   * reduce motion. 'always' keeps moving regardless; use it only where the movement is the
+   * information, as in the live practice feedback.
+   */
+  motion?: 'auto' | 'always';
+  style?: StyleProp<ViewStyle>;
+  onReady?: () => void;
+}
+
+export interface AuraViewRef {
+  /** PNG with alpha of the current frame, as a file URI. */
+  snapshot(): Promise<{ uri: string; width: number; height: number }>;
+}
+
+/**
+ * Transparent GL surface running the fluid aura. Layer it above the camera preview or a still.
+ * Rendering is driven by requestAnimationFrame and paced by the device refresh rate (60 fps target).
+ */
+export const AuraView = React.forwardRef<AuraViewRef, AuraViewProps>(function AuraView(
+  { params, mask, quality = 'medium', paused: pausedProp = false, paper = false, stillUri = null, motion = 'auto', style, onReady },
+  ref,
+) {
+  const [reduceMotion, setReduceMotion] = React.useState(false);
+  React.useEffect(() => {
+    let canceled = false;
+    AccessibilityInfo.isReduceMotionEnabled()
+      .then((on) => {
+        if (!canceled) setReduceMotion(on);
+      })
+      .catch(() => {});
+    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
+    return () => {
+      canceled = true;
+      sub.remove();
+    };
+  }, []);
+  const paused = pausedProp || (motion === 'auto' && reduceMotion);
+  const glViewRef = React.useRef<GLView>(null);
+  const simRef = React.useRef<FluidSim | null>(null);
+  const glRef = React.useRef<ExpoWebGLRenderingContext | null>(null);
+  const rafRef = React.useRef<number | null>(null);
+  const lastRef = React.useRef<number>(0);
+  const pausedRef = React.useRef(paused);
+  React.useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
+
+  React.useImperativeHandle(ref, () => ({
+    async snapshot() {
+      const view = glViewRef.current;
+      if (!view) throw new Error('Aura view is not mounted');
+      // Draw a fresh frame and read it before it is handed to the screen. Once a frame has been
+      // presented, the drawing buffer may already be cleared and the snapshot comes back black.
+      const sim = simRef.current;
+      const gl = glRef.current;
+      if (sim && gl) sim.step(0.001);
+      const pending = view.takeSnapshotAsync({ format: 'png', flip: false });
+      if (gl) gl.endFrameEXP();
+      const snap = await pending;
+      // Phones return a file address. Browsers return the image itself, which needs an address to display.
+      const raw = snap.uri as unknown;
+      const uri = typeof raw === 'string' ? raw : typeof Blob !== 'undefined' && raw instanceof Blob ? URL.createObjectURL(raw) : String(raw);
+      return { uri, width: snap.width, height: snap.height };
+    },
+  }));
+
+  const loop = React.useCallback((now: number) => {
+    const sim = simRef.current;
+    const gl = glRef.current;
+    if (!sim || !gl) return;
+    const last = lastRef.current || now;
+    const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
+    lastRef.current = now;
+    if (!pausedRef.current) {
+      sim.step(dt);
+      gl.endFrameEXP();
+    }
+    rafRef.current = requestAnimationFrame(loop);
+  }, []);
+
+  const onContextCreate = React.useCallback(
+    (gl: ExpoWebGLRenderingContext) => {
+      glRef.current = gl;
+      const q = typeof quality === 'string' ? QUALITY_PRESETS[quality] : quality;
+      const sim = new FluidSim(gl, q);
+      sim.paper = paper;
+      simRef.current = sim;
+      if (params) sim.setParams(params);
+      sim.setMask(mask);
+      lastRef.current = 0;
+      if (pausedRef.current) {
+        for (let i = 0; i < 150; i++) sim.step(1 / 60);
+        gl.endFrameEXP();
+      }
+      rafRef.current = requestAnimationFrame(loop);
+      setReady(true);
+      onReady?.();
+    },
+    // The sim is created once per GL context; later prop changes flow through the effects below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [loop],
+  );
+
+  // A paused view never runs the loop, so it has to be developed once by hand: enough
+  // simulated time for the fluid to form, then one presented frame.
+  const developPaused = React.useCallback(() => {
+    const sim = simRef.current;
+    const gl = glRef.current;
+    if (!pausedRef.current || !sim || !gl) return;
+    for (let i = 0; i < 150; i++) sim.step(1 / 60);
+    gl.endFrameEXP();
+  }, []);
+
+  React.useEffect(() => {
+    if (params) simRef.current?.setParams(params);
+    developPaused();
+  }, [params, developPaused]);
+
+  React.useEffect(() => {
+    simRef.current?.setMask(mask);
+    developPaused();
+  }, [mask, developPaused]);
+
+  React.useEffect(() => {
+    if (paused) developPaused();
+  }, [paused, developPaused]);
+
+  React.useEffect(() => {
+    if (simRef.current) simRef.current.paper = paper;
+  }, [paper]);
+
+  const [ready, setReady] = React.useState(false);
+  React.useEffect(() => {
+    const sim = simRef.current;
+    if (!ready || !sim) return;
+    if (!stillUri) {
+      sim.setStill(null);
+      return;
+    }
+    // A paused view still has to show the photograph once it arrives.
+    const redrawIfPaused = () => {
+      const gl = glRef.current;
+      if (!pausedRef.current || !simRef.current || !gl) return;
+      simRef.current.step(0.001);
+      gl.endFrameEXP();
+    };
+    if (Platform.OS !== 'web') {
+      // expo-gl decodes a local file straight into the texture.
+      sim.setStill({ localUri: stillUri });
+      redrawIfPaused();
+      return;
+    }
+    let canceled = false;
+    const img = new (globalThis as unknown as { Image: new () => HTMLImageElement }).Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      if (canceled) return;
+      simRef.current?.setStill(img);
+      redrawIfPaused();
+    };
+    img.src = stillUri;
+    return () => {
+      canceled = true;
+    };
+  }, [stillUri, ready]);
+
+  React.useEffect(
+    () => () => {
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+      simRef.current?.dispose();
+      simRef.current = null;
+    },
+    [],
+  );
+
+  return (
+    <View style={[styles.root, style]} pointerEvents="none">
+      <GLView ref={glViewRef} style={styles.gl} onContextCreate={onContextCreate} msaaSamples={0} />
+    </View>
+  );
+});
+
+const styles = StyleSheet.create({
+  root: { backgroundColor: 'transparent' },
+  gl: { flex: 1, backgroundColor: 'transparent' },
+});

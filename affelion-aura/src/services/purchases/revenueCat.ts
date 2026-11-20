@@ -1,0 +1,117 @@
+import { Platform } from 'react-native';
+import Purchases, { INTRO_ELIGIBILITY_STATUS, LOG_LEVEL, PURCHASES_ERROR_CODE, type CustomerInfo, type PurchasesPackage } from 'react-native-purchases';
+import { trialFromIntro } from '../trial';
+import { NO_ENTITLEMENT, PLANS, type Entitlement, type PlanId, type PlanPrices, type PurchaseProvider } from '../entitlements';
+
+/**
+ * Store-backed purchases through RevenueCat. Configure with the public SDK keys
+ * (EXPO_PUBLIC_RC_IOS_KEY / EXPO_PUBLIC_RC_ANDROID_KEY) and an entitlement named "halo_pro" that is
+ * attached to the three products in PLANS. Subscription state comes from the store, never from
+ * local flags.
+ */
+export const RC_ENTITLEMENT = 'halo_pro';
+/**
+ * The RevenueCat project is shared with other Affelion apps, so Halo never uses the project's
+ * "current" offering (that belongs to another app). It reads its own offering by identifier.
+ */
+export const RC_OFFERING = 'halo_default';
+/** Package identifiers inside halo_default, by plan. */
+export const RC_PACKAGES: Record<PlanId, string> = { annual: '$rc_annual', monthly: '$rc_monthly', lifetime: '$rc_lifetime' };
+
+export function toEntitlement(info: CustomerInfo): Entitlement {
+  const ent = info.entitlements.active[RC_ENTITLEMENT];
+  if (!ent) return NO_ENTITLEMENT;
+  const plan = PLANS.find((p) => ent.productIdentifier.startsWith(p.productId))?.id ?? null;
+  const expiresAt = ent.expirationDate ? Date.parse(ent.expirationDate) : null;
+  return { isPro: true, plan, expiresAt: expiresAt !== null && Number.isFinite(expiresAt) ? expiresAt : null, source: 'store' };
+}
+
+export class RevenueCatPurchaseProvider implements PurchaseProvider {
+  readonly name = 'revenuecat';
+  private configured = false;
+
+  constructor(private readonly apiKey: string) {}
+
+  private async ensure() {
+    if (this.configured) return;
+    if (__DEV__) await Purchases.setLogLevel(LOG_LEVEL.WARN);
+    Purchases.configure({ apiKey: this.apiKey });
+    this.configured = true;
+  }
+
+  async getEntitlement(): Promise<Entitlement> {
+    await this.ensure();
+    try {
+      return toEntitlement(await Purchases.getCustomerInfo());
+    } catch {
+      return NO_ENTITLEMENT;
+    }
+  }
+
+  private async packages(): Promise<PurchasesPackage[]> {
+    const offerings = await Purchases.getOfferings();
+    return offerings.all[RC_OFFERING]?.availablePackages ?? [];
+  }
+
+  private static matches(pkg: PurchasesPackage, productId: string): boolean {
+    const plan = PLANS.find((p) => p.productId === productId);
+    return (!!plan && pkg.identifier === RC_PACKAGES[plan.id]) || pkg.product.identifier === productId || pkg.product.identifier.startsWith(productId);
+  }
+
+  private async findPackage(plan: PlanId): Promise<PurchasesPackage> {
+    const productId = PLANS.find((p) => p.id === plan)!.productId;
+    const pkg = (await this.packages()).find((p) => RevenueCatPurchaseProvider.matches(p, productId));
+    if (!pkg) throw new Error(`Product ${productId} is not configured in the store yet.`);
+    return pkg;
+  }
+
+  /** Localized prices from the store. A plan the store does not list yet is simply left out. */
+  async getPrices(): Promise<PlanPrices> {
+    await this.ensure();
+    const prices: PlanPrices = {};
+    const offered: [PlanId, string][] = [];
+    try {
+      const packages = await this.packages();
+      for (const plan of PLANS) {
+        const pkg = packages.find((p) => RevenueCatPurchaseProvider.matches(p, plan.productId));
+        if (!pkg) continue;
+        // Only the annual plan is framed per month; the others show their own period.
+        prices[plan.id] = { price: pkg.product.priceString, perMonth: plan.id === 'annual' ? pkg.product.pricePerMonthString : null, trial: trialFromIntro(pkg.product.introPrice) };
+        if (prices[plan.id]!.trial) offered.push([plan.id, pkg.product.identifier]);
+      }
+      // A trial is shown only to someone the store says can still have it.
+      if (offered.length && Platform.OS === 'ios') {
+        const eligibility = await Purchases.checkTrialOrIntroductoryPriceEligibility(offered.map(([, id]) => id)).catch(() => null);
+        for (const [planId, id] of offered) {
+          if (eligibility?.[id]?.status !== INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE) prices[planId]!.trial = null;
+        }
+      }
+    } catch {
+      // No connection or no offerings yet: the paywall falls back to the listed prices.
+    }
+    return prices;
+  }
+
+  async purchase(plan: PlanId): Promise<Entitlement> {
+    await this.ensure();
+    const pkg = await this.findPackage(plan);
+    try {
+      const { customerInfo } = await Purchases.purchasePackage(pkg);
+      return toEntitlement(customerInfo);
+    } catch (e) {
+      const code = (e as { code?: string }).code;
+      if (code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR) return this.getEntitlement();
+      throw e;
+    }
+  }
+
+  async restore(): Promise<Entitlement> {
+    await this.ensure();
+    return toEntitlement(await Purchases.restorePurchases());
+  }
+
+  async openManageSubscriptions(): Promise<void> {
+    await this.ensure();
+    await Purchases.showManageSubscriptions();
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "expo": {
+    "name": "Affelion Halo",
+    "slug": "affelion-halo",
+    "scheme": "affelion-halo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#000000",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.affelion.aura",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Halo uses your front camera for your outline and one photo, and your back camera and flash to read your pulse from your fingertip. Camera frames stay on your phone.",
+        "NSMicrophoneUsageDescription": "Halo listens for 5 seconds to measure the pitch and steadiness of your voice. Audio stays on your phone and is never recorded.",
+        "NSPhotoLibraryAddUsageDescription": "Halo saves your portrait to your photos when you ask it to.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.affelion.halo",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "adaptiveIcon": {
+        "backgroundColor": "#ECEEF1",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.READ_MEDIA_AUDIO",
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+        "android.permission.ACCESS_MEDIA_LOCATION",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/inter-tight/300Light/InterTight_300Light.ttf",
+            "node_modules/@expo-google-fonts/inter-tight/400Regular/InterTight_400Regular.ttf",
+            "node_modules/@expo-google-fonts/inter-tight/500Medium/InterTight_500Medium.ttf"
+          ]
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#ECECF2",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Halo uses your front camera for your outline and one photo, and your back camera and flash to read your pulse from your fingertip. Camera frames stay on your phone.",
+          "microphonePermission": "Halo listens for 5 seconds to measure the pitch and steadiness of your voice. Audio stays on your phone and is never recorded.",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "Halo saves your portrait to your photos when you ask it to.",
+          "isAccessMediaLocationEnabled": false,
+          "photosPermission": false,
+          "granularPermissions": []
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "16.4"
+          },
+          "android": {
+            "minSdkVersion": 26,
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36
+          }
+        }
+      ],
+      "expo-sharing",
+      "expo-status-bar"
+    ]
+  }
+}

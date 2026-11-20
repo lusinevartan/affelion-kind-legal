@@ -1,0 +1,58 @@
+{
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": false
+      },
+      "env": {
+        "EXPO_PUBLIC_GUIDE_ENDPOINT": ""
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_GUIDE_ENDPOINT": ""
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_GUIDE_ENDPOINT": "",
+        "EXPO_PUBLIC_RC_IOS_KEY": "appl_nkdQAgMULOwIGuJYFTRpgfRlLcH"
+      },
+      "ios": {
+        "image": "latest"
+      },
+      "android": {
+        "buildType": "app-bundle"
+      }
+    },
+    "testflight": {
+      "extends": "production",
+      "distribution": "store",
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_GUIDE_ENDPOINT": "",
+        "EXPO_PUBLIC_DEBUG_PANEL": "1",
+        "EXPO_PUBLIC_RC_IOS_KEY": "appl_nkdQAgMULOwIGuJYFTRpgfRlLcH"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6817953783"
+      },
+      "android": {
+        "track": "production",
+        "releaseStatus": "draft"
+      }
+    }
+  }
+}

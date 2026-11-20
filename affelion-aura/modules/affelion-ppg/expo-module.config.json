@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["AffelionPpgModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.affelionppg.AffelionPpgModule"]
+  }
+}
