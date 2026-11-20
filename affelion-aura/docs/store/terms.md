@@ -3,7 +3,7 @@
 *To publish at https://www.affelion.com/halo/terms as a normal web page (not a PDF).*
 *Draft written in plain English. Have a lawyer read it before you rely on it.*
 
-**Effective date:** [DATE OF PUBLISHING]
+**Effective date:** November 20, 2026
 
 These terms are an agreement between you and Affelion LLC ("we", "us") about the Affelion Halo app
 ("Halo"). By using Halo you agree to them. If you got Halo from the App Store, Apple's Licensed
@@ -71,7 +71,7 @@ app. You can stop using Halo at any time by deleting it.
 
 ## 10. Law
 
-These terms are governed by the laws of [STATE], USA, except where your local consumer law gives
+These terms are governed by the laws of Illinois, USA, except where your local consumer law gives
 you more protection.
 
 ## 11. Contact

@@ -2,7 +2,7 @@
 
 *To publish at https://www.affelion.com/halo/privacy as a normal web page (not a PDF).*
 
-**Effective date:** [DATE OF PUBLISHING]
+**Effective date:** November 20, 2026
 
 Affelion Halo ("Halo") is an app made by Affelion LLC ("we", "us"). This policy explains what
 Halo does with information about you. In short: your check-ins stay on your phone, there is no
