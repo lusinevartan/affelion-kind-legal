@@ -15,7 +15,7 @@
 **Same-day submit list (Nov 20).** The detailed steps below stay for reference.
 
 1. **Finish the TestFlight build** you started: `npx eas-cli@latest submit --platform ios --latest` when it is done. Paste the build link or the error to Claude; Claude fixes failures first, starting with the pulse, outline and microphone modules.
-2. **Publish the three pages** (all return 404 today): fill in [DATE OF PUBLISHING] and [STATE] in `docs/store/web/privacy.html` and `terms.html`, then paste privacy, terms and support into affelion.com at `/halo/privacy`, `/halo/terms`, `/halo/support`. Turn off any password or "coming soon" setting. Tell Claude "pages live".
+2. ~~**Publish the three pages**~~ **Done Nov 20.** affelion.com/halo/privacy, /halo/terms and /halo/support are live (HTTP 200, also from www), in the Kind page layout, effective November 20, 2026, Illinois law, and listed on /legal under Documents.
 3. **Run `launch/DEVICE-TEST.md`** on your iPhone (20 minutes, then 5 minutes a day for two days for the monthly and lifetime purchases). Send Claude the failed step numbers and the Debug report.
 4. **Make the App Store build:** `npx eas-cli@latest build --platform ios --profile production`, then `npx eas-cli@latest submit --platform ios --latest`.
 5. **Fill in App Store Connect from `launch/SUBMIT-CHECKLIST.md`**, top to bottom: App Information, version page text, screenshots and app preview from the `store/` zip, age rating, App Privacy, review notes, attach the three in-app purchases, choose the production build, manual release.
@@ -50,7 +50,7 @@ Optional, not blocking: record the demo video and add the link to the review not
   5b. **For the App Store submission (step 10), make a separate build** with `npx eas-cli@latest build --platform ios --profile production`, then `npx eas-cli@latest submit --platform ios --latest`, and choose that build (not the TestFlight one) on the version page. Only the production build goes to App Review. In App Store Connect → TestFlight, add yourself as an internal tester and install it on your iPhone.
   6. Android: `npx eas-cli@latest build --platform android --profile production` gives an `.aab`. Google requires the very first upload by hand: Play Console → Affelion Halo → Testing → **Internal testing** → Create release → upload the `.aab` → add yourself as a tester. Later uploads can use `eas submit`.
   7. Tell Claude the build numbers. Claude can then take over builds if you add an `EXPO_TOKEN` (Expo → Account settings → Access tokens) to this environment's secrets.
-- [ ] **4. Publish three pages on affelion.com (M10).** Today all three return 404. Everything is filled in except two values.
+- [x] **4. Publish three pages on affelion.com (M10).** Done Nov 20: all three return 200. Everything is filled in except two values.
   1. Open `docs/store/web/privacy.html` and `docs/store/web/terms.html` and fill in: **[DATE OF PUBLISHING]** (both pages: the day you publish, for example November 21, 2026) and **[STATE]** (terms page only: the state where Affelion LLC is registered). A lawyer's read of the terms is worth it but optional.
   2. In your website builder, create three normal pages (not PDFs, not downloads) at exactly:
      - **affelion.com/halo/privacy** → paste `docs/store/web/privacy.html`
