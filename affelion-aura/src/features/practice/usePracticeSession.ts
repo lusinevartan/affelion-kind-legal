@@ -8,6 +8,11 @@ import { initialPracticeState, PRACTICE, practiceReducer, type PracticeMode, typ
 import { auraFromWindow, blendAuraParams } from '../../core/color/live';
 import type { AuraParams, PracticeRecord, ScanRecord, WindowMetrics } from '../../core/types';
 import { newPracticeId } from '../../services/storage';
+import { debugPanelEnabled } from '../debug/debugFlag';
+import { resetDebug, updateDebug } from '../debug/debugStore';
+
+/** Feeds the TestFlight debug screen; off in App Store builds. */
+const DEBUG = debugPanelEnabled();
 
 /**
  * Runs a practice session: rear-camera PPG → beats → sliding coherence → live aura, with the
@@ -81,10 +86,16 @@ export function usePracticeSession(scan: ScanRecord | null): PracticeSession {
     return () => clearInterval(id);
   }, [active]);
 
+  // The debug screen keeps the last failure.
+  React.useEffect(() => {
+    if (DEBUG && state.failure) updateDebug({ phase: state.phase, failure: state.failure });
+  }, [state.phase, state.failure]);
+
   // Camera + analysis while active.
   React.useEffect(() => {
     if (!active) return;
     let canceled = false;
+    if (DEBUG) resetDebug('practice');
     const sub = AffelionPpg.addListener('onSample', (s: PpgSampleEvent) => {
       if (canceled || !s.locked) return;
       const cov = ppg.push({ t: s.t, r: s.r, g: s.g, b: s.b });
@@ -98,6 +109,7 @@ export function usePracticeSession(scan: ScanRecord | null): PracticeSession {
     });
     const analysis = setInterval(() => {
       const l = ppg.live();
+      if (DEBUG) updateDebug({ phase: stateRef.current.phase, pulse: { liveQuality: l.quality, bpm: l.bpm, beats: l.beats.length, coverage: l.coverage.reason, coverageConfidence: l.coverage.confidence, coveredSec: l.coveredSec } });
       coherence.setBeats(l.beats);
       const est = coherence.estimate();
       const st = stateRef.current;

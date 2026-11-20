@@ -31,6 +31,15 @@
       "android": {
         "buildType": "app-bundle"
       }
+    },
+    "testflight": {
+      "extends": "production",
+      "distribution": "store",
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_GUIDE_ENDPOINT": "",
+        "EXPO_PUBLIC_DEBUG_PANEL": "1"
+      }
     }
   },
   "submit": {

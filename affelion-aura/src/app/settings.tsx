@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { debugPanelEnabled } from '../features/debug/debugFlag';
 import { DISCLAIMER } from '../core/disclaimer';
 import { formatDate } from '../ui/format';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
@@ -89,6 +90,7 @@ export default function Settings() {
         <Text variant="caption" color={colors.bone30} style={{ marginTop: space.md }}>
           Version 1.0.0
         </Text>
+        {debugPanelEnabled() ? <Button label="Debug (TestFlight only)" variant="ghost" onPress={() => router.push('/debug')} /> : null}
       </Card>
     </Screen>
   );

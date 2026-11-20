@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { debugPanelEnabled } from '../features/debug/debugFlag';
 import { Alert, Pressable, StyleSheet, View, Linking } from 'react-native';
 import { router } from 'expo-router';
 import { Camera } from 'expo-camera';
@@ -185,11 +186,20 @@ export default function ScanScreen() {
           <Text variant="eyebrow" color={colors.stageFg70}>
             {phaseLabel}
           </Text>
-          <Pressable accessibilityRole="button" accessibilityLabel="Stop scan" onPress={confirmCancel} hitSlop={12}>
-            <Text variant="eyebrow" color={colors.stageFg70}>
-              Stop
-            </Text>
-          </Pressable>
+          <View style={{ flexDirection: 'row', gap: space.lg }}>
+            {debugPanelEnabled() ? (
+              <Pressable accessibilityRole="button" accessibilityLabel="Open the debug screen" onPress={() => router.push('/debug')} hitSlop={12}>
+                <Text variant="eyebrow" color={colors.stageFg70}>
+                  Debug
+                </Text>
+              </Pressable>
+            ) : null}
+            <Pressable accessibilityRole="button" accessibilityLabel="Stop scan" onPress={confirmCancel} hitSlop={12}>
+              <Text variant="eyebrow" color={colors.stageFg70}>
+                Stop
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </View>
 

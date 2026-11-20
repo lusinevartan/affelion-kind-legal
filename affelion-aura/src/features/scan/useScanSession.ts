@@ -3,7 +3,9 @@ import { AppState as RNAppState } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { AffelionPpg, type PpgSampleEvent } from '../../../modules/affelion-ppg';
 import { AffelionAudio, pcmToFloat32 } from '../../../modules/affelion-audio';
-import { RETRY_MESSAGE, readingProblem } from '../../core/scan/readingGate';
+import { RETRY_MESSAGE, gateCheck, readingProblem } from '../../core/scan/readingGate';
+import { debugPanelEnabled } from '../debug/debugFlag';
+import { resetDebug, updateDebug } from '../debug/debugStore';
 import type { FaceEvent, MaskEvent, StillResult } from '../../../modules/affelion-silhouette';
 import { base64ToBytes } from '../../native/base64';
 import { PpgProcessor, VoiceAnalyzer } from '../../core/signal';
@@ -12,6 +14,9 @@ import { mapBiometricsToAura } from '../../core/color/mapping';
 import type { HeartMetrics, ScanRecord, VoiceMetrics } from '../../core/types';
 import type { SilhouetteMask } from '../../render/fluid/FluidSim';
 import { newScanId } from '../../services/storage';
+
+/** Feeds the TestFlight debug screen; off in App Store builds. */
+const DEBUG = debugPanelEnabled();
 
 /**
  * Orchestrates one scan: drives the pure state machine with a 10 Hz tick, wires the native
@@ -143,6 +148,7 @@ export function useScanSession(): ScanSession {
     const liveId = setInterval(() => {
       const l = ppg.live();
       dispatch({ type: 'PPG_QUALITY', quality: l.quality });
+      if (DEBUG) updateDebug({ pulse: { liveQuality: l.quality, bpm: l.bpm, beats: l.beats.length, coverage: l.coverage.reason, coverageConfidence: l.coverage.confidence, coveredSec: l.coveredSec } });
       setLive((prev) => ({ ...prev, bpm: l.bpm, ppgQuality: l.quality, waveform: l.waveform, coverage: l.coverage.reason }));
       if (l.lastBeatAt != null && l.lastBeatAt !== lastBeatAt.current) {
         lastBeatAt.current = l.lastBeatAt;
@@ -177,6 +183,7 @@ export function useScanSession(): ScanSession {
     const liveId = setInterval(() => {
       const l = voice.live();
       dispatch({ type: 'VOICE_PROGRESS', voicedSec: l.voicedSec, level: l.level });
+      if (DEBUG) updateDebug({ voice: { level: l.level, voicedSec: l.voicedSec, pitchHz: l.pitchHz } });
       setLive((prev) => ({ ...prev, voiceLevel: l.level, voicePitch: l.pitchHz }));
     }, 200);
     return () => {
@@ -186,6 +193,11 @@ export function useScanSession(): ScanSession {
       AffelionAudio.stop().catch(() => {});
     };
   }, [state.phase, voice]);
+
+  // The debug screen follows the phase, the guidance shown and the last failure.
+  React.useEffect(() => {
+    if (DEBUG) updateDebug({ phase: state.phase, guidance: state.guidance, ...(state.failure ? { failure: state.failure } : {}) });
+  }, [state.phase, state.guidance, state.failure]);
 
   // Computing: finalize metrics and build the record. Runs in a task, not synchronously in
   // the effect body, because finishing the processors is real work and updates state.
@@ -197,6 +209,13 @@ export function useScanSession(): ScanSession {
       if (computed.current) return;
       computed.current = true;
       const heart: HeartMetrics | null = ppg.finish();
+      if (DEBUG) {
+        updateDebug(
+          heart
+            ? { final: { bpm: heart.bpm, quality: heart.quality, beatCount: heart.beatCount, durationSec: heart.durationSec, rmssd: heart.rmssd }, gate: gateCheck(heart) }
+            : { final: null, gate: { ok: false, reason: 'too few clean beats for a reading' } },
+        );
+      }
       if (!heart) {
         computed.current = false;
         dispatch({ type: 'FAIL', reason: RETRY_MESSAGE });
@@ -209,6 +228,7 @@ export function useScanSession(): ScanSession {
         return;
       }
       const voiceMetrics: VoiceMetrics | null = voiceSkipped ? null : voice.finish();
+      if (DEBUG) updateDebug({ voice: { finalQuality: voiceMetrics?.quality ?? null, skipped: voiceSkipped } });
       const aura = mapBiometricsToAura({ heart, voice: voiceMetrics });
       const record: ScanRecord = {
         id: newScanId(),
@@ -261,6 +281,7 @@ export function useScanSession(): ScanSession {
     setResult(null);
     setStillUri(null);
     setStillMask(null);
+    if (DEBUG) resetDebug('scan');
     dispatch({ type: 'START' });
   }, []);
 
