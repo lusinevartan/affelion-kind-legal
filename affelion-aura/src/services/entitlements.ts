@@ -136,6 +136,19 @@ export class DevPurchaseProvider implements PurchaseProvider {
     return this.getEntitlement();
   }
 
+  /**
+   * The prices and the 7-day trial planned for the stores (launch/STATUS.md, M2), so simulated
+   * builds show the paywall the way a store build will.
+   */
+  async getPrices(): Promise<PlanPrices> {
+    if (!simulatedPurchasesAllowed()) return {};
+    return {
+      annual: { price: '$69.99', perMonth: '$5.83', trial: { count: 7, unit: 'day' } },
+      monthly: { price: '$12.99', perMonth: null, trial: null },
+      lifetime: { price: '$199', perMonth: null, trial: null },
+    };
+  }
+
   async openManageSubscriptions(): Promise<void> {
     await openStoreSubscriptions();
   }

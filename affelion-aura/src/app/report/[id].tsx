@@ -79,7 +79,7 @@ export default function ReportScreen() {
       </View>
 
       <Text variant="display" style={{ marginTop: space.xxl }}>
-        What made this portrait
+        {'What made\nthis portrait'}
       </Text>
       <Text variant="body" color={colors.bone70} style={{ marginTop: space.sm }}>
         {aura.summary}
