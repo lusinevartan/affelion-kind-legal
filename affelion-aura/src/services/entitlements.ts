@@ -43,7 +43,7 @@ export const PLANS: Plan[] = [
     price: '$12.99',
     period: 'per month',
     perMonth: null,
-    note: 'Cancel any time in your App Store or Google Play subscriptions.',
+    note: 'Billed every month. Cancel anytime.',
   },
   {
     id: 'annual',
@@ -53,7 +53,7 @@ export const PLANS: Plan[] = [
     period: 'per year',
     perMonth: '$5.83 / month',
     recommended: true,
-    note: 'Billed once a year. Cancel any time; access continues to the end of the period.',
+    note: 'Billed once a year. Cancel anytime.',
   },
   {
     id: 'lifetime',

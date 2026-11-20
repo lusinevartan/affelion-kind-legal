@@ -53,7 +53,7 @@ describe('paywall content', () => {
 
   it('states the trial terms and renewal terms in readable text', async () => {
     await show();
-    expect(screen.getByText('7 days free, then $69.99 per year. Cancel anytime in Settings.')).toBeTruthy();
+    expect(screen.getByText('7 days free, then $69.99 per year.')).toBeTruthy();
     expect(screen.getByText(/when the free trial ends unless you cancel at least 24 hours before\. Renews automatically\. Cancel anytime in Settings\./)).toBeTruthy();
     expect(screen.getByText('Start my free week')).toBeTruthy();
   });

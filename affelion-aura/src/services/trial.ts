@@ -45,5 +45,5 @@ export function trialAdjective(t: Trial): string {
 
 /** The sentence a person must be able to read before starting: what is free, then what is charged. */
 export function trialTerms(t: Trial, price: string, period: string): string {
-  return `${trialLength(t)} free, then ${price} ${period}. Cancel anytime in Settings.`;
+  return `${trialLength(t)} free, then ${price} ${period}.`;
 }
