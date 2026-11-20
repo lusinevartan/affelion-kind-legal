@@ -29,13 +29,13 @@ describe('access rules', () => {
 });
 
 describe('store answer to Pro', () => {
-  it('an active "pro" entitlement unlocks Pro with its plan and end date', () => {
-    const e = toEntitlement(info({ pro: { productIdentifier: 'com.affelion.aura.pro.annual', expirationDate: '2027-11-20T12:00:00Z' } }));
+  it('an active "halo_pro" entitlement unlocks Pro with its plan and end date', () => {
+    const e = toEntitlement(info({ halo_pro: { productIdentifier: 'com.affelion.aura.pro.annual', expirationDate: '2027-11-20T12:00:00Z' } }));
     expect(e).toEqual({ isPro: true, plan: 'annual', expiresAt: Date.parse('2027-11-20T12:00:00Z'), source: 'store' });
   });
 
   it('a lifetime purchase never expires', () => {
-    expect(toEntitlement(info({ pro: { productIdentifier: 'com.affelion.aura.pro.lifetime', expirationDate: null } }))).toMatchObject({ isPro: true, plan: 'lifetime', expiresAt: null });
+    expect(toEntitlement(info({ halo_pro: { productIdentifier: 'com.affelion.aura.pro.lifetime', expirationDate: null } }))).toMatchObject({ isPro: true, plan: 'lifetime', expiresAt: null });
   });
 
   it('no active entitlement, or an expired or canceled one, locks Pro', () => {

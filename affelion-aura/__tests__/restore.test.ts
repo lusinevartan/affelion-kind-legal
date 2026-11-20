@@ -10,7 +10,7 @@ const mockPurchases = {
 jest.mock('react-native-purchases', () => ({ __esModule: true, get default() { return mockPurchases; }, INTRO_ELIGIBILITY_STATUS: {}, LOG_LEVEL: { WARN: 'WARN' }, PURCHASES_ERROR_CODE: {} }));
 import { RevenueCatPurchaseProvider } from '../src/services/purchases/revenueCat';
 
-const active = { entitlements: { active: { pro: { productIdentifier: 'com.affelion.aura.pro.monthly', expirationDate: '2026-12-20T00:00:00Z' } } } };
+const active = { entitlements: { active: { halo_pro: { productIdentifier: 'com.affelion.aura.pro.monthly', expirationDate: '2026-12-20T00:00:00Z' } } } };
 
 describe('restore through RevenueCat', () => {
   beforeEach(() => jest.clearAllMocks());

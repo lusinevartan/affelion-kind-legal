@@ -151,7 +151,7 @@ Pro exports are clean.
 
 `PurchaseProvider` interface in `src/services/entitlements.ts`. With `EXPO_PUBLIC_RC_IOS_KEY` /
 `EXPO_PUBLIC_RC_ANDROID_KEY` set in the build, `RevenueCatPurchaseProvider`
-(`src/services/purchases/revenueCat.ts`) reads the "pro" entitlement from the store, purchases the
+(`src/services/purchases/revenueCat.ts`) reads the "halo_pro" entitlement and the "halo_default" offering from the store, purchases the
 package whose product id matches `PLANS[].productId`, restores, and opens the platform's
 subscription management page. Without keys the `DevPurchaseProvider` simulates purchases locally
 and the paywall says so, but only in development, in the web review build, or in a build that
@@ -159,7 +159,7 @@ sets `EXPO_PUBLIC_ALLOW_SIMULATED_PURCHASES=1` (an internal test build). A relea
 missing its keys grants nothing and the paywall button says purchases are unavailable. "Delete
 all data" removes scans, photos, portraits, practice sessions and settings, and keeps the plan
 and the free allowance already used. Store setup: three products (`com.affelion.aura.pro.monthly`, `.annual`,
-`.lifetime`) in App Store Connect and Google Play, attached to a RevenueCat entitlement named `pro`
+`.lifetime`) in App Store Connect and Google Play, attached to a RevenueCat entitlement named `halo_pro` and offered in `halo_default`
 and a current offering.
 
 ## Sasha server (`server/sasha`)

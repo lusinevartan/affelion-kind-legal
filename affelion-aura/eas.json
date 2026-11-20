@@ -23,7 +23,8 @@
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_GUIDE_ENDPOINT": ""
+        "EXPO_PUBLIC_GUIDE_ENDPOINT": "",
+        "EXPO_PUBLIC_RC_IOS_KEY": "appl_nkdQAgMULOwIGuJYFTRpgfRlLcH"
       },
       "ios": {
         "image": "latest"
@@ -38,7 +39,8 @@
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_GUIDE_ENDPOINT": "",
-        "EXPO_PUBLIC_DEBUG_PANEL": "1"
+        "EXPO_PUBLIC_DEBUG_PANEL": "1",
+        "EXPO_PUBLIC_RC_IOS_KEY": "appl_nkdQAgMULOwIGuJYFTRpgfRlLcH"
       }
     }
   },

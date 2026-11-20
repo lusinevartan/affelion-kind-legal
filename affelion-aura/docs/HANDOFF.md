@@ -78,7 +78,7 @@ scan (`src/core/scan/readingGate.ts`). "Share my color" makes a 9:16 story card
 (`src/render/polaroid/StoryCard.tsx`), with the app name on it for free users. Product IDs are in `entitlements.ts`. A free
 trial is supported but off until one is added to a product in the store (`src/services/trial.ts`;
 the app shows a trial only when the store offers one to that person). The
-RevenueCat entitlement must be named `pro`. Free-use counters and the entitlement survive
+RevenueCat entitlement must be named `halo_pro`, and the offering `halo_default` (read by identifier, not as the project's current offering, because the RevenueCat project is shared). Free-use counters and the entitlement survive
 "Delete all data" on purpose, so deleting data does not reset the free week.
 
 Rough math for the owner's target: the stores keep 15 to 30 percent, so an annual subscriber

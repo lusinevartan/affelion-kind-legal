@@ -48,7 +48,7 @@ scan, one practice session, one saved portrait and one export work on at least t
    `com.affelion.aura.pro.monthly` ($12.99) and `com.affelion.aura.pro.annual` ($69.99).
 2. In-App Purchases: create a non-consumable `com.affelion.aura.pro.lifetime` ($199).
 3. RevenueCat: add the app, import the three products, create an entitlement named exactly
-   `pro`, attach all three products, put them in the default offering.
+   `halo_pro`, attach all three products, and put them in the offering `halo_default` as `$rc_annual`, `$rc_monthly`, `$rc_lifetime` (the project is shared with other Affelion apps, so Halo never uses the project's current offering).
 4. Put the RevenueCat iOS public key in the build: `npx eas-cli@latest env:create` for
    `EXPO_PUBLIC_RC_IOS_KEY` (production and preview).
 5. **Free trial (recommended).** On the annual subscription in App Store Connect, add an

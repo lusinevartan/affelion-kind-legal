@@ -17,8 +17,8 @@ describe('store products', () => {
     });
   });
 
-  it('unlocks Pro through one entitlement named "pro"', () => {
-    expect(RC_ENTITLEMENT).toBe('pro');
+  it('unlocks Pro through one entitlement named "halo_pro"', () => {
+    expect(RC_ENTITLEMENT).toBe('halo_pro');
   });
 
   it('marks annual as the recommended plan', () => {

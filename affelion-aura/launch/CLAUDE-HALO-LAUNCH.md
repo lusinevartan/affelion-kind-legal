@@ -52,7 +52,7 @@ Only items that would block **App Review** or **revenue** belong here. Work top 
 - **Acceptance:** all products are in "Ready to Submit" and attached to the 1.0 version, and the product IDs in the app match App Store Connect exactly.
 
 ### M3. RevenueCat wired and purchase flow tested — *Revenue*
-- **You do:** confirm the RevenueCat iOS API key is the production key in release config; the offering "default" contains annual + monthly (lifetime optional); the entitlement `pro` unlocks every Pro feature; restore works with no account.
+- **You do:** confirm the RevenueCat iOS API key is the production key in release config; the offering "halo_default" (Halo's own, in a RevenueCat project shared with other Affelion apps) contains annual + monthly (lifetime optional); the entitlement `pro` unlocks every Pro feature; restore works with no account.
 - **Acceptance:** in **Sandbox / TestFlight**: (a) buying annual starts a trial and unlocks Pro; (b) buying monthly unlocks Pro; (c) Restore on a fresh install brings Pro back; (d) after a sandbox cancellation and expiry, Pro locks again; (e) no crash or blank paywall offline (show a friendly "can't load prices, try again"). Add an automated test for the entitlement gating logic if one doesn't exist.
 
 ### M4. Paywall shows everything Apple requires — *Review (3.1.2)*

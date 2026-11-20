@@ -5,11 +5,18 @@ import { NO_ENTITLEMENT, PLANS, type Entitlement, type PlanId, type PlanPrices, 
 
 /**
  * Store-backed purchases through RevenueCat. Configure with the public SDK keys
- * (EXPO_PUBLIC_RC_IOS_KEY / EXPO_PUBLIC_RC_ANDROID_KEY) and an entitlement named "pro" that is
+ * (EXPO_PUBLIC_RC_IOS_KEY / EXPO_PUBLIC_RC_ANDROID_KEY) and an entitlement named "halo_pro" that is
  * attached to the three products in PLANS. Subscription state comes from the store, never from
  * local flags.
  */
-export const RC_ENTITLEMENT = 'pro';
+export const RC_ENTITLEMENT = 'halo_pro';
+/**
+ * The RevenueCat project is shared with other Affelion apps, so Halo never uses the project's
+ * "current" offering (that belongs to another app). It reads its own offering by identifier.
+ */
+export const RC_OFFERING = 'halo_default';
+/** Package identifiers inside halo_default, by plan. */
+export const RC_PACKAGES: Record<PlanId, string> = { annual: '$rc_annual', monthly: '$rc_monthly', lifetime: '$rc_lifetime' };
 
 export function toEntitlement(info: CustomerInfo): Entitlement {
   const ent = info.entitlements.active[RC_ENTITLEMENT];
@@ -43,11 +50,12 @@ export class RevenueCatPurchaseProvider implements PurchaseProvider {
 
   private async packages(): Promise<PurchasesPackage[]> {
     const offerings = await Purchases.getOfferings();
-    return [...(offerings.current?.availablePackages ?? []), ...Object.values(offerings.all).flatMap((o) => o.availablePackages)];
+    return offerings.all[RC_OFFERING]?.availablePackages ?? [];
   }
 
   private static matches(pkg: PurchasesPackage, productId: string): boolean {
-    return pkg.product.identifier === productId || pkg.product.identifier.startsWith(productId);
+    const plan = PLANS.find((p) => p.productId === productId);
+    return (!!plan && pkg.identifier === RC_PACKAGES[plan.id]) || pkg.product.identifier === productId || pkg.product.identifier.startsWith(productId);
   }
 
   private async findPackage(plan: PlanId): Promise<PurchasesPackage> {
