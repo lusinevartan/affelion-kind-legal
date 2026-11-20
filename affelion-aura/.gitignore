@@ -44,4 +44,4 @@ yarn-error.*
 web-harness/dist/
 
 # Store screenshots and art: kept out of this public repository, delivered as a zip
-store/
+/store/
