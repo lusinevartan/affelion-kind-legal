@@ -79,6 +79,27 @@ describe('paywall content', () => {
   });
 });
 
+describe('guideline 3.1.2 disclosures', () => {
+  it('without a trial: annual says how often it bills, monthly shows its period, renewal terms say it renews automatically', async () => {
+    mockAppState = { entitlement: NOT_PRO, prices: { annual: { price: '$69.99', perMonth: '$5.83', trial: null }, monthly: { price: '$12.99', perMonth: null, trial: null } }, pricesStatus: 'ready' };
+    await show();
+    expect(screen.getByText('Billed once a year. Cancel anytime.')).toBeTruthy();
+    expect(screen.getByText('per month')).toBeTruthy();
+    expect(screen.getByText(/Renews automatically unless you cancel at least 24 hours before the period ends\. Cancel anytime in Settings\./)).toBeTruthy();
+    expect(screen.getByText('Continue')).toBeTruthy();
+  });
+
+  it('the one-time purchase shows its price, that it is one time, and that it never renews', async () => {
+    mockAppState = { entitlement: NOT_PRO, prices: { ...storePrices, lifetime: { price: '$199.00', perMonth: null, trial: null } }, pricesStatus: 'ready' };
+    await show();
+    await fireEvent.press(screen.getByText('Prefer to pay once?'));
+    expect(screen.getByText('$199.00')).toBeTruthy();
+    expect(screen.getByText('one time')).toBeTruthy();
+    await fireEvent.press(screen.getByLabelText(/^Lifetime,/));
+    expect(screen.getByText(/One payment to your Apple ID\. It never renews\./)).toBeTruthy();
+  });
+});
+
 describe('closing', () => {
   it('"Not now" goes back to the portrait it opened from', async () => {
     await show();

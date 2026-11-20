@@ -12,9 +12,18 @@
 
 ## Needs Lusine (only you can do these)
 
-Claude will add exact step-by-step instructions next to each item.
+**Same-day submit list (Nov 20).** The detailed steps below stay for reference.
 
-In order. Each step has the exact clicks.
+1. **Finish the TestFlight build** you started: `npx eas-cli@latest submit --platform ios --latest` when it is done. Paste the build link or the error to Claude; Claude fixes failures first, starting with the pulse, outline and microphone modules.
+2. **Publish the three pages** (all return 404 today): fill in [DATE OF PUBLISHING] and [STATE] in `docs/store/web/privacy.html` and `terms.html`, then paste privacy, terms and support into affelion.com at `/halo/privacy`, `/halo/terms`, `/halo/support`. Turn off any password or "coming soon" setting. Tell Claude "pages live".
+3. **Run `launch/DEVICE-TEST.md`** on your iPhone (20 minutes, then 5 minutes a day for two days for the monthly and lifetime purchases). Send Claude the failed step numbers and the Debug report.
+4. **Make the App Store build:** `npx eas-cli@latest build --platform ios --profile production`, then `npx eas-cli@latest submit --platform ios --latest`.
+5. **Fill in App Store Connect from `launch/SUBMIT-CHECKLIST.md`**, top to bottom: App Information, version page text, screenshots and app preview from the `store/` zip, age rating, App Privacy, review notes, attach the three in-app purchases, choose the production build, manual release.
+6. **Submit:** version 1.0 → Add for Review → Submit. After approval, Release This Version.
+
+Optional, not blocking: record the demo video and add the link to the review notes; run a Google Lens search on the model image; read Figma's AI image terms for commercial use; the name check in `launch/NAME-CHECK.md`.
+
+**Detailed steps:**
 
 - [x] **1. Reserve "Affelion Halo – Color Check-In" in App Store Connect and Play Console (5 minutes, free).** Apple and Google hold a name for whoever saves it first.
   1. App Store Connect → Apps → your app record (ID 6817953783) → **App Information** → Name: **Affelion Halo – Color Check-In** → Save. Subtitle: **Your heartbeat, in color**. Primary category **Lifestyle**, secondary **Health & Fitness**. Check the bundle ID is `com.affelion.aura` (users never see it; it stays).
@@ -59,7 +68,7 @@ In order. Each step has the exact clicks.
   5. With a second sandbox tester, buy **Monthly**. Expect: Pro unlocks.
   6. Turn on Airplane Mode, delete and reinstall, open the paywall. Expect: "We could not load prices" with **Try again**, no crash, no blank screen. Turn Airplane Mode off, tap Try again, prices appear.
   7. Write pass or fail for each step in the M3 row, or tell Claude.
-- [ ] **7. Real-iPhone test (M9), about 45 minutes per phone.** Use the TestFlight build from step 3 (`--profile testflight`, which has the Debug screen). Follow **`launch/DEVICE-TEST.md`** step by step: permissions, outline, pulse in normal/dim/bright light with the finger lifted or moving, flash half covered, cold fingers, voice in quiet/noisy/silent rooms, the portrait reveal and heartbeat taps, Share my color, the free weekly scan, the paywall after the first portrait, and sandbox purchase, restore, cancel and the offline paywall. When something fails, it tells you what to record and the message to send Claude. Aim for at least 3 iPhones (one older, one recent); borrow, don't buy. Fill one row per phone in the device test log below.
+- [ ] **7. Real-iPhone test (M9), about 45 minutes per phone.** Use the TestFlight build from step 3 (`--profile testflight`, which has the Debug screen). Follow **`launch/DEVICE-TEST.md`** (short) or **`launch/DEVICE-TEST-DETAILED.md`** (full, for extra phones): permissions, outline, pulse in normal/dim/bright light with the finger lifted or moving, flash half covered, cold fingers, voice in quiet/noisy/silent rooms, the portrait reveal and heartbeat taps, Share my color, the free weekly scan, the paywall after the first portrait, and sandbox purchase, restore, cancel and the offline paywall. When something fails, it tells you what to record and the message to send Claude. Aim for at least 3 iPhones (one older, one recent); borrow, don't buy. Fill one row per phone in the device test log below.
 - [ ] **8. Record the 60-second demo video (M11).** Script and shot list: `docs/store/demo-video-script.md`. Upload it unlisted and paste the link into `docs/store/review-notes.md` where it says [LINK TO VIDEO], or send it to Claude.
 - [ ] **9. Fill in the App Store listing and upload screenshots (M11).** App Store Connect → Affelion Halo → version 1.0:
   1. **Previews and Screenshots** → iPhone 6.9" → drag in the 7 files from `store/screenshots/app-store-6.9/` in order 1 to 7. Then 6.5" → the 7 files from `app-store-6.5/`. No iPad.
