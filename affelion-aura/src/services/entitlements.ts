@@ -1,9 +1,9 @@
 import { Linking, Platform } from 'react-native';
 import { getSetting, setSetting } from './storage';
 import type { Trial } from './trial';
-import { FREE_SCAN_INTERVAL_MS, freeScanStatus, freeScansRemaining, nextFreeScanAt } from './freeTier';
+import { FREE_SCAN_INTERVAL_MS, accessFor, freeScanStatus, freeScansRemaining, nextFreeScanAt } from './freeTier';
 
-export { FREE_SCAN_INTERVAL_MS, freeScanStatus, freeScansRemaining, nextFreeScanAt };
+export { FREE_SCAN_INTERVAL_MS, accessFor, freeScanStatus, freeScansRemaining, nextFreeScanAt };
 
 /**
  * Prices sit level with the leading meditation apps (about $13 a month, $70 a year). They are
@@ -165,6 +165,19 @@ export function createPurchaseProvider(): PurchaseProvider {
 function revenueCatKey(): string | null {
   const key = Platform.OS === 'ios' ? process.env.EXPO_PUBLIC_RC_IOS_KEY : process.env.EXPO_PUBLIC_RC_ANDROID_KEY;
   return key && key.length > 0 ? key : null;
+}
+
+/** Prices come from the store in a store-backed build; this says whether they arrived. */
+export type PricesStatus = 'loading' | 'ready' | 'unavailable';
+
+/**
+ * A store-backed build must show the store's own prices or none at all; the figures in PLANS are
+ * only for simulated builds. No prices from the store (offline, or products not set up yet) means
+ * "unavailable", and the paywall asks the person to try again instead of guessing.
+ */
+export function pricesStatusFor(storeBacked: boolean, prices: PlanPrices): PricesStatus {
+  if (!storeBacked) return 'ready';
+  return prices.annual || prices.monthly ? 'ready' : 'unavailable';
 }
 
 /** True when purchases are simulated, so the paywall can say so. */

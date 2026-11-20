@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { AppState as RNAppState } from 'react-native';
 import type { PracticeRecord, ScanRecord } from '../../core/types';
 import type { FrameStyleId } from '../../render/polaroid/styles';
 import { useNow } from '../../ui/useNow';
@@ -7,7 +8,6 @@ import {
   ENTITLEMENT_KEY,
   FREE_PRACTICE_USED_KEY,
   FREE_SCANS_USED_KEY,
-  freeScansRemaining,
   getFreeScansUsed,
   incrementFreeScansUsed,
   NO_ENTITLEMENT,
@@ -18,7 +18,9 @@ import {
   FREE_SCAN_LAST_KEY,
   getLastFreeScanAt,
   markFreeScanUsed,
-  nextFreeScanAt,
+  accessFor,
+  pricesStatusFor,
+  type PricesStatus,
 } from '../../services/entitlements';
 import { clearSettings, deleteAllScans, getSetting, listMasks, listPractices, listScans, saveMask, savePractice, saveScan, setSetting } from '../../services/storage';
 import { deleteFiles } from '../../services/files';
@@ -44,6 +46,8 @@ export interface AppState {
   frameStyle: FrameStyleId;
   /** The store's own localized prices, where a store is connected; empty otherwise. */
   prices: PlanPrices;
+  /** Whether live prices have loaded. Store-backed builds never fall back to built-in prices. */
+  pricesStatus: PricesStatus;
   /** Derived: Pro, or a free scan available this week. */
   canScan: boolean;
   freeScansLeft: number;
@@ -62,6 +66,8 @@ export interface AppActions {
   setFrameStyle(style: FrameStyleId): Promise<void>;
   purchase(plan: PlanId): Promise<Entitlement>;
   restore(): Promise<Entitlement>;
+  /** Ask the store for prices again, e.g. after the person was offline. */
+  refreshPrices(): Promise<void>;
   manageSubscriptions(): Promise<void>;
   deleteAllData(): Promise<void>;
 }
@@ -89,21 +95,50 @@ export function AppStoreProvider({ children, provider }: { children: React.React
     resonanceRate: null,
     frameStyle: 'classic',
     prices: {},
+    pricesStatus: 'loading',
   });
 
   // Store prices arrive on their own; the app never waits on the network to open.
+  const fetchPrices = React.useCallback(async () => {
+    const prices = (await purchases.getPrices?.().catch(() => ({}) as PlanPrices)) ?? {};
+    return { prices, pricesStatus: pricesStatusFor(purchases.name !== 'dev', prices) };
+  }, [purchases]);
+  const loadPrices = React.useCallback(async () => {
+    const next = await fetchPrices();
+    setState((s) => ({ ...s, ...next }));
+  }, [fetchPrices]);
+
   React.useEffect(() => {
     let canceled = false;
-    purchases
-      .getPrices?.()
-      .then((prices) => {
-        if (!canceled) setState((s) => ({ ...s, prices }));
+    fetchPrices()
+      .then((next) => {
+        if (!canceled) setState((s) => ({ ...s, ...next }));
       })
       .catch(() => {});
     return () => {
       canceled = true;
     };
-  }, [purchases]);
+  }, [fetchPrices]);
+
+  // Coming back to the app re-checks Pro with the store, so a canceled subscription locks once it
+  // ends and a purchase made elsewhere (another device, Family Sharing) unlocks without a restart.
+  const pricesStatusRef = React.useRef<PricesStatus>('loading');
+  React.useEffect(() => {
+    pricesStatusRef.current = state.pricesStatus;
+  }, [state.pricesStatus]);
+  React.useEffect(() => {
+    const sub = RNAppState.addEventListener('change', (s) => {
+      if (s !== 'active') return;
+      purchases
+        .getEntitlement()
+        .then((entitlement) =>
+          setState((st) => (st.entitlement.isPro === entitlement.isPro && st.entitlement.plan === entitlement.plan && st.entitlement.expiresAt === entitlement.expiresAt ? st : { ...st, entitlement })),
+        )
+        .catch(() => {});
+      if (pricesStatusRef.current === 'unavailable') void loadPrices();
+    });
+    return () => sub.remove();
+  }, [purchases, loadPrices]);
 
   React.useEffect(() => {
     let canceled = false;
@@ -129,6 +164,7 @@ export function AppStoreProvider({ children, provider }: { children: React.React
       if (canceled) return;
       setState((prev) => ({
         prices: prev.prices,
+        pricesStatus: prev.pricesStatus,
         ready: true,
         onboardingDone: onboarding === '1',
         entitlement,
@@ -199,6 +235,10 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         setState((s) => ({ ...s, entitlement }));
         return entitlement;
       },
+      async refreshPrices() {
+        setState((s) => (s.pricesStatus === 'ready' ? s : { ...s, pricesStatus: 'loading' }));
+        await loadPrices();
+      },
       manageSubscriptions: () => purchases.openManageSubscriptions(),
       async deleteAllData() {
         // The photographs and exported portraits are files, not database rows; remove them too.
@@ -211,22 +251,15 @@ export function AppStoreProvider({ children, provider }: { children: React.React
         await clearSettings([FREE_SCANS_USED_KEY, FREE_SCAN_LAST_KEY, FREE_PRACTICE_USED_KEY, ENTITLEMENT_KEY]);
         await setSetting(ONBOARDING_KEY, '1');
         const entitlement = await purchases.getEntitlement();
-        setState((s) => ({ ready: true, onboardingDone: true, entitlement, freeScansUsed: s.freeScansUsed, lastFreeScanAt: s.lastFreeScanAt, freePracticeUsed: s.freePracticeUsed, scans: [], practices: [], resonanceRate: null, frameStyle: 'classic', prices: s.prices }));
+        setState((s) => ({ ready: true, onboardingDone: true, entitlement, freeScansUsed: s.freeScansUsed, lastFreeScanAt: s.lastFreeScanAt, freePracticeUsed: s.freePracticeUsed, scans: [], practices: [], resonanceRate: null, frameStyle: 'classic', prices: s.prices, pricesStatus: s.pricesStatus }));
       },
     }),
-    [purchases],
+    [purchases, loadPrices],
   );
 
   const now = useNow();
   const derived = React.useMemo<AppState>(() => {
-    const freeScansLeft = freeScansRemaining(state.lastFreeScanAt, now);
-    return {
-      ...state,
-      freeScansLeft,
-      nextFreeScanAt: nextFreeScanAt(state.lastFreeScanAt, now),
-      canScan: state.entitlement.isPro || freeScansLeft > 0,
-      canPractice: state.entitlement.isPro || !state.freePracticeUsed,
-    };
+    return { ...state, ...accessFor({ isPro: state.entitlement.isPro, lastFreeScanAt: state.lastFreeScanAt, freePracticeUsed: state.freePracticeUsed }, now) };
   }, [state, now]);
 
   return (

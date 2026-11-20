@@ -24,15 +24,20 @@ const BENEFITS = [
  */
 export default function Paywall() {
   const { from } = useLocalSearchParams<{ from?: string }>();
-  const { entitlement, prices } = useAppState();
-  const { purchase, restore, manageSubscriptions } = useAppActions();
+  const { entitlement, prices, pricesStatus } = useAppState();
+  const { purchase, restore, manageSubscriptions, refreshPrices } = useAppActions();
+  const pricesReady = pricesStatus === 'ready';
   const [plan, setPlan] = React.useState<PlanId>('annual');
   const [busy, setBusy] = React.useState(false);
   const [showOnce, setShowOnce] = React.useState(false);
   const listedPlans = React.useMemo(() => {
     const order: PlanId[] = showOnce ? ['annual', 'monthly', 'lifetime'] : ['annual', 'monthly'];
-    return order.map((id) => PLANS.find((p) => p.id === id)).filter((p): p is (typeof PLANS)[number] => !!p);
-  }, [showOnce]);
+    // A store build lists only what the store actually offers, at the store's price.
+    const simulated = purchasesAreSimulated();
+    return order
+      .map((id) => PLANS.find((p) => p.id === id))
+      .filter((p): p is (typeof PLANS)[number] => !!p && (simulated || !!prices[p.id]));
+  }, [showOnce, prices]);
   // A free trial appears only when the store offers one on the chosen plan to this person.
   const trial = prices[plan]?.trial ?? null;
 
@@ -80,6 +85,22 @@ export default function Paywall() {
         ))}
       </View>
 
+      {!pricesReady ? (
+        <View style={{ marginTop: space.xxl }} accessibilityLiveRegion="polite">
+          <Rule />
+          <Text variant="heading" style={{ marginTop: space.lg }}>
+            {pricesStatus === 'loading' ? 'Loading prices…' : 'We could not load prices.'}
+          </Text>
+          {pricesStatus === 'unavailable' ? (
+            <>
+              <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.sm }}>
+                Check your connection and try again. Nothing has been charged.
+              </Text>
+              <Button label="Try again" variant="secondary" onPress={() => void refreshPrices()} style={{ marginTop: space.lg, alignSelf: 'flex-start' }} />
+            </>
+          ) : null}
+        </View>
+      ) : (
       <View style={{ marginTop: space.xxl }}>
         <Rule />
         {listedPlans.map((listed) => {
@@ -125,8 +146,9 @@ export default function Paywall() {
           );
         })}
       </View>
+      )}
 
-      {!showOnce ? (
+      {pricesReady && !showOnce ? (
         <Button label="Prefer to pay once?" variant="ghost" onPress={() => setShowOnce(true)} style={{ alignSelf: 'flex-start', marginTop: space.sm }} />
       ) : null}
 
@@ -134,7 +156,7 @@ export default function Paywall() {
         label={entitlement.isPro ? 'You already have Pro' : !purchasesAvailable() ? 'Purchases are not available in this build' : trial ? `Start ${trialAdjective(trial)} free trial` : `Continue with ${PLANS.find((p) => p.id === plan)?.title}`}
         onPress={() => void buy()}
         loading={busy}
-        disabled={entitlement.isPro || !purchasesAvailable()}
+        disabled={entitlement.isPro || !purchasesAvailable() || !pricesReady}
         block
         style={{ marginTop: space.lg }}
       />

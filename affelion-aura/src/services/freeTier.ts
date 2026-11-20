@@ -28,6 +28,28 @@ export function freeScanStatus(next: number | null, now: number): string {
   return `Next free scan ${day}`;
 }
 
+export interface Access {
+  canScan: boolean;
+  canPractice: boolean;
+  freeScansLeft: number;
+  nextFreeScanAt: number | null;
+}
+
+/**
+ * What a person may do right now. Pro opens everything; the free plan gets one scan a week and
+ * one practice session. Every Pro gate in the app reads from this or from `isPro` directly.
+ */
+export function accessFor(p: { isPro: boolean; lastFreeScanAt: number | null; freePracticeUsed: boolean }, now: number): Access {
+  const next = nextFreeScanAt(p.lastFreeScanAt, now);
+  const freeScansLeft = next === null ? 1 : 0;
+  return {
+    canScan: p.isPro || freeScansLeft > 0,
+    canPractice: p.isPro || !p.freePracticeUsed,
+    freeScansLeft,
+    nextFreeScanAt: next,
+  };
+}
+
 export function freeScansRemaining(lastFreeScanAt: number | null, now: number): number {
   return nextFreeScanAt(lastFreeScanAt, now) === null ? 1 : 0;
 }

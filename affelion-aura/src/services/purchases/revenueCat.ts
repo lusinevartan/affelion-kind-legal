@@ -11,7 +11,7 @@ import { NO_ENTITLEMENT, PLANS, type Entitlement, type PlanId, type PlanPrices, 
  */
 export const RC_ENTITLEMENT = 'pro';
 
-function toEntitlement(info: CustomerInfo): Entitlement {
+export function toEntitlement(info: CustomerInfo): Entitlement {
   const ent = info.entitlements.active[RC_ENTITLEMENT];
   if (!ent) return NO_ENTITLEMENT;
   const plan = PLANS.find((p) => ent.productIdentifier.startsWith(p.productId))?.id ?? null;
