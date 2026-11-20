@@ -1,7 +1,7 @@
 # Affelion Aura — Launch Status
 
 **Goal:** submit iPhone 1.0 as soon as the 11 must-haves pass.
-**Current phase:** Must-have before submit
+**Current phase:** Must-have before submit (code side done for M2–M8; waiting on builds, device test and pages)
 **Last updated by:** Claude, Nov 20, 2026 (branch `claude/affelion-aura-app-idarxq`, PR #5)
 
 > Claude ticks an item only when every acceptance criterion in `CLAUDE-AURA-LAUNCH.md` section 2 is met, and adds evidence below it.
@@ -26,6 +26,14 @@ Claude will add exact step-by-step instructions next to each item.
   8. RevenueCat (free tier, no card needed): create project Affelion Aura → add the iOS app (bundle ID from `app.json`) → upload the App Store Connect in-app purchase key it asks for → **Products**: import the three IDs → **Entitlements**: create **`pro`** and attach all three → **Offerings**: the offering **`default`** with packages **Annual**, **Monthly**, **Lifetime**, each pointing at its product → mark it **Current**.
   9. Copy the RevenueCat **Apple public SDK key** (starts with `appl_`) and send it to Claude, or add it yourself: `npx eas-cli@latest env:create --name EXPO_PUBLIC_RC_IOS_KEY --value appl_... --environment production --environment preview`. The public key is safe in the app; it is not a secret.
   10. When you upload the 1.0 build, open the version page → **In-App Purchases and Subscriptions** → **+** → select all three, so they are reviewed with the app.
+- [ ] **First builds (item 11, about 30 minutes of your time, then EAS works for 20–40 minutes).** This session isn't logged in to Expo and the project isn't linked yet, so Claude can't start a build. On your computer, in the `affelion-aura` folder of this repo (branch `claude/affelion-aura-app-idarxq`):
+  1. `npx eas-cli@latest login` (your Expo account; free plan is fine, and the free plan includes a monthly allowance of builds; if EAS ever asks for payment, stop and tell Claude).
+  2. `npx eas-cli@latest init` → choose your Expo account → it writes `extra.eas.projectId` into `app.json`. Commit that change (or send it to Claude).
+  3. Add the RevenueCat public keys (M2 step 9): `npx eas-cli@latest env:create --name EXPO_PUBLIC_RC_IOS_KEY --value appl_XXXX --environment production --environment preview --visibility plaintext`, and the same with `EXPO_PUBLIC_RC_ANDROID_KEY` and the `goog_` key once Android is set up.
+  4. `npx eas-cli@latest build --platform ios --profile production`. When asked, sign in with the Apple ID of the Affelion LLC developer account and let EAS create the distribution certificate and provisioning profile (free, part of your developer membership). Version is 1.0.0; the build number is counted up by EAS automatically.
+  5. When it finishes: `npx eas-cli@latest submit --platform ios --profile production --latest`. This only **uploads to TestFlight**; it does not send anything to App Review. In App Store Connect → TestFlight, add yourself as an internal tester and install it on your iPhone.
+  6. Android: `npx eas-cli@latest build --platform android --profile production` gives an `.aab`. Google requires the very first upload by hand: Play Console → Affelion Aura → Testing → **Internal testing** → Create release → upload the `.aab` → add yourself as a tester. Later uploads can use `eas submit`.
+  7. Tell Claude the build numbers. Claude can then take over builds if you add an `EXPO_TOKEN` (Expo → Account settings → Access tokens) to this environment's secrets.
 - [ ] **Sandbox purchase test, about 15 minutes, on a TestFlight build (M3).** Needs M2 done and the RevenueCat key in the build.
   1. iPhone Settings → App Store → scroll to **Sandbox Account** → sign in with a sandbox tester (create one in App Store Connect → Users and Access → Sandbox → Testers; any new email works).
   2. Install the TestFlight build. Do one scan. The paywall opens two seconds after the portrait. Tap **Start 7-day free trial**, confirm. Expect: Pro unlocks (the breakdown opens). Sandbox trials last minutes, not days.
