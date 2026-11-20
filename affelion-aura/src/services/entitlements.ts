@@ -11,8 +11,7 @@ export { FREE_SCAN_INTERVAL_MS, accessFor, freeScanStatus, freeScansRemaining, n
  *
  * Free tier: the first scan is free, then one free scan a week, each with the basic portrait.
  * Pro: unlimited scans, full report, history and trends, the AI guide, premium styles and clean
- * exports. (The launch plan's recommendation; test it against three scans total once there is
- * traffic.)
+ * exports.
  *
  * Billing goes through a `PurchaseProvider`. The app ships with a development provider that
  * simulates purchases locally so the whole flow can be exercised without store accounts.

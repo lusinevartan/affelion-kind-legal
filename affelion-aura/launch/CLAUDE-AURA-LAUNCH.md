@@ -31,7 +31,7 @@ If you are unsure whether something crosses a guardrail, treat it as if it does.
 - A **deterministic rulebook** maps the numbers to one of **20 colors**, drawn as a **WebGL fluid aura** around a black-and-white photo. The same numbers always give the same color.
 - Features: full breakdown, breathing practice with before/after color, **Sasha** AI guide (1.0 = built-in answers only, no server), history, Pro.
 - Stack: **Expo / React Native**, native modules in Swift and Kotlin, **99 automated tests**, **RevenueCat** for purchases.
-- Pricing as built: Free (3 scans + 1 practice), **$12.99/month**, **$69.99/year** (7-day free trial ready), **$199 lifetime**.
+- Pricing as built: Free (first scan free, then one free scan a week, plus 1 practice), **$12.99/month**, **$69.99/year** (7-day free trial ready), **$199 lifetime**.
 - Honest by design: no diagnosis, not a medical device, processing stays on the phone, no account.
 - Sister apps: Affelion Pop (iOS) and Affelion Bible (iOS + Google Play) are live; Kind and Lock are in progress.
 - Lusine is paying down credit card debt. **Keep it cheap and low-risk.** No paid services without her approval.

@@ -89,7 +89,7 @@ _(Claude writes the build number, what was tested and any known issues here when
 ### Phase C — Days 1–30
 - [ ] First update shipped
 - [ ] Paywall right after the first portrait reveal
-- [ ] Proposal: hide lifetime, 1 free scan a week (Needs Lusine)
+- [x] Hide lifetime behind "Prefer to pay once?" and first scan free, then one free scan a week: decided by Lusine Nov 20 and built for 1.0.
 - [ ] Creator offer-code plan drafted (Needs Lusine)
 - [ ] Ad test only if approved and a reel is winning (cap $300)
 

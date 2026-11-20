@@ -31,7 +31,7 @@ color, and the report shows you which number led to which color.
 Then breathe. In the guided practice you keep your finger on the camera and watch the color
 change as your heart rhythm settles, with a before and after from the same session.
 
-What you get free: three scans with the portrait and the main reading.
+What you get free: first scan free, then one free scan a week, each with the portrait and the main reading.
 
 Aura Pro adds unlimited scans, the full report, your history and trends, the breathing practice
 without limits, Sasha (a guide who explains your portrait using only what was measured), more

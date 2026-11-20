@@ -48,7 +48,7 @@ export default function Settings() {
             ? entitlement.expiresAt
               ? `Renews or ends ${formatDate(entitlement.expiresAt)}. You can cancel any time and keep Pro until that date.`
               : 'Lifetime access. Nothing renews.'
-            : `${freeScanStatus(nextFreeScanAt, now)}. One free scan a week, or go Pro for unlimited.`}
+            : `${freeScanStatus(nextFreeScanAt, now)}. First scan free, then one free scan a week. Pro is unlimited.`}
         </Text>
         <View style={{ flexDirection: 'row', gap: space.md, marginTop: space.lg }}>
           {entitlement.isPro ? (

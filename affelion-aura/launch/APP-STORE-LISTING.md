@@ -41,7 +41,7 @@ WHAT YOU GET
 • History: see how your colors move over time.
 
 FREE AND PRO
-Try Aura free. Aura Pro unlocks unlimited check-ins and practice, the full breakdown, history, Sasha, and clean exports. Pro is an auto-renewing subscription with a free trial on the annual plan; prices are shown in the app before you subscribe. Cancel anytime in your Apple ID settings at least 24 hours before renewal.
+First scan free, then one free scan a week. Aura Pro unlocks unlimited check-ins and practice, the full breakdown, history, Sasha, and clean exports. Pro is an auto-renewing subscription with a free trial on the annual plan; prices are shown in the app before you subscribe. Cancel anytime in your Apple ID settings at least 24 hours before renewal.
 
 WORKS BEST
 Hold still with your fingertip fully covering the back camera and flash, in a comfortably lit room, with warm hands.
@@ -116,7 +116,7 @@ What's different from other aura apps: colors come from real measurements (appro
 
 Privacy: camera frames and audio are processed on the device and discarded. No account. Purchases are handled by Apple through RevenueCat.
 
-Subscriptions: Aura Pro (yearly with a 7-day free trial, monthly) and a lifetime purchase. The paywall appears after the first portrait; Restore Purchases is on the paywall and in Settings.
+Subscriptions: Aura Pro (yearly with a 7-day free trial, monthly) and a lifetime purchase. First scan free, then one free scan a week. The paywall appears after the first portrait; Restore Purchases is on the paywall and in Settings.
 
 Demo video of a complete check-in: {link to 60-second screen recording}
 

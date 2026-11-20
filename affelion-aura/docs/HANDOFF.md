@@ -70,7 +70,7 @@ The scan needs a phone: camera, flash and microphone do not exist in the browser
 
 ## Business model as built
 
-The first scan is free, then one free scan a week, plus one free practice. Aura Pro: $12.99 a month, $69.99 a year (shown as
+First scan free, then one free scan a week, plus one free practice. Aura Pro: $12.99 a month, $69.99 a year (shown as
 $5.83 a month, marked best value), $199 lifetime (hidden behind "Prefer to pay once?"). The paywall,
 titled "Keep your Aura", opens once by itself two seconds after a free person's first portrait.
 A reading with a shaky signal or a pulse outside 40 to 140 is not saved and does not use the free
@@ -91,8 +91,8 @@ annual subscribers, and $50,000 a month roughly 10,000 to 12,000.
 2. Approve or remove the three added color rules (lime, magenta, golden yellow). See
    `docs/COLOR_SYSTEM.md`.
 3. Whether to credit the friend who inspired Sasha, with her consent.
-4. The app icon (a restrained teal corona is in `assets/`).
-5. When the paywall appears (now: after the third free scan).
+4. The app icon (the original dark corona is in `assets/`; direction on hold).
+5. When the paywall appears (now: once by itself, two seconds after the first portrait).
 6. A gentler line for a dim first portrait.
 7. Move the app source out of this repository, which also hosts public legal pages.
 8. Read the plain versions of the twenty color descriptions (`PLAIN_WORDS`) and adjust any
