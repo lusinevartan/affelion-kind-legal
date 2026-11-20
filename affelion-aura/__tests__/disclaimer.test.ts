@@ -16,3 +16,13 @@ describe('the disclaimer', () => {
     expect(readFileSync(join(__dirname, '../launch/APP-STORE-LISTING.md'), 'utf8')).toContain(DISCLAIMER);
   });
 });
+
+describe('legal links', () => {
+  it('point at the affelion.com pages named in the listing', () => {
+    const links = readFileSync(join(__dirname, '../src/services/links.ts'), 'utf8');
+    expect(links).toContain("'https://www.affelion.com/aura'");
+    const listing = readFileSync(join(__dirname, '../launch/APP-STORE-LISTING.md'), 'utf8');
+    expect(listing).toContain('https://www.affelion.com/aura/privacy');
+    expect(listing).toContain('https://www.affelion.com/aura/terms');
+  });
+});
