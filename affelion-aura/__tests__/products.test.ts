@@ -25,3 +25,12 @@ describe('store products', () => {
     expect(PLANS.filter((p) => p.recommended).map((p) => p.id)).toEqual(['annual']);
   });
 });
+
+describe('app identifiers', () => {
+  it('keeps the iOS bundle ID of the existing App Store record and uses com.affelion.halo on Android', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const app = require('../app.json').expo;
+    expect(app.ios.bundleIdentifier).toBe('com.affelion.aura');
+    expect(app.android.package).toBe('com.affelion.halo');
+  });
+});

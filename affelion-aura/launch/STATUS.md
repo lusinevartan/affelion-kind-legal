@@ -18,7 +18,7 @@ In order. Each step has the exact clicks.
 
 - [ ] **1. Reserve "Affelion Halo – Color Check-In" in App Store Connect and Play Console (5 minutes, free).** Apple and Google hold a name for whoever saves it first.
   1. App Store Connect → Apps → your app record (ID 6817953783) → **App Information** → Name: **Affelion Halo – Color Check-In** → Save. Subtitle: **Your heartbeat, in color**. Primary category **Lifestyle**, secondary **Health & Fitness**. Check the bundle ID is `com.affelion.aura` (users never see it; it stays).
-  2. Play Console → **Create app** → App name **Affelion Halo – Color Check-In**, default language English (United States), App, Free, accept the declarations → Create. Then Store presence → Main store listing → Save a draft with the name.
+  2. Play Console → **Create app** (Google sets the package name at the first upload; ours is `com.affelion.halo`) → App name **Affelion Halo – Color Check-In**, default language English (United States), App, Free, accept the declarations → Create. Then Store presence → Main store listing → Save a draft with the name.
   3. Tell Claude when both are saved.
 - [ ] **2. Approve pricing and create/approve live products:** annual $69.99 with 7-day free trial, monthly $12.99, lifetime $199 (M2)
   The IDs below are the ones in the app's code. Type them exactly; a single wrong character means the button can't buy.
@@ -29,7 +29,7 @@ In order. Each step has the exact clicks.
   5. Put annual at level 1 and monthly at level 2 in the group (higher level = more value), so switching between them is handled as an upgrade or downgrade.
   6. **Monetization → In-App Purchases → +** → type **Non-Consumable**, product ID **`com.affelion.aura.pro.lifetime`**, reference name Halo Pro Lifetime, price **$199**, display name **Halo Pro – Lifetime**, description **Every Pro feature, one payment, no renewal**.
   7. Each product needs a **Review screenshot**: use `launch/review/paywall-review.png` (Claude adds it under M11) and the review note "Shown on the paywall after the first portrait."
-  8. RevenueCat (free tier, no card needed): create project Affelion Halo → add the iOS app (bundle ID from `app.json`) → upload the App Store Connect in-app purchase key it asks for → **Products**: import the three IDs → **Entitlements**: create **`pro`** and attach all three → **Offerings**: the offering **`default`** with packages **Annual**, **Monthly**, **Lifetime**, each pointing at its product → mark it **Current**.
+  8. RevenueCat (free tier, no card needed): create project Affelion Halo → add the iOS app (bundle ID `com.affelion.aura`; later the Android app, package `com.affelion.halo`) → upload the App Store Connect in-app purchase key it asks for → **Products**: import the three IDs → **Entitlements**: create **`pro`** and attach all three → **Offerings**: the offering **`default`** with packages **Annual**, **Monthly**, **Lifetime**, each pointing at its product → mark it **Current**.
   9. Copy the RevenueCat **Apple public SDK key** (starts with `appl_`) and send it to Claude, or add it yourself: `npx eas-cli@latest env:create --name EXPO_PUBLIC_RC_IOS_KEY --value appl_... --environment production --environment preview`. The public key is safe in the app; it is not a secret.
   10. When you upload the 1.0 build, open the version page → **In-App Purchases and Subscriptions** → **+** → select all three, so they are reviewed with the app.
 - [ ] **3. First builds (item 11, about 30 minutes of your time, then EAS works for 20–40 minutes).** This session isn't logged in to Expo and the project isn't linked yet, so Claude can't start a build. On your computer, in the `affelion-aura` folder of this repo (branch `claude/affelion-aura-app-idarxq`):
@@ -103,7 +103,7 @@ One row per phone. Test numbers refer to `launch/DEVICE-TEST.md`.
 ### Ready to submit
 
 **Not yet: waiting on Needs Lusine steps 1–9.** Claude's side is complete:
-- **Build:** version 1.0.0, build number set by EAS (`autoIncrement`), bundle `com.affelion.aura`, iPhone only, `ITSAppUsesNonExemptEncryption: false`, Corona icon, no simulated purchases or test text possible in Release (tested). No build has been made yet (step 3).
+- **Build:** version 1.0.0, build number set by EAS (`autoIncrement`), iOS bundle `com.affelion.aura` (fixed by the existing App Store record), Android package `com.affelion.halo` (Lusine, Nov 20; locked at the first Play upload), iPhone only, `ITSAppUsesNonExemptEncryption: false`, Corona icon, no simulated purchases or test text possible in Release (tested). No build has been made yet (step 3).
 - **Tested here:** 152 automated tests (paywall content and timing, restore through RevenueCat, gating, release safety, permissions text, disclaimer, reading gate, free plan, streak and more), typecheck, lint, `expo-doctor` 20/20, every screen at iPhone 6.9", 6.5" and Android sizes in the web review build.
 - **Not tested:** anything on a real phone. The pulse, outline and microphone modules have never run on hardware; expect fixes after the first device run (step 7). Purchases in sandbox (step 6).
 - **Known risks:** "Halo" is a crowded word in wellness (NAME-CHECK.md); the first device run may need native fixes.

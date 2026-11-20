@@ -7,6 +7,7 @@ account is a business account, so no closed test with testers is required before
 | Field | Copy | Count / limit |
 |---|---|---|
 | App name | Affelion Halo – Color Check-In | 30 / 30 |
+| Package name | `com.affelion.halo` (set by the first upload, permanent; iOS stays `com.affelion.aura`) | |
 | Short description | Your real pulse and voice, turned into a color portrait. One minute. | 68 / 80 |
 | Category | Lifestyle | |
 | Tags | Wellness, Lifestyle, Art & design (pick the closest Google offers) | |
@@ -71,7 +72,7 @@ From Affelion, the makers of Affelion Pop, Affelion Bible and Affelion Kind.
 
 ## In-app products (Monetize → Products)
 
-Same IDs as iOS so one RevenueCat setup covers both:
+Same product IDs as iOS so the app's code and one RevenueCat entitlement cover both (product IDs are just labels inside this Play app, so the `aura` in them is invisible to people):
 - Subscription **`com.affelion.aura.pro.annual`** with base plan `yearly` (auto-renewing, 1 year, $69.99) and an offer `free-week` (free trial, 7 days, new customers).
 - Subscription **`com.affelion.aura.pro.monthly`** with base plan `monthly` (auto-renewing, 1 month, $12.99), no offer.
 - One-time product **`com.affelion.aura.pro.lifetime`**, $199.

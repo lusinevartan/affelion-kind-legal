@@ -19,7 +19,7 @@
       }
     },
     "android": {
-      "package": "com.affelion.aura",
+      "package": "com.affelion.halo",
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
