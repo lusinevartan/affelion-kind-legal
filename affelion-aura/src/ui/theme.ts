@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
 /**
- * Affelion Aura design tokens: "Stage".
+ * Affelion Halo design tokens: "Stage".
  *
  * The app itself is grayscale. Color belongs to the person: it only ever appears inside a
  * portrait, on a black stage, as light around a black-and-white photograph. Everything else is

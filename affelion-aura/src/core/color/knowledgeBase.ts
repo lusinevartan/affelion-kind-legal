@@ -1,5 +1,5 @@
 /**
- * The Affelion Aura color knowledge base. Single source of truth for all visuals, tappable
+ * The Affelion Halo color knowledge base. Single source of truth for all visuals, tappable
  * explanations, summaries and AI responses. `COLOR_KNOWLEDGE_BASE` is the specification,
  * verbatim. `PLAIN_WORDS` says the same thing for each color at a high school reading level,
  * and is what people read in the app. Nothing in the app may describe a color in words that

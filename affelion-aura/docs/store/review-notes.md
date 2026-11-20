@@ -1,16 +1,16 @@
 # Notes for App Review (final, version 1.0)
 
-Paste the text between the lines into App Store Connect → Affelion Aura → version 1.0 → **App Review
+Paste the text between the lines into App Store Connect → Affelion Halo → version 1.0 → **App Review
 Information → Notes**. Sign-in required: **No**. Add the demo video link where marked.
 
 ---
 
-Affelion Aura is a one-minute wellness and self-reflection check-in. It turns an approximate pulse
+Affelion Halo is a one-minute wellness and self-reflection check-in. It turns an approximate pulse
 and a few seconds of voice into a color portrait around a black-and-white photo of the user.
 
 NOT A MEDICAL DEVICE
 The app does not diagnose, treat, cure, prevent or monitor any condition and makes no medical
-claims. The portrait, the full breakdown, How it works and Settings all show: "Affelion Aura is for
+claims. The portrait, the full breakdown, How it works and Settings all show: "Affelion Halo is for
 wellness and self-reflection. It is not a medical device and does not diagnose, treat, cure, or
 prevent any medical condition. Talk to a doctor about any health concern." The pulse is labeled
 approximate. The app does not use HealthKit.
@@ -42,7 +42,7 @@ the device from the user's own numbers and nothing is sent to a server.
 
 SUBSCRIPTIONS AND THE PAYWALL
 Free: the first check-in is free, then one free check-in a week, plus one breathing practice.
-Aura Pro: yearly (with a 7-day free trial for eligible users) and monthly auto-renewing
+Halo Pro: yearly (with a 7-day free trial for eligible users) and monthly auto-renewing
 subscriptions, and a one-time lifetime purchase.
 - Reaching the paywall: it opens by itself two seconds after the first portrait. It can also be
   opened any time from the portrait ("See the full breakdown"), from Home when the free check-in is

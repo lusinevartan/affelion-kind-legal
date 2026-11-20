@@ -7,7 +7,7 @@ import type * as React from 'react';
 /**
  * Polaroid export. The on-screen Polaroid card (still + aura overlay + paper frame + caption)
  * is captured as a bitmap at a chosen pixel ratio. Free tier exports at 2× with the
- * "Affelion Aura" caption; Pro exports at 3× with a clean frame.
+ * "Affelion Halo" caption; Pro exports at 3× with a clean frame.
  */
 
 export interface ExportOptions {
@@ -26,7 +26,7 @@ export async function capturePolaroid(viewRef: React.RefObject<unknown>, opts: E
     // react-native-view-shot captures at device scale; `width/height` would resample, so we
     // let the card itself be sized for the requested ratio instead.
   });
-  const name = opts.fileName ?? `affelion-aura-${Date.now()}.png`;
+  const name = opts.fileName ?? `affelion-halo-${Date.now()}.png`;
   const dest = new File(Paths.document, name);
   const src = new File(tmp);
   if (dest.exists) dest.delete();

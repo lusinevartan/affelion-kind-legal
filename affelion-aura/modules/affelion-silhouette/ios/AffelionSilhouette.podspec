@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name           = 'AffelionSilhouette'
   s.version        = '1.0.0'
-  s.summary        = 'Front-camera face and person-silhouette tracking for Affelion Aura'
+  s.summary        = 'Front-camera face and person-silhouette tracking for Affelion Halo'
   s.description    = 'ARKit face tracking with Vision person segmentation, falling back to AVFoundation + Vision face detection.'
   s.author         = 'Affelion'
   s.homepage       = 'https://affelion.com'

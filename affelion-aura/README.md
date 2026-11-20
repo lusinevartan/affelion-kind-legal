@@ -1,4 +1,4 @@
-# Affelion Aura
+# Affelion Halo
 
 A premium biometric visualizer for iOS and Android. It measures heart rate and heart-rate
 variability from a fingertip on the rear camera (torch on), analyses a few seconds of voice for

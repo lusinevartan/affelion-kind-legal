@@ -1,4 +1,4 @@
-# Affelion Aura — Store Listing Copy (draft for Lusine's approval)
+# Affelion Halo — Store Listing Copy (draft for Lusine's approval)
 
 All copy follows the wording rules in `CLAUDE-AURA-LAUNCH.md` section 4. Character counts were checked against Apple's limits (name 30, subtitle 30, keywords 100, promotional text 170; source: https://developer.apple.com/app-store/product-page/). No prices appear in the description (Apple advises against it).
 
@@ -8,17 +8,17 @@ All copy follows the wording rules in `CLAUDE-AURA-LAUNCH.md` section 4. Charact
 
 | Field | Copy | Count / limit |
 |---|---|---|
-| App name | Affelion Aura – Color Check-In | 30 / 30 |
+| App name | Affelion Halo – Color Check-In | 30 / 30 |
 | Subtitle | Your heartbeat, in color | 24 / 30 (changed Nov 20 by Claude: "Aura reading" sits close to the fortune-telling category in guideline 4.3(b); the description already opens with this line) |
-| Keywords | color,check in,heartbeat,pulse,vibe,mood,portrait,selfie,calm,breathing,daily,glow,art,reflect | 94 / 100 (changed Nov 20: dropped "reading" and "hrv", a health metric, added "art" and "reflect") |
+| Keywords | aura,color,check in,heartbeat,pulse,vibe,mood,portrait,selfie,calm,breathing,daily,glow,art,reflect | 99 / 100 (changed Nov 20: dropped "reading" and "hrv", a health metric, added "art" and "reflect"; added "aura" back after the rename to Halo, since people search for it and it is no longer in the name) |
 | Promotional text | Your real heartbeat and voice, turned into one of twenty colors. A one-minute check-in that's beautiful, honest, and all yours. | under 170 |
 | Primary category | Lifestyle | judgment call |
 | Secondary category | Health & Fitness | |
 | Support URL | https://www.affelion.com (or a /aura/support page) | |
 | Marketing URL | https://www.affelion.com | |
-| Privacy policy URL | https://www.affelion.com/aura/privacy (to be published) | |
+| Privacy policy URL | https://www.affelion.com/halo/privacy (to be published) | |
 
-Notes: words in the app name ("Aura", "Affelion") don't need repeating in keywords. No competitor names or trademarks.
+Notes: words in the app name ("Halo", "Affelion") don't need repeating in keywords. No competitor names or trademarks.
 
 ---
 
@@ -26,7 +26,7 @@ Notes: words in the app name ("Aura", "Affelion") don't need repeating in keywor
 
 Your heartbeat, in color.
 
-Affelion Aura turns one minute of you into a living portrait. Look at the camera, rest a fingertip on the back camera, and say a few words. Aura reads your approximate pulse and the steadiness of your voice, then paints one of twenty colors moving around a black-and-white photo of you, at the pace of your own heartbeat.
+Affelion Halo turns one minute of you into a living portrait. Look at the camera, rest a fingertip on the back camera, and say a few words. Halo reads your approximate pulse and the steadiness of your voice, then paints one of twenty colors moving around a black-and-white photo of you, at the pace of your own heartbeat.
 
 HONEST BY DESIGN
 • Every color traces back to a number you can tap and see.
@@ -41,15 +41,15 @@ WHAT YOU GET
 • History: see how your colors move over time.
 
 FREE AND PRO
-First scan free, then one free scan a week. Aura Pro unlocks unlimited check-ins and practice, the full breakdown, history, Sasha, and clean exports. Pro is an auto-renewing subscription with a free trial on the annual plan; prices are shown in the app before you subscribe. Cancel anytime in your Apple ID settings at least 24 hours before renewal.
+First scan free, then one free scan a week. Halo Pro unlocks unlimited check-ins and practice, the full breakdown, history, Sasha, and clean exports. Pro is an auto-renewing subscription with a free trial on the annual plan; prices are shown in the app before you subscribe. Cancel anytime in your Apple ID settings at least 24 hours before renewal.
 
 WORKS BEST
 Hold still with your fingertip fully covering the back camera and flash, in a comfortably lit room, with warm hands.
 
-Affelion Aura is for wellness and self-reflection. It is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Talk to a doctor about any health concern.
+Affelion Halo is for wellness and self-reflection. It is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Talk to a doctor about any health concern.
 
-Terms of Use: https://www.affelion.com/aura/terms
-Privacy Policy: https://www.affelion.com/aura/privacy
+Terms of Use: https://www.affelion.com/halo/terms
+Privacy Policy: https://www.affelion.com/halo/privacy
 
 From Affelion, the makers of Affelion Pop and Affelion Bible.
 
@@ -74,9 +74,9 @@ App preview (optional, up to 30 seconds, autoplays muted): first 3 seconds = the
 
 | Product | Display name (≤35) | Description (≤55) |
 |---|---|---|
-| Annual | Aura Pro – Yearly | Unlimited check-ins, breakdown, history and Sasha |
-| Monthly | Aura Pro – Monthly | Unlimited check-ins, breakdown, history and Sasha |
-| Lifetime | Aura Pro – Lifetime | Every Pro feature, one payment, no renewal |
+| Annual | Halo Pro – Yearly | Unlimited check-ins, breakdown, history and Sasha |
+| Monthly | Halo Pro – Monthly | Unlimited check-ins, breakdown, history and Sasha |
+| Lifetime | Halo Pro – Lifetime | Every Pro feature, one payment, no renewal |
 
 Prices are set by Lusine in App Store Connect (guardrail): annual $69.99 with 7-day free trial, monthly $12.99, lifetime $199.
 
@@ -84,7 +84,7 @@ Prices are set by Lusine in App Store Connect (guardrail): annual $69.99 with 7-
 
 ## 5. Paywall copy
 
-**Headline:** Keep your Aura
+**Headline:** Keep your Halo
 **Benefits:**
 - A new color every day, unlimited
 - The full breakdown behind your color
@@ -105,7 +105,7 @@ Prices must come live from the store, never hardcoded.
 
 **Superseded Nov 20 by the final version in `docs/store/review-notes.md`** (adds how to reach the paywall, the free plan, restore, and the on-device Sasha note). Use that one.
 
-Affelion Aura is a wellness and self-reflection app. It turns a one-minute check-in into a color portrait. It does not diagnose, treat or monitor any condition and makes no medical claims; the app and listing say it is not a medical device and remind users to see a doctor about health concerns.
+Affelion Halo is a wellness and self-reflection app. It turns a one-minute check-in into a color portrait. It does not diagnose, treat or monitor any condition and makes no medical claims; the app and listing say it is not a medical device and remind users to see a doctor about health concerns.
 
 How to test a check-in:
 1. Open the app and tap Begin. No account is needed.
@@ -118,7 +118,7 @@ What's different from other aura apps: colors come from real measurements (appro
 
 Privacy: camera frames and audio are processed on the device and discarded. No account. Purchases are handled by Apple through RevenueCat.
 
-Subscriptions: Aura Pro (yearly with a 7-day free trial, monthly) and a lifetime purchase. First scan free, then one free scan a week. The paywall appears after the first portrait; Restore Purchases is on the paywall and in Settings.
+Subscriptions: Halo Pro (yearly with a 7-day free trial, monthly) and a lifetime purchase. First scan free, then one free scan a week. The paywall appears after the first portrait; Restore Purchases is on the paywall and in Settings.
 
 Demo video of a complete check-in: {link to 60-second screen recording}
 
@@ -126,15 +126,15 @@ Demo video of a complete check-in: {link to 60-second screen recording}
 
 ## 7. Permission text (Info.plist via Expo config)
 
-- **NSCameraUsageDescription:** Aura uses your front camera for your outline and one photo, and your back camera and flash to read your pulse from your fingertip. Camera frames stay on your phone.
-- **NSMicrophoneUsageDescription:** Aura listens for 5 seconds to measure the pitch and steadiness of your voice. Audio stays on your phone and is never recorded.
-- **NSPhotoLibraryAddUsageDescription** (only if export saves to Photos): Aura saves your portrait to your photos when you ask it to.
+- **NSCameraUsageDescription:** Halo uses your front camera for your outline and one photo, and your back camera and flash to read your pulse from your fingertip. Camera frames stay on your phone.
+- **NSMicrophoneUsageDescription:** Halo listens for 5 seconds to measure the pitch and steadiness of your voice. Audio stays on your phone and is never recorded.
+- **NSPhotoLibraryAddUsageDescription** (only if export saves to Photos): Halo saves your portrait to your photos when you ask it to.
 
 ---
 
 ## 8. Google Play (for the Android phase)
 
-- **Title (≤30):** Affelion Aura – Color Check-In
+- **Title (≤30):** Affelion Halo – Color Check-In
 - **Short description (≤80):** Your real pulse and voice, turned into a color portrait. One minute.
 - **Full description:** use section 2, and add the device compatibility paragraph below (required by Google Play for camera-based health features), and keep the disclaimer and see-a-doctor line.
 

@@ -58,7 +58,7 @@ export default function HowItWorks() {
         How it works
       </Text>
       <Text variant="body" color={colors.fg70} style={{ marginTop: space.md }}>
-        Affelion Aura is a one-minute check-in. It takes your approximate pulse and your voice and turns those numbers into color around your photo. Every color traces to a number. It does not see invisible light or read energy.
+        Affelion Halo is a one-minute check-in. It takes your approximate pulse and your voice and turns those numbers into color around your photo. Every color traces to a number. It does not see invisible light or read energy.
       </Text>
 
       <Section label="What you do">

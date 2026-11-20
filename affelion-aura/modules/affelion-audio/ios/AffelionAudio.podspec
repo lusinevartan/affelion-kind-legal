@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name           = 'AffelionAudio'
   s.version        = '1.0.0'
-  s.summary        = 'Raw PCM microphone capture for Affelion Aura voice analysis'
+  s.summary        = 'Raw PCM microphone capture for Affelion Halo voice analysis'
   s.description    = 'Streams 16 kHz mono float PCM chunks to JavaScript. Nothing is written to disk.'
   s.author         = 'Affelion'
   s.homepage       = 'https://affelion.com'

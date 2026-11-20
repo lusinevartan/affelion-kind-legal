@@ -4,7 +4,7 @@ For whoever picks this up next. Read this, then `docs/LAUNCH.md`.
 
 ## What this is
 
-Affelion Aura is an iPhone and Android app (Expo SDK 58, React Native 0.88, TypeScript). In one
+Affelion Halo is an iPhone and Android app (Expo SDK 58, React Native 0.88, TypeScript). In one
 minute it reads pulse from a fingertip on the rear camera, analyzes a few seconds of voice,
 takes a portrait, and turns the measurements into one of twenty colors moving around the person.
 A breathing practice then shows the color changing live. It is honest about what it is: a
@@ -70,9 +70,9 @@ The scan needs a phone: camera, flash and microphone do not exist in the browser
 
 ## Business model as built
 
-First scan free, then one free scan a week, plus one free practice. Aura Pro: $12.99 a month, $69.99 a year (shown as
+First scan free, then one free scan a week, plus one free practice. Halo Pro: $12.99 a month, $69.99 a year (shown as
 $5.83 a month, marked best value), $199 lifetime (hidden behind "Prefer to pay once?"). The paywall,
-titled "Keep your Aura", opens once by itself two seconds after a free person's first portrait.
+titled "Keep your Halo", opens once by itself two seconds after a free person's first portrait.
 A reading with a shaky signal or a pulse outside 40 to 140 is not saved and does not use the free
 scan (`src/core/scan/readingGate.ts`). "Share my color" makes a 9:16 story card
 (`src/render/polaroid/StoryCard.tsx`), with the app name on it for free users. Product IDs are in `entitlements.ts`. A free

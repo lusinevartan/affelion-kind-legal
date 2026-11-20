@@ -37,7 +37,7 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
     pending.current = null;
     // One more frame so the loaded image is on screen before the bitmap is taken.
     requestAnimationFrame(() => {
-      capturePolaroid(exportCardRef, { fileName: record ? `affelion-aura-${record.id}-${Date.now().toString(36)}.png` : undefined })
+      capturePolaroid(exportCardRef, { fileName: record ? `affelion-halo-${record.id}-${Date.now().toString(36)}.png` : undefined })
         .then(resolve)
         .catch((e: unknown) => {
           Alert.alert('Export failed', e instanceof Error ? e.message : 'Unknown error');
@@ -76,7 +76,7 @@ export function usePolaroidExport(record: ScanRecord | null, opts: { clean: bool
         await opts.onSaved?.();
         if (mode === 'save') {
           const ok = await saveToPhotos(uri);
-          Alert.alert(ok ? 'Saved' : 'Not saved', ok ? 'Your portrait is in your photo library.' : 'Aura is not allowed to save to your photos. You can turn that on in Settings.');
+          Alert.alert(ok ? 'Saved' : 'Not saved', ok ? 'Your portrait is in your photo library.' : 'Halo is not allowed to save to your photos. You can turn that on in Settings.');
         } else {
           await sharePortrait(uri);
         }

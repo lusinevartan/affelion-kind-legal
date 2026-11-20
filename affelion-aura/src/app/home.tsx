@@ -48,7 +48,7 @@ export default function Home() {
         <View style={styles.scrimBottom} pointerEvents="none" />
         <View style={[styles.top, { paddingTop: insets.top + space.md }]}>
           <Text variant="eyebrow" color={colors.stageFg}>
-            Affelion Aura
+            Affelion Halo
           </Text>
           <Pressable accessibilityRole="button" accessibilityLabel="Settings" hitSlop={16} onPress={() => router.push('/settings')}>
             <Text variant="eyebrow" color={colors.stageFg}>

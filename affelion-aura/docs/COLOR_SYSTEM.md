@@ -1,4 +1,4 @@
-# The Affelion Aura color knowledge base
+# The Affelion Halo color knowledge base
 
 Single source of truth: `src/core/color/knowledgeBase.ts`, which holds the specification's twenty
 entries verbatim (id, name, hue range, primary meaning, biometric condition, explanation). Every

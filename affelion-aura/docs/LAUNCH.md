@@ -12,7 +12,7 @@ buyer sees on day one. Android and the Sasha server follow in 1.1.
 
 | Decision | Why it blocks | Default if nothing is decided |
 | --- | --- | --- |
-| App name | The store name and bundle name are set at first submission | "Affelion Aura" (what `app.json` says now) |
+| App name | The store name and bundle name are set at first submission | "Affelion Halo" (what `app.json` says now) |
 | The three color rules added for lime, magenta and golden yellow | They are not in the original knowledge base rules (`docs/COLOR_SYSTEM.md`) | Ship as built |
 | Sasha's likeness and name | A friend named Sascha inspired her; the portrait is a generated image | Ship as built, no credit |
 | Prices | Set once in the stores | $12.99 a month, $69.99 a year, $199 lifetime |
@@ -44,7 +44,7 @@ scan, one practice session, one saved portrait and one export work on at least t
 
 ## 3. Purchases (developer with the owner's accounts, half a day)
 
-1. App Store Connect, the app, Subscriptions: create a group "Affelion Aura Pro" with
+1. App Store Connect, the app, Subscriptions: create a group "Affelion Halo Pro" with
    `com.affelion.aura.pro.monthly` ($12.99) and `com.affelion.aura.pro.annual` ($69.99).
 2. In-App Purchases: create a non-consumable `com.affelion.aura.pro.lifetime` ($199).
 3. RevenueCat: add the app, import the three products, create an entitlement named exactly

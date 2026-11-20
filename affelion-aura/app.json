@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Affelion Aura",
-    "slug": "affelion-aura",
-    "scheme": "affelion-aura",
+    "name": "Affelion Halo",
+    "slug": "affelion-halo",
+    "scheme": "affelion-halo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -12,9 +12,9 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.affelion.aura",
       "infoPlist": {
-        "NSCameraUsageDescription": "Aura uses your front camera for your outline and one photo, and your back camera and flash to read your pulse from your fingertip. Camera frames stay on your phone.",
-        "NSMicrophoneUsageDescription": "Aura listens for 5 seconds to measure the pitch and steadiness of your voice. Audio stays on your phone and is never recorded.",
-        "NSPhotoLibraryAddUsageDescription": "Aura saves your portrait to your photos when you ask it to.",
+        "NSCameraUsageDescription": "Halo uses your front camera for your outline and one photo, and your back camera and flash to read your pulse from your fingertip. Camera frames stay on your phone.",
+        "NSMicrophoneUsageDescription": "Halo listens for 5 seconds to measure the pitch and steadiness of your voice. Audio stays on your phone and is never recorded.",
+        "NSPhotoLibraryAddUsageDescription": "Halo saves your portrait to your photos when you ask it to.",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
@@ -68,15 +68,15 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Aura uses your front camera for your outline and one photo, and your back camera and flash to read your pulse from your fingertip. Camera frames stay on your phone.",
-          "microphonePermission": "Aura listens for 5 seconds to measure the pitch and steadiness of your voice. Audio stays on your phone and is never recorded.",
+          "cameraPermission": "Halo uses your front camera for your outline and one photo, and your back camera and flash to read your pulse from your fingertip. Camera frames stay on your phone.",
+          "microphonePermission": "Halo listens for 5 seconds to measure the pitch and steadiness of your voice. Audio stays on your phone and is never recorded.",
           "recordAudioAndroid": true
         }
       ],
       [
         "expo-media-library",
         {
-          "savePhotosPermission": "Aura saves your portrait to your photos when you ask it to.",
+          "savePhotosPermission": "Halo saves your portrait to your photos when you ask it to.",
           "isAccessMediaLocationEnabled": false,
           "photosPermission": false,
           "granularPermissions": []

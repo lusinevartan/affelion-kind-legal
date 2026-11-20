@@ -42,7 +42,7 @@ export const StoryCard = React.forwardRef<StoryCardHandle, StoryCardProps>(funct
     <View ref={ref} collapsable={false} style={[styles.root, { width, height, paddingHorizontal: pad, paddingTop: Math.round(height * 0.07), paddingBottom: Math.round(height * 0.05) }]}>
       <View style={styles.row}>
         <Text variant="eyebrow" color={colors.stageFg70} style={{ fontSize: 11 * u, lineHeight: 14 * u }}>
-          My Aura today
+          My Halo today
         </Text>
         <Text variant="eyebrow" color={colors.stageFg70} style={{ fontSize: 11 * u, lineHeight: 14 * u }}>
           {date}
@@ -67,7 +67,7 @@ export const StoryCard = React.forwardRef<StoryCardHandle, StoryCardProps>(funct
         </Text>
         {showWordmark ? (
           <Text variant="eyebrow" color={colors.stageFg} style={{ fontSize: 11 * u, lineHeight: 14 * u, letterSpacing: 1.2 * u }}>
-            Affelion Aura
+            Affelion Halo
           </Text>
         ) : null}
       </View>

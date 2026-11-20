@@ -1,6 +1,6 @@
-# Affelion Aura — Launch Master Brief for Claude
+# Affelion Halo — Launch Master Brief for Claude
 
-You are working on **Affelion Aura**, a built but unreleased iPhone/Android app by **Lusine Vartan, founder of Affelion LLC** (affelion.com). Your job is to get **iPhone 1.0 submitted to the App Store as fast as possible**, then work through the post-launch phases.
+You are working on **Affelion Halo**, a built but unreleased iPhone/Android app by **Lusine Vartan, founder of Affelion LLC** (affelion.com). Your job is to get **iPhone 1.0 submitted to the App Store as fast as possible**, then work through the post-launch phases.
 
 **Top priority: the 11-item "Must-have before submit" list below. Do nothing else until those 11 items pass, or are blocked waiting on Lusine.**
 
@@ -47,7 +47,7 @@ Only items that would block **App Review** or **revenue** belong here. Work top 
 - **Acceptance:** Lusine confirms that the Paid Apps agreement status is Active, banking and tax are complete, and the Small Business Program application is submitted.
 
 ### M2. Subscription products and trial in App Store Connect — *Revenue + Review*
-- **You do:** write the exact product spec in STATUS.md: one subscription group "Aura Pro" with `aura_pro_annual` ($69.99/yr, 7-day free trial as the introductory offer) and `aura_pro_monthly` ($12.99/mo, no trial), plus a non-consumable `aura_lifetime` ($199). Use the IDs already in the code if they differ, and keep code and store in sync. Write display names and descriptions (name ≤35 chars, description ≤55 chars).
+- **You do:** write the exact product spec in STATUS.md: one subscription group "Halo Pro" with `aura_pro_annual` ($69.99/yr, 7-day free trial as the introductory offer) and `aura_pro_monthly` ($12.99/mo, no trial), plus a non-consumable `aura_lifetime` ($199). Use the IDs already in the code if they differ, and keep code and store in sync. Write display names and descriptions (name ≤35 chars, description ≤55 chars).
 - **Lusine does:** creates or approves the products and prices (pricing guardrail).
 - **Acceptance:** all products are in "Ready to Submit" and attached to the 1.0 version, and the product IDs in the app match App Store Connect exactly.
 
@@ -68,7 +68,7 @@ Only items that would block **App Review** or **revenue** belong here. Work top 
 
 ### M7. Wording pass and disclaimer — *Review (1.4.1, 4.3)*
 - **Acceptance:** every string in the app (including Sasha's built-in answers, notifications, paywall and onboarding) follows the wording table in section 4. Produce `wording-audit.md` in the repo listing each changed string (before → after). The disclaimer below appears on the result/breakdown screen and in Settings/About:
-  > "Affelion Aura is for wellness and self-reflection. It is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Talk to a doctor about any health concern."
+  > "Affelion Halo is for wellness and self-reflection. It is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Talk to a doctor about any health concern."
 - BPM, if shown, is labeled "approximate".
 
 ### M8. Camera and microphone permission text — *Review (5.1.1)*
@@ -85,7 +85,7 @@ Only items that would block **App Review** or **revenue** belong here. Work top 
 
 ### M10. Privacy policy, terms, privacy label, age rating — *Review*
 - **You do:** draft `privacy-policy.md` and `terms.md` in plain English matching what the app really does (camera frames and audio processed on device and discarded; no account; RevenueCat processes purchase data; any crash or analytics SDK disclosed). Draft the App Privacy questionnaire answers and the age rating answers (health or wellness topics; expect 9+ or 13+).
-- **Lusine does:** publishes the pages on affelion.com (e.g. affelion.com/aura/privacy and /aura/terms) and enters the answers in App Store Connect, or approves you doing the data entry if you have access.
+- **Lusine does:** publishes the pages on affelion.com (e.g. affelion.com/halo/privacy and /aura/terms) and enters the answers in App Store Connect, or approves you doing the data entry if you have access.
 - **Acceptance:** both URLs load publicly (HTTP 200, not a PDF), the in-app links point to them, and the App Privacy answers match every SDK in the build (check each SDK's privacy manifest).
 
 ### M11. Screenshots, listing and Review Notes — *Review*
@@ -136,8 +136,8 @@ Also: no other app names, trademarks or prices in metadata; no "TikTok" in the l
 Do these in order. Anything involving money, pricing, publishing or posting is drafted by you and goes under "Needs Lusine".
 
 ### Phase A — While in review
-- Build the **first update** on a branch: 9:16 story card (color name, one-line meaning, date, small "Affelion Aura" mark; watermark for free, clean for Pro), heartbeat haptic synced to the user's BPM on reveal, "Today's color" with a gentle streak, local trial-ending reminder (2 days before), friendlier retry tips, failed scans never count.
-- Draft "Try Aura" cross-promo cards for Pop and Bible (Bible wording: "a calm heartbeat check-in and breathing practice", avoid "aura"-as-spiritual framing).
+- Build the **first update** on a branch: 9:16 story card (color name, one-line meaning, date, small "Affelion Halo" mark; watermark for free, clean for Pro), heartbeat haptic synced to the user's BPM on reveal, "Today's color" with a gentle streak, local trial-ending reminder (2 days before), friendlier retry tips, failed scans never count.
+- Draft "Try Halo" cross-promo cards for Pop and Bible (Bible wording: "a calm heartbeat check-in and breathing practice", avoid "aura"-as-spiritual framing).
 - Draft 12 reel scripts (before/after coffee, after workout vs after breathing, compare with a friend, "aura points but with real data", founder behind-the-scenes).
 - No 12-tester closed test needed (business Play account); go straight to Play production setup when Android is ready.
 
@@ -155,7 +155,7 @@ Do these in order. Anything involving money, pricing, publishing or posting is d
 
 ### Phase D — Days 31–60
 - Android: Health apps declaration answers, device compatibility statement in the description, Play listing, closed test if required. Lusine submits.
-- "Aura Keepsake" one-time purchase ($4.99) offered when someone closes the paywall: full breakdown of that reading + clean high-res poster. Check Google Play fees for one-time items before pricing there.
+- "Halo Keepsake" one-time purchase ($4.99) offered when someone closes the paywall: full breakdown of that reading + clean high-res poster. Check Google Play fees for one-time items before pricing there.
 - Color Pair (compare with a friend), seasonal portrait styles (same rulebook), Apple win-back offer draft, In-App Event drafts, Product Hunt draft.
 
 ### Phase E — Days 61–90

@@ -1,7 +1,7 @@
 import type { AuraColorId as KbColorId } from './color/knowledgeBase';
 
 /**
- * Shared domain types for Affelion Aura.
+ * Shared domain types for Affelion Halo.
  *
  * Everything the app shows is derived from measured physical signals:
  * heart rate and heart-rate variability from rear-camera photoplethysmography (PPG),

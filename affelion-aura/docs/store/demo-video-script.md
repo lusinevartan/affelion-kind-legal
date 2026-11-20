@@ -18,7 +18,7 @@ Recording; long-press it and turn **Microphone on** so your voice step is audibl
 
 | Time | On screen | What you do | Optional voice-over |
 |---|---|---|---|
-| 0:00–0:05 | Onboarding page 1 | Swipe through the three pages, tap **Begin scan** | "This is Affelion Aura. A one-minute check-in." |
+| 0:00–0:05 | Onboarding page 1 | Swipe through the three pages, tap **Begin scan** | "This is Affelion Halo. A one-minute check-in." |
 | 0:05–0:08 | Camera and microphone prompts | Tap **Allow** on both | "It asks for the camera and microphone. Everything stays on the phone." |
 | 0:08–0:15 | Face step, oval | Center your face until it says Hold still | "First, the front camera finds my outline and takes one photo." |
 | 0:15–0:50 | Fingertip step | Turn the phone, cover the back camera and flash with one fingertip, hold still until the voice step starts (fast-forward this part in editing if you want, but keep it uncut for App Review) | "Now a fingertip over the back camera and flash. The flash shines through my finger to read an approximate pulse." |

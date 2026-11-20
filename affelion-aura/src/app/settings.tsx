@@ -81,7 +81,7 @@ export default function Settings() {
           ABOUT
         </Text>
         <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.sm }}>
-          Affelion Aura turns your heart rate, how much it varies, and the pitch of your voice into color and motion. It does not read energy fields or make predictions. Sasha, the guide, is an AI assistant that answers only from the color knowledge base and your own measurements. Her portrait is a generated image, not a photograph of a real person.
+          Affelion Halo turns your heart rate, how much it varies, and the pitch of your voice into color and motion. It does not read energy fields or make predictions. Sasha, the guide, is an AI assistant that answers only from the color knowledge base and your own measurements. Her portrait is a generated image, not a photograph of a real person.
         </Text>
         <Text variant="bodySmall" color={colors.bone70} style={{ marginTop: space.md }}>
           {DISCLAIMER}

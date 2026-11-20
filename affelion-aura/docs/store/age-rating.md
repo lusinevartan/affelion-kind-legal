@@ -1,6 +1,6 @@
 # App Store: age rating answers (version 1.0)
 
-Draft for App Store Connect → Affelion Aura → **App Information → Age Rating → Edit**. Apple's
+Draft for App Store Connect → Affelion Halo → **App Information → Age Rating → Edit**. Apple's
 questionnaire changed in 2025; answer every question, including the new ones.
 
 | Question | Answer | Why |

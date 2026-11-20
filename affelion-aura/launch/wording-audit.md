@@ -11,6 +11,8 @@ The app sends no notifications in 1.0, so there were none to check.
 
 ## Changed
 
+**Name:** "Affelion Aura" became "Affelion Halo" everywhere a person can read it (Nov 20, Lusine's decision): screens, paywall, story card, permission text, listing, Review Notes, policies, docs, Sasha, deck and store art. Quotes of the old listing text below keep the old name.
+
 | Where | Before | After |
 |---|---|---|
 | Bad reading (scan) | "That reading came out at about N beats a minute, outside the range this app reads well. Sit still for a minute and try again. If you feel unwell, talk to a doctor. This app is not a medical device." | "We couldn't get a clear reading. Try again sitting still, with your fingertip covering the camera and flash." (same line for any noisy or out-of-range reading) |
@@ -18,12 +20,12 @@ The app sends no notifications in 1.0, so there were none to check.
 | Scan retry title | "Pulse reading failed" | "Let's try that again" |
 | Portrait | "For reflection and wellness, not a medical reading. The pulse is an estimate from your phone camera." | Standard disclaimer + "Your pulse is approximate, read through your phone camera." |
 | Full breakdown | "Not a medical device. For health concerns, speak with a clinician." (light gray, tiny) | Standard disclaimer + approximate-pulse line, in readable gray |
-| How it works, intro | "Affelion Aura makes a picture of how your body is doing right now. It reads your heartbeat and your voice… It is not magic… It is not a medical device." | "Affelion Aura is a one-minute check-in. It takes your approximate pulse and your voice and turns those numbers into color around your photo. Every color traces to a number. It does not see invisible light or read energy." |
+| How it works, intro | "Affelion Halo makes a picture of how your body is doing right now. It reads your heartbeat and your voice… It is not magic… It is not a medical device." | "Affelion Halo is a one-minute check-in. It takes your approximate pulse and your voice and turns those numbers into color around your photo. Every color traces to a number. It does not see invisible light or read energy." |
 | How it works, footer | "Not a medical device. For health concerns, speak with a clinician." | Standard disclaimer |
 | Settings, About | "…It does not detect energy fields, make predictions or diagnose anything. It is not a medical device…" | "…It does not read energy fields or make predictions…" + standard disclaimer as its own paragraph |
-| Onboarding, page 1 | "Affelion Aura turns your real heart rate, how much it varies, and your voice into a living color portrait. It does not capture invisible light." | "A one-minute check-in. Affelion Aura turns your approximate pulse, how much it varies, and your voice into a living color portrait. Every color traces to a number." |
+| Onboarding, page 1 | "Affelion Halo turns your real heart rate, how much it varies, and your voice into a living color portrait. It does not capture invisible light." | "A one-minute check-in. Affelion Halo turns your approximate pulse, how much it varies, and your voice into a living color portrait. Every color traces to a number." |
 | Portrait figures | "Pulse" | "Pulse, approx." |
-| Sasha, health question | "Affelion Aura is not a medical device and cannot assess health conditions. It visualizes a short pulse and voice sample. If you have a health concern, please talk to a doctor." | "Affelion Aura is for wellness and self-reflection. It is not a medical device and cannot tell you anything about a health condition. It turns a short pulse and voice sample into color. Talk to a doctor about any health concern." |
+| Sasha, health question | "Affelion Halo is not a medical device and cannot assess health conditions. It visualizes a short pulse and voice sample. If you have a health concern, please talk to a doctor." | "Affelion Halo is for wellness and self-reflection. It is not a medical device and cannot tell you anything about a health condition. It turns a short pulse and voice sample into color. Talk to a doctor about any health concern." |
 | Sasha, pulse question | "Your pulse averaged N beats a minute." | "Your pulse was about N beats a minute, read through your phone camera." |
 | Deep red, meaning | "Strong stress or intensity" | "Keyed up and intense" |
 | Deep red, why | "…Your body was working hard or under strain." | "…Your body was working hard during the scan, which can come from exercise, coffee, excitement or a busy day." |

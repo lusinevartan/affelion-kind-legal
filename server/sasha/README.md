@@ -1,6 +1,6 @@
 # Sasha server
 
-A small Node service for the Affelion Aura guide. It holds the Anthropic API key so the app never
+A small Node service for the Affelion Halo guide. It holds the Anthropic API key so the app never
 does, enforces request limits, and filters every reply through the same honesty rules as the app.
 
 ```bash

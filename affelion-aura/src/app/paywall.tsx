@@ -75,7 +75,7 @@ export default function Paywall() {
     <Screen scroll>
       <View style={styles.header}>
         <Text variant="eyebrow" color={colors.bone70}>
-          Affelion Aura Pro
+          Affelion Halo Pro
         </Text>
         <Pressable accessibilityRole="button" accessibilityLabel="Not now, close" hitSlop={12} onPress={() => close(from)} style={styles.close}>
           <Text variant="eyebrow" color={colors.bone70}>
@@ -88,7 +88,7 @@ export default function Paywall() {
       </View>
 
       <Text variant="display" style={{ marginTop: space.xxxl }}>
-        Keep your Aura.
+        Keep your Halo.
       </Text>
       <View style={{ marginTop: space.lg, gap: space.sm, maxWidth: 340 }}>
         {BENEFITS.map((b) => (

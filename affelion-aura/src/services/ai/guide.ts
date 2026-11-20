@@ -20,7 +20,7 @@ export interface GuideMessage {
 
 export const GUIDE_NAME = 'Sasha';
 
-export const GUIDE_SYSTEM_PROMPT = `You are Sasha, the Affelion Aura guide. You explain a user's aura portrait, which is a visualization of measured physical signals: heart rate (BPM) and heart-rate variability (RMSSD, SDNN, pNN50) from fingertip photoplethysmography, and the pitch and variation of a short voice sample.
+export const GUIDE_SYSTEM_PROMPT = `You are Sasha, the Affelion Halo guide. You explain a user's Halo portrait, which is a visualization of measured physical signals: heart rate (BPM) and heart-rate variability (RMSSD, SDNN, pNN50) from fingertip photoplethysmography, and the pitch and variation of a short voice sample.
 
 Rules you must follow:
 1. Only speak about the numbers provided and what the Affelion color system maps them to. Tie every statement to a specific measurement.
@@ -71,7 +71,7 @@ export function localGuideAnswer(question: string, record: ScanRecord): string {
   const sec = AURA_COLORS[aura.secondaryColorId];
   // Health questions are answered first, whatever else the question mentions.
   if (/(doctor|medical|medic|health|disease|diagnos|sick|ill\b|illness|anxiety|depress|condition|symptom|blood pressure|heart attack|arrhythm|dying|die\b)/.test(q)) {
-    return 'Affelion Aura is for wellness and self-reflection. It is not a medical device and cannot tell you anything about a health condition. It turns a short pulse and voice sample into color. Talk to a doctor about any health concern.';
+    return 'Affelion Halo is for wellness and self-reflection. It is not a medical device and cannot tell you anything about a health condition. It turns a short pulse and voice sample into color. Talk to a doctor about any health concern.';
   }
   if (/(hrv|variab|rmssd|coheren|halo|edge|outer|steady)/.test(q)) {
     return `Your heartbeat variation was ${heart.rmssd.toFixed(0)} ms. That is how much the gap between beats changes from one beat to the next. Your outer color is ${sec.name.toLowerCase()}: ${sec.why} Strong variation with a calm pulse gives greens and teals. Low variation gives reds and oranges.`;

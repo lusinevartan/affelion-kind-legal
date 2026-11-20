@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name           = 'AffelionPpg'
   s.version        = '1.0.0'
-  s.summary        = 'Rear-camera photoplethysmography with torch for Affelion Aura'
+  s.summary        = 'Rear-camera photoplethysmography with torch for Affelion Halo'
   s.description    = 'Captures mean RGB of the rear camera at 30 fps with the torch on and exposure locked.'
   s.author         = 'Affelion'
   s.homepage       = 'https://affelion.com'

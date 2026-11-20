@@ -1,6 +1,6 @@
 # Google Play: Data safety answers (version 1.0)
 
-Draft for Play Console → Affelion Aura → **App content → Data safety**. Same facts as the App Store
+Draft for Play Console → Affelion Halo → **App content → Data safety**. Same facts as the App Store
 answers (`app-privacy.md`). Source for the RevenueCat part:
 https://www.revenuecat.com/docs/platform-resources/google-platform-resources/google-plays-data-safety
 
@@ -22,4 +22,4 @@ analytics, no crash reporting, no advertising ID).
 (heart-rate based check-in and breathing practice). It is not a medical device, does not connect to
 Health Connect, and does not offer medical, disease-management or emergency features.
 
-**Privacy policy URL:** https://www.affelion.com/aura/privacy
+**Privacy policy URL:** https://www.affelion.com/halo/privacy

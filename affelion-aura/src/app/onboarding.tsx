@@ -14,7 +14,7 @@ import { PREVIEW_PARAMS } from '../features/scan/previewParams';
  * it is, how it is made, what it is for. Permissions are asked for when the scan starts.
  */
 const PAGES = [
-  { n: '01', title: 'Grounding you can see.', body: 'A one-minute check-in. Affelion Aura turns your approximate pulse, how much it varies, and your voice into a living color portrait. Every color traces to a number.' },
+  { n: '01', title: 'Grounding you can see.', body: 'A one-minute check-in. Affelion Halo turns your approximate pulse, how much it varies, and your voice into a living color portrait. Every color traces to a number.' },
   { n: '02', title: 'One minute. Three readings.', body: 'Fingertip on the rear camera for your pulse and how much it varies. Front camera for your outline. Five seconds of your voice for its pitch and how much it moves. All of it stays on your phone.' },
   { n: '03', title: 'Breathe. Watch it settle.', body: 'A few minutes of paced breathing, and the portrait moves with your heart rhythm. Every color follows a fixed rule from a measurement. Nothing is predicted or diagnosed. Not a medical device.' },
 ];
@@ -45,7 +45,7 @@ export default function Onboarding() {
       <View style={styles.shade} pointerEvents="none" />
       <View style={[styles.top, { paddingTop: insets.top + space.lg }]}>
         <Text variant="eyebrow" color={colors.stageFg}>
-          Affelion Aura
+          Affelion Halo
         </Text>
         <Text variant="eyebrow" color={colors.stageFg70}>
           {PAGES[page]!.n} / 03

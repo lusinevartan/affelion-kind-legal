@@ -1,6 +1,6 @@
 # How to use this package with Claude
 
-This package lets Claude work through Aura's launch on its own, as much as possible, while you keep control of anything involving money, agreements, pricing or publishing.
+This package lets Claude work through Halo's launch on its own, as much as possible, while you keep control of anything involving money, agreements, pricing or publishing.
 
 ## What's inside
 
@@ -14,7 +14,7 @@ This package lets Claude work through Aura's launch on its own, as much as possi
 ## Setup (about 5 minutes)
 
 1. Unzip `aura-launch-package.zip`.
-2. Copy the four files into the root of your Aura code folder (the one with `package.json` and `app.json`), for example into a `launch/` folder.
+2. Copy the four files into the root of your Halo code folder (the one with `package.json` and `app.json`), for example into a `launch/` folder.
 3. Open that folder in **Claude Code** (or Cursor with Claude).
 4. Paste this as your first message:
 

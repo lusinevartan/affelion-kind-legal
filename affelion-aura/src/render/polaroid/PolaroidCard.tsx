@@ -72,7 +72,7 @@ export const PolaroidCard = React.forwardRef<PolaroidCardHandle, PolaroidCardPro
           )}
           {showWordmark ? (
             <Text variant="caption" color={f.subcaption} style={{ fontSize: Math.max(9, width * 0.03), letterSpacing: 1 }}>
-              AFFELION AURA
+              AFFELION HALO
             </Text>
           ) : null}
         </View>

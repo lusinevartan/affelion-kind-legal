@@ -1,4 +1,4 @@
-"""App icons for Affelion Aura: a dark disc with a corona of light on black.
+"""App icons for Affelion Halo: a dark disc with a corona of light on black.
 
 One mark, one family of color (teal into blue), no figure. Usage: make_icons.py <out dir>
 """

@@ -1,6 +1,6 @@
 # App Store: App Privacy answers (version 1.0)
 
-Draft for Lusine to enter in App Store Connect → Affelion Aura → **App Privacy**. Based on what
+Draft for Lusine to enter in App Store Connect → Affelion Halo → **App Privacy**. Based on what
 the 1.0 code does, checked Nov 20, 2026.
 
 ## What the build contains
@@ -40,7 +40,7 @@ Source: https://www.revenuecat.com/docs/platform-resources/apple-platform-resour
 
 ## Privacy policy URL
 
-https://www.affelion.com/aura/privacy (Lusine publishes `privacy-policy.md` there).
+https://www.affelion.com/halo/privacy (Lusine publishes `privacy-policy.md` there).
 
 ## Before you submit
 
